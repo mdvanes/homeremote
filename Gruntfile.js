@@ -8,6 +8,14 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
+        less: {
+            dev: {
+                files: {
+                    'public/css/homeRemote.css': 'public/_less/*.less'
+                }
+            }
+        },
+
         jshint: {
             options: {
                 jshintrc: '.jshintrc'
@@ -42,10 +50,10 @@ module.exports = function(grunt) {
         },
 
         watch: {
-            //compass: {
-            //    files: ['sass/**/*.scss'],
-            //    tasks: ['compass:dev']
-            //},
+            less: {
+                files: ['public/_less/**/*.less'],
+                tasks: ['less:dev']
+            },
             script: {
                 files: ['public/_js/**/*.js'],
                 tasks: ['jscs', 'jshint', 'babel:dev']
@@ -62,5 +70,5 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['jscs', 'jshint', 'babel:dev', 'express', 'watch']);
+    grunt.registerTask('default', ['jscs', 'jshint', 'babel:dev', 'less:dev', 'express', 'watch']);
 };

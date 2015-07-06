@@ -9,7 +9,8 @@ var app = express();
 
 /* start: broadcast module */
 app.get('/broadcast/start', function (req, res) {
-    res.send('broadcast start');
+    console.log('call to http://%s:%s/broadcast/start');
+    res.send('ok');
 });
 
 app.get('/broadcast/stop', function (req, res) {
@@ -18,7 +19,7 @@ app.get('/broadcast/stop', function (req, res) {
 
 app.get('/broadcast/status', function (req, res) {
     console.log('call to http://%s:%s/broadcast/status');
-    res.send('running');
+    res.send('stopped');
 });
 /* end: broadcast module */
 

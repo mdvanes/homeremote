@@ -6,23 +6,30 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     'use strict';
 
     var BroadcastButton = function BroadcastButton($elem) {
+        var _this = this;
+
         _classCallCheck(this, BroadcastButton);
 
         this.$elem = $elem;
         console.log('BroadcastButton', this.$elem);
 
-        console.log('foo');
         $.get('/broadcast/status').done(function (data) {
-            if (data === 'foo') {
-                console.log('running');
+            if (data === 'running') {
+                _this.$elem.addClass('active');
             } else {
-                console.log('stopped');
+                _this.$elem.removeClass('active');
             }
         });
 
         this.$elem.click(function () {
-            return $.get('/broadcast/start').done(function (data) {
-                console.log('xhr response: ' + data);
+            return $.get('/broadcast/start' /*,
+                                            {
+                                            }*/).done(function (data) {
+                if (data === 'ok') {
+                    _this.$elem.addClass('active');
+                } else {
+                    alert('an error has occurred');
+                }
             });
         });
     };
