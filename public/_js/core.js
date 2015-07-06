@@ -6,21 +6,27 @@
             this.$elem = $elem;
             console.log('BroadcastButton', this.$elem);
 
-            console.log('foo');
             $.get('/broadcast/status')
                 .done((data) => {
-                    if (data === 'foo') {
-                        console.log('running');
+                    if (data === 'running') {
+                        this.$elem.addClass('active');
                     } else {
-                        console.log('stopped');
+                        this.$elem.removeClass('active');
                     }
                 }
             );
 
             this.$elem.click(() =>
-                $.get('/broadcast/start')
+                $.get('/broadcast/start'/*,
+                    {
+
+                    }*/)
                     .done((data) => {
-                        console.log('xhr response: ' + data);
+                        if (data === 'ok') {
+                            this.$elem.addClass('active');
+                        } else {
+                            alert('an error has occurred');
+                        }
                     }
                 )
             );
