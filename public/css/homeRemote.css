@@ -26,3 +26,11 @@ button.active::before {
   background-color: green;
   border: 2px solid #004d00;
 }
+button.waiting::before {
+  background-color: blue;
+  border: 2px solid #0000cc;
+}
+button.error::before {
+  background-color: #ccc;
+  border: 2px solid #b3b3b3;
+}
