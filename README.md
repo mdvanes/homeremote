@@ -6,12 +6,12 @@ To run:
 
 * temporarily disable git security on raspberry pi (see below)
 * clone the repo
-* install newest version of node, don't use apt-get:
-* ```wget http://node-arm.herokuapp.com/node_latest_armhf.deb``` 
-* ```sudo dpkg -i node_latest_armhf.deb```
-// * ```sudo apt-get install nodejs npm node-semver```
-* ```npm i --production``` (had to run this several times, because it couldn't find the packages at first)
-* run ```npm start``` (this will call node app.js)
+* install newest version of node, don't use apt-get: http://node-arm.herokuapp.com/
+// can't find new enough npm installer for rasp pi??   * ```npm i --production``` (had to run this several times, because it couldn't find the packages at first)
+// * run ```npm start``` (this will call node app.js)
+* copy node_modules over sftp
+* ```node app.js```
+* server is on http://192.168.0.15:3000/
 
 for debugging
 
