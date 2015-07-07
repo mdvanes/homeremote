@@ -5,14 +5,40 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <link rel="stylesheet" href="library/bootstrap/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="css/homeRemote.css"/>
     </head>
     <body>
-        <h1>Home Remote</h1>
-
-        <button id="broadcast">Broadcast</button>
-        <button id="play">Play NYI</button>
-
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="page-header">
+                        <h1>Home Remote</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- TODO dashboard view when not on mobile device -->
+                    <!--<h2>broadcast</h2>-->
+                    <button class="btn btn-default btn-lg hr-toggle" id="broadcast">Broadcast</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <!--<h2>Play Radio</h2>-->
+                    <hr/>
+                    <button class="btn btn-default btn-lg hr-toggle" id="play">Play NYI</button>
+                    <button class="btn btn-default btn-lg" id="info">
+                        <i class="glyphicon glyphicon-refresh"></i>
+                        info
+                    </button>
+                    <div class="form-group well">
+                        <textarea id="log" cols="30" rows="10" class="form-control" readonly="true" placeholder="log"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script src="library/jquery/js/jquery.min.js"></script>
         <script src="js/homeRemote.js"></script>
     </body>

@@ -1,19 +1,4 @@
-h1 {
-  text-align: center;
-}
-button {
-  background-color: black;
-  border: none;
-  border-radius: 0.5em;
-  color: white;
-  cursor: pointer;
-  display: block;
-  font-size: 2em;
-  margin-bottom: 1em;
-  padding: 1em;
-  width: 100%;
-}
-button::before {
+.hr-toggle::before {
   background-color: red;
   border: 2px solid #990000;
   content: '';
@@ -22,15 +7,33 @@ button::before {
   margin: -0.5em auto 0 auto;
   width: 2em;
 }
-button.active::before {
+.hr-toggle.hr-active::before {
   background-color: green;
   border: 2px solid #004d00;
 }
-button.waiting::before {
+.hr-toggle.hr-waiting::before {
   background-color: blue;
   border: 2px solid #0000cc;
 }
-button.error::before {
+.hr-toggle.hr-error::before {
   background-color: #ccc;
   border: 2px solid #b3b3b3;
+}
+h1 {
+  text-align: center;
+}
+textarea#log {
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  height: 300px;
+}
+@media (max-width: 600px) {
+  .btn {
+    display: block;
+    font-size: 2em;
+    margin-bottom: 1em;
+    padding: 1em;
+    width: 100%;
+  }
 }
