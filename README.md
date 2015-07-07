@@ -31,4 +31,6 @@ Temporarily disable git security on raspberry pi:
 * bunyan logging in grunt-express
 * should have rotating logs (bunyan offers support for it)
 
-![Alt text](screenshot.png)
+## Screenshot
+
+![Screenshot](screenshot.png)
