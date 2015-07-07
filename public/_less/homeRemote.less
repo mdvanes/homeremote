@@ -28,4 +28,14 @@ button {
         background-color: green;
         border: 2px solid darken(green, 10%);
     }
+
+    &.waiting::before {
+        background-color: blue;
+        border: 2px solid darken(blue, 10%);
+    }
+
+    &.error::before {
+        background-color: #ccc;
+        border: 2px solid darken(#ccc, 10%);
+    }
 }

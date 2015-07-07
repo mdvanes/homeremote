@@ -64,6 +64,7 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     script: 'app.js',
+                    args: ['--debugremote'],
                     background: true
                 }
             }
