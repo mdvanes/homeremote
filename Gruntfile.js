@@ -21,7 +21,7 @@ module.exports = function(grunt) {
                 jshintrc: '.jshintrc'
                 //force: true
             },
-            all: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js']
+            all: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js']
         },
 
         jscs: {
@@ -32,12 +32,12 @@ module.exports = function(grunt) {
             },
             dev: {
                 files: {
-                    src: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js']
+                    src: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js']
                 }
             }
         },
 
-        // TODO add babel?
+        // TODO compress?
         babel: {
             dev: {
                 options: {
@@ -55,7 +55,7 @@ module.exports = function(grunt) {
                 tasks: ['less:dev']
             },
             script: {
-                files: ['public/_js/**/*.js'],
+                files: ['public/_js/**/*.js', 'server/**/*.js'],
                 tasks: ['jscs', 'jshint', 'babel:dev']
             },
             express: {
