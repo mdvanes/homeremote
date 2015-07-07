@@ -4,7 +4,7 @@
   "description": "Remote for home automation",
   "scripts": {
     "start": "node app.js",
-    "test": "node app.js --debugremote"
+    "test": "node app.js --debugremote | bunyan"
   },
   "private": true,
   "repository": "",
@@ -23,6 +23,7 @@
     "time-grunt": "^0.3.2"
   },
   "dependencies": {
+    "bunyan": "^1.4.0",
     "express": "^4.13.1"
   }
 }

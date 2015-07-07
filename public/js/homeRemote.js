@@ -7,6 +7,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 (function ($) {
     'use strict';
 
+    // TODO rebuild in React?
+
     var BroadcastButton = (function () {
         function BroadcastButton($elem) {
             var _this = this;
@@ -15,17 +17,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
             this.$elem = $elem;
             this.active = false;
-            console.log('BroadcastButton', this.$elem);
+            this.allClasses = 'hr-error hr-waiting hr-active';
+            //console.log('BroadcastButton', this.$elem);
 
             $.get('/broadcast/status').done(function (data) {
                 if (data === 'running') {
-                    // TODO setActive
-                    _this.$elem.addClass('active');
-                    _this.active = true;
+                    _this.setActive();
                 } else if (data === 'waiting') {
-                    // TODO setInActive
-                    _this.$elem.removeClass('active');
-                } else {}
+                    _this.setInActive();
+                } else {
+                    _this.setError();
+                }
             });
 
             this.$elem.click(function () {
@@ -38,8 +40,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             value: function click() {
                 var _this2 = this;
 
-                this.$elem.attr('class', ''); // clear all classes
-                this.$elem.addClass('waiting');
+                //this.$elem.attr('class',''); // clear all classes
+                //this.$elem.addClass('waiting');
+                this.$elem.removeClass(this.allClasses).addClass('waiting');
                 // TODO or .error?
                 if (this.active) {
                     $.get('/broadcast/stop').done(function (data) {
@@ -63,20 +66,32 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }, {
             key: 'setActive',
             value: function setActive() {
-                this.$elem.attr('class', ''); // clear all classes
-                this.$elem.addClass('active');
+                //this.$elem.attr('class',''); // clear all classes
+                //this.$elem.addClass('active');
+                this.$elem.removeClass(this.allClasses).addClass('hr-active');
                 this.active = true;
+            }
+        }, {
+            key: 'setInActive',
+            value: function setInActive() {
+                this.$elem.removeClass(this.allClasses);
+                this.active = false;
+            }
+        }, {
+            key: 'setError',
+            value: function setError() {
+                this.$elem.removeClass(this.allClasses).addClass('hr-error');
+                alert('an error has occurred');
             }
         }, {
             key: 'handleStopResponse',
             value: function handleStopResponse(data) {
                 if (data === 'ok') {
-                    this.$elem.attr('class', ''); // clear all classes
-                    this.active = false;
+                    //this.$elem.attr('class',''); // clear all classes
+                    //this.active = false;
+                    this.setInActive();
                 } else {
-                    this.$elem.attr('class', ''); // clear all classes
-                    this.$elem.addClass('error');
-                    alert('an error has occurred');
+                    this.setError();
                 }
             }
         }]);
@@ -88,6 +103,4 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         new BroadcastButton($('#broadcast'));
     });
 })(jQuery);
-
-// TODO error
 //# sourceMappingURL=homeRemote.js.map

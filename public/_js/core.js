@@ -1,23 +1,23 @@
 (function($) {
     'use strict';
 
+    // TODO rebuild in React?
+
     class BroadcastButton {
         constructor($elem) {
             this.$elem = $elem;
             this.active = false;
-            console.log('BroadcastButton', this.$elem);
+            this.allClasses = 'hr-error hr-waiting hr-active';
+            //console.log('BroadcastButton', this.$elem);
 
             $.get('/broadcast/status')
                 .done((data) => {
                     if (data === 'running') {
-                        // TODO setActive
-                        this.$elem.addClass('active');
-                        this.active = true;
+                        this.setActive();
                     } else if(data === 'waiting') {
-                        // TODO setInActive
-                        this.$elem.removeClass('active');
+                        this.setInActive();
                     } else {
-                        // TODO error
+                        this.setError();
                     }
                 }
             );
@@ -26,8 +26,11 @@
         }
 
         click() {
-            this.$elem.attr('class',''); // clear all classes
-            this.$elem.addClass('waiting');
+            //this.$elem.attr('class',''); // clear all classes
+            //this.$elem.addClass('waiting');
+            this.$elem
+                .removeClass(this.allClasses)
+                .addClass('waiting');
             // TODO or .error?
             if(this.active) {
                 $.get('/broadcast/stop')
@@ -51,19 +54,33 @@
         }
 
         setActive() {
-            this.$elem.attr('class',''); // clear all classes
-            this.$elem.addClass('active');
+            //this.$elem.attr('class',''); // clear all classes
+            //this.$elem.addClass('active');
+            this.$elem
+                .removeClass(this.allClasses)
+                .addClass('hr-active');
             this.active = true;
+        }
+
+        setInActive() {
+            this.$elem.removeClass(this.allClasses);
+            this.active = false;
+        }
+
+        setError() {
+            this.$elem
+                .removeClass(this.allClasses)
+                .addClass('hr-error');
+            alert('an error has occurred');
         }
 
         handleStopResponse(data) {
             if (data === 'ok') {
-                this.$elem.attr('class',''); // clear all classes
-                this.active = false;
+                //this.$elem.attr('class',''); // clear all classes
+                //this.active = false;
+                this.setInActive();
             } else {
-                this.$elem.attr('class',''); // clear all classes
-                this.$elem.addClass('error');
-                alert('an error has occurred');
+                this.setError();
             }
         }
     }

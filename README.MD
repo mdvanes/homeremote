@@ -10,3 +10,12 @@ To run:
 for debugging
 
 * run ```npm test``` (this will call node app.js --debugremote)
+
+read log file with
+
+* bunyan -o short homeremote-error.log (or bunyan /var/log/foo.log). Bunyan has many options for filtering.
+
+## TODO
+
+* bunyan logging in grunt-express
+* should have rotating logs (bunyan offers support for it)

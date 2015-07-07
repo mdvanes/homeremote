@@ -8,13 +8,29 @@ var express = require('express');
 var exec = require('child_process').exec;
 var app = express();
 
+var bunyan = require('bunyan');
+var log = bunyan.createLogger({
+    name: 'HomeRemote',
+    streams: [
+        {
+            level: 'info',
+            stream: process.stdout          // log INFO and above to stdout
+        },
+        {
+            level: 'error',
+            path: './homeremote-error.log'  // log ERROR and above to a file // TODO should be /var/tmp/homeremote-error.log ?
+        }
+    ]
+});
+
 var debug = false;
 
 // TODO debug mode that works on Windows
 // Detect debug mode
 process.argv.forEach(function (val, index) {
     if(index === 2 && val === '--debugremote') {
-        console.warn('Running in debug mode!');
+        //console.warn('Running in debug mode!');
+        log.warn('Running in debug mode!');
         debug = true;
     }
 });
@@ -26,40 +42,40 @@ app.get('/broadcast/start', function (req, res) {
 
     if(debug) {
         setTimeout(function() {
-            console.warn('debug: always return OK after 1 sec delay');
+            log.warn('debug: always return OK after 1 sec delay');
             res.send('ok');
         }, 1000);
     } else {
-        setTimeout(function() {
-            exec('git config --global user.name', function(error, stdout, stderr){
-                console.log('['+stdout+']', stderr);
-                if(stdout.indexOf('m.van.es') > -1) {
-                    res.send('ok');
-                } else {
-                    res.send('error');
-                    //throw new Error('unexpected response');
-                }
-            });
-        }, 1000);
+        exec('sudo service broadcast3fm start', function(error, stdout, stderr){
+            log.info('['+stdout+']');
+            if(stdout.indexOf('broadcast3fm start/running') > -1) {
+                res.send('ok');
+            } else {
+                log.error(stderr);
+                res.send('error');
+            }
+        });
     }
 });
 
 app.get('/broadcast/stop', function (req, res) {
-    console.log('call to http://%s:%s/broadcast/stop');
-
-    exec('git config --global user.name', function(error, stdout, stderr){
-        console.log('['+stdout+']', stderr);
-        if(stdout.indexOf('m.van.es') > -1) {
-            res.send('ok');
-        } else {
-            res.send('error');
-        }
-    });
+    if(debug) {
+        log.warn('debug: /broadcast/stop always return ok');
+        res.send('ok');
+    } else {
+        exec('sudo service broadcast3fm stop', function(error, stdout, stderr){
+            log.info('['+stdout+']');
+            if(stdout.indexOf('broadcast3fm stop/waiting') > -1) {
+                res.send('ok');
+            } else {
+                log.error(stderr);
+                res.send('error');
+            }
+        });
+    }
 });
 
 app.get('/broadcast/status', function (req, res) {
-    console.log('call to http://%s:%s/broadcast/status');
-
     // cmd: sudo service broadcastxxx status
     //
     // options:
@@ -68,9 +84,25 @@ app.get('/broadcast/status', function (req, res) {
 
     // return: running or waiting
 
-    res.send('stopped');
+    if(debug) {
+        log.warn('debug: /broadcast/status always return waiting');
+        res.send('waiting');
+    } else {
+        exec('sudo service broadcast3fm status', function(error, stdout, stderr){
+            log.info('['+stdout+']');
+            if(stdout.indexOf('broadcast3fm start/running') > -1) {
+                res.send('running');
+            } else if(stdout.indexOf('broadcast3fm stop/waiting') > -1) {
+                res.send('waiting');
+            } else {
+                log.error(stderr);
+                res.send('error');
+            }
+        });
+    }
 });
 /* end: broadcast module */
+
 
 app.use(express.static('public'));
 
@@ -79,6 +111,5 @@ var server = app.listen(3000, function () {
     var host = server.address().address;
     var port = server.address().port;
 
-    console.log('HomeRemote listening at http://%s:%s', host, port);
-
+    log.info('HomeRemote listening at http://' + host + ':' + port);
 });

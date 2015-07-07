@@ -1,41 +1,22 @@
+@import "toggle";
+
 h1 {
     text-align: center;
 }
 
-button {
-    background-color: black;
+textarea#log {
+    background-color: transparent;
     border: none;
-    border-radius: 0.5em;
-    color: white;
-    cursor: pointer;
-    display: block;
-    font-size: 2em;
-    margin-bottom: 1em;
-    padding: 1em;
-    width: 100%;
+    color: #fff;
+    height: 300px;
+}
 
-    &::before {
-        background-color: red;
-        border: 2px solid darken(red, 20%);
-        content: '';
+@media (max-width: 600px) {
+    .btn {
         display: block;
-        height: 0.5em;
-        margin: -0.5em auto 0 auto;
-        width: 2em;
-    }
-
-    &.active::before {
-        background-color: green;
-        border: 2px solid darken(green, 10%);
-    }
-
-    &.waiting::before {
-        background-color: blue;
-        border: 2px solid darken(blue, 10%);
-    }
-
-    &.error::before {
-        background-color: #ccc;
-        border: 2px solid darken(#ccc, 10%);
+        font-size: 2em;
+        margin-bottom: 1em;
+        padding: 1em;
+        width: 100%;
     }
 }

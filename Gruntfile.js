@@ -11,7 +11,7 @@ module.exports = function(grunt) {
         less: {
             dev: {
                 files: {
-                    'public/css/homeRemote.css': 'public/_less/*.less'
+                    'public/css/homeRemote.css': 'public/_less/homeRemote.less'
                 }
             }
         },
@@ -57,6 +57,13 @@ module.exports = function(grunt) {
             script: {
                 files: ['public/_js/**/*.js'],
                 tasks: ['jscs', 'jshint', 'babel:dev']
+            },
+            express: {
+                files: ['app.js'],
+                tasks: ['express:dev'],
+                options: {
+                    spawn: false
+                }
             }
         },
 
@@ -64,6 +71,7 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     script: 'app.js',
+                    // TODO bunyan logging doesn't work args: ['--debugremote | bunyan'],
                     args: ['--debugremote'],
                     background: true
                 }
