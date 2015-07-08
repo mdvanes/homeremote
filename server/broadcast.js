@@ -18,7 +18,7 @@ function bind(app, log, debug) {
         } else {
             exec('sudo service broadcast3fm start', function(error, stdout, stderr){
                 log.info('['+stdout+']');
-                if(stdout.indexOf('broadcast3fm start/running') > -1) {
+                if(stdout.indexOf('broadcast3fm start/') > -1) {
                     res.send('ok');
                 } else {
                     log.error(stderr);
@@ -35,7 +35,7 @@ function bind(app, log, debug) {
         } else {
             exec('sudo service broadcast3fm stop', function(error, stdout, stderr){
                 log.info('['+stdout+']');
-                if(stdout.indexOf('broadcast3fm stop/waiting') > -1) {
+                if(stdout.indexOf('broadcast3fm stop/') > -1) {
                     res.send('ok');
                 } else {
                     log.error(stderr);
@@ -50,7 +50,9 @@ function bind(app, log, debug) {
         //
         // options:
         //    broadcastxxx stop/waiting                - when stopped, also the begin of the response of successful stop (multiline response)
+        //    broadcastxxx stop/post-stop
         //    broadcastxxx start/running, process 1111 - when started, pid is changed of course, also the response of successful start
+        //    broadcastxxx start/post-stop
 
         // return: running or waiting
 
@@ -60,12 +62,12 @@ function bind(app, log, debug) {
         } else {
             exec('sudo service broadcast3fm status', function(error, stdout, stderr){
                 log.info('['+stdout+']');
-                if(stdout.indexOf('broadcast3fm start/running') > -1) {
+                if(stdout.indexOf('broadcast3fm start/') > -1) {
                     res.send('running');
-                } else if(stdout.indexOf('broadcast3fm stop/waiting') > -1) {
+                } else if(stdout.indexOf('broadcast3fm stop/') > -1) {
                     res.send('waiting');
                 } else {
-                    log.error(stderr);
+                    log.error(stdout + '|' + stderr);
                     res.send('error');
                 }
             });
