@@ -37,14 +37,32 @@ module.exports = function(grunt) {
             }
         },
 
-        // TODO compress?
         babel: {
             dev: {
                 options: {
-                    sourceMap: true
+                    //compact: true,
+                    //comments: false,
+                    modules: 'ignore', // babel doesn't concatenate converted module files
+                    //sourceMap: true
                 },
                 files: {
-                    'public/js/homeRemote.js': 'public/_js/core.js'
+                    'public/_babel/classes/RadioToggleButton.js': 'public/_js/classes/RadioToggleButton.js',
+                    'public/_babel/core.js': 'public/_js/core.js'
+                }
+            }
+        },
+
+        uglify: {
+            dev: {
+                options: {
+                    beautify: true, // for debugging
+                    banner: '/*! <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd HH:MM") %> */',
+                    mangle: false, // for debugging
+                    sourceMap: true,
+                    sourceMapIncludeSources: true
+                },
+                files: {
+                    'public/js/homeRemote.js': ['public/_babel/classes/RadioToggleButton.js', 'public/_babel/core.js']
                 }
             }
         },
@@ -56,7 +74,7 @@ module.exports = function(grunt) {
             },
             script: {
                 files: ['public/_js/**/*.js', 'server/**/*.js'],
-                tasks: ['jscs', 'jshint', 'babel:dev']
+                tasks: ['jscs', 'jshint', 'babel:dev', 'uglify:dev']
             },
             express: {
                 files: ['app.js'],
@@ -79,5 +97,5 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['jscs', 'jshint', 'babel:dev', 'less:dev', 'express', 'watch']);
+    grunt.registerTask('default', ['jscs', 'jshint', 'babel:dev', 'uglify:dev', 'less:dev', 'express', 'watch']);
 };

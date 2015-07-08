@@ -1,106 +1,134 @@
-'use strict';
+/*! HomeRemote 0.0.0 2015-07-08 14:25 */
+"use strict";
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
+}
 
-(function ($) {
-    'use strict';
+var _createClass = function() {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || !1, descriptor.configurable = !0, 
+            "value" in descriptor && (descriptor.writable = !0), Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }
+    return function(Constructor, protoProps, staticProps) {
+        return protoProps && defineProperties(Constructor.prototype, protoProps), staticProps && defineProperties(Constructor, staticProps), 
+        Constructor;
+    };
+}(), RadioToggleButton = function() {
+    function RadioToggleButton($elem) {
+        var _this = this;
+        _classCallCheck(this, RadioToggleButton), this.$elem = $elem, this.$elem.click(function() {
+            return _this.toggleRadio();
+        });
+    }
+    return _createClass(RadioToggleButton, [ {
+        key: "toggleRadio",
+        value: function() {
+            $.get("http://192.168.0.8/radio/state.php?c=play").done(function(data) {
+                return console.log(data);
+            });
+        }
+    } ]), RadioToggleButton;
+}(), RadioToggleButtonTempStop = function() {
+    function RadioToggleButtonTempStop($elem) {
+        var _this2 = this;
+        _classCallCheck(this, RadioToggleButtonTempStop), this.$elem = $elem, this.$elem.click(function() {
+            return _this2.toggleRadio();
+        });
+    }
+    return _createClass(RadioToggleButtonTempStop, [ {
+        key: "toggleRadio",
+        value: function() {
+            $.get("http://192.168.0.8/radio/state.php?c=stop").done(function(data) {
+                return console.log(data);
+            });
+        }
+    } ]), RadioToggleButtonTempStop;
+}(), _createClass = function() {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || !1, descriptor.configurable = !0, 
+            "value" in descriptor && (descriptor.writable = !0), Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }
+    return function(Constructor, protoProps, staticProps) {
+        return protoProps && defineProperties(Constructor.prototype, protoProps), staticProps && defineProperties(Constructor, staticProps), 
+        Constructor;
+    };
+}();
 
-    // TODO rebuild in React?
-
-    var BroadcastButton = (function () {
+!function($) {
+    var BroadcastButton = function() {
         function BroadcastButton($elem) {
             var _this = this;
-
-            _classCallCheck(this, BroadcastButton);
-
-            this.$elem = $elem;
-            this.active = false;
-            this.allClasses = 'hr-error hr-waiting hr-active';
-            //console.log('BroadcastButton', this.$elem);
-
-            $.get('/broadcast/status').done(function (data) {
-                if (data === 'running') {
-                    _this.setActive();
-                } else if (data === 'waiting') {
-                    _this.setInActive();
-                } else {
-                    _this.setError();
-                }
-            });
-
-            this.$elem.click(function () {
+            _classCallCheck(this, BroadcastButton), this.$elem = $elem, this.active = !1, this.allClasses = "hr-error hr-waiting hr-active", 
+            $.get("/broadcast/status").done(function(data) {
+                "running" === data ? _this.setActive() : "waiting" === data ? _this.setInActive() : _this.setError();
+            }), this.$elem.click(function() {
                 return _this.click();
             });
         }
-
-        _createClass(BroadcastButton, [{
-            key: 'click',
-            value: function click() {
+        return _createClass(BroadcastButton, [ {
+            key: "click",
+            value: function() {
                 var _this2 = this;
-
-                //this.$elem.attr('class',''); // clear all classes
-                //this.$elem.addClass('waiting');
-                this.$elem.removeClass(this.allClasses).addClass('waiting');
-                // TODO or .error?
-                if (this.active) {
-                    $.get('/broadcast/stop').done(function (data) {
-                        return _this2.handleStopResponse(data);
-                    });
-                } else {
-                    $.get('/broadcast/start' /*,
-                                             {
-                                             }*/).done(function (data) {
-                        // TODO
-                        if (data === 'ok') {
-                            _this2.setActive();
-                        } else {
-                            _this2.$elem.attr('class', ''); // clear all classes
-                            _this2.$elem.addClass('error');
-                            alert('an error has occurred');
-                        }
-                    });
-                }
+                this.$elem.removeClass(this.allClasses).addClass("waiting"), this.active ? $.get("/broadcast/stop").done(function(data) {
+                    return _this2.handleStopResponse(data);
+                }) : $.get("/broadcast/start").done(function(data) {
+                    "ok" === data ? _this2.setActive() : (_this2.$elem.attr("class", ""), _this2.$elem.addClass("error"), 
+                    alert("an error has occurred"));
+                });
             }
         }, {
-            key: 'setActive',
-            value: function setActive() {
-                //this.$elem.attr('class',''); // clear all classes
-                //this.$elem.addClass('active');
-                this.$elem.removeClass(this.allClasses).addClass('hr-active');
-                this.active = true;
+            key: "setActive",
+            value: function() {
+                this.$elem.removeClass(this.allClasses).addClass("hr-active"), this.active = !0;
             }
         }, {
-            key: 'setInActive',
-            value: function setInActive() {
-                this.$elem.removeClass(this.allClasses);
-                this.active = false;
+            key: "setInActive",
+            value: function() {
+                this.$elem.removeClass(this.allClasses), this.active = !1;
             }
         }, {
-            key: 'setError',
-            value: function setError() {
-                this.$elem.removeClass(this.allClasses).addClass('hr-error');
-                alert('an error has occurred');
+            key: "setError",
+            value: function() {
+                this.$elem.removeClass(this.allClasses).addClass("hr-error"), alert("an error has occurred");
             }
         }, {
-            key: 'handleStopResponse',
-            value: function handleStopResponse(data) {
-                if (data === 'ok') {
-                    //this.$elem.attr('class',''); // clear all classes
-                    //this.active = false;
-                    this.setInActive();
-                } else {
-                    this.setError();
-                }
+            key: "handleStopResponse",
+            value: function(data) {
+                "ok" === data ? this.setInActive() : this.setError();
             }
-        }]);
-
-        return BroadcastButton;
-    })();
-
-    $('document').ready(function () {
-        new BroadcastButton($('#broadcast'));
+        } ]), BroadcastButton;
+    }(), RadioInfo = function() {
+        function RadioInfo($elem) {
+            var _this3 = this;
+            _classCallCheck(this, RadioInfo), this.$elem = $elem, this.$elem.click(function() {
+                return _this3.toggleRadio();
+            });
+        }
+        return _createClass(RadioInfo, [ {
+            key: "toggleRadio",
+            value: function() {
+                console.log("info"), $.get("http://192.168.0.8/radio/state.php?c=info").done(function(data) {
+                    console.log("no data logged, because cross domain call", data);
+                    var oldVal = $("#log").val();
+                    $("#log").val(data.message + oldVal);
+                });
+            }
+        } ]), RadioInfo;
+    }();
+    $("document").ready(function() {
+        new BroadcastButton($("#broadcast")), new RadioToggleButton($("#play")), new RadioToggleButtonTempStop($("#stop")), 
+        new RadioInfo($("#info"));
     });
-})(jQuery);
+}(jQuery);
 //# sourceMappingURL=homeRemote.js.map
