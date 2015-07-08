@@ -29,7 +29,10 @@ Temporarily disable git security on raspberry pi:
 ## TODO
 
 * bunyan logging in grunt-express
+* bunyan logging on RPi (requires npm on RPi)
 * should have rotating logs (bunyan offers support for it)
+* combine modules in Babel or sourcemaps on Babel->Uglify
+
 
 ## Screenshot
 
