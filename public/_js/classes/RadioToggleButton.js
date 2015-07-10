@@ -10,8 +10,14 @@ export default class RadioToggleButton {
 
     // TODO works, but doesn't return anything (CORS error), so can't toggle
     toggleRadio() {
-        $.get('http://192.168.0.8/radio/state.php?c=play')
-            .done((data) => console.log(data));
+        $.get('/radio/play')
+            .done(data => {
+                if(data !== 'error') {
+                    console.log(data);
+                } else {
+                    alert('an error has occurred');
+                }
+            });
     }
 }
 
@@ -22,7 +28,13 @@ export class RadioToggleButtonTempStop {
     }
 
     toggleRadio() {
-        $.get('http://192.168.0.8/radio/state.php?c=stop')
-            .done((data) => console.log(data));
+        $.get('/radio/stop')
+            .done(data => {
+                if(data !== 'error') {
+                    console.log(data);
+                } else {
+                    alert('an error has occurred');
+                }
+            });
     }
 }

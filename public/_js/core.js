@@ -88,31 +88,6 @@ import {RadioToggleButtonTempStop} from 'classes/RadioToggleButton';
         }
     }
 
-    //class RadioToggleButton {
-    //    constructor($elem) {
-    //        this.$elem = $elem;
-    //        this.$elem.click(() => this.toggleRadio());
-    //    }
-    //
-    //    // TODO works, but doesn't return anything (CORS error), so can't toggle
-    //    toggleRadio() {
-    //        $.get('http://192.168.0.8/radio/state.php?c=play')
-    //            .done((data) => console.log(data));
-    //    }
-    //}
-
-    //class RadioToggleButtonTempStop {
-    //    constructor($elem) {
-    //        this.$elem = $elem;
-    //        this.$elem.click(() => this.toggleRadio());
-    //    }
-    //
-    //    toggleRadio() {
-    //        $.get('http://192.168.0.8/radio/state.php?c=stop')
-    //            .done((data) => console.log(data));
-    //    }
-    //}
-
     class RadioInfo {
         constructor($elem) {
             this.$elem = $elem;
@@ -122,12 +97,12 @@ import {RadioToggleButtonTempStop} from 'classes/RadioToggleButton';
         toggleRadio() {
             console.log('info');
             $.get('/radio/info')
-                .done((data) => {
+                .done(data => {
                     if(data !== 'error') {
-                        // TODO can be fixed with server side call?
-                        //console.log('no data logged, because cross domain call', data);
                         var oldVal = $('#log').val();
                         $('#log').val(data + oldVal);
+                    } else {
+                        alert('an error has occurred');
                     }
                 });
         }
