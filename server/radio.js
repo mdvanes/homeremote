@@ -4,58 +4,49 @@
 /* jshint node:true */
 'use strict';
 
-var request = require('request-promise');
+var request = require('request-promise'),
+    root = 'https://192.168.0.8/radio/state.php?c=';
 
-var root = 'https://192.168.0.8/radio/state.php?c=';
+// TODO might be done with promises or generators?
+var deferToBroek = function(res, action, cb) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // allow self signed certificate
+    request(root + action)
+        .then(function(response) {
+            var resObj = JSON.parse(response);
 
-function bind(app, log) {
+            // TODO succes should be with double s
+            if(resObj.status && resObj.status === 'succes') {
+                //res.send('ok');
+                cb(resObj);
+            } else {
+                res.send('error');
+            }
+        });
+};
+
+var bind = function(app, log) {
     app.get('/radio/play', function (req, res) {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // allow self signed certificate
-        request(root + 'play')
-            .then(function(response) {
-                var resObj = JSON.parse(response);
-
-                // TODO succes should be with double s
-                if(resObj.status && resObj.status === 'succes') {
-                    res.send('ok');
-                } else {
-                    res.send('error');
-                }
-            });
+        log.info('radio: play');
+        deferToBroek(res, 'play', function() {
+            res.send('ok');
+        });
     });
 
     app.get('/radio/stop', function (req, res) {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // allow self signed certificate
-        request(root + 'stop')
-            .then(function(response) {
-                var resObj = JSON.parse(response);
-
-                // TODO succes should be with double s
-                if(resObj.status && resObj.status === 'succes') {
-                    res.send('ok');
-                } else {
-                    res.send('error');
-                }
-            });
+        deferToBroek(res, 'stop', function() {
+            res.send('ok');
+        });
     });
 
     app.get('/radio/info', function (req, res) {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // allow self signed certificate
-        request(root + 'info')
-            .then(function(response) {
-                var resObj = JSON.parse(response);
-
-                log.info('info: ', resObj);
-
-                // TODO succes should be with double s
-                if(resObj.status && resObj.status === 'succes') {
-                    res.send(resObj.message);
-                } else {
-                    res.send('error');
-                }
-            });
+        deferToBroek(res, 'info', function(resObj) {
+            var mesg = resObj.message;
+            mesg = mesg.split('ICY Info: StreamTitle=\''); // strip prefix
+            mesg = '\n' + mesg[1].substr(0, mesg[1].length - 3); // strip last 2 chars
+            res.send(mesg);
+        });
     });
-}
+};
 
 module.exports = {
     bind: bind

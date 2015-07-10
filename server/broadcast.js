@@ -6,7 +6,7 @@
 
 var exec = require('child_process').exec;
 
-function bind(app, log, debug) {
+var bind = function(app, log, debug) {
     app.get('/broadcast/start', function (req, res) {
         console.log('call to http://%s:%s/broadcast/start');
 
@@ -73,7 +73,7 @@ function bind(app, log, debug) {
             });
         }
     });
-}
+};
 
 module.exports = {
     bind: bind

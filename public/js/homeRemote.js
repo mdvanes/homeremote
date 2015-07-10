@@ -1,4 +1,4 @@
-/*! HomeRemote 0.0.0 2015-07-10 20:29 */
+/*! HomeRemote 0.0.0 2015-07-10 21:16 */
 "use strict";
 
 function _classCallCheck(instance, Constructor) {
@@ -31,8 +31,8 @@ var _createClass = function() {
     return _createClass(RadioToggleButton, [ {
         key: "toggleRadio",
         value: function() {
-            $.get("http://192.168.0.8/radio/state.php?c=play").done(function(data) {
-                return console.log(data);
+            $.get("/radio/play").done(function(data) {
+                "error" !== data ? console.log(data) : alert("an error has occurred");
             });
         }
     } ]), RadioToggleButton;
@@ -46,8 +46,8 @@ var _createClass = function() {
     return _createClass(RadioToggleButtonTempStop, [ {
         key: "toggleRadio",
         value: function() {
-            $.get("http://192.168.0.8/radio/state.php?c=stop").done(function(data) {
-                return console.log(data);
+            $.get("/radio/stop").done(function(data) {
+                "error" !== data ? console.log(data) : alert("an error has occurred");
             });
         }
     } ]), RadioToggleButtonTempStop;
@@ -122,7 +122,7 @@ var _createClass = function() {
                     if ("error" !== data) {
                         var oldVal = $("#log").val();
                         $("#log").val(data + oldVal);
-                    }
+                    } else alert("an error has occurred");
                 });
             }
         } ]), RadioInfo;

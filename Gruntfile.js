@@ -80,7 +80,7 @@ module.exports = function(grunt) {
                 tasks: ['jscs', 'jshint', 'babel:dev', 'uglify:dev']
             },
             express: {
-                files: ['app.js'],
+                files: ['app.js', 'server/**/*.js'],
                 tasks: ['express:dev'],
                 options: {
                     spawn: false
