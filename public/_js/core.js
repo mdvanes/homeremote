@@ -121,12 +121,14 @@ import {RadioToggleButtonTempStop} from 'classes/RadioToggleButton';
 
         toggleRadio() {
             console.log('info');
-            $.get('http://192.168.0.8/radio/state.php?c=info')
+            $.get('/radio/info')
                 .done((data) => {
-                    // TODO can be fixed with server side call?
-                    console.log('no data logged, because cross domain call', data);
-                    var oldVal = $('#log').val();
-                    $('#log').val(data.message + oldVal);
+                    if(data !== 'error') {
+                        // TODO can be fixed with server side call?
+                        //console.log('no data logged, because cross domain call', data);
+                        var oldVal = $('#log').val();
+                        $('#log').val(data + oldVal);
+                    }
                 });
         }
     }

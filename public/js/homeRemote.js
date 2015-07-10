@@ -1,4 +1,4 @@
-/*! HomeRemote 0.0.0 2015-07-08 14:25 */
+/*! HomeRemote 0.0.0 2015-07-10 20:29 */
 "use strict";
 
 function _classCallCheck(instance, Constructor) {
@@ -118,10 +118,11 @@ var _createClass = function() {
         return _createClass(RadioInfo, [ {
             key: "toggleRadio",
             value: function() {
-                console.log("info"), $.get("http://192.168.0.8/radio/state.php?c=info").done(function(data) {
-                    console.log("no data logged, because cross domain call", data);
-                    var oldVal = $("#log").val();
-                    $("#log").val(data.message + oldVal);
+                console.log("info"), $.get("/radio/info").done(function(data) {
+                    if ("error" !== data) {
+                        var oldVal = $("#log").val();
+                        $("#log").val(data + oldVal);
+                    }
                 });
             }
         } ]), RadioInfo;

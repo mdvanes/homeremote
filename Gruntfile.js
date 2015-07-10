@@ -62,7 +62,10 @@ module.exports = function(grunt) {
                     sourceMapIncludeSources: true
                 },
                 files: {
-                    'public/js/homeRemote.js': ['public/_babel/classes/RadioToggleButton.js', 'public/_babel/core.js']
+                    'public/js/homeRemote.js': [
+                        'public/_babel/classes/RadioToggleButton.js',
+                        'public/_babel/core.js'
+                    ]
                 }
             }
         },
