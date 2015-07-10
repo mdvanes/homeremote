@@ -46,7 +46,9 @@ module.exports = function(grunt) {
                     //sourceMap: true
                 },
                 files: {
+                    'public/_babel/classes/BroadcastButton.js': 'public/_js/classes/BroadcastButton.js',
                     'public/_babel/classes/RadioToggleButton.js': 'public/_js/classes/RadioToggleButton.js',
+                    'public/_babel/classes/RadioInfoButton.js': 'public/_js/classes/RadioInfoButton.js',
                     'public/_babel/core.js': 'public/_js/core.js'
                 }
             }
@@ -63,7 +65,9 @@ module.exports = function(grunt) {
                 },
                 files: {
                     'public/js/homeRemote.js': [
+                        'public/_babel/classes/BroadcastButton.js',
                         'public/_babel/classes/RadioToggleButton.js',
+                        'public/_babel/classes/RadioInfoButton.js',
                         'public/_babel/core.js'
                     ]
                 }

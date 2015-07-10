@@ -42,8 +42,12 @@ var bind = function(app, log) {
         deferToBroek(res, 'info', function(resObj) {
             var mesg = resObj.message;
             mesg = mesg.split('ICY Info: StreamTitle=\''); // strip prefix
-            mesg = '\n' + mesg[1].substr(0, mesg[1].length - 3); // strip last 2 chars
-            res.send(mesg);
+            if(mesg) {
+                mesg = '\n' + mesg[1].substr(0, mesg[1].length - 3); // strip last 2 chars
+                res.send(mesg);
+            } else {
+                res.send(resObj.message);
+            }
         });
     });
 };

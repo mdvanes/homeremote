@@ -8,7 +8,6 @@ export default class RadioToggleButton {
         this.$elem.click(() => this.toggleRadio());
     }
 
-    // TODO works, but doesn't return anything (CORS error), so can't toggle
     toggleRadio() {
         $.get('/radio/play')
             .done(data => {
