@@ -49,6 +49,7 @@ module.exports = function(grunt) {
                     'public/_babel/classes/BroadcastButton.js': 'public/_js/classes/BroadcastButton.js',
                     'public/_babel/classes/RadioToggleButton.js': 'public/_js/classes/RadioToggleButton.js',
                     'public/_babel/classes/RadioInfoButton.js': 'public/_js/classes/RadioInfoButton.js',
+                    'public/_babel/classes/RekelboxButtonGroup.js': 'public/_js/classes/RekelboxButtonGroup.js',
                     'public/_babel/core.js': 'public/_js/core.js'
                 }
             }
@@ -68,6 +69,7 @@ module.exports = function(grunt) {
                         'public/_babel/classes/BroadcastButton.js',
                         'public/_babel/classes/RadioToggleButton.js',
                         'public/_babel/classes/RadioInfoButton.js',
+                        'public/_babel/classes/RekelboxButtonGroup.js',
                         'public/_babel/core.js'
                     ]
                 }

@@ -2,6 +2,7 @@ import BroadcastButton from 'classes/BroadcastButton';
 import RadioToggleButton from 'classes/RadioToggleButton';
 import {RadioToggleButtonTempStop} from 'classes/RadioToggleButton';
 import RadioInfoButton from 'classes/RadioInfoButton';
+import RekelboxButtonGroup from 'classes/RekelboxButtonGroup';
 
 (function($) {
     'use strict';
@@ -24,5 +25,6 @@ import RadioInfoButton from 'classes/RadioInfoButton';
         new RadioToggleButtonTempStop($('#stop'));
         new RadioInfoButton($('#info'));
         new ClearButton($('#clear'));
+        new RekelboxButtonGroup($('#rekelboxButtonGroup'));
     });
 })(jQuery);

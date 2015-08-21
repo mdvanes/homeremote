@@ -1,5 +1,9 @@
-/*! HomeRemote 0.0.0 2015-07-10 21:39 */
+/*! HomeRemote 0.0.0 2015-08-20 13:01 */
 "use strict";
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
+}
 
 function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
@@ -155,6 +159,48 @@ var _createClass = function() {
         return protoProps && defineProperties(Constructor.prototype, protoProps), staticProps && defineProperties(Constructor, staticProps), 
         Constructor;
     };
+}(), RekelboxButtonGroup = function() {
+    function RekelboxButtonGroup($elem) {
+        _classCallCheck(this, RekelboxButtonGroup), this.$elem = $elem, this.$manual = $("#rekelboxManual");
+        var self = this;
+        $(".btn", this.$elem).click(function() {
+            self.click(this);
+        }), $(".btn", this.$manual).click(function() {
+            self.clickManual(this);
+        });
+    }
+    return _createClass(RekelboxButtonGroup, [ {
+        key: "click",
+        value: function(clickedElem) {
+            $(".btn", this.$elem).removeClass("btn-success"), $(clickedElem).addClass("btn-success");
+            var state = $(clickedElem).data("state");
+            "manual" === state ? $(".btn", this.$manual).removeAttr("disabled") : $(".btn", this.$manual).attr("disabled", "disabled").removeClass("btn-success"), 
+            "broek" === state ? console.debug("send broek") : "pi" === state ? console.debug("send pi") : "debug" === state && console.debug("send debug");
+        }
+    }, {
+        key: "toggleLight",
+        value: function($elem, cssClass) {
+            $elem.is("." + cssClass) ? $elem.removeClass(cssClass) : ($elem.addClass(cssClass), 
+            console.debug("send manual update"));
+        }
+    }, {
+        key: "clickManual",
+        value: function(clickedElem) {
+            "1" === $(clickedElem).text() ? this.toggleLight($(clickedElem), "btn-success") : "2" === $(clickedElem).text() || "3" === $(clickedElem).text() ? this.toggleLight($(clickedElem), "btn-warning") : this.toggleLight($(clickedElem), "btn-danger");
+        }
+    } ]), RekelboxButtonGroup;
+}(), _createClass = function() {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];
+            descriptor.enumerable = descriptor.enumerable || !1, descriptor.configurable = !0, 
+            "value" in descriptor && (descriptor.writable = !0), Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }
+    return function(Constructor, protoProps, staticProps) {
+        return protoProps && defineProperties(Constructor.prototype, protoProps), staticProps && defineProperties(Constructor, staticProps), 
+        Constructor;
+    };
 }();
 
 !function($) {
@@ -174,7 +220,7 @@ var _createClass = function() {
     }();
     $("document").ready(function() {
         new BroadcastButton($("#broadcast")), new RadioToggleButton($("#play")), new RadioToggleButtonTempStop($("#stop")), 
-        new RadioInfoButton($("#info")), new ClearButton($("#clear"));
+        new RadioInfoButton($("#info")), new ClearButton($("#clear")), new RekelboxButtonGroup($("#rekelboxButtonGroup"));
     });
 }(jQuery);
 //# sourceMappingURL=homeRemote.js.map
