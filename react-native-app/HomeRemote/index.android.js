@@ -5,6 +5,12 @@
 'use strict';
 
 var React = require('react-native');
+
+var SwitchAndroid = require('SwitchAndroid'); 
+// var Text = require('Text'); 
+// var UIExplorerBlock = require('UIExplorerBlock'); 
+// var UIExplorerPage = require('UIExplorerPage');
+
 var {
   AppRegistry,
   StyleSheet,
@@ -13,12 +19,20 @@ var {
 } = React;
 
 var HomeRemote = React.createClass({
+
+  getInitialState : function() {
+    return { 
+      falseSwitchIsOn: false
+    };
+  },
+
   render: function() {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to React Native! OHAI
+          Welcome to React Native!
         </Text>
+        <SwitchAndroid onValueChange={(value) => this.setState({falseSwitchIsOn: value})} style={{marginBottom: 10}} value={this.state.falseSwitchIsOn} />
         <Text style={styles.instructions}>
           To get started, edit index.android.js
         </Text>
