@@ -54,7 +54,7 @@
 
 import React from 'react';
 
-class MyCheckbox extends React.Component {
+class MyToggle extends React.Component {
     constructor(props) {
         super(props);
         this.state = {isChecked: false};
@@ -97,9 +97,9 @@ class MyCheckbox extends React.Component {
                     <a href="#" className={classOn} onClick={this.handleClickOn.bind(this)}>on</a>{/* for this.onChange, the bind is done in the constructor */}
                     <a href="#" className={classOff} onClick={this.handleClickOff.bind(this)}>off</a>
                 </div>
-                {/*<input type="checkbox" checked={this.state.isChecked} onChange={this.onChange}/>*/}
+                {/*<input type="Toggle" checked={this.state.isChecked} onChange={this.onChange}/>*/}
             </div>
         );
     }
 }
-export default MyCheckbox;
+export default MyToggle;
