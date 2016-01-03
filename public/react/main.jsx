@@ -12,17 +12,19 @@ renderShell();
 
 function renderShell() {
     var shell = document.createElement('div');
-    shell.className = 'app-shell';
+    shell.className = 'app-shell container';
     document.body.appendChild(shell);
     render(
-        <div>
-            <MyButtonSet label="Switch 1"/>
-            <MyToggle label="Switch 2"/>
-            <MyToggle label="Switch 3"/>
-            <MyToggle label="Switch 4"/>
-            <MyToggle label="Broadcast" labelOn="lorem"/>
-            <MyToggle label="3FM on Server" labelOff="ipsum"/>
-            <MyLog/>
+        <div className={'row'}>
+            <div className={'col-xs-12'}>
+                <MyButtonSet label="Switch 1"/>
+                <MyToggle label="Switch 2"/>
+                <MyToggle label="Switch 3"/>
+                <MyToggle label="Switch 4"/>
+                <MyToggle label="Broadcast" labelOn="lorem"/>
+                <MyToggle label="3FM on Server" labelOff="ipsum"/>
+                <MyLog/>
+            </div>
         </div>, shell);
 }
 
