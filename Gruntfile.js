@@ -13,7 +13,8 @@ module.exports = function(grunt) {
         less: {
             dev: {
                 files: {
-                    'public/css/homeRemote.css': 'public/_less/homeRemote.less'
+                    'public/css/homeRemote.css': 'public/_less/homeRemote.less',
+                    'public/css/react.css': 'public/_less/react.less'
                 }
             }
         },

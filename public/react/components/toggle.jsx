@@ -6,14 +6,16 @@ class MyToggle extends React.Component {
     constructor(props) {
         super(props);
         this.state = {isChecked: false};
-        $http('/togglestub/status')
+        if(!this.props.id) {
+            throw new Error('property ID is required on Toggle');
+        }
+        $http('/' + this.props.id + '/status')
             .then(data => {
                 if(data.status === 'started') {
                     this.setState({isChecked: true});
                 }
             })
             .catch(error => alert('error on toggle' + error));
-
         this.onChange = this.onChange.bind(this);
         this.sendToggle = this.sendToggle.bind(this);
     }
@@ -24,7 +26,7 @@ class MyToggle extends React.Component {
     }
 
     sendToggle() {
-        let url = '/togglestub/';
+        let url = '/' + this.props.id + '/';
         if(this.state.isChecked) {
             url += 'stop';
         } else {
@@ -41,26 +43,27 @@ class MyToggle extends React.Component {
             .catch(error => alert('error on toggle' + error));
     }
 
-    //handleClickOff() {
-    //    this.setState({isChecked: false});
-    //}
-
     render() {
         let btnClass = classNames({
-            'btn': true,
+            'btn btn-lg btn-block': true,
             'btn-success': this.state.isChecked,
-            'btn-danger': !this.state.isChecked
+            'btn-danger': !this.state.isChecked,
+            'btn-icon': this.props.icon
         });
+        let icon = <i></i>;
+        if(this.props.icon) {
+            icon = <i className={'glyphicon glyphicon-' + this.props.icon}></i>;
+        }
         return (
-            <div>
-                <label>
-                    {this.props.label}
+            <div className="col-xs-6 col-md-3">
+                {/*<label>
                     <input type="checkbox" checked={this.state.isChecked}
                            onChange={this.onChange}/>
                     {this.state.isChecked ? this.props.labelOn : this.props.labelOff}
-                </label>
+                </label>*/}
 
                 <button className={btnClass} onClick={this.sendToggle}>
+                    {icon}
                     {this.props.label}
                 </button>
             </div>

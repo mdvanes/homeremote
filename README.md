@@ -111,6 +111,7 @@ It will serve at http://localhost:3000/react/
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * React Native output
 * JSHint/JSCS for react/es6
+* make configurable. Remove 3fm and other references. Make repo public
 
 
 ## Screenshot

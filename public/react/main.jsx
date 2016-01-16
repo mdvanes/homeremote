@@ -17,15 +17,23 @@ function renderShell() {
     shell.className = 'app-shell container';
     document.body.appendChild(shell);
     render(
-        <div className={'row'}>
-            <div className={'col-xs-12'}>
-                <ButtonSet label="Switch 1"/>
-                <Toggle label="Switch 2"/>
-                <Toggle label="Switch 3"/>
-                <Toggle label="Switch 4"/>
-                <Toggle label="Broadcast" labelOn="lorem"/>
-                <Toggle label="3FM on Server" labelOff="ipsum"/>
-                <Log/>
+        <div>
+            <div className="row">
+                <div className="col-xs-12">
+                    <ButtonSet label="Switch 1"/>
+                </div>
+            </div>
+            <div className="row">
+                <Toggle label=" 2" id="togglestub" icon="lamp"/>
+                <Toggle label=" 3" id="togglestub" icon="lamp"/>
+                <Toggle label="Switch 4" id="togglestub"/>
+                <Toggle label="Broadcast" labelOn="lorem" id="togglestub"/>
+            </div>
+            <div className="row">
+                <Toggle label=" Srv" labelOff="ipsum" id="togglestub" icon="music"/>
+                <div className="col-xs-12">
+                    <Log/>
+                </div>
             </div>
         </div>, shell);
 }
