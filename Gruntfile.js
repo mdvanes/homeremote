@@ -4,6 +4,8 @@ module.exports = function(grunt) {
 
     require('time-grunt')(grunt);
     require('load-grunt-tasks')(grunt);
+    var webpack = require('webpack');
+    var webpackConfig = require('./webpack.config.js');
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -76,6 +78,27 @@ module.exports = function(grunt) {
             }
         },
 
+        webpack: {
+            // TODO this can be improved by using http://webpack.github.io/docs/webpack-dev-server.html#api
+            options: webpackConfig,
+            build: {
+                //stats: false, //stats: false disables the stats output
+                progress: false,
+                plugins: [
+                    new webpack.optimize.UglifyJsPlugin({
+                        compress: {
+                            warnings: false
+                        }
+                    }),
+                    new webpack.DefinePlugin({
+                        'process.env': {
+                            'NODE_ENV': JSON.stringify('production')
+                        }
+                    })
+                ]
+            }
+        },
+
         watch: {
             less: {
                 files: ['public/_less/**/*.less'],
@@ -84,6 +107,10 @@ module.exports = function(grunt) {
             script: {
                 files: ['public/_js/**/*.js', 'server/**/*.js'],
                 tasks: ['jscs', 'jshint', 'babel:dev', 'uglify:dev']
+            },
+            react: {
+                files: ['public/react/**/*.jsx'],
+                tasks: ['webpack:build']
             },
             express: {
                 files: ['app.js', 'server/**/*.js'],

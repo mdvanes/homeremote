@@ -101,7 +101,10 @@ var server = app.listen(3001, function() {
 
 # React
 
-run webpack build with: ```webpack```. Can be improved with grunt
+Run ```grunt```. There is a watch on jsx files.
+It will serve at http://localhost:3000/react/
+
+
 
 TODO: strip packages from package.json until no longer works, because there are some unused packages in there 
 
