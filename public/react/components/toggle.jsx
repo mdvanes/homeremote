@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import $http from '../request';
 
 class MyToggle extends React.Component {
@@ -45,19 +46,11 @@ class MyToggle extends React.Component {
     //}
 
     render() {
-        //let classOn = 'btn btn-default';
-        //let classOff = 'btn btn-default';
-        //if(this.state.isChecked) {
-        //    classOn = 'btn btn-success';
-        //} else {
-        //    classOff = 'btn btn-danger';
-        //}
-        let buttonClass = 'btn btn-default';
-        if(this.state.isChecked) {
-            buttonClass = 'btn btn-success';
-        } else {
-            buttonClass = 'btn btn-danger';
-        }
+        let btnClass = classNames({
+            'btn': true,
+            'btn-success': this.state.isChecked,
+            'btn-danger': !this.state.isChecked
+        });
         return (
             <div>
                 <label>
@@ -66,15 +59,10 @@ class MyToggle extends React.Component {
                            onChange={this.onChange}/>
                     {this.state.isChecked ? this.props.labelOn : this.props.labelOff}
                 </label>
-                {/*<div className="btn-group btn-group-justified">
-                    <a href="#" className={classOn} onClick={this.handleClickOn.bind(this)}>on</a> for this.onChange, the bind is done in the constructor
-                    <a href="#" className={classOff} onClick={this.handleClickOff.bind(this)}>off</a>
-                </div>*/}
 
-                <button className={buttonClass} onClick={this.sendToggle}>
+                <button className={btnClass} onClick={this.sendToggle}>
                     {this.props.label}
                 </button>
-                {/*<input type="Toggle" checked={this.state.isChecked} onChange={this.onChange}/>*/}
             </div>
         );
     }
