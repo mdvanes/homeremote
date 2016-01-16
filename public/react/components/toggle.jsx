@@ -53,13 +53,14 @@
 
 
 import React from 'react';
+import $http from '../request';//
 
 class MyToggle extends React.Component {
     constructor(props) {
         super(props);
         this.state = {isChecked: false};
         //var self = this;
-        this.$http('/togglestub/status')
+        $http('/togglestub/status')
             .then(data => {
                 //console.log('togglestub status', data);
                 if(data.status === 'started') {
@@ -71,7 +72,7 @@ class MyToggle extends React.Component {
             .catch(error => console.error('foobar', error));
 
         this.onChange = this.onChange.bind(this);
-        this.$http = this.$http.bind(this);
+        //this.$http = this.$http.bind(this);
     }
 
     onChange() {
@@ -85,7 +86,7 @@ class MyToggle extends React.Component {
         //console.log('setting on2 ', this.state);
         this.setState({isChecked: true});
 
-        this.$http('/togglestub/start')
+        $http('/togglestub/start')
             .then(data => console.log('data', data))
             .catch(error => console.error('foobar', error));
     }
@@ -94,41 +95,41 @@ class MyToggle extends React.Component {
         this.setState({isChecked: false});
     }
 
-    /*
-    Pure ES6, promise based, http requester
-
-    Usage:
-
-    $http('http://example.com/someurl/')
-        .then(data => {}})
-        .catch(error => {})
-    */
-    $http(url) {
-        return new Promise(function(resolve, reject) {
-            // Standard XHR to load an image
-            var request = new XMLHttpRequest();
-            request.open('GET', url);
-            request.responseType = 'json';
-            // When the request loads, check whether it was successful
-            request.onload = function() {
-                if (request.status === 200) {
-                    // If successful, resolve the promise by passing back the request response
-                    //console.log('$http succesful response', request.response);
-                    resolve(request.response);
-                } else {
-                    // If it fails, reject the promise with a error message
-                    reject(Error('URL didn\'t load successfully; error code:' + request.statusText));
-                }
-            };
-            request.onerror = function() {
-                // Also deal with the case when the entire request fails to begin with
-                // This is probably a network error, so reject the promise with an appropriate message
-                reject(Error('There was a network error.'));
-            };
-            // Send the request
-            request.send();
-        });
-    }
+    ///*
+    //Pure ES6, promise based, http requester
+    //
+    //Usage:
+    //
+    //$http('http://example.com/someurl/')
+    //    .then(data => {}})
+    //    .catch(error => {})
+    //*/
+    //$http(url) {
+    //    return new Promise(function(resolve, reject) {
+    //        // Standard XHR to load an image
+    //        var request = new XMLHttpRequest();
+    //        request.open('GET', url);
+    //        request.responseType = 'json';
+    //        // When the request loads, check whether it was successful
+    //        request.onload = function() {
+    //            if (request.status === 200) {
+    //                // If successful, resolve the promise by passing back the request response
+    //                //console.log('$http succesful response', request.response);
+    //                resolve(request.response);
+    //            } else {
+    //                // If it fails, reject the promise with a error message
+    //                reject(Error('URL didn\'t load successfully; error code:' + request.statusText));
+    //            }
+    //        };
+    //        request.onerror = function() {
+    //            // Also deal with the case when the entire request fails to begin with
+    //            // This is probably a network error, so reject the promise with an appropriate message
+    //            reject(Error('There was a network error.'));
+    //        };
+    //        // Send the request
+    //        request.send();
+    //    });
+    //}
 
     render() {
         let classOn = 'btn btn-default';
