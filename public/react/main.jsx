@@ -3,9 +3,9 @@
 import React from 'react';
 import {render} from 'react-dom';
 ////import FilterableProductTable from './src/filterable-product-table';
-import MyButtonSet from './my-button-set';
-import MyToggle from './my-toggle';
-import MyLog from './my-log';
+import ButtonSet from './components/button-set';
+import Toggle from './components/toggle';
+import Log from './components/log';
 
 // init shell
 renderShell();
@@ -19,13 +19,13 @@ function renderShell() {
     render(
         <div className={'row'}>
             <div className={'col-xs-12'}>
-                <MyButtonSet label="Switch 1"/>
-                <MyToggle label="Switch 2"/>
-                <MyToggle label="Switch 3"/>
-                <MyToggle label="Switch 4"/>
-                <MyToggle label="Broadcast" labelOn="lorem"/>
-                <MyToggle label="3FM on Server" labelOff="ipsum"/>
-                <MyLog/>
+                <ButtonSet label="Switch 1"/>
+                <Toggle label="Switch 2"/>
+                <Toggle label="Switch 3"/>
+                <Toggle label="Switch 4"/>
+                <Toggle label="Broadcast" labelOn="lorem"/>
+                <Toggle label="3FM on Server" labelOff="ipsum"/>
+                <Log/>
             </div>
         </div>, shell);
 }
