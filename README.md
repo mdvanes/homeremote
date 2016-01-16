@@ -110,6 +110,7 @@ It will serve at http://localhost:3000/react/
 * buttons as icons. Large, 2 adjacent possible
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * React Native output
+* JSHint/JSCS for react/es6
 
 
 ## Screenshot

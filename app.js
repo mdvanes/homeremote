@@ -9,6 +9,7 @@ var express = require('express'),
     bunyan = require('bunyan'),
     broadcast = require('./server/broadcast.js'),
     radio = require('./server/radio.js'),
+    togglestub = require('./server/togglestub.js'),
     debug = false;
 
 var log = bunyan.createLogger({
@@ -37,6 +38,7 @@ process.argv.forEach(function (val, index) {
 // Set routes
 broadcast.bind(app, log, debug);
 radio.bind(app, log, debug);
+togglestub.bind(app, log, debug);
 app.use(express.static('public'));
 
 var server = app.listen(3000, function () {
