@@ -10,6 +10,8 @@ import MyLog from './my-log';
 // init shell
 renderShell();
 
+// TODO toggle as single button with icon (instead of 2 buttons)
+
 function renderShell() {
     var shell = document.createElement('div');
     shell.className = 'app-shell container';
