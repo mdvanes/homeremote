@@ -99,16 +99,17 @@ var server = app.listen(3001, function() {
 
 
 
-# React
+## React
 
 Run ```grunt```. There is a watch on jsx files.
 It will serve at http://localhost:3000/react/
 
+### TODO
 
-
-TODO: strip packages from package.json until no longer works, because there are some unused packages in there 
-
-
+* define endpoints on the (stubbed) server to log button clicks etc
+* buttons as icons. Large, 2 adjacent possible
+* strip packages from package.json until no longer works, because there are some unused packages in there 
+* React Native output
 
 
 ## Screenshot
