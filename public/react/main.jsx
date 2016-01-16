@@ -3,7 +3,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 ////import FilterableProductTable from './src/filterable-product-table';
-import ButtonSet from './components/button-set';
+import ButtonGroup from './components/button-group';
 import Toggle from './components/toggle';
 import Log from './components/log';
 
@@ -20,10 +20,10 @@ function renderShell() {
         <div>
             <div className="row">
                 <div className="col-xs-12">
-                    <ButtonSet label=" 1" icon="lamp" id="clickstub"/>
-                    <ButtonSet label=" 2" icon="lamp" id="clickstub"/>
-                    <ButtonSet label=" 3" icon="lamp" id="clickstub"/>
-                    <ButtonSet label=" 4" icon="lamp" id="clickstub"/>
+                    <ButtonGroup label=" 1" icon="lamp" id="clickstub"/>
+                    <ButtonGroup label=" 2" icon="lamp" id="clickstub"/>
+                    <ButtonGroup label=" 3" icon="lamp" id="clickstub"/>
+                    <ButtonGroup label=" 4" icon="lamp" id="clickstub"/>
                 </div>
             </div>
             <div className="row">

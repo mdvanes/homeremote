@@ -1,7 +1,7 @@
 import React from 'react';
 import $http from '../request';
 
-class MyButtonSet extends React.Component {
+class ButtonGroup extends React.Component {
     constructor(props) {
         super(props);
         if(!this.props.id) {
@@ -52,4 +52,4 @@ class MyButtonSet extends React.Component {
         );
     }
 }
-export default MyButtonSet;
+export default ButtonGroup;
