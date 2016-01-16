@@ -1,0 +1,10 @@
+.btn-icon {
+  font-size: 350%;
+}
+.btn-group-justified > a,
+.btn-group-justified > span {
+  font-size: 230%;
+}
+.btn-group {
+  margin-bottom: 1em;
+}
