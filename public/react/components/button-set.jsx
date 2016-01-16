@@ -1,31 +1,53 @@
 import React from 'react';
+import $http from '../request';
 
 class MyButtonSet extends React.Component {
     constructor(props) {
         super(props);
-        //this.state = {isChecked: false};
-        //this.onChange = this.onChange.bind(this);
+        if(!this.props.id) {
+            throw new Error('property ID is required on Toggle');
+        }
+        this.sendOn = this.sendOn.bind(this);
+        this.sendOff = this.sendOff.bind(this);
     }
 
-    handleClick() {
-        //console.log('setting on', this);
-        //this.setState({isChecked: true});
-        console.log('clicked ');
-        //this.setState({isChecked: true});
+    sendOn() {
+        $http('/' + this.props.id + '/on')
+            .then(data => {
+                if(data.status !== 'received') {
+                    alert('error with setting');
+                }
+            })
+            .catch(error => alert('error on sendOn' + error));
+    }
+
+    sendOff() {
+        $http('/' + this.props.id + '/off')
+            .then(data => {
+                if(data.status !== 'received') {
+                    alert('error with setting');
+                }
+            })
+            .catch(error => alert('error on sendOff' + error));
     }
 
     render() {
+        let icon = <i></i>;
+        if(this.props.icon) {
+            icon = <i className={'glyphicon glyphicon-' + this.props.icon}></i>;
+        }
         return (
-            <div className="panel panel-default">
-                <div className="panel-heading">{this.props.label}</div>
-                <div className="panel-body">
-                    <div className="btn-group btn-group-justified">
-                        <a href="#" className={'btn btn-default'} onClick={this.handleClick.bind(this)}>
-                            <i className="glyphicon glyphicon-plus-sign"></i> on
-                        </a>{/* for this.onChange, the bind is done in the constructor */}
-                        <a href="#" className={'btn btn-default'}>off</a>
-                    </div>
-                </div>
+            <div className="btn-group btn-group-justified">
+                <a href="#" className="btn btn-default" onClick={this.sendOn}>
+                    <i className="glyphicon glyphicon-plus-sign"></i>
+                </a>{/* for this.onChange, the bind is done in the constructor */}
+                <span className="btn" disabled>
+                    {icon}
+                    {this.props.label}
+                </span>
+                <a href="#" className="btn btn-default" onClick={this.sendOff}>
+                    <i className="glyphicon glyphicon-minus-sign"></i>
+                </a>
             </div>
         );
     }
