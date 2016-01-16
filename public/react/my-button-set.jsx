@@ -16,13 +16,15 @@ class MyButtonSet extends React.Component {
 
     render() {
         return (
-            <div>
-                <label>
-                    {this.props.label}
-                </label>
-                <div className="btn-group btn-group-justified">
-                    <a href="#" className={'btn btn-info'} onClick={this.handleClick.bind(this)}>on</a>{/* for this.onChange, the bind is done in the constructor */}
-                    <a href="#" className={'btn btn-default'}>off</a>
+            <div className="panel panel-default">
+                <div className="panel-heading">{this.props.label}</div>
+                <div className="panel-body">
+                    <div className="btn-group btn-group-justified">
+                        <a href="#" className={'btn btn-default'} onClick={this.handleClick.bind(this)}>
+                            <i className="glyphicon glyphicon-plus-sign"></i> on
+                        </a>{/* for this.onChange, the bind is done in the constructor */}
+                        <a href="#" className={'btn btn-default'}>off</a>
+                    </div>
                 </div>
             </div>
         );
