@@ -20,17 +20,20 @@ function renderShell() {
         <div>
             <div className="row">
                 <div className="col-xs-12">
-                    <ButtonSet label="Switch 1"/>
+                    <ButtonSet label=" 1" icon="lamp" id="clickstub"/>
+                    <ButtonSet label=" 2" icon="lamp" id="clickstub"/>
+                    <ButtonSet label=" 3" icon="lamp" id="clickstub"/>
+                    <ButtonSet label=" 4" icon="lamp" id="clickstub"/>
                 </div>
             </div>
             <div className="row">
-                <Toggle label=" 2" id="togglestub" icon="lamp"/>
+                {/*<Toggle label=" 2" id="togglestub" icon="lamp"/>
                 <Toggle label=" 3" id="togglestub" icon="lamp"/>
-                <Toggle label="Switch 4" id="togglestub"/>
-                <Toggle label="Broadcast" labelOn="lorem" id="togglestub"/>
+                <Toggle label="Switch 4" id="togglestub"/>*/}
+                <Toggle label="" id="togglestub" icon="volume-up"/>{/* Broadcast */}
+                <Toggle label="" id="togglestub" icon="music"/>{/* Music on server */}
             </div>
             <div className="row">
-                <Toggle label=" Srv" labelOff="ipsum" id="togglestub" icon="music"/>
                 <div className="col-xs-12">
                     <Log/>
                 </div>
