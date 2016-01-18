@@ -112,6 +112,7 @@ It will serve at http://localhost:3000/react/
 * React Native output
 * JSHint/JSCS for react/es6
 * make configurable. Remove 3fm and other references. Make repo public
+* add static typing with Flow 
 
 
 ## Screenshot
