@@ -41,31 +41,32 @@ var common = {
     }
 };
 
-switch (TARGET) {
-    case 'build':
-        module.exports = merge(common, {
-            plugins: [
-                new webpack.optimize.UglifyJsPlugin({
-                    compress: {
-                        warnings: false
-                    }
-                }),
-                new webpack.DefinePlugin({
-                    'process.env': {
-                        'NODE_ENV': JSON.stringify('production')
-                    }
-                })
-            ]
-        });
-
-        break;
-
-    case 'dev':
-        module.exports = merge(common, {
-            entry: [
-                'webpack-dev-server/client?http://localhost:8080',
-                'webpack/hot/dev-server'
-            ]
-        });
-        break;
-}
+module.exports = common;
+//switch (TARGET) {
+//    case 'build':
+//        module.exports = merge(common, {
+//            plugins: [
+//                new webpack.optimize.UglifyJsPlugin({
+//                    compress: {
+//                        warnings: false
+//                    }
+//                }),
+//                new webpack.DefinePlugin({
+//                    'process.env': {
+//                        'NODE_ENV': JSON.stringify('production')
+//                    }
+//                })
+//            ]
+//        });
+//
+//        break;
+//
+//    case 'dev':
+//        module.exports = merge(common, {
+//            entry: [
+//                'webpack-dev-server/client?http://localhost:8080',
+//                'webpack/hot/dev-server'
+//            ]
+//        });
+//        break;
+//}

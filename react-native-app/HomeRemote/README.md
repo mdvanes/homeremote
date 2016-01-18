@@ -2,13 +2,15 @@ https://facebook.github.io/react-native/docs/getting-started.html
 
 To run the Android app:
 
-* $ cd AwesomeProject
-* $ react-native run-android
-* $ react-native start
+* start GenyMotion
+* ```cd react-native-app\HomeRemote```
+* ```set ANDROID_HOME=D:\Program Files\adt-bundle-windows-x86_64-20140702\sdk\``` 
+* ```react-native run-android``` (start in Genymotion)
+* ```react-native start``` (set up development server and watch with Gradle, required for running app in GenyMotion)
 * Use the "Reload JS" button in the app (Reload JS button is also under "menu" options)
 * Open index.android.js in your text editor of choice and edit some lines.
 * Press the menu button (F2 by default, or ?-M in Genymotion) and select Reload JS to see your change!
-* Run adb logcat *:S ReactNative:V ReactNativeJS:V in a terminal to see your app's logs
+* Run ```adb logcat *:S ReactNative:V ReactNativeJS:V``` in a terminal to see your app's logs
 
 
 Experimental Windows/Linux support.

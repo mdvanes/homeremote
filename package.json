@@ -37,6 +37,7 @@
   "dependencies": {
     "bunyan": "^1.4.0",
     "express": "^4.13.1",
-    "request-promise": "^0.4.2"
+    "request-promise": "^0.4.2",
+    "react-native": "^0.16.0"
   }
 }

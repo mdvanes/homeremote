@@ -97,6 +97,27 @@ module.exports = function(grunt) {
                         }
                     })
                 ]
+            },
+            nativeTest: {
+                //stats: false, //stats: false disables the stats output
+                progress: false,
+                entry: './public/react/native',
+                output: {
+                    path: './',
+                    filename: 'index.android.js'
+                },
+                plugins: [
+                    //new webpack.optimize.UglifyJsPlugin({
+                    //    compress: {
+                    //        warnings: false
+                    //    }
+                    //}),
+                    //new webpack.DefinePlugin({
+                    //    'process.env': {
+                    //        'NODE_ENV': JSON.stringify('production')
+                    //    }
+                    //})
+                ]
             }
         },
 

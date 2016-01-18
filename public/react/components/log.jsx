@@ -1,6 +1,6 @@
 import React from 'react';
 
-class MyLog extends React.Component {
+class Log extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -15,4 +15,4 @@ class MyLog extends React.Component {
         );
     }
 }
-export default MyLog;
+export default Log;
