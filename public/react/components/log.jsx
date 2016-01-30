@@ -3,14 +3,23 @@ import React from 'react';
 class Log extends React.Component {
     constructor(props) {
         super(props);
+        this.nyi = this.nyi.bind(this);
+    }
+
+    nyi() {
+        alert('this button is not yet implemented');
     }
 
     render() {
         return (
-            <div>
-                <button className="btn btn-default">clear</button>
-                <button className="btn btn-default">get info</button>
-                <textarea className="form-control"></textarea>
+            <div className="row">
+                <div className="col-xs-8">
+                    <textarea className="form-control well log"></textarea>
+                </div>
+                <div className="col-xs-4">
+                    <button className="btn btn-default btn-block" onClick={this.nyi}>clear</button>
+                    <button className="btn btn-default btn-block" onClick={this.nyi}>get info</button>
+                </div>
             </div>
         );
     }

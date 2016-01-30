@@ -37,7 +37,7 @@ class ButtonGroup extends React.Component {
             icon = <i className={'glyphicon glyphicon-' + this.props.icon}></i>;
         }
         return (
-            <div className="btn-group btn-group-justified">
+            <div className="btn-group btn-group-justified margin-top">
                 <a href="#" className="btn btn-default" onClick={this.sendOn}>
                     <i className="glyphicon glyphicon-plus-sign"></i>
                 </a>{/* for this.onChange, the bind is done in the constructor */}
