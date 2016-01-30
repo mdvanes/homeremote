@@ -8,9 +8,12 @@ var bind = function(app, log) {
 
     app.get('/switch:id/:state', function (req, res) {
         var switchId = req.params.id;
-        var switchState = req.params.state;
+        var switchState = 'off';
+        if(req.params.state === '1') {
+            switchState = 'on';
+        }
 
-        console.log('call to http://%s:%s/switch' + switchId + '/' + switchState + ' --- ' + settings.hepath + ' ' + switchId);
+        console.log('call to http://%s:%s/switch' + switchId + '/' + switchState + ' [path: ' + settings.hepath + ']');
 
         // Call should be: sudo /path/he853 001 1
         exec('sudo ' + settings.hepath + '/he853 00' + switchId + ' ' + switchState, function(error, stdout, stderr){
