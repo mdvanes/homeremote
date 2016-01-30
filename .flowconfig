@@ -1,0 +1,8 @@
+# .flowconfig
+[include]
+#/public/react/components/
+
+[ignore]
+#.*/node_modules/flow-bin
+
+[libs]
