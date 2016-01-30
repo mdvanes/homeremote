@@ -1,0 +1,11 @@
+CACHE MANIFEST
+index.html
+../library/bootstrap/css/bootstrap.min.css
+../library/bootstrap/fonts/glyphicons-halflings-regular.woff2
+../library/bootstrap/fonts/glyphicons-halflings-regular.woff
+../library/bootstrap/fonts/glyphicons-halflings-regular.ttf
+../css/react.css
+build/bundle.js
+
+NETWORK:
+*
