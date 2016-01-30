@@ -1,5 +1,4 @@
-/* jshint node:true */
-'use strict';
+#!/usr/bin/env node
 
 var bind = function(app) {
     app.get('/clickstub/on', function (req, res) {
