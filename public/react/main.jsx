@@ -1,16 +1,7 @@
-// from https://github.com/code0wl/react-example-es2015/blob/master/app/main.jsx#L5
-//import './stylesheets/main.css';
-import React from 'react';
 import {render} from 'react-dom';
-////import FilterableProductTable from './src/filterable-product-table';
 import ButtonGroup from './components/button-group';
 import Toggle from './components/toggle';
 import Log from './components/log';
-
-// init shell
-renderShell();
-
-// TODO toggle as single button with icon (instead of 2 buttons)
 
 function renderShell() {
     var shell = document.createElement('div');
@@ -41,3 +32,4 @@ function renderShell() {
         </div>, shell);
 }
 
+renderShell();
