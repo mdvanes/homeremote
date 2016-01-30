@@ -104,15 +104,43 @@ var server = app.listen(3001, function() {
 Run ```grunt```. There is a watch on jsx files.
 It will serve at http://localhost:3000/react/
 
+
+### Installation
+
+Install Elro Home Easy
+
+#### Elro Home Easy
+
+install 
+
+* ```git clone https://github.com/mdvanes/he853-remote.git```
+* ```sudo apt-get install libusb-1.0-0-dev```
+* ```make```
+* ```sudo ./he853``` e.g. ```sudo ./he853 001 1``` (0 is off, 1 is on)
+
+there are 4 switches with id's 001, 002, 003, 004
+
+See the repo for how to add switches.
+
+#### Node server
+
+Will call the Elro binary directly through Node. This requires that the node server upstart script is run as root.
+
+#### upstart scripts
+
+For the node server and toggles (e.g. radio toggle). Broadcast toggle upstart script and server need to be installed on a remote machine.
+There are no upstart scripts for the (fire and forget) Elro switches.
+
 ### TODO
 
-* define endpoints on the (stubbed) server to log button clicks etc
-* buttons as icons. Large, 2 adjacent possible
+* Implement server call for Elro switches 
+* Implement server call and upstart script for Radio toggle 
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * React Native output
 * JSHint/JSCS for react/es6
 * make configurable. Remove 3fm and other references. Make repo public
 * add static typing with Flow 
+* extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
 * make "all on/all off" buttons
 
 

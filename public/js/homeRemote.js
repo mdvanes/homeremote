@@ -1,4 +1,4 @@
-/*! HomeRemote 0.0.0 2016-01-30 14:32 */
+/*! HomeRemote 0.0.0 2016-01-30 15:20 */
 "use strict";
 
 function _classCallCheck(instance, Constructor) {
