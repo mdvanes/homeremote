@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import $http from '../request';
 
-class MyToggle extends React.Component {
+class Toggle extends React.Component {
     constructor(props) {
         super(props);
         this.state = {isChecked: false};
@@ -70,7 +70,7 @@ class MyToggle extends React.Component {
         );
     }
 }
-export default MyToggle;
+export default Toggle;
 
 //import React from 'react';
 ////import ProductTable from './components/product-table';

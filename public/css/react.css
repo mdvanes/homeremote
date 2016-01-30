@@ -12,3 +12,10 @@
   color: #fff;
   height: 300px;
 }
+.status-bar {
+  display: none;
+}
+.status-bar.offline {
+  color: black;
+  display: block;
+}

@@ -1,5 +1,6 @@
 import {render} from 'react-dom';
 import React from 'react'; // eslint-disable-line no-unused-vars
+import StatusBar from './components/status-bar';
 import ButtonGroup from './components/button-group';
 import Toggle from './components/toggle';
 import Log from './components/log';
@@ -10,6 +11,7 @@ function renderShell() {
     document.body.appendChild(shell);
     render(
         <div>
+            <StatusBar/>
             <div className="row">
                 <div className="col-xs-12">
                     <ButtonGroup label=" 1" icon="lamp" id="switch1"/>
