@@ -49,6 +49,14 @@ module.exports = function(grunt) {
             }
         },
 
+        // TODO gives a fatal error, probably because there are no Windows binaries for Flow yet.
+        flow: {
+            options: {
+                style: 'color'
+            },
+            files: {}
+        },
+
         babel: {
             dev: {
                 options: {

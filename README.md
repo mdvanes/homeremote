@@ -147,7 +147,6 @@ There are no upstart scripts for the (fire and forget) Elro switches.
 ### TODO
 
 * add static typing with Flow 
-* convert to offline app (http://www.html5rocks.com/en/tutorials/appcache/beginner/)
 * Implement server call and upstart script for Radio toggle
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * make configurable. Remove 3fm and other references. Make repo public
