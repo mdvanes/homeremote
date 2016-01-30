@@ -146,10 +146,8 @@ There are no upstart scripts for the (fire and forget) Elro switches.
 
 ### TODO
 
-* Implement server call for Elro switches 
-* JSHint/JSCS for react/es6 (JSCS done. Maybe add ESlint for linting?) 
 * add static typing with Flow 
-* convert to offline app
+* convert to offline app (http://www.html5rocks.com/en/tutorials/appcache/beginner/)
 * Implement server call and upstart script for Radio toggle
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * make configurable. Remove 3fm and other references. Make repo public
