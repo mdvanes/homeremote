@@ -18,7 +18,7 @@
     "new-cap": 2,
     "no-caller": 2,
     "no-undef": 2,
-    "no-unused-vars": 1,
+    "no-unused-vars": 2,
     "no-trailing-spaces": 2,
     "strict": [2, "function"],
     "quotes": [2, "single"],
