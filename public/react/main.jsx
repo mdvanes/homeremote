@@ -26,14 +26,14 @@ function renderShell() {
                     <ButtonGroup label=" 4" icon="lamp" id="clickstub"/>
                 </div>
             </div>
-            <div className="row">
+            <div className="row margin-top">
                 {/*<Toggle label=" 2" id="togglestub" icon="lamp"/>
                 <Toggle label=" 3" id="togglestub" icon="lamp"/>
                 <Toggle label="Switch 4" id="togglestub"/>*/}
                 <Toggle label="" id="togglestub" icon="volume-up"/>{/* Broadcast */}
                 <Toggle label="" id="togglestub" icon="music"/>{/* Music on server */}
             </div>
-            <div className="row">
+            <div className="row margin-top">
                 <div className="col-xs-12">
                     <Log/>
                 </div>
