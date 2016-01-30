@@ -20,7 +20,7 @@ function renderShell() {
         <div>
             <div className="row">
                 <div className="col-xs-12">
-                    <ButtonGroup label=" 1" icon="lamp" id="clickstub"/>
+                    <ButtonGroup label=" 1" icon="lamp" id="switch1"/>
                     <ButtonGroup label=" 2" icon="lamp" id="clickstub"/>
                     <ButtonGroup label=" 3" icon="lamp" id="clickstub"/>
                     <ButtonGroup label=" 4" icon="lamp" id="clickstub"/>

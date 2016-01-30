@@ -4,6 +4,7 @@
 var bind = function(app) {
     app.get('/clickstub/on', function (req, res) {
         console.log('call to http://%s:%s/clickstub/on');
+        // Expected result something like: Sending command[1] to deviceId[1]
         res.send({status: 'received'});
     });
 

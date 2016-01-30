@@ -11,6 +11,7 @@ var express = require('express'),
     radio = require('./server/radio.js'),
     togglestub = require('./server/togglestub.js'),
     clickstub = require('./server/clickstub.js'),
+    switcher = require('./server/switch.js'),
     debug = false;
 
 var log = bunyan.createLogger({
@@ -41,6 +42,7 @@ broadcast.bind(app, log, debug);
 radio.bind(app, log, debug);
 togglestub.bind(app);
 clickstub.bind(app);
+switcher.bind(app, log);
 app.use(express.static('public'));
 
 var server = app.listen(3000, function () {
