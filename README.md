@@ -126,6 +126,19 @@ See the repo for how to add switches.
 
 Will call the Elro binary directly through Node. This requires that the node server upstart script is run as root.
 
+On the server with the Elro usb stick plugged in
+
+* ```git clone``` of this repo or ```git pull origin master```
+* ```npm i```
+* create a settings.json in the root, like:
+```
+{
+    "hepath": "/home/foo/elro/he853-remote"
+}
+```
+* ```node app.js```
+ 
+
 #### upstart scripts
 
 For the node server and toggles (e.g. radio toggle). Broadcast toggle upstart script and server need to be installed on a remote machine.
