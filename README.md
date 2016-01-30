@@ -147,14 +147,15 @@ There are no upstart scripts for the (fire and forget) Elro switches.
 ### TODO
 
 * Implement server call for Elro switches 
-* Implement server call and upstart script for Radio toggle 
-* strip packages from package.json until no longer works, because there are some unused packages in there 
-* React Native output
 * JSHint/JSCS for react/es6
-* make configurable. Remove 3fm and other references. Make repo public
 * add static typing with Flow 
+* convert to offline app
+* Implement server call and upstart script for Radio toggle
+* strip packages from package.json until no longer works, because there are some unused packages in there 
+* make configurable. Remove 3fm and other references. Make repo public
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
 * make "all on/all off" buttons
+* React Native output
 
 
 ## Screenshot
