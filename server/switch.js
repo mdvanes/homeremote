@@ -1,7 +1,7 @@
 #!/usr/bin/env node
+'use strict';
 
 var exec = require('child_process').exec;
-var fs = require('fs');
 var settings = require('../settings.json');
 
 var bind = function(app, log) {

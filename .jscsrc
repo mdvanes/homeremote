@@ -1,4 +1,5 @@
 {
+    "esprima" : "esprima-fb",
     "disallowMixedSpacesAndTabs": true,
     "requireCamelCaseOrUpperCaseIdentifiers": true,
     "requireCapitalizedConstructors": true,

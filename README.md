@@ -129,7 +129,7 @@ Will call the Elro binary directly through Node. This requires that the node ser
 On the server with the Elro usb stick plugged in
 
 * ```git clone``` of this repo or ```git pull origin master```
-* ```npm i```
+* ```npm i --production```
 * create a settings.json in the root, like:
 ```
 {
@@ -147,7 +147,7 @@ There are no upstart scripts for the (fire and forget) Elro switches.
 ### TODO
 
 * Implement server call for Elro switches 
-* JSHint/JSCS for react/es6
+* JSHint/JSCS for react/es6 (JSCS done. Maybe add ESlint for linting?) 
 * add static typing with Flow 
 * convert to offline app
 * Implement server call and upstart script for Radio toggle

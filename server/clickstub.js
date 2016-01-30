@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict';
 
 var bind = function(app) {
     app.get('/clickstub/on', function (req, res) {

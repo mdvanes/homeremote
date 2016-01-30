@@ -27,15 +27,24 @@ module.exports = function(grunt) {
             all: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js']
         },
 
+        eslint: {
+            options: {
+                configFile: '.eslintrc'
+            },
+            dev: [
+                'public/react/**/*.jsx'
+            ]
+        },
+
         jscs: {
             options: {
-                config: '.jscs',
+                config: '.jscsrc',
                 //force: true
                 esnext: true
             },
             dev: {
                 files: {
-                    src: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js']
+                    src: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js', 'public/react/**/*.jsx'] // TODO react/request.js and exclude react/build/bundle.js
                 }
             }
         },
@@ -132,7 +141,7 @@ module.exports = function(grunt) {
             },
             react: {
                 files: ['public/react/**/*.jsx'],
-                tasks: ['webpack:build']
+                tasks: ['jscs', 'eslint', 'webpack:build']
             },
             express: {
                 files: ['app.js', 'server/**/*.js'],
@@ -155,5 +164,5 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['jscs', 'jshint', 'babel:dev', 'uglify:dev', 'less:dev', 'express', 'watch']);
+    grunt.registerTask('default', ['jscs', 'jshint', 'eslint', 'babel:dev', 'uglify:dev', 'less:dev', 'express', 'watch']);
 };
