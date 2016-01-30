@@ -1,5 +1,5 @@
 import {render} from 'react-dom';
-import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
 import ButtonGroup from './components/button-group';
 import Toggle from './components/toggle';
 import Log from './components/log';
