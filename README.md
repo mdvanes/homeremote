@@ -151,12 +151,15 @@ On the server with the Elro USB stick, and speakers plugged in, install the home
 
 * ```sudo cp upstart/homeremote.conf /etc/init/```
 * homeremote should now be startable with ```sudo service homeremote start``` 
+* ```sudo cp upstart/playradio.conf /etc/init/```
+* playing the radio should now be startable with ```sudo service playradio start``` 
 * the playradio upstart script is set to [3fm](http://www.3fm.nl), but the playradio.conf can be easily modified to use a different radio stream URL.
 
 ### TODO
 
 * Implement server call and upstart script for Radio toggle
 * convert less to libsass
+* write errors to the log instead of using an alert
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * make configurable. Remove 3fm and other references. Make repo public
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts

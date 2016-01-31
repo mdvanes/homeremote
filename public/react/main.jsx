@@ -22,7 +22,7 @@ function renderShell() {
             </div>
             <div className="row margin-top">
                 <Toggle label="" id="togglestub" icon="volume-up"/>{/* Broadcast */}
-                <Toggle label="" id="togglestub" icon="music"/>{/* Music on server */}
+                <Toggle label="" id="radio" icon="music"/>{/* Music on server */}
             </div>
             <div className="row margin-top">
                 <div className="col-xs-12">
