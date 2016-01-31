@@ -126,9 +126,11 @@ See the repo for how to add switches.
 
 Will call the Elro binary directly through Node. This requires that the node server upstart script is run as root.
 
-On the server with the Elro usb stick plugged in
+On the server with the Elro USB stick plugged in, install in /opt (because of upstart script):
 
-* ```git clone``` of this repo or ```git pull origin master```
+* ```cd /opt``
+* check out with ```sudo git clone``` to create /opt/homeremote (update later with ```git pull origin master```)
+* change ownership of the created /opt/homeremote to a normal user with ```sudo chown -R```
 * ```npm i --production```
 * create a settings.json in the root, like:
 ```
@@ -144,14 +146,20 @@ On the server with the Elro usb stick plugged in
 For the node server and toggles (e.g. radio toggle). Broadcast toggle upstart script and server need to be installed on a remote machine.
 There are no upstart scripts for the (fire and forget) Elro switches.
 
+On the server with the Elro USB stick, and speakers plugged in, install the homeremote and playradio upstart scripts:
+
+* ```mv upstart/homeremote.conf /etc/init/```
+* the playradio upstart script is set to [3fm](http://www.3fm.nl), but the playradio.conf can be easily modified to use a different radio stream URL.
+
 ### TODO
 
-* add static typing with Flow 
 * Implement server call and upstart script for Radio toggle
+* convert less to libsass
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * make configurable. Remove 3fm and other references. Make repo public
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
 * make "all on/all off" buttons
+* Add static typing with Flow (doesn't work on Windows but maybe on Travis?)
 * React Native output
 
 
