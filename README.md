@@ -128,6 +128,7 @@ Will call the Elro binary directly through Node. This requires that the node ser
 
 On the server with the Elro USB stick plugged in, install in /opt (because of upstart script):
 
+* cache git credentials for this session: ```git config --global credential.helper cache```
 * ```cd /opt``
 * check out with ```sudo git clone``` to create /opt/homeremote (update later with ```git pull origin master```)
 * change ownership of the created /opt/homeremote to a normal user with ```sudo chown -R```
@@ -148,7 +149,8 @@ There are no upstart scripts for the (fire and forget) Elro switches.
 
 On the server with the Elro USB stick, and speakers plugged in, install the homeremote and playradio upstart scripts:
 
-* ```mv upstart/homeremote.conf /etc/init/```
+* ```sudo cp upstart/homeremote.conf /etc/init/```
+* homeremote should now be startable with ```sudo service homeremote start``` 
 * the playradio upstart script is set to [3fm](http://www.3fm.nl), but the playradio.conf can be easily modified to use a different radio stream URL.
 
 ### TODO
