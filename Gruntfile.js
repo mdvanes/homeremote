@@ -169,8 +169,44 @@ module.exports = function(grunt) {
                     background: true
                 }
             }
+        },
+
+        replace: {
+            dist: {
+                options: {
+                    patterns: [
+                        {
+                            match: /\?v=[0-9]{12}/g,
+                            replacement: '?v=' + grunt.template.today('yyyymmddHHMM')
+                        }
+                    ]
+                },
+                files: [
+                    {
+                        expand: true,
+                        flatten: true,
+                        src: [
+                            'public/react/homeremote.mf',
+                            'public/react/index.html'
+                        ],
+                        dest: 'public/react/'
+                    }
+                ]
+            }
+        },
+
+        'notify_hooks': {
+            options: {
+                enabled: true,
+                'max_jshint_notifications': 5, // maximum number of notifications from jshint output
+                title: '<%= pkg.name.toLowerCase() %>', // defaults to the name in package.json, or will use project directory's name
+                success: false, // whether successful grunt executions should be notified automatically
+                duration: 3 // the duration of notification in seconds, for `notify-send only
+            }
         }
     });
 
     grunt.registerTask('default', ['jscs', 'jshint', 'eslint', 'babel:dev', 'uglify:dev', 'less:dev', 'express', 'watch']);
+    grunt.registerTask('build', ['jscs', 'jshint', 'eslint', 'babel:dev', 'uglify:dev', 'less:dev', 'replace:dist']);
+
 };
