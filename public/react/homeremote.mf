@@ -4,8 +4,8 @@ index.html
 ../library/bootstrap/fonts/glyphicons-halflings-regular.woff2
 ../library/bootstrap/fonts/glyphicons-halflings-regular.woff
 ../library/bootstrap/fonts/glyphicons-halflings-regular.ttf
-../css/react.css
-build/bundle.js
+../css/react.css?v=201602021549
+build/bundle.js?v=201602021549
 
 NETWORK:
 *
