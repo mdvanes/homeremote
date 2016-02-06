@@ -13,19 +13,22 @@ function renderShell() {
         <div>
             <StatusBar/>
             <div className="row">
-                <div className="col-xs-12">
+                <div className="hidden-xs col-md-12">
+                    <div class="page-header">
+                        <h1>HomeRemote</h1>
+                    </div>
+                </div>
+                <div className="col-xs-12 col-md-3">
                     <ButtonGroup label=" 1" icon="lamp" id="switch1"/>
                     <ButtonGroup label=" 2" icon="lamp" id="switch2"/>
                     <ButtonGroup label=" 3" icon="lamp" id="switch3"/>
                     <ButtonGroup label=" 4" icon="lamp" id="clickstub"/>
                 </div>
-            </div>
-            <div className="row margin-top">
-                <Toggle label="" id="togglestub" icon="volume-up"/>{/* Broadcast */}
-                <Toggle label="" id="radio" icon="music"/>{/* Music on server */}
-            </div>
-            <div className="row margin-top">
-                <div className="col-xs-12">
+                <div className="col-xs-6 col-md-2 margin-top">
+                    {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
+                    <Toggle label="" id="radio" icon="music"/>{/* Music on server */}
+                </div>
+                <div className="col-xs-12 col-md-7 margin-top">
                     <Log/>
                 </div>
             </div>

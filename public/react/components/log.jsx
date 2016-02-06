@@ -13,10 +13,10 @@ class Log extends React.Component {
     render() {
         return (
             <div className="row">
-                <div className="col-xs-8">
+                <div className="col-xs-8 col-md-10">
                     <textarea className="form-control well log"></textarea>
                 </div>
-                <div className="col-xs-4">
+                <div className="col-xs-4 col-md-2">
                     <button className="btn btn-default btn-block" onClick={this.nyi}>clear</button>
                     <button className="btn btn-default btn-block" onClick={this.nyi}>get info</button>
                 </div>
