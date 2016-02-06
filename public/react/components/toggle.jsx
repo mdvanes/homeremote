@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import $http from '../request';
+import logger from '../logger';
 
 class Toggle extends React.Component {
     constructor(props) {
@@ -15,7 +16,7 @@ class Toggle extends React.Component {
                     this.setState({isChecked: true});
                 }
             })
-            .catch(error => alert('error on toggle' + error));
+            .catch(error => logger.error('error on toggle: ' + error));
         this.onChange = this.onChange.bind(this);
         this.sendToggle = this.sendToggle.bind(this);
     }
@@ -40,7 +41,7 @@ class Toggle extends React.Component {
                     this.setState({isChecked: false});
                 }
             })
-            .catch(error => alert('error on toggle' + error));
+            .catch(error => logger.error('error on toggle: ' + error));
     }
 
     render() {

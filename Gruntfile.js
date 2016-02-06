@@ -32,6 +32,7 @@ module.exports = function(grunt) {
                 configFile: '.eslintrc'
             },
             dev: [
+                'public/react/*.js',
                 'public/react/**/*.jsx'
             ]
         },
@@ -44,7 +45,7 @@ module.exports = function(grunt) {
             },
             dev: {
                 files: {
-                    src: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js', 'public/react/**/*.jsx'] // TODO react/request.js and exclude react/build/bundle.js
+                    src: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js', 'public/react/**/*.jsx', 'public/react/*.js'] // TODO react/request.js and exclude react/build/bundle.js
                 }
             }
         },
@@ -148,7 +149,7 @@ module.exports = function(grunt) {
                 tasks: ['jscs', 'jshint', 'babel:dev', 'uglify:dev']
             },
             react: {
-                files: ['public/react/**/*.jsx'],
+                files: ['public/react/**/*.jsx', 'public/react/*.js'],
                 tasks: ['jscs', 'eslint', 'webpack:build']
             },
             express: {
