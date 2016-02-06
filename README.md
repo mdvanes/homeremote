@@ -159,7 +159,6 @@ On the server with the Elro USB stick, and speakers plugged in, install the home
 
 * Implement server call and upstart script for Radio toggle -> mostly done, implement clear and get info buttons
 * convert less to libsass
-* clear appcache if update? with grunt token replace in manifest (and html?) for (?v=[0-9]{12})
 * write errors to the log instead of using an alert
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * make configurable. Remove 3fm and other references. Make repo public

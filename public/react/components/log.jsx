@@ -1,4 +1,5 @@
 import React from 'react';
+import logger from '../logger';
 
 class Log extends React.Component {
     constructor(props) {
@@ -7,7 +8,11 @@ class Log extends React.Component {
     }
 
     nyi() {
-        alert('this button is not yet implemented');
+        logger.error('this button is not yet implemented');
+    }
+
+    getInfo() {
+        logger.log('test log statement');
     }
 
     render() {
@@ -18,7 +23,7 @@ class Log extends React.Component {
                 </div>
                 <div className="col-xs-4 col-md-2">
                     <button className="btn btn-default btn-block" onClick={this.nyi}>clear</button>
-                    <button className="btn btn-default btn-block" onClick={this.nyi}>get info</button>
+                    <button className="btn btn-default btn-block" onClick={this.getInfo}>get info</button>
                 </div>
             </div>
         );
