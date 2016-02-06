@@ -15,7 +15,7 @@ let writeLog = (...messages) => {
 };
 
 logger.log = message => {
-    writeLog('INFO:   ', message);
+    writeLog('INFO:    ', message);
 };
 
 logger.error = message => {
