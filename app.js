@@ -1,10 +1,13 @@
 #!/usr/bin/env node
+'use strict';
 
-var express = require('express'),
+let express = require('express'),
     app = express(),
     http = require('http'),
     https = require('https'),
     fs = require('fs'),
+    path = require('path'),
+    auth = require('http-auth'),
     bunyan = require('bunyan'),
     broadcast = require('./server/broadcast.js'),
     radio = require('./server/radio.js'),
@@ -13,7 +16,8 @@ var express = require('express'),
     switcher = require('./server/switch.js'),
     debug = false;
 
-var log = bunyan.createLogger({
+// Configuration
+let log = bunyan.createLogger({
     name: 'HomeRemote',
     streams: [
         {
@@ -26,6 +30,16 @@ var log = bunyan.createLogger({
         }
     ]
 });
+
+let basic = auth.basic({
+    realm: 'HomeRemote', // pages with the same root URL and ream share credentials
+    file: path.join(__dirname, 'users.htpasswd')
+});
+
+let options = {
+    key: fs.readFileSync('keys/localhost.key'),
+    cert: fs.readFileSync('keys/localhost.cert')
+};
 
 // Read application arguments
 process.argv.forEach(function (val, index) {
@@ -42,11 +56,11 @@ radio.bind(app, log, debug);
 togglestub.bind(app);
 clickstub.bind(app);
 switcher.bind(app, log);
-app.use(express.static('public'));
 
-var options = {
-    key: fs.readFileSync('keys/localhost.key'),
-    cert: fs.readFileSync('keys/localhost.cert')
-};
+app.use(
+    auth.connect(basic),
+    express.static('public')
+);
+
 http.createServer(app).listen(3000, () => log.info('HomeRemote listening at http://localhost:3000') );
 https.createServer(options, app).listen(3443, () => log.info('HomeRemote listening at https://localhost:3443') );
