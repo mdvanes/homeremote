@@ -1,11 +1,10 @@
-/**
- * Created by m.van.es on 6-7-2015.
- */
-/* jshint node:true */
-'use strict';
+#!/usr/bin/env node
 
 var express = require('express'),
     app = express(),
+    http = require('http'),
+    https = require('https'),
+    fs = require('fs'),
     bunyan = require('bunyan'),
     broadcast = require('./server/broadcast.js'),
     radio = require('./server/radio.js'),
@@ -45,9 +44,9 @@ clickstub.bind(app);
 switcher.bind(app, log);
 app.use(express.static('public'));
 
-var server = app.listen(3000, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-
-    log.info('HomeRemote listening at http://' + host + ':' + port);
-});
+var options = {
+    key: fs.readFileSync('keys/localhost.key'),
+    cert: fs.readFileSync('keys/localhost.cert')
+};
+http.createServer(app).listen(3000, () => log.info('HomeRemote listening at http://localhost:3000') );
+https.createServer(options, app).listen(3443, () => log.info('HomeRemote listening at https://localhost:3443') );

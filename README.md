@@ -155,11 +155,30 @@ On the server with the Elro USB stick, and speakers plugged in, install the home
 * playing the radio should now be startable with ```sudo service playradio start``` 
 * the playradio upstart script is set to [3fm](http://www.3fm.nl), but the playradio.conf can be easily modified to use a different radio stream URL.
 
+### Set up localhost SSL
+
+On Ubuntu, in a temp dir do:
+
+* ``` openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days XXX -nodes -subj '/CN=localhost' ```
+* This will create a cert.pem (certificate) and a key.pem (prive key).
+* Rename and move key.pem from the Ubuntu system to keys/localhost.key in this dir.
+* Likewise, rename and move cert.pem to keys/localhost.cert
+
+details:
+
+* -nodes => no DES, so do not use a password
+* -subj => configure 
+
+Note:
+
+AppCache will fail when using a self-signed certificate. Starting Chrome with ```--ignore-certicate-errors``` should help, and also using a real certificate should work.
+Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
+
 ### TODO
 
-* Implement server call and upstart script for Radio toggle -> mostly done, implement clear and get info buttons
+* Implement server call and upstart script for Radio toggle -> mostly done, implement get info buttons
 * convert less to libsass
-* write errors to the log instead of using an alert
+* add timer to turn a switch on or off. Maybe with: https://www.npmjs.com/package/node-schedule
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * make configurable. Remove 3fm and other references. Make repo public
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
