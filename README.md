@@ -139,6 +139,7 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
     "hepath": "/home/foo/elro/he853-remote"
 }
 ```
+* create a users.htpasswd in the root and add one user per line in the format: ```username:password```
 * ```node app.js```
  
 
@@ -179,6 +180,7 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 * Implement server call and upstart script for Radio toggle -> mostly done, implement get info buttons
 * convert less to libsass
 * add timer to turn a switch on or off. Maybe with: https://www.npmjs.com/package/node-schedule
+* add http basic authentication (or better digest access?)
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * make configurable. Remove 3fm and other references. Make repo public
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
