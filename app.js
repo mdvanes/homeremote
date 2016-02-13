@@ -37,8 +37,8 @@ let basic = auth.basic({
 });
 
 let options = {
-    key: fs.readFileSync('keys/localhost.key'),
-    cert: fs.readFileSync('keys/localhost.cert')
+    key: fs.readFileSync('keys/server.key'),
+    cert: fs.readFileSync('keys/server.cert')
 };
 
 // Read application arguments
