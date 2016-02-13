@@ -10,6 +10,7 @@
   "repository": "",
   "author": "M.D. van Es",
   "license": "Closed",
+  "engine": "node >= 4.2.1",
   "devDependencies": {
     "babel-core": "^6.3.26",
     "babel-loader": "^6.2.0",
