@@ -140,6 +140,7 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
 }
 ```
 * create a users.htpasswd in the root and add one user per line in the format: ```username:password```
+* the /keys dir contains a server.cert and server.key. The ones in the repo are for localhost, and so only usable for debugging. Create your own (see below) for the target domain and place in the /keys dir.
 * ```node app.js```
  
 
@@ -160,7 +161,7 @@ On the server with the Elro USB stick, and speakers plugged in, install the home
 
 On Ubuntu, in a temp dir do:
 
-* ``` openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days XXX -nodes -subj '/CN=localhost' ```
+* ```openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days XXX -nodes -subj '/CN=localhost'```
 * This will create a cert.pem (certificate) and a key.pem (prive key).
 * Rename and move key.pem from the Ubuntu system to keys/localhost.key in this dir.
 * Likewise, rename and move cert.pem to keys/localhost.cert
@@ -169,6 +170,7 @@ details:
 
 * -nodes => no DES, so do not use a password
 * -subj => configure 
+* also possible with -subj '/CN=servername.local' for testing on a server within a network
 
 Note:
 
