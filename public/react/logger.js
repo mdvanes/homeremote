@@ -12,6 +12,10 @@ let writeLog = (...messages) => {
         document.querySelector('.log').value;
 };
 
+logger.clear = () => {
+    document.querySelector('.log').value = '';
+};
+
 logger.log = message => {
     writeLog('INFO:    ', message);
 };
