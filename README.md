@@ -136,15 +136,17 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
 * create a settings.json in the root, like:
 ```
 {
-    "hepath": "/home/foo/elro/he853-remote"
+    "hepath": "/home/foo/elro/he853-remote",
+    "radiologpath": "/tmp/mplayer-status.log"
 }
 ```
 * create a users.htpasswd in the root and add one user per line in the format: ```username:password```
 * the /keys dir contains a server.cert and server.key. The ones in the repo are for localhost, and so only usable for debugging. Create your own (see below, Set up localhost SSL) for the target domain and place in the /keys dir.
+* set up the router for access to the SSL server (do not allow non-SSL access from outside the network), enable port forwarding to <ip of this server>:3443
 * ```node app.js``` or ```sudo service homeremote restart``` (see below)
  
 
-#### upstart scripts
+#### Upstart scripts
 
 For the node server and toggles (e.g. radio toggle). Broadcast toggle upstart script and server need to be installed on a remote machine.
 There are no upstart scripts for the (fire and forget) Elro switches.
@@ -174,12 +176,14 @@ details:
 
 Note:
 
-AppCache will fail when using a self-signed certificate. Starting Chrome with ```--ignore-certicate-errors``` should help, and also using a real certificate should work.
+1. AppCache will fail when using a self-signed certificate. Starting Chrome with ```--ignore-certicate-errors``` should help, and also using a real certificate should work.
 Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
+2. The SSL certificate that I created for use within the network (e.g. "foo.local") also seems to works for the external domain (e.g. "foo.com"), albeit with warnings. This is good enough for now.  
 
 ### TODO
 
 * Implement server call and upstart script for Radio toggle -> mostly done, implement get info buttons
+* move /react to /
 * convert less to libsass
 * add timer to turn a switch on or off. Maybe with: https://www.npmjs.com/package/node-schedule
 * add http basic authentication (or better digest access?)

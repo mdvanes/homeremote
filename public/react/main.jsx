@@ -29,7 +29,7 @@ function renderShell() {
                     <Toggle label="" id="radio" icon="music"/>{/* Music on server */}
                 </div>
                 <div className="col-xs-12 col-md-7 margin-top">
-                    <Log/>
+                    <Log infoUrl="/radio/info"/>
                 </div>
             </div>
         </div>, shell);

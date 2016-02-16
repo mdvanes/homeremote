@@ -1,53 +1,11 @@
 #!/usr/bin/env node
 'use strict';
 
-//var request = require('request-promise'),
-//    root = 'https://192.168.0.8/radio/state.php?c=';
-var exec = require('child_process').exec;
-
-// TODO might be done with promises or generators?
-//var deferToBroek = function(res, action, cb) {
-//    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // allow self signed certificate
-//    request(root + action)
-//        .then(function(response) {
-//            var resObj = JSON.parse(response);
-//
-//            // TODO succes should be with double s
-//            if(resObj.status && resObj.status === 'succes') {
-//                //res.send('ok');
-//                cb(resObj);
-//            } else {
-//                res.send('error');
-//            }
-//        });
-//};
+var exec = require('child_process').exec,
+    fs = require('fs'),
+    settings = require('../settings.json');
 
 var bind = function(app, log) {
-    //app.get('/radio/play', function (req, res) {
-    //    log.info('radio: play');
-    //    deferToBroek(res, 'play', function() {
-    //        res.send('ok');
-    //    });
-    //});
-    //
-    //app.get('/radio/stop', function (req, res) {
-    //    deferToBroek(res, 'stop', function() {
-    //        res.send('ok');
-    //    });
-    //});
-    //
-    //app.get('/radio/info', function (req, res) {
-    //    deferToBroek(res, 'info', function(resObj) {
-    //        var mesg = resObj.message;
-    //        mesg = mesg.split('ICY Info: StreamTitle=\''); // strip prefix
-    //        if(mesg) {
-    //            mesg = '\n' + mesg[1].substr(0, mesg[1].length - 3); // strip last 2 chars
-    //            res.send(mesg);
-    //        } else {
-    //            res.send(resObj.message);
-    //        }
-    //    });
-    //});
 
     app.get('/radio/start', function (req, res) {
         console.log('call to http://%s:%s/radio/start');
@@ -89,6 +47,23 @@ var bind = function(app, log) {
                 res.send('error');
             }
         });
+    });
+
+    // Get "now playing" information
+    app.get('/radio/info', function(req, res) {
+        // TODO path from settings.json
+        var mplayerStatus = fs.readFileSync(settings.radiologpath, 'utf8');
+        var regex = /ICY Info: StreamTitle='(.*)'/g;
+        var m;
+        var result = '';
+        while ((m = regex.exec(mplayerStatus)) !== null) {
+            if (m.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+            // Only keep the last match as the result
+            result = m[1];
+        }
+        res.send({status: result});
     });
 };
 

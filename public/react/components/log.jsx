@@ -1,11 +1,11 @@
 import React from 'react';
+import $http from '../request';
 import logger from '../logger';
 
 class Log extends React.Component {
     constructor(props) {
         super(props);
-        //this.clear = this.clear.bind(this);
-        //this.getInfo = this.getInfo.bind(this);
+        this.getInfo = this.getInfo.bind(this);
     }
 
     clear() {
@@ -13,7 +13,11 @@ class Log extends React.Component {
     }
 
     getInfo() {
-        logger.log('test log statement');
+        $http(this.props.infoUrl)
+            .then(data => {
+                logger.log(data.status);
+            })
+            .catch(error => logger.error('error on get info: ' + error));
     }
 
     render() {
