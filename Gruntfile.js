@@ -19,13 +19,13 @@ module.exports = function(grunt) {
             }
         },
 
-        jshint: {
-            options: {
-                jshintrc: '.jshintrc'
-                //force: true
-            },
-            all: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js']
-        },
+        //jshint: {
+        //    options: {
+        //        jshintrc: '.jshintrc'
+        //        //force: true
+        //    },
+        //    all: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js']
+        //},
 
         eslint: {
             options: {
@@ -58,44 +58,44 @@ module.exports = function(grunt) {
             files: {}
         },
 
-        babel: {
-            dev: {
-                options: {
-                    //compact: true,
-                    //comments: false,
-                    modules: 'ignore', // babel doesn't concatenate converted module files
-                    //sourceMap: true
-                },
-                files: {
-                    'public/_babel/classes/BroadcastButton.js': 'public/_js/classes/BroadcastButton.js',
-                    'public/_babel/classes/RadioToggleButton.js': 'public/_js/classes/RadioToggleButton.js',
-                    'public/_babel/classes/RadioInfoButton.js': 'public/_js/classes/RadioInfoButton.js',
-                    'public/_babel/classes/RekelboxButtonGroup.js': 'public/_js/classes/RekelboxButtonGroup.js',
-                    'public/_babel/core.js': 'public/_js/core.js'
-                }
-            }
-        },
+        //babel: {
+        //    dev: {
+        //        options: {
+        //            //compact: true,
+        //            //comments: false,
+        //            modules: 'ignore', // babel doesn't concatenate converted module files
+        //            //sourceMap: true
+        //        },
+        //        files: {
+        //            'public/_babel/classes/BroadcastButton.js': 'public/_js/classes/BroadcastButton.js',
+        //            'public/_babel/classes/RadioToggleButton.js': 'public/_js/classes/RadioToggleButton.js',
+        //            'public/_babel/classes/RadioInfoButton.js': 'public/_js/classes/RadioInfoButton.js',
+        //            'public/_babel/classes/RekelboxButtonGroup.js': 'public/_js/classes/RekelboxButtonGroup.js',
+        //            'public/_babel/core.js': 'public/_js/core.js'
+        //        }
+        //    }
+        //},
 
-        uglify: {
-            dev: {
-                options: {
-                    beautify: true, // for debugging
-                    banner: '/*! <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd HH:MM") %> */',
-                    mangle: false, // for debugging
-                    sourceMap: true,
-                    sourceMapIncludeSources: true
-                },
-                files: {
-                    'public/js/homeRemote.js': [
-                        'public/_babel/classes/BroadcastButton.js',
-                        'public/_babel/classes/RadioToggleButton.js',
-                        'public/_babel/classes/RadioInfoButton.js',
-                        'public/_babel/classes/RekelboxButtonGroup.js',
-                        'public/_babel/core.js'
-                    ]
-                }
-            }
-        },
+        //uglify: {
+        //    dev: {
+        //        options: {
+        //            beautify: true, // for debugging
+        //            banner: '/*! <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd HH:MM") %> */',
+        //            mangle: false, // for debugging
+        //            sourceMap: true,
+        //            sourceMapIncludeSources: true
+        //        },
+        //        files: {
+        //            'public/js/homeRemote.js': [
+        //                'public/_babel/classes/BroadcastButton.js',
+        //                'public/_babel/classes/RadioToggleButton.js',
+        //                'public/_babel/classes/RadioInfoButton.js',
+        //                'public/_babel/classes/RekelboxButtonGroup.js',
+        //                'public/_babel/core.js'
+        //            ]
+        //        }
+        //    }
+        //},
 
         webpack: {
             // TODO this can be improved by using http://webpack.github.io/docs/webpack-dev-server.html#api
@@ -144,10 +144,10 @@ module.exports = function(grunt) {
                 files: ['public/_less/**/*.less'],
                 tasks: ['less:dev']
             },
-            script: {
-                files: ['public/_js/**/*.js', 'server/**/*.js'],
-                tasks: ['jscs', 'jshint', 'babel:dev', 'uglify:dev']
-            },
+            //script: {
+            //    files: ['public/_js/**/*.js', 'server/**/*.js'],
+            //    tasks: ['jscs', 'jshint', 'babel:dev', 'uglify:dev']
+            //},
             react: {
                 files: ['public/react/**/*.jsx', 'public/react/*.js'],
                 tasks: ['jscs', 'eslint', 'webpack:build']
@@ -207,7 +207,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['jscs', 'jshint', 'eslint', 'babel:dev', 'uglify:dev', 'less:dev', 'express', 'watch']);
-    grunt.registerTask('build', ['jscs', 'jshint', 'eslint', 'babel:dev', 'uglify:dev', 'less:dev', 'replace:dist']);
+    grunt.registerTask('default', ['jscs', 'eslint', 'less:dev', 'express', 'watch']);
+    grunt.registerTask('build', ['jscs', 'eslint', 'less:dev', 'replace:dist']);
 
 };

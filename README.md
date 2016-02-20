@@ -182,7 +182,6 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 
 ### TODO
 
-* Implement server call and upstart script for Radio toggle -> mostly done, implement get info buttons
 * move /react to /
 * convert less to libsass
 * add timer to turn a switch on or off. Maybe with: https://www.npmjs.com/package/node-schedule
