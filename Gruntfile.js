@@ -10,10 +10,21 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        less: {
+        //less: {
+        //    dev: {
+        //        files: {
+        //            'public/css/homeRemote.css': 'public/_less/homeRemote.less'
+        //        }
+        //    }
+        //},
+
+        sass: {
+            options: {
+                sourceMap: true
+            },
             dev: {
                 files: {
-                    'public/css/homeRemote.css': 'public/_less/homeRemote.less'
+                    'public/css/homeRemote.css': 'public/_sass/homeRemote.scss'
                 }
             }
         },
@@ -59,7 +70,8 @@ module.exports = function(grunt) {
                     new webpack.optimize.UglifyJsPlugin({
                         compress: {
                             warnings: false
-                        }
+                        },
+                        sourceMap: true
                     }),
                     new webpack.DefinePlugin({
                         'process.env': {
@@ -92,9 +104,9 @@ module.exports = function(grunt) {
         },
 
         watch: {
-            less: {
-                files: ['public/_less/**/*.less'],
-                tasks: ['less:dev']
+            sass: {
+                files: ['public/_sass/**/*.scss'],
+                tasks: ['sass:dev']
             },
             react: {
                 files: ['public/_js/**/*.jsx', 'public/_js/**/*.js'],
@@ -155,7 +167,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['jscs', 'eslint', 'webpack:build', 'less:dev', 'express', 'watch']);
-    grunt.registerTask('build', ['jscs', 'eslint', 'webpack:build', 'less:dev', 'replace:dist']);
+    grunt.registerTask('default', ['jscs', 'eslint', 'webpack:build', 'sass:dev', 'express', 'watch']);
+    grunt.registerTask('build', ['jscs', 'eslint', 'webpack:build', 'sass:dev', 'replace:dist']);
 
 };
