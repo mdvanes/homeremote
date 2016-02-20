@@ -137,7 +137,7 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
 ```
 {
     "hepath": "/home/foo/elro/he853-remote",
-    "radiologpath": "/tmp/mplayer-status.log"
+    "radiologpath": "/tmp/homeremote-playradio-status.log"
 }
 ```
 * create a users.htpasswd in the root and add one user per line in the format: ```username:password```
