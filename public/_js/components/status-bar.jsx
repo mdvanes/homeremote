@@ -9,7 +9,7 @@ class StatusBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {isOnline: false};
-        $http('/react/index.html')
+        $http('/index.html')
             .then(() =>  this.setState({isOnline: true}))
             .catch(() => this.setState({isOnline: false}));
     }

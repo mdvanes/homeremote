@@ -96,12 +96,8 @@ module.exports = function(grunt) {
                 files: ['public/_less/**/*.less'],
                 tasks: ['less:dev']
             },
-            //script: {
-            //    files: ['public/_js/**/*.js', 'server/**/*.js'],
-            //    tasks: ['jscs', 'jshint', 'babel:dev', 'uglify:dev']
-            //},
             react: {
-                files: ['public/react/**/*.jsx', 'public/react/*.js'],
+                files: ['public/_js/**/*.jsx', 'public/_js/**/*.js'],
                 tasks: ['jscs', 'eslint', 'webpack:build']
             },
             express: {
@@ -139,10 +135,10 @@ module.exports = function(grunt) {
                         expand: true,
                         flatten: true,
                         src: [
-                            'public/react/homeremote.mf',
-                            'public/react/index.html'
+                            'public/homeremote.mf',
+                            'public/index.html'
                         ],
-                        dest: 'public/react/'
+                        dest: 'public/'
                     }
                 ]
             }
@@ -159,7 +155,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['jscs', 'eslint', 'less:dev', 'express', 'watch']);
-    grunt.registerTask('build', ['jscs', 'eslint', 'less:dev', 'replace:dist']);
+    grunt.registerTask('default', ['jscs', 'eslint', 'webpack:build', 'less:dev', 'express', 'watch']);
+    grunt.registerTask('build', ['jscs', 'eslint', 'webpack:build', 'less:dev', 'replace:dist']);
 
 };
