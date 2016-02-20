@@ -13,27 +13,18 @@ module.exports = function(grunt) {
         less: {
             dev: {
                 files: {
-                    'public/css/homeRemote.css': 'public/_less/homeRemote.less',
-                    'public/css/react.css': 'public/_less/react.less'
+                    'public/css/homeRemote.css': 'public/_less/homeRemote.less'
                 }
             }
         },
-
-        //jshint: {
-        //    options: {
-        //        jshintrc: '.jshintrc'
-        //        //force: true
-        //    },
-        //    all: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js']
-        //},
 
         eslint: {
             options: {
                 configFile: '.eslintrc'
             },
             dev: [
-                'public/react/*.js',
-                'public/react/**/*.jsx'
+                'public/_js/*.js',
+                'public/_js/**/*.jsx'
             ]
         },
 
@@ -45,7 +36,7 @@ module.exports = function(grunt) {
             },
             dev: {
                 files: {
-                    src: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js', 'public/react/**/*.jsx', 'public/react/*.js'] // TODO react/request.js and exclude react/build/bundle.js
+                    src: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js', 'public/_js/**/*.jsx']
                 }
             }
         },
@@ -57,45 +48,6 @@ module.exports = function(grunt) {
             },
             files: {}
         },
-
-        //babel: {
-        //    dev: {
-        //        options: {
-        //            //compact: true,
-        //            //comments: false,
-        //            modules: 'ignore', // babel doesn't concatenate converted module files
-        //            //sourceMap: true
-        //        },
-        //        files: {
-        //            'public/_babel/classes/BroadcastButton.js': 'public/_js/classes/BroadcastButton.js',
-        //            'public/_babel/classes/RadioToggleButton.js': 'public/_js/classes/RadioToggleButton.js',
-        //            'public/_babel/classes/RadioInfoButton.js': 'public/_js/classes/RadioInfoButton.js',
-        //            'public/_babel/classes/RekelboxButtonGroup.js': 'public/_js/classes/RekelboxButtonGroup.js',
-        //            'public/_babel/core.js': 'public/_js/core.js'
-        //        }
-        //    }
-        //},
-
-        //uglify: {
-        //    dev: {
-        //        options: {
-        //            beautify: true, // for debugging
-        //            banner: '/*! <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd HH:MM") %> */',
-        //            mangle: false, // for debugging
-        //            sourceMap: true,
-        //            sourceMapIncludeSources: true
-        //        },
-        //        files: {
-        //            'public/js/homeRemote.js': [
-        //                'public/_babel/classes/BroadcastButton.js',
-        //                'public/_babel/classes/RadioToggleButton.js',
-        //                'public/_babel/classes/RadioInfoButton.js',
-        //                'public/_babel/classes/RekelboxButtonGroup.js',
-        //                'public/_babel/core.js'
-        //            ]
-        //        }
-        //    }
-        //},
 
         webpack: {
             // TODO this can be improved by using http://webpack.github.io/docs/webpack-dev-server.html#api
