@@ -1,11 +1,11 @@
 CACHE MANIFEST
 index.html
-../library/bootstrap/css/bootstrap.min.css
-../library/bootstrap/fonts/glyphicons-halflings-regular.woff2
-../library/bootstrap/fonts/glyphicons-halflings-regular.woff
-../library/bootstrap/fonts/glyphicons-halflings-regular.ttf
-../css/react.css?v=201602021549
-build/bundle.js?v=201602021549
+library/bootstrap/css/bootstrap.min.css
+library/bootstrap/fonts/glyphicons-halflings-regular.woff2
+library/bootstrap/fonts/glyphicons-halflings-regular.woff
+library/bootstrap/fonts/glyphicons-halflings-regular.ttf
+css/homeRemote.css?v=201602201953
+js/homeRemote.js?v=201602201953
 
 NETWORK:
 *
