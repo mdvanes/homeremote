@@ -182,15 +182,13 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 
 ### TODO
 
-* move /react to /
-* convert less to libsass
-* sourcemap doesn't work
 * add timer to turn a switch on or off. Maybe with: https://www.npmjs.com/package/node-schedule
+* make "all on/all off" buttons
+* js sourcemap doesn't work
 * add http basic authentication (or better digest access?)
 * strip packages from package.json until no longer works, because there are some unused packages in there 
 * make configurable. Remove 3fm and other references. Make repo public
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
-* make "all on/all off" buttons
 * Add static typing with Flow (doesn't work on Windows but maybe on Travis?)
 * React Native output
 
