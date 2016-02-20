@@ -7,15 +7,15 @@ var ROOT_PATH = path.resolve(__dirname);
 
 var common = {
 
-    entry: [path.resolve(ROOT_PATH, 'public/react/main')],
+    entry: [path.resolve(ROOT_PATH, 'public/_js/main')],
 
     resolve: {
         extensions: ['', '.js', '.jsx']
     },
 
     output: {
-        path: path.resolve(ROOT_PATH, 'public/react/build'),
-        filename: 'bundle.js'
+        path: path.resolve(ROOT_PATH, 'public/js'),
+        filename: 'homeRemote.js'
     },
 
     //plugins: [
