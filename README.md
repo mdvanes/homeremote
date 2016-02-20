@@ -184,6 +184,7 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 
 * move /react to /
 * convert less to libsass
+* sourcemap doesn't work
 * add timer to turn a switch on or off. Maybe with: https://www.npmjs.com/package/node-schedule
 * add http basic authentication (or better digest access?)
 * strip packages from package.json until no longer works, because there are some unused packages in there 
