@@ -2,6 +2,7 @@ import {render} from 'react-dom';
 import React from 'react'; // eslint-disable-line no-unused-vars
 import StatusBar from './components/status-bar';
 import ButtonGroup from './components/button-group';
+import MacroButtonGroup from './components/macro-button-group';
 import Toggle from './components/toggle';
 import Log from './components/log';
 
@@ -22,7 +23,9 @@ function renderShell() {
                     <ButtonGroup label=" 1" icon="lamp" id="switch1"/>
                     <ButtonGroup label=" 2" icon="lamp" id="switch2"/>
                     <ButtonGroup label=" 3" icon="lamp" id="switch3"/>
-                    <ButtonGroup label=" 4" icon="lamp" id="clickstub"/>
+                    <ButtonGroup label=" 4" icon="lamp" id="switch4"/>
+                    {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
+                    <MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>
                 </div>
                 <div className="col-xs-6 col-md-2 margin-top">
                     {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}

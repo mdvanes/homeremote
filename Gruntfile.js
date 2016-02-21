@@ -10,14 +10,6 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
-        //less: {
-        //    dev: {
-        //        files: {
-        //            'public/css/homeRemote.css': 'public/_less/homeRemote.less'
-        //        }
-        //    }
-        //},
-
         sass: {
             options: {
                 sourceMap: true
