@@ -14,6 +14,7 @@ let express = require('express'),
     togglestub = require('./server/togglestub.js'),
     clickstub = require('./server/clickstub.js'),
     switcher = require('./server/switch.js'),
+    settings = require('./settings.json'),
     debug = false;
 
 // Configuration
@@ -32,7 +33,7 @@ let log = bunyan.createLogger({
 });
 
 let basic = auth.basic({
-    realm: 'HomeRemote', // pages with the same root URL and ream share credentials
+    realm: 'HomeRemote', // pages with the same root URL and realm share credentials
     file: path.join(__dirname, 'users.htpasswd')
 });
 
@@ -57,10 +58,17 @@ togglestub.bind(app);
 clickstub.bind(app);
 switcher.bind(app, log);
 
-app.use(
-    auth.connect(basic),
-    express.static('public')
-);
+if(!settings.enableAuth || settings.enableAuth !== false) {
+    // default is true
+    app.use(
+        auth.connect(basic),
+        express.static('public')
+    );
+} else {
+    app.use(
+        express.static('public')
+    );
+}
 
 http.createServer(app).listen(3000, () => log.info('HomeRemote listening at http://localhost:3000') );
 https.createServer(options, app).listen(3443, () => log.info('HomeRemote listening at https://localhost:3443') );
