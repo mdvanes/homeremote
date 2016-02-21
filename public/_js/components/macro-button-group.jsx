@@ -1,6 +1,7 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import ButtonGroup from './button-group';
 import $http from '../request';
+import logger from '../logger';
 
 class MacroButtonGroup extends ButtonGroup {
     constructor(props) {
@@ -16,10 +17,10 @@ class MacroButtonGroup extends ButtonGroup {
         $http('/' + id + '/' + state)
             .then(data => {
                 if(data.status !== 'received') {
-                    alert('error with setting');
+                    logger.error('error on send: ' + data.status);
                 }
             })
-            .catch(error => alert('error on send' + state + ' ' + error));
+            .catch(error => logger.error('error on sendOn: ' + error));
     }
 
     sendOn() {

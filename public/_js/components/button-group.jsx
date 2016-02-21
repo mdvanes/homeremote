@@ -1,5 +1,6 @@
 import React from 'react';
 import $http from '../request';
+import logger from '../logger';
 
 class ButtonGroup extends React.Component {
     constructor(props) {
@@ -15,20 +16,20 @@ class ButtonGroup extends React.Component {
         $http('/' + this.props.id + '/on')
             .then(data => {
                 if(data.status !== 'received') {
-                    alert('error with setting');
+                    logger.error('error on sendOn: ' + data.status);
                 }
             })
-            .catch(error => alert('error on sendOn' + error));
+            .catch(error => logger.error('error on sendOn: ' + error));
     }
 
     sendOff() {
         $http('/' + this.props.id + '/off')
             .then(data => {
                 if(data.status !== 'received') {
-                    alert('error with setting');
+                    logger.error('error on sendOff: ' + data.status);
                 }
             })
-            .catch(error => alert('error on sendOff' + error));
+            .catch(error => logger.error('error on sendOff: ' + error));
     }
 
     render() {
