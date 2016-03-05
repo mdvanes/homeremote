@@ -44,7 +44,8 @@ module.exports = function(grunt) {
             }
         },
 
-        // TODO gives a fatal error, probably because there are no Windows binaries for Flow yet.
+        // There are no Windows binaries for Flow yet, but it works on Ubuntu
+        // This configuration depends on the .flowconfig in the root
         flow: {
             options: {
                 style: 'color'

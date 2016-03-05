@@ -1,3 +1,5 @@
+// @flow
+
 import {render} from 'react-dom';
 import React from 'react'; // eslint-disable-line no-unused-vars
 import StatusBar from './components/status-bar';
@@ -5,6 +7,9 @@ import ButtonGroup from './components/button-group';
 import MacroButtonGroup from './components/macro-button-group';
 import Toggle from './components/toggle';
 import Log from './components/log';
+
+// testcase for Flow
+// var str: number = 'hello world!';
 
 function renderShell() {
     var shell = document.createElement('div');
