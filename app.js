@@ -58,7 +58,7 @@ togglestub.bind(app);
 clickstub.bind(app);
 switcher.bind(app, log);
 
-if(!settings.enableAuth || settings.enableAuth !== false) {
+if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // default is true
     app.use(
         auth.connect(basic),
