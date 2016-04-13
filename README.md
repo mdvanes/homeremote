@@ -34,7 +34,7 @@ install
 
 there are 4 switches with id's 001, 002, 003, 004
 
-See the repo for how to add switches.
+See the repo for how to add switches. See below for information for installing Elro Home Easy on Raspberry Pi.
 
 
 ### Node server
@@ -95,6 +95,48 @@ Temporarily disable git security on raspberry pi:
 * ```git config --global http.sslVerify false``` 
 * and afterwards enable with ```git config --global http.sslVerify true```
 
+Installing Home Easy on Raspberry Pi with OSMC:
+
+* ```sudo apt-get install git```
+* ```git clone https://github.com/mdvanes/he853-remote.git```
+* (for usb.h and gcc) ```sudo apt-get install libusb-1.0-0-dev libusb-dev build-essential```
+* mv he853-remote/libhid-0.2.16.tar.gz .
+* tar xvzf libhid-0.2.16.tar.gz
+* cd libhid-0.2.16
+* ./configure
+* make
+* got error, followed steps from (based on http://matthewcmcmillan.blogspot.nl/2013/03/compiling-libhid-for-raspbian-linux-on.html)
+* in /libhid-0.2.16/test/lshid.c
+    Here is the code before making the edit:
+    
+    ```
+    39 /* only here to prevent the unused warning */
+    40 /* TODO remove */
+    41 len = *((unsigned long*)custom);
+    42
+    43 /* Obtain the device's full path */
+    ```
+    
+    Here is the code after the edit.
+    You need to comment out line 41 and then add len = len; and custom = custom;
+    
+    ```
+    39 /* only here to prevent the unused warning */
+    40 /* TODO remove */
+    41 //len = *((unsigned long*)custom);
+    42 len = len;
+    43 custom = custom;
+    44
+    45 /* Obtain the device's full path */
+    ```
+* make
+* sudo make install
+* cd ../he853-remote
+* pico he853-remote/hid-libusb.c
+* change ```include <libusb.h>``` to ```<libusb-1.0/libusb.h>```
+* make
+* plug in
+* test with ```sudo ./he853 002 1```
 
 ## Set up localhost SSL
 
