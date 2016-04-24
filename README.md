@@ -81,14 +81,66 @@ On the server with the Elro USB stick, and speakers plugged in, install the home
 
 ### Notes for installing on Raspberry Pi
 
-To run:
+To install the server (also for a proxy just to control the Home Easy USB stick) on a Pi with OSMC:
 
-* Temporarily disable git security on raspberry pi (see below)
-* Clone the repo
-* Install newest version of node, but don't use apt-get: http://node-arm.herokuapp.com/
+* If git not installed: ```sudo apt-get install git```
+* Install newest version of node, but don't use apt-get 
+    * installing with ```sudo apt-get install nodejs``` results in nodejs -v v0.10.29, current LTS is 4.4.3 and current stable is 5.11.0
+    * instead go to https://nodejs.org/dist/ and find the latest LTS (currently 4.4.3) that ends with "armv7l" (for RPi2B, for older RPi it would be "armv6l")
+    * e.g. ```wget https://nodejs.org/dist/latest-v4.x/node-v4.4.3-linux-armv7l.tar.gz```
+    * untar and cd into the untarred dir
+    * copy to /usr/local/ ```sudo cp -R * /usr/local/```
+    * test with ```node -v```
+
+* Follow steps under "On the server with the Elro USB stick plugged in" above.
+    * npm install can take a long time on a RPi, at least 12 minutes on a RPi2
+    * the settings.json should be configured to have no heserverip and enableAuth=false, if the RPi only serves as a proxy to access the Home Easy USB stick:
+    ```
+    {
+        "hepath": "/home/foo/elro/he853-remote",
+        "heserverip": "",
+        "enableAuth": false,
+        "radiologpath": "/tmp/homeremote-playradio-status.log"
+    }
+    ```
+    * an (empty) users.htpasswd is needed, at least for the moment.
+    * test with ```node /opt/homeremote/app.js``` before setting up the upstart scripts
+    * if this is supposed to be a proxy, set up the other homeremote server, that provides the webaccess and is securely behind HTTPS and basic AUTH to point to this server in the settings.json heserverip.
+      E.g. if the proxy server address is http://192.168.0.19:3000, set up the main homeremote server with: ```"heserverip":"http://192.168.0.19:3000"``` and restart the main server with ```sudo service homeremote restart```
+    * At this time OSMC doesn't use Upstart, but it is possible to set up a daemon service like this:
+        * ```cd /etc/systemd/system```
+        * ```sudo pico homeremote.service```
+        * 
+        ```
+[Unit]
+Description=HomeRemote
+
+[Service]
+Type=forking
+User=root
+WorkingDirectory=/opt/homeremote/
+ExecStart=/usr/local/bin/node app.js
+PIDFile=/var/run/homeremote.pid
+
+[Install]
+WantedBy=default.target
+        ```
+        * ```sudo systemctl daemon-reload```
+        * ```sudo systemctl start homeremote.service``` (should keep running after CTRL-C, or try ```sudo systemctl start homeremote.service &```)
+        * This last instruction should be called automatically when booting.
+        * Stop with: ```sudo systemctl stop homeremote.service```
+        * Status with: ```sudo systemctl status homeremote.service```
+ 
+* cd ```/opt```
+* Clone this repo ```git clone https://mdvanes@bitbucket.org/mdvanes/homeremote.git```
+* http://node-arm.herokuapp.com/
+* cd into the homeremote dir and run  
 * Copy node_modules over sftp
+* Follow configuration steps for settings.json, Upstart scripts (see above)
 * ```node app.js```
 * Server is on http://localhost:3000/
+
+Source: https://blog.wia.io/installing-node-js-v4-0-0-on-a-raspberry-pi
 
 Temporarily disable git security on raspberry pi:
 
@@ -97,7 +149,7 @@ Temporarily disable git security on raspberry pi:
 
 Installing Home Easy on Raspberry Pi with OSMC:
 
-* ```sudo apt-get install git```
+* If git not installed: ```sudo apt-get install git```
 * ```git clone https://github.com/mdvanes/he853-remote.git```
 * (for usb.h and gcc) ```sudo apt-get install libusb-1.0-0-dev libusb-dev build-essential```
 * mv he853-remote/libhid-0.2.16.tar.gz .
