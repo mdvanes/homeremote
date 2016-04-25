@@ -111,6 +111,7 @@ To install the server (also for a proxy just to control the Home Easy USB stick)
         * ```cd /etc/systemd/system```
         * ```sudo pico homeremote.service```
         * Fill with this:
+
         ```
         [Unit]
         Description=HomeRemote
@@ -130,6 +131,9 @@ To install the server (also for a proxy just to control the Home Easy USB stick)
         [Install]
         WantedBy=multi-user.target
         ```
+
+* continued
+    * continued
         * ```sudo systemctl daemon-reload```
         * ```sudo systemctl start homeremote.service``` (should keep running after CTRL-C, or try ```sudo systemctl start homeremote.service &```)
         * This last instruction should be called automatically when booting.
