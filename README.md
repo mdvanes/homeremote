@@ -110,25 +110,25 @@ To install the server (also for a proxy just to control the Home Easy USB stick)
     * At this time OSMC doesn't use Upstart, but it is possible to set up a daemon service like this:
         * ```cd /etc/systemd/system```
         * ```sudo pico homeremote.service```
-        * 
+        * Fill with this:
         ```
-[Unit]
-Description=HomeRemote
-
-[Service]
-User=root
-WorkingDirectory=/opt/homeremote/
-ExecStart=/usr/local/bin/node app.js
-Restart=always
-# Restart service after 10 seconds if node service crashes
-RestartSec=10
-# Output to syslog
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=homeremote
-
-[Install]
-WantedBy=multi-user.target
+        [Unit]
+        Description=HomeRemote
+        
+        [Service]
+        User=root
+        WorkingDirectory=/opt/homeremote/
+        ExecStart=/usr/local/bin/node app.js
+        Restart=always
+        # Restart service after 10 seconds if node service crashes
+        RestartSec=10
+        # Output to syslog
+        StandardOutput=syslog
+        StandardError=syslog
+        SyslogIdentifier=homeremote
+        
+        [Install]
+        WantedBy=multi-user.target
         ```
         * ```sudo systemctl daemon-reload```
         * ```sudo systemctl start homeremote.service``` (should keep running after CTRL-C, or try ```sudo systemctl start homeremote.service &```)
