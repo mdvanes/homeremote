@@ -164,20 +164,20 @@ WantedBy=multi-user.target
 * make
 * got error, followed steps from (based on http://matthewcmcmillan.blogspot.nl/2013/03/compiling-libhid-for-raspbian-linux-on.html)
 * in /libhid-0.2.16/test/lshid.c
+
+```
+#!c
     Here is the code before making the edit:
-    
-    ```
+
     39 /* only here to prevent the unused warning */
     40 /* TODO remove */
     41 len = *((unsigned long*)custom);
     42
     43 /* Obtain the device's full path */
-    ```
     
     Here is the code after the edit.
     You need to comment out line 41 and then add len = len; and custom = custom;
     
-    ```
     39 /* only here to prevent the unused warning */
     40 /* TODO remove */
     41 //len = *((unsigned long*)custom);
@@ -185,7 +185,8 @@ WantedBy=multi-user.target
     43 custom = custom;
     44
     45 /* Obtain the device's full path */
-    ```
+```
+
 * make
 * sudo make install
 * cd ../he853-remote
