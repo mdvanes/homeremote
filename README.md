@@ -107,49 +107,44 @@ To install the server (also for a proxy just to control the Home Easy USB stick)
     * test with ```node /opt/homeremote/app.js``` before setting up the upstart scripts
     * if this is supposed to be a proxy, set up the other homeremote server, that provides the webaccess and is securely behind HTTPS and basic AUTH to point to this server in the settings.json heserverip.
       E.g. if the proxy server address is http://192.168.0.19:3000, set up the main homeremote server with: ```"heserverip":"http://192.168.0.19:3000"``` and restart the main server with ```sudo service homeremote restart```
-    * At this time OSMC doesn't use Upstart, but it is possible to set up a daemon service like this:
-        * ```cd /etc/systemd/system```
-        * ```sudo pico homeremote.service```
-        * Fill with this:
-
-        ```
-        [Unit]
-        Description=HomeRemote
-        
-        [Service]
-        User=root
-        WorkingDirectory=/opt/homeremote/
-        ExecStart=/usr/local/bin/node app.js
-        Restart=always
-        # Restart service after 10 seconds if node service crashes
-        RestartSec=10
-        # Output to syslog
-        StandardOutput=syslog
-        StandardError=syslog
-        SyslogIdentifier=homeremote
-        
-        [Install]
-        WantedBy=multi-user.target
-        ```
-
-* continued
-    * continued
-        * ```sudo systemctl daemon-reload```
-        * ```sudo systemctl start homeremote.service``` (should keep running after CTRL-C, or try ```sudo systemctl start homeremote.service &```)
-        * This last instruction should be called automatically when booting.
-        * Stop with: ```sudo systemctl stop homeremote.service```
-        * Status with: ```sudo systemctl status homeremote.service```
- 
-* cd ```/opt```
-* Clone this repo ```git clone https://mdvanes@bitbucket.org/mdvanes/homeremote.git```
-* http://node-arm.herokuapp.com/
-* cd into the homeremote dir and run  
-* Copy node_modules over sftp
-* Follow configuration steps for settings.json, Upstart scripts (see above)
-* ```node app.js```
+    * At this time OSMC doesn't use Upstart, but it is possible to set up a daemon service. See below for more details. 
 * Server is on http://localhost:3000/
 
 Source: https://blog.wia.io/installing-node-js-v4-0-0-on-a-raspberry-pi
+
+Set up systemd service
+
+* ```cd /etc/systemd/system```
+* Create a file ```sudo pico homeremote.service``` with content:
+        
+```
+#!bash
+
+[Unit]
+Description=HomeRemote
+
+[Service]
+User=root
+WorkingDirectory=/opt/homeremote/
+ExecStart=/usr/local/bin/node app.js
+Restart=always
+# Restart service after 10 seconds if node service crashes
+RestartSec=10
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=homeremote
+
+[Install]
+WantedBy=multi-user.target
+```
+
+* ```sudo systemctl daemon-reload```
+* ```sudo systemctl start homeremote.service``` (should keep running after CTRL-C, or try ```sudo systemctl start homeremote.service &```)
+* This last instruction should be called automatically when booting.
+* Stop with: ```sudo systemctl stop homeremote.service```
+* Status with: ```sudo systemctl status homeremote.service```
+
 
 Temporarily disable git security on raspberry pi:
 
