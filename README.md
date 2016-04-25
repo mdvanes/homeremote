@@ -116,14 +116,19 @@ To install the server (also for a proxy just to control the Home Easy USB stick)
 Description=HomeRemote
 
 [Service]
-Type=forking
 User=root
 WorkingDirectory=/opt/homeremote/
 ExecStart=/usr/local/bin/node app.js
-PIDFile=/var/run/homeremote.pid
+Restart=always
+# Restart service after 10 seconds if node service crashes
+RestartSec=10
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=homeremote
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
         ```
         * ```sudo systemctl daemon-reload```
         * ```sudo systemctl start homeremote.service``` (should keep running after CTRL-C, or try ```sudo systemctl start homeremote.service &```)
