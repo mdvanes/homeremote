@@ -48,8 +48,9 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
 * check out with ```sudo git clone``` to create /opt/homeremote (update later with ```git pull origin master```)
 * change ownership of the created /opt/homeremote to a normal user with ```sudo chown -R```
 * ```npm i --production```
-* create a settings.json in the root, like:
+* create a settings.json in the root of the project, like:
 ```
+#!javascript
 {
     "hepath": "/home/foo/elro/he853-remote",
     "heserverip": "",
@@ -112,7 +113,7 @@ To install the server (also for a proxy just to control the Home Easy USB stick)
 
 Source: https://blog.wia.io/installing-node-js-v4-0-0-on-a-raspberry-pi
 
-Set up systemd service
+#### Set up systemd service
 
 * ```cd /etc/systemd/system```
 * Create a file ```sudo pico homeremote.service``` with content:
@@ -146,12 +147,12 @@ WantedBy=multi-user.target
 * Status with: ```sudo systemctl status homeremote.service```
 
 
-Temporarily disable git security on raspberry pi:
+#### Temporarily disable git security on raspberry pi:
 
 * ```git config --global http.sslVerify false``` 
 * and afterwards enable with ```git config --global http.sslVerify true```
 
-Installing Home Easy on Raspberry Pi with OSMC:
+#### Installing Home Easy on Raspberry Pi with OSMC:
 
 * If git not installed: ```sudo apt-get install git```
 * ```git clone https://github.com/mdvanes/he853-remote.git```
