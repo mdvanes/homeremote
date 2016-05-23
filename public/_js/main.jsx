@@ -32,10 +32,16 @@ function renderShell() {
                     {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
                     <MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>
                 </div>
-                <div className="col-xs-6 col-md-2 margin-top">
+                <div className="col-xs-12 col-md-2">
                     {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
-                    <Toggle label="" id="radio" icon="music"/>{/* Music on server */}
-                    <Toggle label="" id="motion" icon="camera"/>{/* Webcam/motion on server */}
+                    <div className="row">
+                        <div className="col-xs-6 col-md-12 margin-top">
+                            <Toggle label="" id="radio" icon="music"/>{/* Music on server */}
+                        </div>
+                        <div className="col-xs-6 col-md-12 margin-top">
+                            <Toggle label="" id="motion" icon="camera"/>{/* Webcam/motion on server */}
+                        </div>
+                    </div>
                 </div>
                 <div className="col-xs-12 col-md-7 margin-top">
                     <Log infoUrl="/radio/info"/>
