@@ -51,7 +51,6 @@ var bind = function(app, log) {
 
     // Get "now playing" information
     app.get('/radio/info', function(req, res) {
-        // TODO path from settings.json
         var mplayerStatus = fs.readFileSync(settings.radiologpath, 'utf8');
         var regex = /ICY Info: StreamTitle='(.*)'/g;
         var m;
