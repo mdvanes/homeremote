@@ -11,6 +11,7 @@ let express = require('express'),
     bunyan = require('bunyan'),
     broadcast = require('./server/broadcast.js'),
     radio = require('./server/radio.js'),
+    motion = require('./server/motion.js'),
     togglestub = require('./server/togglestub.js'),
     clickstub = require('./server/clickstub.js'),
     switcher = require('./server/switch.js'),
@@ -54,6 +55,7 @@ process.argv.forEach(function (val, index) {
 // Set routes
 broadcast.bind(app, log, debug);
 radio.bind(app, log, debug);
+motion.bind(app, log, debug);
 togglestub.bind(app);
 clickstub.bind(app);
 switcher.bind(app, log);

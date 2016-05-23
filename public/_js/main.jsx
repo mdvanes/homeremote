@@ -35,6 +35,7 @@ function renderShell() {
                 <div className="col-xs-6 col-md-2 margin-top">
                     {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
                     <Toggle label="" id="radio" icon="music"/>{/* Music on server */}
+                    <Toggle label="" id="motion" icon="camera"/>{/* Webcam/motion on server */}
                 </div>
                 <div className="col-xs-12 col-md-7 margin-top">
                     <Log infoUrl="/radio/info"/>
