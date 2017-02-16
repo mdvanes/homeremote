@@ -7,6 +7,7 @@ import ButtonGroup from './components/button-group';
 import MacroButtonGroup from './components/macro-button-group';
 import Toggle from './components/toggle';
 import Log from './components/log';
+import FileManager from './components/fm';
 
 // testcase for Flow
 // var str: number = 'hello world!';
@@ -46,6 +47,7 @@ function renderShell() {
                 <div className="col-xs-12 col-md-7 margin-top">
                     <Log infoUrl="/radio/info"/>
                 </div>
+                <FileManager/>
             </div>
         </div>, shell);
 }

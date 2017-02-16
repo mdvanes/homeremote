@@ -220,12 +220,16 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 
 ## TODO
 
+* DONE js sourcemap doesn't work
+* Replace double installation (part on RPi) with API calls to Domoticz on port 8080
+* FTP and file manager for often used tasks
+* Youtube script
+* Remove all HTTPS, only use behind Reverse Proxy with HTTPS
+* OUTDATED Disable HTTP, only allow HTTPS
+* OUTDATED Although HTTPS works with a self-signed certificate, try HTTPS with letsencrypt (https://github.com/Daplie/node-letsencrypt or http://blog.bguiz.com/2015/12/16/letsencrypt-tls-certs-nodejs/)
 * add timer to turn a switch on or off. Maybe with: https://www.npmjs.com/package/node-schedule
-* js sourcemap doesn't work
 * add http basic authentication (or better digest access?)
 * strip packages from package.json until no longer works, because there are some unused packages in there
-* Disable HTTP, only allow HTTPS
-* Although HTTPS works with a self-signed certificate, try HTTPS with letsencrypt (https://github.com/Daplie/node-letsencrypt or http://blog.bguiz.com/2015/12/16/letsencrypt-tls-certs-nodejs/)
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
 * Add static typing with Flow: doesn't work on Windows but works on Ubuntu and probably on Travis. The problem is that this requires transpilation to remove the typing, so it would not be possible to build on Windows anymore.
 * React Native output
@@ -233,3 +237,4 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 * bunyan logging on RPi (requires npm on RPi)
 * should have rotating logs (bunyan offers support for it)
 * combine modules in Babel or sourcemaps on Babel->Uglify
+* Use webpack-dev server with middleware

@@ -18,6 +18,9 @@ var common = {
         filename: 'homeRemote.js'
     },
 
+    // Add source maps
+    devtool: 'source-map',
+
     //plugins: [
     //    new HtmlWebpackPlugin({
     //        title: 'React ES2015'
