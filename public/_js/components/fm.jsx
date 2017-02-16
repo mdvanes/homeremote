@@ -28,6 +28,7 @@ class FileManager extends React.Component {
             .catch(error => logger.error('error on fm/list: ' + error));
     }
 
+    // TODO list filesize
     listDir(dirName) {
         $http('/fm/list/' + dirName)
             .then(data => {
