@@ -16,7 +16,7 @@ var bind = function(app) {
         }
 
         fs.readdir(rootPath, (err, files) => {
-            const filesStats = files.map(file => {
+            let filesStats = files.map(file => {
                 //console.log(file);
                 // fs.stat('/home/martin/ZNoBackup/homeremote/' + file, (errz, stats) => {
                 //     console.log(file, stats.isDirectory());
@@ -32,6 +32,15 @@ var bind = function(app) {
                     isDir: stats.isDirectory()
                 };
             });
+
+            let filesStatsOnlyDirs = [];
+            const filesStatsOnlyFiles = filesStats.filter(file => {
+                if(file.isDir) {
+                    filesStatsOnlyDirs.push(file);
+                }
+                return !file.isDir;
+            });
+            filesStats = filesStatsOnlyDirs.concat(filesStatsOnlyFiles);
 
             res.send({status: 'ok', list: filesStats});
         });
@@ -50,9 +59,10 @@ var bind = function(app) {
             return;
         }
 
+        // TODO merge with /fm/list
         fs.readdir(rootPath + '/' + subPath, (err, files) => {
             //console.log(files);
-            const filesStats = files.map(file => {
+            let filesStats = files.map(file => {
                 const stats = fs.statSync(rootPath + '/' + subPath + '/' + file);
                 return {
                     name: file,
@@ -60,9 +70,25 @@ var bind = function(app) {
                 };
             });
 
+            let filesStatsOnlyDirs = [];
+            const filesStatsOnlyFiles = filesStats.filter(file => {
+                if(file.isDir) {
+                    filesStatsOnlyDirs.push(file);
+                }
+                return !file.isDir;
+            });
+            filesStats = filesStatsOnlyDirs.concat(filesStatsOnlyFiles);
+
             // TODO fix JSON response: res.setHeader('Content-Type', 'application/json');
             res.send({status: 'ok', list: filesStats, dir: subPath});
         });
+    });
+
+    app.get('/fm/getTargetLocations', (req, res) => {
+        const targetLocations = settings.fm.targetLocations.map(location => {
+            return location.path;
+        });
+        res.send({status: 'ok', targetLocations});
     });
 
     let ftpStatus = 'nothing started';
