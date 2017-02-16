@@ -1,7 +1,7 @@
 /* jshint node:true */
 'use strict';
 
-const fs = require('fs');
+const fs = require('fs'); // TODO replace all by fs-promise
 const fsp = require('fs-promise');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
@@ -112,7 +112,8 @@ var bind = function(app) {
 
     app.get('/fm/ftp/:path', (req, res) => {
         const path = rootPath + '/' + decodeURIComponent(req.params.path);
-        console.log('FTP will try to send', path, 'to', settings.ftp.host, settings.ftp.user);
+        ftpStatus = `Starting upload of ${path} to ${settings.ftp.remotePath}`;
+        console.log(`FTP will try to send ${path} to ${settings.ftp.remotePath}`);
         // var ftp = new PromiseFtp();
         // ftp.connect({
         //     host: settings.ftp.host,
@@ -129,8 +130,6 @@ var bind = function(app) {
         //     return ftp.end();
         // });
 
-        ftpStatus = `Starting upload of ${path} to ${settings.ftp.remotePath}`;
-
         const ftp = new PromiseFtp();
         ftp.connect({
             host: settings.ftp.host,
@@ -140,23 +139,85 @@ var bind = function(app) {
         .then(serverMessage => {
             console.log('Server message: ' + serverMessage);
         })
+        // .then(() => {
+        //     return ftp.list(settings.ftp.remotePath);
+        // })
+        // .then(list => {
+        //     console.dir(list);
+        // })
         .then(() => {
-            return ftp.list(settings.ftp.remotePath);
+            // Getting 550 Read-Only if not first cwd to target dir
+            return ftp.cwd(settings.ftp.remotePath);
         })
-        .then(list => {
-            console.dir(list);
-            const remoteTargetPath = settings.ftp.remotePath + '/a.jpg';
+        // .then(() => {
+        //     return ftp.status();
+        // })
+        // .then(status => {
+        //     console.log('ftpstatus', status);
+        //     return;
+        // })
+        .then(() => {
+            const fileNameArr = path.split('/'); // TODO path and filename should be passed as separate POST params
+            const fileName = fileNameArr[fileNameArr.length - 1];
+            const remoteTargetPath = settings.ftp.remotePath + '/' + fileName;
             console.log('src', path, 'target', remoteTargetPath);
             return ftp.put(path, remoteTargetPath);
         })
         .then(() => {
             ftpStatus = `Upload of ${path} to ${settings.ftp.remotePath} succeeded`;
+            console.log(ftpStatus);
             return ftp.end();
         })
         .catch(error => {
             console.log('error:', error);
             ftpStatus = `Upload of ${path} to ${settings.ftp.remotePath} failed: ${error}`;
+            return ftp.end();
         });
+
+        // const ftp = new JSFtp({
+        //     host: settings.ftp.host,
+        //     user: settings.ftp.user,
+        //     pass: settings.ftp.password,
+        //     debugMode: true
+        // });
+
+        // ftp.put('.eslintrc', settings.ftp.remotePath + '/test2.txt', function(err) {
+        //     if (!err) {
+        //         console.log('File transferred successfully!');
+
+        //         ftp.list(settings.ftp.remotePath, function(err, res) {
+        //             console.log('res', res);
+        //         });
+
+        //     } else {
+        //         console.log('Error on FTP put:', err);                
+        //     }
+        // });
+
+        // ftp.auth(settings.ftp.user, settings.ftp.password, function(res) {
+        //     console.log('Auth response:', res);
+
+        //     ftp.put('README.md', settings.ftp.remotePath + '/test2.txt', function(err) {
+        //         if (!err) {
+        //             console.log('File transferred successfully!');
+
+        //             ftp.list(settings.ftp.remotePath, function(err, res) {
+        //                 console.log('res', res);
+        //             });
+
+        //         } else {
+        //             console.log('Error on FTP put:', err);                
+        //         }
+        //     });
+        // });
+
+        //ftp.list(settings.ftp.remotePath, function(err, res) {
+        //    console.log('res', res);
+        //    /*res.forEach(function(file) {
+        //        console.log('Listing file:', file.name);
+        //    });*/
+        //});
+
         res.send({status: 'ok'});
     });
 };
