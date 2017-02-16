@@ -42,7 +42,7 @@ class FileManager extends React.Component {
 
     ftpUpload(filePath) {
         console.log('ftp upload', filePath); // TODO remove
-        $http('/fm/ftp/' + encodeURIComponent(filePath))
+        $http('/fm/ftp/' + encodeURIComponent(encodeURIComponent(filePath)))
             .then(data => {
                 console.log(data);
                 //this.setState({dirIndex: data.list});
