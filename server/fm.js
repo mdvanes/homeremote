@@ -2,6 +2,7 @@
 'use strict';
 
 const fs = require('fs');
+const fsp = require('fs-promise');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
 const PromiseFtp = require('promise-ftp');
@@ -89,6 +90,18 @@ var bind = function(app) {
             return location.path;
         });
         res.send({status: 'ok', targetLocations});
+    });
+
+    app.get('/fm/mvToTargetLocation', (req, res) => {
+        console.log('exists fsp?', fsp, req.body.sourcePath, req.body.targetPath);
+        //fsp.move(req.body.sourcePath1, req.body.targetPath1)
+        //    .then()
+        //    .catch();
+        //
+        // fs.move('/tmp/somefile', '/tmp/does/not/exist/yet/somefile', function (err) {
+        // if (err) return console.error(err)
+        //     console.log("success!")
+        // })
     });
 
     let ftpStatus = 'nothing started';
