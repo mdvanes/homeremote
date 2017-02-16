@@ -15,6 +15,7 @@ let express = require('express'),
     togglestub = require('./server/togglestub.js'),
     clickstub = require('./server/clickstub.js'),
     switcher = require('./server/switch.js'),
+    filemanager = require('./server/fm.js'),
     settings = require('./settings.json'),
     debug = false;
 
@@ -59,6 +60,7 @@ motion.bind(app, log, debug);
 togglestub.bind(app);
 clickstub.bind(app);
 switcher.bind(app, log);
+filemanager.bind(app, log);
 
 if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // default is true
