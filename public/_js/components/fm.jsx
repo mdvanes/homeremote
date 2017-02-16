@@ -72,6 +72,15 @@ class FileManager extends React.Component {
         const confirmResult = confirm(`Confirm moving ${filePath} to ${targetLocation}`);
         if(confirmResult) {
             console.log('start moving');
+            // TODO
+            // My $http can't send POST params
+            // instead use https://github.com/request/request-promise-native
+            // see POST example on https://www.npmjs.com/package/request-promise
+            //$http('/fm/mvToTargetLocation')
+            //    .then(data => {
+            //        logger.log(`FTP status: ${data.ftpStatus}`);
+            //    })
+            //    .catch(error => logger.error('error on fm/ftpstatus: ' + error));
         }
     }
 
