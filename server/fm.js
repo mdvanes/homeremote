@@ -6,56 +6,14 @@ const fsp = require('fs-promise');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
 const PromiseFtp = require('promise-ftp');
-//const bodyParser = require('body-parser');
 
 var bind = function(app) {
-    app.get('/fm/list', function (req, res) {
-        console.log('call to http://%s:%s/fm/list');
 
-        if(!rootPath) {
-            res.send({status: 'error: invalid rootPath'});
-            return;
-        }
-
-        fs.readdir(rootPath, (err, files) => {
-            let filesStats = files.map(file => {
-                //console.log(file);
-                // fs.stat('/home/martin/ZNoBackup/homeremote/' + file, (errz, stats) => {
-                //     console.log(file, stats.isDirectory());
-                //     return {
-                //         name: file,
-                //         isDir: stats.isDirectory()
-                //     };
-                // });
-                // TODO solve this with async version of fs.stat
-                const stats = fs.statSync(rootPath + '/' + file);
-                return {
-                    name: file,
-                    isDir: stats.isDirectory()
-                };
-            });
-
-            let filesStatsOnlyDirs = [];
-            const filesStatsOnlyFiles = filesStats.filter(file => {
-                if(file.isDir) {
-                    filesStatsOnlyDirs.push(file);
-                }
-                return !file.isDir;
-            });
-            filesStats = filesStatsOnlyDirs.concat(filesStatsOnlyFiles);
-
-            res.send({status: 'ok', list: filesStats, dir: ''});
-        });
-
-        //res.send({status: 'started'});
-    });
-
-    // TODO merge with /fm/list
-    app.get('/fm/list/:path', function (req, res) {
+    app.post('/fm/list', function (req, res) {
         console.log('call to http://%s:%s/fm/list/sub');
 
-        console.log('Trying path', req.params.path);
-        const subPath = req.params.path;
+        console.log('Trying path', req.body.path);
+        const subPath = req.body.path;
 
         if(!rootPath) {
             res.send({status: 'error: invalid rootPath'});
@@ -88,7 +46,7 @@ var bind = function(app) {
 
     app.post('/fm/rename', (req, res) => {
         console.log('call to http://%s:%s/fm/rename');
-        console.log(req.body.path, req.body.src, req.body.target);
+        //console.log(req.body.path, req.body.src, req.body.target);
 
         const src = rootPath + '/' + req.body.path + '/' + req.body.src;
         const target = rootPath + '/' + req.body.path + '/' + req.body.target;
