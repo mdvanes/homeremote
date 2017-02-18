@@ -10,22 +10,27 @@ export default class RenameButton extends React.Component {
     rename() {
         let suggestion = '';
         if(this.props.suggestion) {
-            const extension = this.props.path.split('.').pop();
+            const extension = this.props.src.split('.').pop();
             suggestion = this.props.suggestion + '.' + extension;
         }
-        var result = prompt(`Rename file ${this.props.path} to`, suggestion);
-        if(result) {
+        var target = prompt(`Rename file ${this.props.src} to`, suggestion);
+        if(target) {
             // https://davidwalsh.name/fetch
-            fetch('/fm/rename/', {
+            fetch('/fm/rename', {
                 method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
-                    result,
-                    path: this.props.path
+                    src: this.props.src,
+                    path: this.props.path,
+                    target
                 })
             })
             .then(response => {
-                if(response.status === 404) {
-                    throw new Error('status=404');
+                if(response.status !== 205) {
+                    throw new Error('status=' + response.status);
                 } else {
                     // TODO should just return statusCode 205 and reset content
                     logger.log('Succesfully renamed');

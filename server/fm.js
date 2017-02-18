@@ -6,6 +6,7 @@ const fsp = require('fs-promise');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
 const PromiseFtp = require('promise-ftp');
+//const bodyParser = require('body-parser');
 
 var bind = function(app) {
     app.get('/fm/list', function (req, res) {
@@ -85,13 +86,25 @@ var bind = function(app) {
         });
     });
 
-    // app.get('/fm/rename', (req, res) => {
-    //     console.log('call to http://%s:%s/fm/rename');
-    //     // const targetLocations = settings.fm.targetLocations.map(location => {
-    //     //     return location.path;
-    //     // });
-    //     res.sendStatus(205); // 205, reset content
-    // });
+    //app.use(bodyParser.urlencoded({
+    //    extended: true
+    //}));
+    //app.use(bodyParser.json()); // for parsing application/json
+
+    app.post('/fm/rename', (req, res) => {
+        console.log('call to http://%s:%s/fm/rename');
+        console.log(req.body.path, req.body.src, req.body.target);
+
+        const src = rootPath + '/' + req.body.path + '/' + req.body.src;
+        const target = rootPath + '/' + req.body.path + '/' + req.body.target;
+        fsp.move(src, target, {overwrite: true})
+            .then(() => res.sendStatus(205)) // 205, reset content
+            .catch(error => {
+                console.log('/fm/rename', error);
+                res.sendStatus(500);
+            });
+    
+    });
 
     app.get('/fm/getTargetLocations', (req, res) => {
         const targetLocations = settings.fm.targetLocations.map(location => {
