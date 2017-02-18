@@ -18,4 +18,8 @@ textarea.form-control.log {
     color: black;
     display: block; }
 
+.table tbody td > .btn,
+.table tbody td > .btn-group {
+  margin: -9px; }
+
 /*# sourceMappingURL=homeRemote.css.map */

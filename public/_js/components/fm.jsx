@@ -12,35 +12,36 @@ class FileManager extends React.Component {
             targetLocations: []
         };
         this.listDir = this.listDir.bind(this);
-        this.listRootDir = this.listRootDir.bind(this);
         this.ftpUpload = this.ftpUpload.bind(this);
         this.getTargetLocations = this.getTargetLocations.bind(this);
         this.mvToTargetLocation = this.mvToTargetLocation.bind(this);
-        this.listRootDir();
+        this.listDir('');
         this.getTargetLocations();
-    }
-
-    listRootDir() {
-        $http('/fm/list')
-            .then(data => {
-                this.setState({
-                    dirIndex: data.list,
-                    dirName: data.dir
-                });
-            })
-            .catch(error => logger.error('error on fm/list: ' + error));
     }
 
     // TODO list filesize
     listDir(dirName) {
-        $http('/fm/list/' + dirName)
-            .then(data => {
-                this.setState({
-                    dirIndex: data.list,
-                    dirName: data.dir
-                });
+
+        fetch('/fm/list/', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                path: dirName
             })
-            .catch(error => logger.error('error on fm/list/path: ' + error));
+        })
+        .then(data => {
+            return data.json();
+        })
+        .then(data => {
+            this.setState({
+                dirIndex: data.list,
+                dirName: data.dir
+            });
+        })
+        .catch(error => logger.error('error on fm/list/path: ' + error));
     }
 
     ftpUpload(filePath) {
@@ -145,7 +146,7 @@ class FileManager extends React.Component {
                     <tbody>
                         <tr>
                             <td></td>
-                            <td onClick={this.listRootDir}>/</td>
+                            <td onClick={() => this.listDir('')}>/</td>
                             <td></td>
                             <td></td>
                             <td></td>

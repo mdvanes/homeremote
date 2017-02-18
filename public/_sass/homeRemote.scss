@@ -30,3 +30,11 @@ textarea.form-control.log {
         display: block;
     }
 }
+
+// TODO Move sass to webpack 
+.table tbody td {
+    > .btn, 
+    > .btn-group {
+        margin: -9px;
+    }  
+} 
