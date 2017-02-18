@@ -42,6 +42,7 @@ class FileManager extends React.Component {
 
     ftpUpload(filePath) {
         console.log('ftp upload', filePath); // TODO remove
+        // TODO instead of this ugly double encoding, use POST vars
         $http('/fm/ftp/' + encodeURIComponent(encodeURIComponent(filePath)))
             .then(data => {
                 console.log(data);
@@ -94,7 +95,7 @@ class FileManager extends React.Component {
         const rows = this.state.dirIndex.map(entry => {
             if( entry.isDir ) {
                 return <tr>
-                    <td>*</td>
+                    <td><i className="glyphicon glyphicon-folder-open"></i></td>
                     <td onClick={() => {this.listDir(entry.name)}}>{entry.name}</td>
                     <td></td>
                     <td></td>
@@ -131,6 +132,7 @@ class FileManager extends React.Component {
                             <th>Name</th>
                             <th>FTP</th>
                             <th>Move</th>
+                            <th>Rename</th>
                         </tr>
                     </thead>
                     <tbody>
