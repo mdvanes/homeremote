@@ -86,11 +86,6 @@ var bind = function(app) {
         });
     });
 
-    //app.use(bodyParser.urlencoded({
-    //    extended: true
-    //}));
-    //app.use(bodyParser.json()); // for parsing application/json
-
     app.post('/fm/rename', (req, res) => {
         console.log('call to http://%s:%s/fm/rename');
         console.log(req.body.path, req.body.src, req.body.target);
