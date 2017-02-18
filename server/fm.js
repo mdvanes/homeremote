@@ -43,12 +43,13 @@ var bind = function(app) {
             });
             filesStats = filesStatsOnlyDirs.concat(filesStatsOnlyFiles);
 
-            res.send({status: 'ok', list: filesStats});
+            res.send({status: 'ok', list: filesStats, dir: ''});
         });
 
         //res.send({status: 'started'});
     });
 
+    // TODO merge with /fm/list
     app.get('/fm/list/:path', function (req, res) {
         console.log('call to http://%s:%s/fm/list/sub');
 
@@ -60,7 +61,6 @@ var bind = function(app) {
             return;
         }
 
-        // TODO merge with /fm/list
         fs.readdir(rootPath + '/' + subPath, (err, files) => {
             //console.log(files);
             let filesStats = files.map(file => {
@@ -84,6 +84,14 @@ var bind = function(app) {
             res.send({status: 'ok', list: filesStats, dir: subPath});
         });
     });
+
+    // app.get('/fm/rename', (req, res) => {
+    //     console.log('call to http://%s:%s/fm/rename');
+    //     // const targetLocations = settings.fm.targetLocations.map(location => {
+    //     //     return location.path;
+    //     // });
+    //     res.sendStatus(205); // 205, reset content
+    // });
 
     app.get('/fm/getTargetLocations', (req, res) => {
         const targetLocations = settings.fm.targetLocations.map(location => {
