@@ -2,6 +2,7 @@ import React from 'react';
 import $http from '../request';
 import logger from '../logger';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
+import RenameButton from './RenameButton';
 
 class FileManager extends React.Component {
     constructor(props) {
@@ -22,8 +23,10 @@ class FileManager extends React.Component {
     listRootDir() {
         $http('/fm/list')
             .then(data => {
-                //console.log(data, data.list);
-                this.setState({dirIndex: data.list});
+                this.setState({
+                    dirIndex: data.list,
+                    dirName: data.dir
+                });
             })
             .catch(error => logger.error('error on fm/list: ' + error));
     }
@@ -99,6 +102,7 @@ class FileManager extends React.Component {
                     <td onClick={() => {this.listDir(entry.name)}}>{entry.name}</td>
                     <td></td>
                     <td></td>
+                    <td></td>
                 </tr>;
             } else {
                 let filePath = entry.name;
@@ -113,6 +117,9 @@ class FileManager extends React.Component {
                     <td>{entry.name}</td>
                     <td>
                         <button className="btn btn-default" onClick={() => {this.ftpUpload(filePath)}}>upload</button>
+                    </td>
+                    <td>
+                        <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
                     </td>
                     <td>
                         <DropdownButton title="Move">
@@ -131,14 +138,15 @@ class FileManager extends React.Component {
                             <th></th>
                             <th>Name</th>
                             <th>FTP</th>
-                            <th>Move</th>
                             <th>Rename</th>
+                            <th>Move</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td></td>
                             <td onClick={this.listRootDir}>/</td>
+                            <td></td>
                             <td></td>
                             <td></td>
                         </tr>

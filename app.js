@@ -19,6 +19,9 @@ let express = require('express'),
     settings = require('./settings.json'),
     debug = false;
 
+const bodyParser = require('body-parser');
+app.use(bodyParser.json()); // for parsing application/json
+
 // Configuration
 let log = bunyan.createLogger({
     name: 'HomeRemote',
