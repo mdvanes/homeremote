@@ -114,7 +114,7 @@ class FileManager extends React.Component {
                     return <MenuItem onClick={() => {this.mvToTargetLocation(filePath, entry)}}>{entry}</MenuItem>
                 });
                 return <tr>
-                    <td></td>
+                    <td>{entry.size}</td>
                     <td>{entry.name}</td>
                     <td>
                         <button className="btn btn-default" onClick={() => {this.ftpUpload(filePath)}}>upload</button>

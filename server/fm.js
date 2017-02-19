@@ -6,6 +6,7 @@ const fsp = require('fs-promise');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
 const PromiseFtp = require('promise-ftp');
+const prettyBytes = require('pretty-bytes');
 
 var bind = function(app) {
 
@@ -24,9 +25,11 @@ var bind = function(app) {
             //console.log(files);
             let filesStats = files.map(file => {
                 const stats = fs.statSync(rootPath + '/' + subPath + '/' + file);
+                //console.log(file, prettyBytes(stats.size));
                 return {
                     name: file,
-                    isDir: stats.isDirectory()
+                    isDir: stats.isDirectory(),
+                    size: prettyBytes(stats.size)
                 };
             });
 
