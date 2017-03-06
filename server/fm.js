@@ -23,27 +23,32 @@ var bind = function(app) {
 
         fs.readdir(rootPath + '/' + subPath, (err, files) => {
             //console.log(files);
-            let filesStats = files.map(file => {
-                const stats = fs.statSync(rootPath + '/' + subPath + '/' + file);
-                //console.log(file, prettyBytes(stats.size));
-                return {
-                    name: file,
-                    isDir: stats.isDirectory(),
-                    size: prettyBytes(stats.size)
-                };
-            });
+            if(!files) {
+                console.log('ERROR Possibly invalid path: ', rootPath + '/' + subPath);
+                res.send({status: 'error'});
+            } else {
+                let filesStats = files.map(file => {
+                    const stats = fs.statSync(rootPath + '/' + subPath + '/' + file);
+                    //console.log(file, prettyBytes(stats.size));
+                    return {
+                        name: file,
+                        isDir: stats.isDirectory(),
+                        size: prettyBytes(stats.size)
+                    };
+                });
 
-            let filesStatsOnlyDirs = [];
-            const filesStatsOnlyFiles = filesStats.filter(file => {
-                if(file.isDir) {
-                    filesStatsOnlyDirs.push(file);
-                }
-                return !file.isDir;
-            });
-            filesStats = filesStatsOnlyDirs.concat(filesStatsOnlyFiles);
+                let filesStatsOnlyDirs = [];
+                const filesStatsOnlyFiles = filesStats.filter(file => {
+                    if(file.isDir) {
+                        filesStatsOnlyDirs.push(file);
+                    }
+                    return !file.isDir;
+                });
+                filesStats = filesStatsOnlyDirs.concat(filesStatsOnlyFiles);
 
-            // TODO fix JSON response: res.setHeader('Content-Type', 'application/json');
-            res.send({status: 'ok', list: filesStats, dir: subPath});
+                // TODO fix JSON response: res.setHeader('Content-Type', 'application/json');
+                res.send({status: 'ok', list: filesStats, dir: subPath});                
+            }
         });
     });
 
