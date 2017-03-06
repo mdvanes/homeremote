@@ -92,25 +92,10 @@ var bind = function(app) {
         res.send({status: 'ok', ftpStatus});
     });
 
-    app.get('/fm/ftp/:path', (req, res) => {
-        const path = rootPath + '/' + decodeURIComponent(req.params.path);
+    app.post('/fm/ftp', (req, res) => {
+        const path = rootPath + '/' + req.body.path;
         ftpStatus = `Starting upload of ${path} to ${settings.ftp.remotePath}`;
         console.log(`FTP will try to send ${path} to ${settings.ftp.remotePath}`);
-        // var ftp = new PromiseFtp();
-        // ftp.connect({
-        //     host: settings.ftp.host,
-        //     user: settings.ftp.user,
-        //     password: settings.ftp.password,
-        //     secure: false})
-        // .then(function (serverMessage) {
-        //     console.log('Server message: ' + serverMessage);
-        //     return ftp.list(settings.ftp.remotePath);
-        // })
-        // .then(function (list) {
-        //     console.log('Directory listing:');
-        //     console.dir(list);
-        //     return ftp.end();
-        // });
 
         const ftp = new PromiseFtp();
         ftp.connect({
@@ -155,50 +140,6 @@ var bind = function(app) {
             ftpStatus = `Upload of ${path} to ${settings.ftp.remotePath} failed: ${error}`;
             return ftp.end();
         });
-
-        // const ftp = new JSFtp({
-        //     host: settings.ftp.host,
-        //     user: settings.ftp.user,
-        //     pass: settings.ftp.password,
-        //     debugMode: true
-        // });
-
-        // ftp.put('.eslintrc', settings.ftp.remotePath + '/test2.txt', function(err) {
-        //     if (!err) {
-        //         console.log('File transferred successfully!');
-
-        //         ftp.list(settings.ftp.remotePath, function(err, res) {
-        //             console.log('res', res);
-        //         });
-
-        //     } else {
-        //         console.log('Error on FTP put:', err);                
-        //     }
-        // });
-
-        // ftp.auth(settings.ftp.user, settings.ftp.password, function(res) {
-        //     console.log('Auth response:', res);
-
-        //     ftp.put('README.md', settings.ftp.remotePath + '/test2.txt', function(err) {
-        //         if (!err) {
-        //             console.log('File transferred successfully!');
-
-        //             ftp.list(settings.ftp.remotePath, function(err, res) {
-        //                 console.log('res', res);
-        //             });
-
-        //         } else {
-        //             console.log('Error on FTP put:', err);                
-        //         }
-        //     });
-        // });
-
-        //ftp.list(settings.ftp.remotePath, function(err, res) {
-        //    console.log('res', res);
-        //    /*res.forEach(function(file) {
-        //        console.log('Listing file:', file.name);
-        //    });*/
-        //});
 
         res.send({status: 'ok'});
     });
