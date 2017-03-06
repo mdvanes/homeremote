@@ -1,5 +1,4 @@
 import React from 'react';
-import $http from '../request';
 import logger from '../logger';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import RenameButton from './RenameButton';
@@ -47,33 +46,59 @@ class FileManager extends React.Component {
     }
 
     ftpUpload(filePath) {
-        // TODO instead of this ugly double encoding, use POST vars
-        $http('/fm/ftp/' + encodeURIComponent(encodeURIComponent(filePath)))
-            .then(data => {
-                console.log(data);
-                //this.setState({dirIndex: data.list});
+        fetch('/fm/ftp/', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                path: filePath
             })
-            .catch(error => logger.error('error on fm/ftp: ' + error));
+        })
+        .then(data => {
+            return data.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => logger.error('error on fm/ftp: ' + error));
     }
 
     getFtpStatus() {
-        // TODO replace by Fetch/GET
-        $http('/fm/ftpstatus')
-            .then(data => {
-                logger.log(`FTP status: ${data.ftpStatus}`);
-            })
-            .catch(error => logger.error('error on fm/ftpstatus: ' + error));
+        fetch('/fm/ftpstatus', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(data => {
+            return data.json();
+        })
+        .then(data => {
+            logger.log(`FTP status: ${data.ftpStatus}`);
+        })
+        .catch(error => logger.error('error on fm/ftpstatus: ' + error));
     }
 
     getTargetLocations() {
-        // TODO replace by Fetch/GET
-        $http('/fm/getTargetLocations')
-            .then(data => {
-                this.setState({
-                    targetLocations: data.targetLocations
-                });
-            })
-            .catch(error => logger.error('error on fm/ftpstatus: ' + error));
+        fetch('/fm/getTargetLocations', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(data => {
+            return data.json();
+        })
+        .then(data => {
+            this.setState({
+                targetLocations: data.targetLocations
+            });
+        })
+        .catch(error => logger.error('error on fm/getTargetLocations: ' + error));
     }
 
     // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
