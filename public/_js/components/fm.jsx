@@ -19,9 +19,11 @@ class FileManager extends React.Component {
         this.getTargetLocations();
     }
 
-    // TODO list filesize
     listDir(dirName) {
-
+        if(this.state.dirName && this.state.dirName.length > 0 &&
+            dirName && dirName.length > 0) {
+            dirName = this.state.dirName + '/' + dirName;
+        }
         fetch('/fm/list/', {
             method: 'POST',
             headers: {
@@ -45,7 +47,6 @@ class FileManager extends React.Component {
     }
 
     ftpUpload(filePath) {
-        console.log('ftp upload', filePath); // TODO remove
         // TODO instead of this ugly double encoding, use POST vars
         $http('/fm/ftp/' + encodeURIComponent(encodeURIComponent(filePath)))
             .then(data => {
@@ -56,6 +57,7 @@ class FileManager extends React.Component {
     }
 
     getFtpStatus() {
+        // TODO replace by Fetch/GET
         $http('/fm/ftpstatus')
             .then(data => {
                 logger.log(`FTP status: ${data.ftpStatus}`);
@@ -64,6 +66,7 @@ class FileManager extends React.Component {
     }
 
     getTargetLocations() {
+        // TODO replace by Fetch/GET
         $http('/fm/getTargetLocations')
             .then(data => {
                 this.setState({
