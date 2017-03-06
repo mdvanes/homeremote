@@ -74,8 +74,35 @@ var bind = function(app) {
         res.send({status: 'ok', targetLocations});
     });
 
-    app.get('/fm/mvToTargetLocation', (req, res) => {
-        console.log('exists fsp?', fsp, req.body.sourcePath, req.body.targetPath);
+    app.post('/fm/mvToTargetLocation', (req, res) => {
+        console.log('exists fsp?', req.body.sourcePath, req.body.targetPath);
+        const sourcePath = rootPath + '/' + req.body.sourcePath + '/' + req.body.fileName;
+        const targetNewFile = req.body.targetPath + '/' + req.body.fileName;
+        fsp.exists(sourcePath)
+            .then(result => {
+                if(result) {
+                    //console.log('sourcePath exists:', result);
+                    return fsp.exists(req.body.targetPath);
+                } else {
+                    throw new Error('sourcePath does not exist');
+                }
+            })
+            .then(result => {
+                if(result) {
+                    //console.log('targetPath exists:', result);
+                    return fsp.move(sourcePath, targetNewFile);
+                } else {
+                    throw new Error('targetPath does not exist');
+                }
+            })
+            .then(() => {
+                //console.log(result, targetNewFile);
+                res.send({status: 'ok'});
+            })
+            .catch(err => {
+                console.log('error', err);
+                res.send({status: 'error'});
+            });
         //fsp.move(req.body.sourcePath1, req.body.targetPath1)
         //    .then()
         //    .catch();
