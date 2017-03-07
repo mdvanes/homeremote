@@ -1,19 +1,31 @@
 /* jshint node:true */
 'use strict';
 
-const fs = require('fs'); // TODO replace all by fs-promise
 const fsp = require('fs-promise');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
 const PromiseFtp = require('promise-ftp');
 const prettyBytes = require('pretty-bytes');
 
+const fileToFileInfo = subPath => {
+    return file => {
+        return fsp.stat(rootPath + '/' + subPath + '/' + file)
+            .then(stat => {
+                return {
+                    name: file,
+                    isDir: stat.isDirectory(),
+                    size: prettyBytes(stat.size)                    
+                };
+            });
+    };
+};
+
 var bind = function(app) {
 
     app.post('/fm/list', function (req, res) {
         console.log('call to http://%s:%s/fm/list/sub');
 
-        console.log('Trying path', req.body.path);
+        console.log(`Trying path <${req.body.path}>`);
         const subPath = req.body.path;
 
         if(!rootPath) {
@@ -21,35 +33,32 @@ var bind = function(app) {
             return;
         }
 
-        fs.readdir(rootPath + '/' + subPath, (err, files) => {
-            //console.log(files);
-            if(!files) {
-                console.log('ERROR Possibly invalid path: ', rootPath + '/' + subPath);
-                res.send({status: 'error'});
-            } else {
-                let filesStats = files.map(file => {
-                    const stats = fs.statSync(rootPath + '/' + subPath + '/' + file);
-                    //console.log(file, prettyBytes(stats.size));
-                    return {
-                        name: file,
-                        isDir: stats.isDirectory(),
-                        size: prettyBytes(stats.size)
-                    };
-                });
-
-                let filesStatsOnlyDirs = [];
-                const filesStatsOnlyFiles = filesStats.filter(file => {
+        fsp.readdir(rootPath + '/' + subPath)
+            .then(files => {
+                if(!files) {
+                    throw new Error(`Possibly invalid path: ${rootPath}/${subPath}`);
+                }
+                const actions = files.map(fileToFileInfo(subPath));
+                const results = Promise.all(actions);
+                return results;
+            })
+            .then(fileInfos => {
+                const fileInfosOnlyDirs = [];
+                const fileInfosOnlyFiles = fileInfos.filter(file => {
                     if(file.isDir) {
-                        filesStatsOnlyDirs.push(file);
+                        fileInfosOnlyDirs.push(file);
                     }
                     return !file.isDir;
                 });
-                filesStats = filesStatsOnlyDirs.concat(filesStatsOnlyFiles);
-
+                fileInfos = fileInfosOnlyDirs.concat(fileInfosOnlyFiles);
+ 
                 // TODO fix JSON response: res.setHeader('Content-Type', 'application/json');
-                res.send({status: 'ok', list: filesStats, dir: subPath});                
-            }
-        });
+                res.send({status: 'ok', list: fileInfos, dir: subPath});
+            })
+            .catch(error => {
+                console.log(error);
+                res.send({status: 'error'});
+            });
     });
 
     app.post('/fm/rename', (req, res) => {
