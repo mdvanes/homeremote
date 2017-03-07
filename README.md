@@ -55,7 +55,21 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
     "hepath": "/home/foo/elro/he853-remote",
     "heserverip": "",
     "enableAuth": true,
-    "radiologpath": "/tmp/homeremote-playradio-status.log"
+    "radiologpath": "/tmp/homeremote-playradio-status.log",
+    "fm": {
+        "rootPath": "/path/to/list",
+        "targetLocations": [
+            {
+                "path": "/path/to/move/to"
+            }
+        ]
+    },
+    "ftp": {
+        "host": "ftp.example.com",
+        "user": "ftp_user",
+        "password": "ftp_pass",
+        "remotePath": "/remote/directory"
+    }
 }
 ```
 * it is possible to install HomeRemote on multiple servers, have the USB stick in one of them and call one from another by setting a URL in heserverip, like: http://192.168.0.25:3000
