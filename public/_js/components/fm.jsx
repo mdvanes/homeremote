@@ -102,19 +102,32 @@ class FileManager extends React.Component {
     }
 
     // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
-    mvToTargetLocation(filePath, targetLocation) {
-        const confirmResult = confirm(`Confirm moving ${filePath} to ${targetLocation}`);
+    mvToTargetLocation(filePath, fileName, targetLocation) {
+        const confirmResult = confirm(`Confirm moving ${filePath}/${fileName} to ${targetLocation}`);
         if(confirmResult) {
-            console.log('start moving');
-            // TODO
-            // My $http can't send POST params
-            // instead use https://github.com/request/request-promise-native
-            // see POST example on https://www.npmjs.com/package/request-promise
-            //$http('/fm/mvToTargetLocation')
-            //    .then(data => {
-            //        logger.log(`FTP status: ${data.ftpStatus}`);
-            //    })
-            //    .catch(error => logger.error('error on fm/ftpstatus: ' + error));
+            fetch('/fm/mvToTargetLocation', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    sourcePath: filePath,
+                    fileName: fileName,
+                    targetPath: targetLocation
+                })
+            })
+            .then(data => {
+                return data.json();
+            })
+            .then(data => {
+                if(data.status === 'ok') {
+                    logger.log('move completed');
+                } else {
+                    throw new Error('move failed');
+                }
+            })
+            .catch(error => logger.error('error on fm/mvToTargetLocation: ' + error));
         }
     }
 
@@ -134,12 +147,13 @@ class FileManager extends React.Component {
                     <td></td>
                 </tr>;
             } else {
-                let filePath = entry.name;
-                if(this.state.dirName) {
-                    filePath = this.state.dirName + '/' + filePath;
-                }
+                let filePath = this.state.dirName;
+                let fileName = entry.name;
+                //if(this.state.dirName) {
+                //    filePath = this.state.dirName + '/' + filePath;
+                //}
                 const targetLocations = this.state.targetLocations.map(entry => {
-                    return <MenuItem onClick={() => {this.mvToTargetLocation(filePath, entry)}}>{entry}</MenuItem>
+                    return <MenuItem onClick={() => {this.mvToTargetLocation(filePath, fileName, entry)}}>{entry}</MenuItem>
                 });
                 return <tr>
                     <td>{entry.size}</td>
