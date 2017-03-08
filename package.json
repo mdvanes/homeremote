@@ -25,7 +25,6 @@
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-eslint": "^19.0.0",
     "grunt-express-server": "^0.5.1",
     "grunt-flow": "^1.0.0",
     "grunt-jscs": "^1.8.0",
