@@ -7,10 +7,12 @@ var ROOT_PATH = path.resolve(__dirname);
 
 var common = {
 
+    // TODO fix webpack-dev-server with proxies https://webpack.github.io/docs/webpack-dev-server.html
+
     entry: [path.resolve(ROOT_PATH, 'public/_js/main')],
 
     resolve: {
-        extensions: ['', '.js', '.jsx']
+        extensions: ['.js', '.jsx']
     },
 
     output: {
@@ -19,7 +21,7 @@ var common = {
     },
 
     // Add source maps
-    devtool: 'source-map',
+    devtool: 'source-map', // TODO This is not what makes the build slow. It might be node-modules?
 
     //plugins: [
     //    new HtmlWebpackPlugin({
@@ -32,7 +34,7 @@ var common = {
             {
                 test: /\.jsx?$/,
                 //loaders: ['react-hot', 'babel?stage=1'],
-                loader: 'babel?presets[]=react,presets[]=es2015'
+                loaders: ['babel-loader?presets[]=react,presets[]=es2015', 'eslint-loader']
                 //include: path.resolve(ROOT_PATH, 'public/react')
             },
 
