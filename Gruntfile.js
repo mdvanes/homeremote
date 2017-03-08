@@ -21,16 +21,7 @@ module.exports = function(grunt) {
             }
         },
 
-        eslint: {
-            options: {
-                configFile: '.eslintrc'
-            },
-            dev: [
-                'public/_js/*.js',
-                'public/_js/**/*.jsx'
-            ]
-        },
-
+        // TODO lint back-end code with eslint, not jscs
         jscs: {
             options: {
                 config: '.jscsrc',
@@ -39,7 +30,7 @@ module.exports = function(grunt) {
             },
             dev: {
                 files: {
-                    src: ['Gruntfile.js', 'app.js', 'public/_js/**/*.js', 'server/**/*.js', 'public/_js/**/*.jsx']
+                    src: ['Gruntfile.js', 'app.js', 'server/**/*.js']
                 }
             }
         },
@@ -58,41 +49,52 @@ module.exports = function(grunt) {
             options: webpackConfig,
             build: {
                 //stats: false, //stats: false disables the stats output
-                progress: false,
+                //progress: false,
                 plugins: [
-                    new webpack.optimize.UglifyJsPlugin({
-                        compress: {
-                            warnings: false
-                        },
-                        sourceMap: true
-                    }),
                     new webpack.DefinePlugin({
                         'process.env': {
                             'NODE_ENV': JSON.stringify('production')
                         }
                     })
                 ]
-            },
-            nativeTest: {
-                //stats: false, //stats: false disables the stats output
-                progress: false,
-                entry: './public/react/native',
-                output: {
-                    path: './',
-                    filename: 'index.android.js'
-                },
-                plugins: [
-                    //new webpack.optimize.UglifyJsPlugin({
-                    //    compress: {
-                    //        warnings: false
-                    //    }
-                    //}),
-                    //new webpack.DefinePlugin({
-                    //    'process.env': {
-                    //        'NODE_ENV': JSON.stringify('production')
-                    //    }
-                    //})
+            }
+            //nativeTest: {
+            //    //stats: false, //stats: false disables the stats output
+            //    progress: false,
+            //    entry: './public/react/native',
+            //    output: {
+            //        path: './',
+            //        filename: 'index.android.js'
+            //    },
+            //    plugins: [
+            //        //new webpack.optimize.UglifyJsPlugin({
+            //        //    compress: {
+            //        //        warnings: false
+            //        //    }
+            //        //}),
+            //        //new webpack.DefinePlugin({
+            //        //    'process.env': {
+            //        //        'NODE_ENV': JSON.stringify('production')
+            //        //    }
+            //        //})
+            //    ]
+            //}
+        },
+
+        // See https://github.com/webpack/webpack-with-common-libs/blob/master/Gruntfile.js
+        'webpack-dev-server': {
+            options: {
+                webpack: webpackConfig,
+                proxy: [
+                    {
+                        context: ['/radio', '/motion', '/fm'],
+                        target: 'http://localhost:3000',
+                        secure: false
+                    }
                 ]
+            },
+            start: {
+                contentBase: './public'
             }
         },
 
@@ -100,10 +102,6 @@ module.exports = function(grunt) {
             sass: {
                 files: ['public/_sass/**/*.scss'],
                 tasks: ['sass:dev']
-            },
-            react: {
-                files: ['public/_js/**/*.jsx', 'public/_js/**/*.js'],
-                tasks: ['jscs', 'eslint', 'webpack:build']
             },
             express: {
                 files: ['app.js', 'server/**/*.js'],
@@ -160,7 +158,9 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['jscs', 'eslint', 'webpack:build', 'sass:dev', 'express', 'watch']);
+    // TODO  sass and watch are not reached now
+    grunt.registerTask('default', ['jscs', 'express', 'webpack-dev-server:start', 'sass:dev', 'watch']);
+    // TODO sass:dist
     grunt.registerTask('build', ['jscs', 'eslint', 'webpack:build', 'sass:dev', 'replace:dist']);
 
 };
