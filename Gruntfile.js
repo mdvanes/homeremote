@@ -31,7 +31,6 @@ module.exports = function(grunt) {
         },
 
         //webpack: {
-        //    // TODO this can be improved by using http://webpack.github.io/docs/webpack-dev-server.html#api
         //    options: webpackConfig,
         //    build: {
         //        //stats: false, //stats: false disables the stats output
@@ -67,8 +66,6 @@ module.exports = function(grunt) {
         //    //}
         //},
 
-        // TODO live reload doesn't work (neither in package.json)
-
         // See https://github.com/webpack/webpack-with-common-libs/blob/master/Gruntfile.js
         //'webpack-dev-server': {
         //    options: {
@@ -91,7 +88,7 @@ module.exports = function(grunt) {
             //    files: ['public/_sass/**/*.scss'],
             //    tasks: ['sass:dev']
             //},
-            // TODO also in package.json reload server on change
+            // TODO also reload server on changes in the npm devserver task
             express: {
                 files: ['app.js', 'server/**/*.js'],
                 tasks: ['express:dev'],
@@ -105,7 +102,7 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     script: 'app.js',
-                    // TODO bunyan logging doesn't work args: ['--debugremote | bunyan'],
+                    // Note: bunyan logging doesn't work args: ['--debugremote | bunyan'],
                     args: ['--debugremote'],
                     background: true
                 }
@@ -138,9 +135,8 @@ module.exports = function(grunt) {
 
     });
 
-    // TODO sass and watch are not reached now
+    // sass and watch are not reached because of webpack-dev-server
     //grunt.registerTask('default', ['express', 'sass:dev', 'watch', 'webpack-dev-server:start']);
-    // TODO sass:dist
     grunt.registerTask('build', ['replace:dist']);
 
 };

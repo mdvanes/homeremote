@@ -26,6 +26,8 @@ const common = {
     devtool: 'source-map', // TODO This is not what makes the build slow. It might be node-modules?
 
     devServer: {
+        // TODO the font assets do not work with this flag
+        publicPath: '/js/',
         proxy: [
             {
                 context: ['/radio', '/motion', '/fm'],
