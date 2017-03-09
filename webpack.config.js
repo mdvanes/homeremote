@@ -23,8 +23,6 @@ const common = {
         filename: '[name].js'
     },
 
-    // Add source maps
-    // TODO sourcemaps do not work now
     devtool: 'source-map', // TODO This is not what makes the build slow. It might be node-modules?
 
     plugins: [
@@ -36,12 +34,13 @@ const common = {
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false
-            }
+            },
+            sourceMap: true
         })
     ],
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.jsx?$/,
                 loaders: ['babel-loader?presets[]=react,presets[]=es2015', 'eslint-loader']
@@ -52,8 +51,13 @@ const common = {
             },
             {
                 test: /\.css$/,
-                loaders: ['style', 'css']
-            }
+                loaders: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.scss$/,
+                loaders: ['style-loader', 'css-loader', 'sass-loader']
+            },
+            { test: /\.(woff2?|ttf|eot|svg)$/, loader: 'url-loader?limit=10000' },
         ]
     }
 };
