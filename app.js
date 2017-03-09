@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict';
+/* eslint-env node */
 
 let express = require('express'),
     app = express(),

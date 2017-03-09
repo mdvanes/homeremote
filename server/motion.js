@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-'use strict';
+/* eslint-env node */
 
-var exec = require('child_process').exec,
-    fs = require('fs');
+var exec = require('child_process').exec;
 
 var bind = function(app, log) {
 

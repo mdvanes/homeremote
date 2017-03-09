@@ -1,5 +1,5 @@
-/* jshint node:true */
-'use strict';
+#!/usr/bin/env node
+/* eslint-env node */
 
 const fsp = require('fs-promise');
 const settings = require('../settings.json');
@@ -14,7 +14,7 @@ const fileToFileInfo = subPath => {
                 return {
                     name: file,
                     isDir: stat.isDirectory(),
-                    size: prettyBytes(stat.size)                    
+                    size: prettyBytes(stat.size)
                 };
             });
     };
@@ -51,7 +51,7 @@ var bind = function(app) {
                     return !file.isDir;
                 });
                 fileInfos = fileInfosOnlyDirs.concat(fileInfosOnlyFiles);
- 
+
                 // TODO fix JSON response: res.setHeader('Content-Type', 'application/json');
                 res.send({status: 'ok', list: fileInfos, dir: subPath});
             })
@@ -73,7 +73,7 @@ var bind = function(app) {
                 console.log('/fm/rename', error);
                 res.sendStatus(500);
             });
-    
+
     });
 
     app.get('/fm/getTargetLocations', (req, res) => {

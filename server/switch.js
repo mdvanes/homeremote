@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict';
+/* eslint-env node */
 
 var exec = require('child_process').exec;
 var settings = require('../settings.json');

@@ -1,8 +1,5 @@
-/**
- * Created by m.van.es on 7-7-2015.
- */
-/* jshint node:true */
-'use strict';
+#!/usr/bin/env node
+/* eslint-env node */
 
 var exec = require('child_process').exec;
 

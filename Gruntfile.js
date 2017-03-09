@@ -21,20 +21,6 @@ module.exports = function(grunt) {
             }
         },
 
-        // TODO lint back-end code with eslint, not jscs
-        jscs: {
-            options: {
-                config: '.jscsrc',
-                //force: true
-                esnext: true
-            },
-            dev: {
-                files: {
-                    src: ['Gruntfile.js', 'app.js', 'server/**/*.js']
-                }
-            }
-        },
-
         // There are no Windows binaries for Flow yet, but it works on Ubuntu
         // This configuration depends on the .flowconfig in the root
         flow: {
@@ -158,9 +144,9 @@ module.exports = function(grunt) {
         }
     });
 
-    // TODO  sass and watch are not reached now
-    grunt.registerTask('default', ['jscs', 'express', 'webpack-dev-server:start', 'sass:dev', 'watch']);
+    // TODO sass and watch are not reached now
+    grunt.registerTask('default', ['express', 'sass:dev', 'watch', 'webpack-dev-server:start']);
     // TODO sass:dist
-    grunt.registerTask('build', ['jscs', 'eslint', 'webpack:build', 'sass:dev', 'replace:dist']);
+    grunt.registerTask('build', ['eslint', 'webpack:build', 'sass:dev', 'replace:dist']);
 
 };
