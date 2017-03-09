@@ -25,6 +25,16 @@ const common = {
 
     devtool: 'source-map', // TODO This is not what makes the build slow. It might be node-modules?
 
+    devServer: {
+        proxy: [
+            {
+                context: ['/radio', '/motion', '/fm'],
+                target: 'http://localhost:3000',
+                secure: false
+            }
+        ]
+    },
+
     plugins: [
         // TODO enable
         //new StyleLintPlugin({

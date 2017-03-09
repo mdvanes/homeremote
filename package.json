@@ -4,10 +4,11 @@
   "description": "Remote for home automation",
   "scripts": {
     "start": "node app.js",
-    "test": "node app.js --debugremote | bunyan",
+    "startdebug": "node app.js --debugremote | bunyan",
     "lint": "esw webpack.config.* app.js server --color",
     "lint:watch": "npm run lint -- --watch",
-    "build": "node node_modules/.bin/webpack-dev-server"
+    "build": "npm run lint && node node_modules/.bin/webpack --config webpack.config.js",
+    "devserver": "concurrently --kill-others \"node node_modules/.bin/webpack-dev-server --config webpack.config.js --content-base ./public --inline --hot\" \"npm run startdebug\""
   },
   "private": true,
   "repository": "",
