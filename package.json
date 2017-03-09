@@ -4,7 +4,9 @@
   "description": "Remote for home automation",
   "scripts": {
     "start": "node app.js",
-    "test": "node app.js --debugremote | bunyan"
+    "test": "node app.js --debugremote | bunyan",
+    "lint": "esw webpack.config.* app.js server --color",
+    "lint:watch": "npm run lint -- --watch"
   },
   "private": true,
   "repository": "",
@@ -18,8 +20,11 @@
     "babel-preset-react": "^6.23.0",
     "bunyan": "^1.8.8",
     "classnames": "^2.2.3",
+    "concurrently": "^3.4.0",
+    "eslint": "^3.17.1",
     "eslint-loader": "^1.6.3",
     "eslint-plugin-react": "^6.10.0",
+    "eslint-watch": "^3.0.1",
     "esprima-fb": "^15001.1001.0-dev-harmony-fb",
     "express": "^4.15.2",
     "grunt": "^0.4.5",

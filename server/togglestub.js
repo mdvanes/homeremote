@@ -1,5 +1,5 @@
-/* jshint node:true */
-'use strict';
+#!/usr/bin/env node
+/* eslint-env node */
 
 var bind = function(app) {
     app.get('/togglestub/start', function (req, res) {

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-'use strict';
+/* eslint-env node */
 
 var bind = function(app) {
     app.get('/clickstub/on', function (req, res) {
