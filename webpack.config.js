@@ -26,7 +26,6 @@ const common = {
     devtool: 'source-map', // TODO This is not what makes the build slow. It might be node-modules?
 
     devServer: {
-        // TODO the font assets do not work with this flag
         publicPath: '/js/',
         proxy: [
             {
@@ -69,7 +68,12 @@ const common = {
                 test: /\.scss$/,
                 loaders: ['style-loader', 'css-loader', 'sass-loader']
             },
-            { test: /\.(woff2?|ttf|eot|svg)$/, loader: 'url-loader?limit=10000' },
+            {
+                test: /\.(woff2?|ttf|eot|svg)$/,
+                //loader: 'url-loader?limit=10000&name=fonts/[path][name].[hash].[ext]'
+                // TODO this is a hack, the generated font files are not used. This would not work if "/library" would be outside "/public"
+                loader: 'url-loader?limit=10000&name=/library/bootstrap/fonts/[name].[ext]'
+            }
         ]
     }
 };
