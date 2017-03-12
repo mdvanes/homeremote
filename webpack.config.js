@@ -4,6 +4,8 @@
 //var TARGET = 'build';//process.env.TARGET;
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const StyleLintPlugin = require('stylelint-webpack-plugin');
 const ROOT_PATH = path.resolve(__dirname);
 
 const common = {
@@ -20,10 +22,11 @@ const common = {
 
     output: {
         path: path.resolve(ROOT_PATH, 'public/js'),
-        filename: '[name].js'
+        filename: ('production' === process.env.NODE_ENV) ? '[name]-[hash:6].js' : '[name].js'
     },
 
-    devtool: 'source-map', // TODO This is not what makes the build slow. It might be node-modules?
+    // TODO This is not what makes the build slow. It might be node-modules?
+    devtool: ('production' === process.env.NODE_ENV) ? 'source-map' : 'eval-source-map',
 
     devServer: {
         publicPath: '/js/',
@@ -37,16 +40,19 @@ const common = {
     },
 
     plugins: [
-        // TODO enable
-        //new StyleLintPlugin({
-        //    configFile: '.stylelintrc',
-        //    files: ['src/**/*.scss']
-        //}),
+        new StyleLintPlugin({
+           configFile: '.stylelintrc',
+           files: ['public/_sass/**/*.scss']
+        }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false
             },
             sourceMap: true
+        }),
+        // This will inject the bundle name incl. hash into the HTML
+        new HtmlWebpackPlugin({
+            filename: 'public/index.html'
         })
     ],
 
