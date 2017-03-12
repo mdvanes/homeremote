@@ -20,6 +20,40 @@ const fileToFileInfo = subPath => {
     };
 };
 
+const resetPermissionsForDirContent = location => {
+    console.log('Resetting file permissions for dir', location.path);
+
+    // Only set permissions for the files in this dir, not the dir itself
+    // Using chmodr(p), this had the side effect that dir itself was unreadable, but the contens were correct
+    fsp.readdir(location.path)
+        .then(files => {
+            if(!files) {
+                throw new Error(`Possibly invalid path: ${location.path}`);
+            }
+            const actions = files.map(file => {
+                //console.log('setting permission for ', location.path + '/' + file);
+                // 775 octal for rwxrwxr-x / 666 octal for rwrwrw
+                return fsp.chmod(location.path + '/' + file, '666');
+            });
+            const results = Promise.all(actions);
+            return results;
+        });
+};
+
+// TODO remove
+// Promisified chmod r(ecursive)
+// const chmodrp = (path, mode) => {
+//     return new Promise((resolve, reject) => {
+//         chmodr(path, mode, err => {
+//             if(err) {
+//                 reject('chmodr error ' + err);
+//             } else {
+//                 resolve('chmodr completed ok');
+//             }
+//         });
+//     });
+// };
+
 var bind = function(app) {
 
     app.post('/fm/list', function (req, res) {
@@ -81,6 +115,18 @@ var bind = function(app) {
             return location.path;
         });
         res.send({status: 'ok', targetLocations});
+    });
+
+    app.get('/fm/resetFilePermissions', (req, res) => {
+        const actions = settings.fm.targetLocations.map(resetPermissionsForDirContent);
+        Promise.all(actions)
+            .then(() => {
+                res.send({status: 'ok'});
+            })
+            .catch(error => {
+                console.log(error);
+                res.send({status: 'error'});
+            });
     });
 
     app.post('/fm/mvToTargetLocation', (req, res) => {

@@ -2,6 +2,8 @@
  * Created by m.van.es on 16-1-2016.
  */
 
+// TODO replace by Fetch API
+
 /*
  Pure ES6, promise based, http requester
 

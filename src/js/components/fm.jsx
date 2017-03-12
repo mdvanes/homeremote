@@ -14,6 +14,7 @@ class FileManager extends React.Component {
         this.ftpUpload = this.ftpUpload.bind(this);
         this.getTargetLocations = this.getTargetLocations.bind(this);
         this.mvToTargetLocation = this.mvToTargetLocation.bind(this);
+        this.resetFilePermissions = this.resetFilePermissions.bind(this);
         this.listDir('');
         this.getTargetLocations();
     }
@@ -131,6 +132,26 @@ class FileManager extends React.Component {
         }
     }
 
+    resetFilePermissions() {
+        const confirmResult = confirm('Confirm resetting file permissions to rwrwrw');
+        if(confirmResult) {
+            fetch('/fm/resetFilePermissions', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(data => {
+                return data.json();
+            })
+            .then(data => {
+                logger.log(`Reset file permissions: ${data.status}`);
+            })
+            .catch(error => logger.error('error on fm/resetFilePermissions: ' + error));
+        }
+    }
+
     render() {
         // TODO (in many places) better way to supply params to onClick
         // TODO then also move targetLocations outside of "rows"
@@ -201,7 +222,8 @@ class FileManager extends React.Component {
                         nr of entries: {rows.length}
                     </div>
                     <div className="col-xs-6">
-                        <button onClick={this.getFtpStatus} className="btn btn-default btn-block">Get FTP status</button>
+                        <button onClick={this.getFtpStatus} className="btn btn-default">Get FTP status</button>
+                        <button onClick={this.resetFilePermissions} className="btn btn-default">Fix Permissions</button>
                     </div>
                 </div>
             </div>
