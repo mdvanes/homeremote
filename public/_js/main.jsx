@@ -24,9 +24,7 @@ function renderShell() {
             <StatusBar/>
             <div className="row">
                 <div className="hidden-xs col-md-12">
-                    <div class="page-header">
-                        <h1>HomeRemote</h1>
-                    </div>
+                    <h1>HomeRemote</h1>
                 </div>
                 <div className="col-xs-12 col-md-3">
                     <ButtonGroup label=" 1" icon="lamp" id="switch1"/>

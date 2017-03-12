@@ -9,14 +9,14 @@ let express = require('express'),
     path = require('path'),
     auth = require('http-auth'),
     bunyan = require('bunyan'),
-    broadcast = require('./server/broadcast.js'),
-    radio = require('./server/radio.js'),
-    motion = require('./server/motion.js'),
-    togglestub = require('./server/togglestub.js'),
-    clickstub = require('./server/clickstub.js'),
-    switcher = require('./server/switch.js'),
-    filemanager = require('./server/fm.js'),
-    settings = require('./settings.json'),
+    broadcast = require('./broadcast.js'),
+    radio = require('./radio.js'),
+    motion = require('./motion.js'),
+    togglestub = require('./togglestub.js'),
+    clickstub = require('./clickstub.js'),
+    switcher = require('./switch.js'),
+    filemanager = require('./fm.js'),
+    settings = require('../settings.json'),
     debug = false;
 
 const bodyParser = require('body-parser');
@@ -32,14 +32,14 @@ let log = bunyan.createLogger({
         },
         {
             level: 'error',
-            path: './homeremote-error.log'  // log ERROR and above to a file // TODO should be /var/tmp/homeremote-error.log ?
+            path: '../homeremote-error.log'  // log ERROR and above to a file // TODO should be /var/tmp/homeremote-error.log ?
         }
     ]
 });
 
 let basic = auth.basic({
     realm: 'HomeRemote', // pages with the same root URL and realm share credentials
-    file: path.join(__dirname, 'users.htpasswd')
+    file: path.join(__dirname, '../users.htpasswd')
 });
 
 let options = {
