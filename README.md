@@ -77,7 +77,7 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
 * create a users.htpasswd in the root and add one user per line in the format: ```username:password```
 * the /keys dir contains a server.cert and server.key. The ones in the repo are for localhost, and so only usable for debugging. Create your own (see below, Set up localhost SSL) for the target domain and place in the /keys dir.
 * set up the router for access to the SSL server (do not allow non-SSL access from outside the network), enable port forwarding to <ip of this server>:3443
-* ```node app.js``` or ```sudo service homeremote restart``` (see below)
+* ```npm run start``` or ```node server/app.js``` or ```sudo service homeremote restart``` (see below)
  
 
 ### Upstart scripts
