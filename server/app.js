@@ -28,11 +28,11 @@ let log = bunyan.createLogger({
     streams: [
         {
             level: 'info',
-            stream: process.stdout          // log INFO and above to stdout
+            stream: process.stdout // log INFO and above to stdout
         },
         {
             level: 'error',
-            path: '../homeremote-error.log'  // log ERROR and above to a file // TODO should be /var/tmp/homeremote-error.log ?
+            path: path.join(__dirname, '../homeremote-error.log') // log ERROR and above to a file // TODO should be /var/tmp/homeremote-error.log ?
         }
     ]
 });
