@@ -35,9 +35,6 @@
     "esprima-fb": "^15001.1001.0-dev-harmony-fb",
     "express": "^4.15.2",
     "file-loader": "^0.10.1",
-    "grunt": "^0.4.5",
-    "grunt-flow": "^1.0.0",
-    "grunt-replace": "^0.11.0",
     "html-webpack-plugin": "^1.7.0",
     "load-grunt-tasks": "^0.6.0",
     "node-sass": "^4.5.0",
@@ -52,8 +49,7 @@
     "time-grunt": "^1.4.0",
     "url-loader": "^0.5.8",
     "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.4.1",
-    "webpack-merge": "^4.0.0"
+    "webpack-dev-server": "^2.4.1"
   },
   "dependencies": {
     "pretty-bytes": "^4.0.2",

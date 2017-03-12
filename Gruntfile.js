@@ -109,34 +109,34 @@ module.exports = function(grunt) {
         // },
 
         // TODO Update cachebusting id in the HTML
-        replace: {
-            dist: {
-                options: {
-                    patterns: [
-                        {
-                            match: /\?v=[0-9]{12}/g,
-                            replacement: '?v=' + grunt.template.today('yyyymmddHHMM')
-                        }
-                    ]
-                },
-                files: [
-                    {
-                        expand: true,
-                        flatten: true,
-                        src: [
-                            'public/homeremote.mf',
-                            'public/index.html'
-                        ],
-                        dest: 'public/'
-                    }
-                ]
-            }
-        }
+        // replace: {
+        //     dist: {
+        //         options: {
+        //             patterns: [
+        //                 {
+        //                     match: /\?v=[0-9]{12}/g,
+        //                     replacement: '?v=' + grunt.template.today('yyyymmddHHMM')
+        //                 }
+        //             ]
+        //         },
+        //         files: [
+        //             {
+        //                 expand: true,
+        //                 flatten: true,
+        //                 src: [
+        //                     'public/homeremote.mf',
+        //                     'public/index.html'
+        //                 ],
+        //                 dest: 'public/'
+        //             }
+        //         ]
+        //     }
+        // }
 
     });
 
     // sass and watch are not reached because of webpack-dev-server
     //grunt.registerTask('default', ['express', 'sass:dev', 'watch', 'webpack-dev-server:start']);
-    grunt.registerTask('build', ['replace:dist']);
+    //grunt.registerTask('build', ['replace:dist']);
 
 };

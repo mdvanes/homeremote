@@ -10,7 +10,7 @@ import Log from './components/log';
 import FileManager from './components/fm';
 
 import styleBootstrap from '../library/bootstrap/css/bootstrap.min.css'; // eslint-disable-line no-unused-vars
-import styleMain from '!style-loader!css-loader!sass-loader!../_sass/homeRemote.scss'; // eslint-disable-line no-unused-vars
+import styleMain from '!style-loader!css-loader!sass-loader!../sass/homeRemote.scss'; // eslint-disable-line no-unused-vars
 
 // testcase for Flow
 // var str: number = 'hello world!';
