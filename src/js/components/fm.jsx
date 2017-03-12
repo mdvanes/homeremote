@@ -139,7 +139,7 @@ class FileManager extends React.Component {
         //});
         const rows = this.state.dirIndex.map(entry => {
             if( entry.isDir ) {
-                return <tr>
+                return <tr key={entry.name}>
                     <td><i className="glyphicon glyphicon-folder-open"></i></td>
                     <td onClick={() => {this.listDir(entry.name)}}>{entry.name}</td>
                     <td></td>
@@ -153,9 +153,9 @@ class FileManager extends React.Component {
                 //    filePath = this.state.dirName + '/' + filePath;
                 //}
                 const targetLocations = this.state.targetLocations.map(entry => {
-                    return <MenuItem onClick={() => {this.mvToTargetLocation(filePath, fileName, entry)}}>{entry}</MenuItem>
+                    return <MenuItem key={entry} onClick={() => {this.mvToTargetLocation(filePath, fileName, entry)}}>{entry}</MenuItem>
                 });
-                return <tr>
+                return <tr key={entry.name}>
                     <td>{entry.size}</td>
                     <td>{entry.name}</td>
                     <td>
