@@ -88,7 +88,7 @@ module.exports = function(grunt) {
             //    files: ['public/_sass/**/*.scss'],
             //    tasks: ['sass:dev']
             //},
-            // TODO also reload server on changes in the npm devserver task
+            // TODO  also reload server on changes in the npm devserver task
             express: {
                 files: ['app.js', 'server/**/*.js'],
                 tasks: ['express:dev'],
@@ -109,6 +109,7 @@ module.exports = function(grunt) {
             }
         },
 
+        // TODO Update cachebusting id in the HTML
         replace: {
             dist: {
                 options: {
