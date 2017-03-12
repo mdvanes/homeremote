@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "color-hex-case": "upper",
+    "color-hex-length": "short",
+    "color-no-invalid-hex": true,
+    "declaration-block-properties-order": alphabetical,
+    "font-family-name-quotes": "always-where-recommended",
+    "font-family-no-duplicate-names": true,
+    "indentation": 4,
+    "no-duplicate-selectors": [true, {
+        "severity": "warning"
+    }],
+    "no-empty-source": true,
+    "no-indistinguishable-colors": true,
+    "string-quotes": "single",
+  }
+}

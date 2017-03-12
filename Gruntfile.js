@@ -83,31 +83,30 @@ module.exports = function(grunt) {
         //    }
         //},
 
-        watch: {
-            //sass: {
-            //    files: ['public/_sass/**/*.scss'],
-            //    tasks: ['sass:dev']
-            //},
-            // TODO  also reload server on changes in the npm devserver task
-            express: {
-                files: ['app.js', 'server/**/*.js'],
-                tasks: ['express:dev'],
-                options: {
-                    spawn: false
-                }
-            }
-        },
+        // watch: {
+        //     //sass: {
+        //     //    files: ['public/_sass/**/*.scss'],
+        //     //    tasks: ['sass:dev']
+        //     //},
+        //     express: {
+        //         files: ['app.js', 'server/**/*.js'],
+        //         tasks: ['express:dev'],
+        //         options: {
+        //             spawn: false
+        //         }
+        //     }
+        // },
 
-        express: {
-            dev: {
-                options: {
-                    script: 'app.js',
-                    // Note: bunyan logging doesn't work args: ['--debugremote | bunyan'],
-                    args: ['--debugremote'],
-                    background: true
-                }
-            }
-        },
+        // express: {
+        //     dev: {
+        //         options: {
+        //             script: 'app.js',
+        //             // Note: bunyan logging doesn't work args: ['--debugremote | bunyan'],
+        //             args: ['--debugremote'],
+        //             background: true
+        //         }
+        //     }
+        // },
 
         // TODO Update cachebusting id in the HTML
         replace: {
