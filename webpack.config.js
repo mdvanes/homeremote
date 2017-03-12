@@ -1,19 +1,14 @@
 #!/usr/bin/env node
 /* eslint-env node */
-//var merge = require('webpack-merge');
-//var TARGET = 'build';//process.env.TARGET;
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const ROOT_PATH = path.resolve(__dirname);
 
 const common = {
 
-    // TODO fix webpack-dev-server with proxies https://webpack.github.io/docs/webpack-dev-server.html
-
     entry: {
-        homeRemote: [path.resolve(ROOT_PATH, 'public/_js/main')]
+        homeRemote: './src/js/main.jsx'
     },
 
     resolve: {
@@ -21,15 +16,14 @@ const common = {
     },
 
     output: {
-        path: path.resolve(ROOT_PATH, 'public/js'),
-        filename: ('production' === process.env.NODE_ENV) ? '[name]-[hash:6].js' : '[name].js'
+        path: path.join(__dirname, 'public'),
+        filename: ('production' === process.env.NODE_ENV) ? 'js/[name]-[hash:6].js' : 'js/[name].js'
     },
 
-    // TODO This is not what makes the build slow. It might be node-modules?
+    // source-map is much slower than eval-source-map
     devtool: ('production' === process.env.NODE_ENV) ? 'source-map' : 'eval-source-map',
 
     devServer: {
-        publicPath: '/js/',
         proxy: [
             {
                 context: ['/radio', '/motion', '/fm'],
@@ -39,10 +33,12 @@ const common = {
         ]
     },
 
+    // TODO use extract plugin for CSS https://github.com/webpack-contrib/extract-text-webpack-plugin
+
     plugins: [
         new StyleLintPlugin({
-           configFile: '.stylelintrc',
-           files: ['public/_sass/**/*.scss']
+            configFile: '.stylelintrc',
+            files: ['src/sass/**/*.scss']
         }),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -52,7 +48,9 @@ const common = {
         }),
         // This will inject the bundle name incl. hash into the HTML
         new HtmlWebpackPlugin({
-            filename: 'public/index.html'
+            filename: 'index.html',
+            template: 'src/index.templates.ejs',
+            inject: 'body'
         })
     ],
 
@@ -76,9 +74,7 @@ const common = {
             },
             {
                 test: /\.(woff2?|ttf|eot|svg)$/,
-                //loader: 'url-loader?limit=10000&name=fonts/[path][name].[hash].[ext]'
-                // TODO this is a hack, the generated font files are not used. This would not work if "/library" would be outside "/public"
-                loader: 'url-loader?limit=10000&name=/library/bootstrap/fonts/[name].[ext]'
+                loader: 'url-loader?limit=10000&name=fonts/[name].[hash].[ext]'
             }
         ]
     }
