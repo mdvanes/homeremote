@@ -1,5 +1,4 @@
 import React from 'react';
-import $http from '../request';
 import logger from '../logger';
 
 class ButtonGroup extends React.Component {
@@ -10,26 +9,40 @@ class ButtonGroup extends React.Component {
         }
         this.sendOn = this.sendOn.bind(this);
         this.sendOff = this.sendOff.bind(this);
+        this.sendState = this.sendState.bind(this);
+    }
+
+    sendState(state) {
+        fetch(`/switch/${this.props.id}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                state,
+                type: this.props.type
+            })
+        })
+        .then(data => {
+            return data.json();
+        })
+        .then(data => {
+            if(data.status !== 'received') {
+                logger.error(`error on send-${state}: ${data.status}`);
+            } else {
+                logger.log('ok');
+            }
+        })
+        .catch(error => logger.error(`error on send-${state}: ${error}`));
     }
 
     sendOn() {
-        $http('/' + this.props.id + '/on')
-            .then(data => {
-                if(data.status !== 'received') {
-                    logger.error('error on sendOn: ' + data.status);
-                }
-            })
-            .catch(error => logger.error('error on sendOn: ' + error));
+        this.sendState('on');
     }
 
     sendOff() {
-        $http('/' + this.props.id + '/off')
-            .then(data => {
-                if(data.status !== 'received') {
-                    logger.error('error on sendOff: ' + data.status);
-                }
-            })
-            .catch(error => logger.error('error on sendOff: ' + error));
+        this.sendState('off');
     }
 
     render() {

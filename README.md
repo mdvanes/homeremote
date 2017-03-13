@@ -20,10 +20,10 @@ Read log file with:
 
 ## Installation
 
-Install Elro Home Easy
-
 
 ### Elro Home Easy
+
+*Outdated, see Domoticz*
 
 install 
 
@@ -35,6 +35,11 @@ install
 there are 4 switches with id's 001, 002, 003, 004
 
 See the repo for how to add switches. See below for information for installing Elro Home Easy on Raspberry Pi.
+
+
+### Domoticz
+
+Install [Domoticz](https://www.domoticz.com). Use the domain name + port as domoticzuri in the settings.json, e.g. http://192.168.0.19:8080.
 
 
 ### Node server
@@ -52,8 +57,7 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
 ```
 #!javascript
 {
-    "hepath": "/home/foo/elro/he853-remote",
-    "heserverip": "",
+    "domoticzuri": "http://192.168.0.19:8080",
     "enableAuth": true,
     "radiologpath": "/tmp/homeremote-playradio-status.log",
     "fm": {

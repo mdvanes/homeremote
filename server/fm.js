@@ -40,20 +40,6 @@ const resetPermissionsForDirContent = location => {
         });
 };
 
-// TODO remove
-// Promisified chmod r(ecursive)
-// const chmodrp = (path, mode) => {
-//     return new Promise((resolve, reject) => {
-//         chmodr(path, mode, err => {
-//             if(err) {
-//                 reject('chmodr error ' + err);
-//             } else {
-//                 resolve('chmodr completed ok');
-//             }
-//         });
-//     });
-// };
-
 var bind = function(app) {
 
     app.post('/fm/list', function (req, res) {

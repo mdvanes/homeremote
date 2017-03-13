@@ -1,49 +1,40 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-var exec = require('child_process').exec;
-var settings = require('../settings.json');
-var rp = require('request-promise');
+const settings = require('../settings.json');
+const rp = require('request-promise');
 
-var bind = function(app, log) {
+const bind = function(app, log) {
 
-    app.get('/switch:id/:state', function (req, res) {
-        var switchId = req.params.id;
-        var switchState = 0;
-        if(req.params.state === 'on') {
-            switchState = 1;
+    app.post('/switch/:id', function (req, res) {
+        const switchId = req.params.id;
+        const switchType = req.body.type;
+        let newState = 'Off';
+        if(req.body.state === 'on') {
+            newState = 'On';
         }
 
-        if(settings.heserverip === '') {
-            console.log('call to http://%s:%s/switch' + switchId + '/' + req.params.state + ' [path: ' + settings.hepath + ']');
-
-            // Call should be: sudo /path/he853 001 1
-            exec('sudo ' + settings.hepath + '/he853 00' + switchId + ' ' + switchState, function(error, stdout, stderr){
-                log.info('['+stdout+']');
-                // Expected result something like: Sending command[1] to deviceId[1]
-                if(stdout.indexOf('Sending command[') > -1) {
-                    res.send({status: 'received'});
-                } else {
-                    log.error(stderr);
-                    res.send({status: 'error'});
-                }
-            });
-        } else {
-            console.log('call to http://%s:%s/switch' + switchId + '/' + req.params.state + ' [path: ' + settings.hepath + ']');
-            rp(settings.heserverip + '/switch' + req.params.id + '/' + req.params.state)
-                .then(function (remoteReponse) {
-                    log.info('remoteResponse: ' + remoteReponse); // TODO handle errors
-                    res.send({status: 'received'});
+        console.log(`Call to http://${req.get('host')}/switch/${switchId} [state: ${newState} domoticzuri: ${settings.domoticzuri}]`);
+        if(settings.domoticzuri && settings.domoticzuri.length > 0) {
+            const targetUri = `${settings.domoticzuri}/json.htm?type=command&param=${switchType}&idx=${switchId}&switchcmd=${newState}`;
+            rp(targetUri)
+                .then(function (remoteResponse) {
+                    const remoteResponseJson = JSON.parse(remoteResponse);
+                    if(remoteResponseJson.status === 'OK') {
+                        res.send({status: 'received'});
+                    } else {
+                        throw new Error('remoteResponse failed');
+                    }
                 })
                 .catch(function (err) {
                     log.error(err);
                     res.send({status: 'error'});
                 });
+        } else {
+            log.error('domoticzuri not configured');
+            res.send({status: 'error'});
         }
-
     });
 };
 
-module.exports = {
-    bind: bind
-};
+module.exports = {bind};
