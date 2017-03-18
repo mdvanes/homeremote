@@ -36,6 +36,7 @@
     "express": "^4.15.2",
     "file-loader": "^0.10.1",
     "html-webpack-plugin": "^1.7.0",
+    "id3-writer": "^1.2.2",
     "load-grunt-tasks": "^0.6.0",
     "node-sass": "^4.5.0",
     "npm-watch": "^0.1.8",
