@@ -2,8 +2,65 @@
 /* eslint-env node */
 
 const youtubedl = require('youtube-dl');
-const fsp = require('fs-promise');
 const settings = require('../settings.json');
+
+// TODO note: ffmpeg/ffprobe is required as an OS dependency
+
+// const fsp = require('fs-promise');
+// const downloadPromise = (url, artist, title) => {
+//     return new Promise((resolve, reject) => {
+//         const video = youtubedl(url,
+//           // Optional arguments passed to youtube-dl.
+//           //['--format=best']
+//           // Does not work, see https://github.com/przemyslawpluta/node-youtube-dl/issues/117 or use youtubedl.exec directly ['--extract-audio', '--audio-format=mp3', '--audio-quality=0']
+//           // Works, but produces webm container with mp3 extension
+//           ['--format=bestaudio', '--audio-format=mp3', '--audio-quality=0']
+//           );
+
+
+//         let fileName = `${encodeURIComponent(url)}.mp3`;
+//         if(artist && artist.length > 0 && title && title.length > 0) {
+//             fileName = `${artist} - ${title}.mp3`;
+//         }
+//         const targetPath = `${settings.musicpath}/${fileName}`;
+
+//         video.on('complete', function complete(info) {
+//             console.log('filename: ' + info._filename + ' already downloaded.');
+//         });
+
+//         video.on('end', function() {
+//             console.log('finished downloading!');
+//             resolve({path: targetPath, fileName});
+//         });
+
+//         video.on('error', function error(err) {
+//             reject('error 2:' + err);
+//             console.log('error 2:', err);
+//         });
+
+//         video.pipe(fsp.createWriteStream(targetPath));
+//     });
+// };
+
+const downloadPromise = (url, artist, title) => {
+    return new Promise((resolve, reject) => {
+        let fileName = encodeURIComponent(url);
+        if(artist && artist.length > 0 && title && title.length > 0) {
+            fileName = `${artist} - ${title}`;
+        }
+        const targetPath = `${settings.musicpath}/${fileName}`;
+        // First send to mp4, mp3 is created with --extract-audio
+        const options = ['-o', targetPath + '.mp4', '--extract-audio', '--audio-format', 'mp3', '--audio-quality', '0'];
+        youtubedl.exec(url, options, (err, output) => {
+            if(err) {
+                reject('youtubedl.exec failed:' + err);
+            } else {
+                console.log('youtubedl.exec finished:', output);
+                resolve({path: targetPath, fileName});
+            }
+        });
+    });
+};
 
 const bind = app => {
 
@@ -28,39 +85,14 @@ const bind = app => {
         console.log('Call to http://%s:%s/getMusic/music');
 
         console.log(`Trying getMusic <${req.body.url}, ${req.body.title}>`);
-        res.send({status: 'ok'});
 
-
-        var video = youtubedl('http://www.youtube.com/watch?v=90AiXO1pAiA',
-          // Optional arguments passed to youtube-dl.
-          ['--format=18'],
-          // Additional options can be given for calling `child_process.execFile()`.
-          { cwd: __dirname });
-
-        // Will be called when the download starts.
-        //video.on('info', function(info) {
-        //  console.log('Download started');
-        //  console.log('filename: ' + info.filename);
-        //  console.log('size: ' + info.size);
-        //});
-
-        video.on('complete', function complete(info) {
-            console.log('filename: ' + info._filename + ' already downloaded.');
+        downloadPromise(req.body.url, req.body.artist, req.body.title)
+        .then(data => res.send({status: 'ok', fileName: data.fileName}))
+        // TODO change metadata: https://www.npmjs.com/package/id3-writer
+        .catch(err => {
+            console.log(err);
+            res.send({status: 'error'});
         });
-
-        video.on('end', function() {
-            console.log('finished downloading!');
-
-            // TODO change metadata: https://www.npmjs.com/package/id3-writer
-        });
-
-        video.on('error', function error(err) {
-            console.log('error 2:', err);
-        });
-
-        // TODO retrieve path from settings.json
-        // TODO set file name to artist - title
-        video.pipe(fsp.createWriteStream('myvideo.mp4'));
     });
 
 };
