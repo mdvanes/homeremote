@@ -8,6 +8,7 @@ import ButtonGroup from './components/button-group';
 import Toggle from './components/toggle';
 import Log from './components/log';
 import FileManager from './components/fm';
+import GetMusic from './components/GetMusic';
 
 import styleBootstrap from '../library/bootstrap/css/bootstrap.min.css'; // eslint-disable-line no-unused-vars
 import styleMain from '!style-loader!css-loader!sass-loader!../sass/homeRemote.scss'; // eslint-disable-line no-unused-vars
@@ -49,6 +50,7 @@ function renderShell() {
                     <Log infoUrl="/radio/info"/>
                 </div>
                 <FileManager/>
+                <GetMusic/>
             </div>
         </div>, shell);
 }
