@@ -34,9 +34,7 @@ class FileManager extends React.Component {
                 path: dirName
             })
         })
-        .then(data => {
-            return data.json();
-        })
+        .then(data => data.json())
         .then(data => {
             this.setState({
                 dirIndex: data.list,
@@ -57,9 +55,7 @@ class FileManager extends React.Component {
                 path: filePath
             })
         })
-        .then(data => {
-            return data.json();
-        })
+        .then(data => data.json())
         .then(data => {
             console.log(data);
         })
@@ -74,9 +70,7 @@ class FileManager extends React.Component {
                 'Content-Type': 'application/json'
             }
         })
-        .then(data => {
-            return data.json();
-        })
+        .then(data => data.json())
         .then(data => {
             logger.log(`FTP status: ${data.ftpStatus}`);
         })
@@ -91,9 +85,7 @@ class FileManager extends React.Component {
                 'Content-Type': 'application/json'
             }
         })
-        .then(data => {
-            return data.json();
-        })
+        .then(data => data.json())
         .then(data => {
             this.setState({
                 targetLocations: data.targetLocations
@@ -118,9 +110,7 @@ class FileManager extends React.Component {
                     targetPath: targetLocation
                 })
             })
-            .then(data => {
-                return data.json();
-            })
+            .then(data => data.json())
             .then(data => {
                 if(data.status === 'ok') {
                     logger.log('move completed');
@@ -142,9 +132,7 @@ class FileManager extends React.Component {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(data => {
-                return data.json();
-            })
+            .then(data => data.json())
             .then(data => {
                 logger.log(`Reset file permissions: ${data.status}`);
             })
