@@ -73,9 +73,11 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
         "user": "ftp_user",
         "password": "ftp_pass",
         "remotePath": "/remote/directory"
-    }
+    },
+    "musicpath": "/path/to/music"
 }
 ```
+* The "Get Music" feature has a dependency to ffmpeg, ffprobe and eyeD3. For Debian based systems install with `sudo apt-get install eyed3`
 * it is possible to install HomeRemote on multiple servers, have the USB stick in one of them and call one from another by setting a URL in heserverip, like: http://192.168.0.25:3000
 * it is possible to disable authentication (for servers that are only accessible within the LAN) by setting enableAuth to false (default is true)
 * create a users.htpasswd in the root and add one user per line in the format: ```username:password```
