@@ -73,7 +73,7 @@ class GetMusic extends React.Component {
         return (
             <div className="row">
                 <div className="col-lg-6">
-                    <form className="form-horizontal">
+                    <form className="form-horizontal well well-sm">
                         <fieldset>
                             <div className="form-group">
                                 <label htmlFor="getMusicUrl" className="col-lg-2 control-label">url</label>
