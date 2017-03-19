@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
+const fsp = require('fs-promise');
 const youtubedl = require('youtube-dl');
 const settings = require('../settings.json');
 const id3 = require('id3-writer');
@@ -79,7 +80,7 @@ const setMetadataPromise = (path, fileName, artist, title, album) => {
                     reject('set metadata failed: ' + err);
                 } else {
                     console.log('id3 finished');
-                    resolve({fileName});
+                    resolve({path, fileName});
                 }
             });
         }
@@ -94,10 +95,8 @@ const bind = app => {
         // url, options, callback
         youtubedl.getInfo(req.body.url, null, (err, info) => {
             if(info && info.title && !err) {
-                console.log('title:', info.title);
                 // Most of the time, info.title will be of the format %artist% - %title%
                 const [artist, title] = info.title.split(' - ');
-
                 res.send({status: 'ok', artist, title});
             } else {
                 res.send({status: 'error'});
@@ -108,12 +107,18 @@ const bind = app => {
     app.post('/getMusic/music', function (req, res) {
         console.log('Call to http://%s:%s/getMusic/music');
 
-        console.log(`Trying getMusic <${req.body.url}, ${req.body.title}>`);
-
+        let fileName = '';
+        let path = '';
         downloadPromise(req.body.url, req.body.artist, req.body.title)
-        .then(data => setMetadataPromise(data.path, data.fileName, req.body.artist, req.body.title, req.body.album))
-        .then(data => res.send({status: 'ok', fileName: data.fileName}))
-        // TODO change metadata: https://www.npmjs.com/package/id3-writer
+        .then(data => {
+            path = data.path;
+            fileName = data.fileName;
+            return setMetadataPromise(data.path, data.fileName, req.body.artist, req.body.title, req.body.album);
+        })
+        // 775 octal for rwxrwxr-x / 664 octal for rwrwr-
+        .then(data => fsp.chmod(data.path, '664'))
+        .then(() => fsp.chown(path, settings.ownerinfo.uid, settings.ownerinfo.gid))
+        .then(() => res.send({status: 'ok', fileName}))
         .catch(err => {
             console.log(err);
             res.send({status: 'error'});
