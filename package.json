@@ -63,6 +63,7 @@
     "react-bootstrap": "^0.30.7",
     "react-native": "^0.16.0",
     "request-promise": "^0.4.2",
+    "transmission": "^0.4.9",
     "youtube-dl": "^1.11.1"
   }
 }

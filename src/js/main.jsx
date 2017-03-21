@@ -9,6 +9,7 @@ import Toggle from './components/toggle';
 import Log from './components/log';
 import FileManager from './components/fm';
 import GetMusic from './components/GetMusic';
+import Gears from './components/Gears';
 
 import styleBootstrap from '../library/bootstrap/css/bootstrap.min.css'; // eslint-disable-line no-unused-vars
 import styleMain from '!style-loader!css-loader!sass-loader!../sass/homeRemote.scss'; // eslint-disable-line no-unused-vars
@@ -51,6 +52,7 @@ function renderShell() {
                 </div>
                 <FileManager/>
                 <GetMusic/>
+                <Gears/>
             </div>
         </div>, shell);
 }
