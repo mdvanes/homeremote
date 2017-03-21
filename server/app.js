@@ -17,6 +17,7 @@ let express = require('express'),
     switcher = require('./switch.js'),
     filemanager = require('./fm.js'),
     getMusic = require('./getMusic.js'),
+    gears = require('./gears.js'),
     settings = require('../settings.json'),
     debug = false;
 
@@ -66,6 +67,7 @@ clickstub.bind(app);
 switcher.bind(app, log);
 filemanager.bind(app, log);
 getMusic.bind(app, log);
+gears.bind(app, log);
 
 if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // default is true
