@@ -43,6 +43,26 @@ const httpGetPromise = url => {
         }).on('error', (e) => {
             console.log(`Got error: ${e.message}`); // TODO reject
         });
+    })
+    // {
+    //     type: 'tr',
+    //     name: entry.name,
+    //     percentage,
+    //     status
+    // };
+    .then(data => {
+        if(data.history) {
+            return data.history.slots.map( entry => {
+                return {
+                    type: 'sbhi',
+                    name: entry.name,
+                    percentage: 0,
+                    status: entry.status
+                }
+            });
+        } else {
+            return data;
+        }
     });
 };
 
@@ -119,12 +139,13 @@ const bind = app => {
         });
 
         const sbHistoryUri = `${settings.gears.sn.uri}sabnzbd/api?mode=history&output=json&apikey=${settings.gears.sn.apikey}`;
-        httpGetPromise(sbHistoryUri)
-        .then(data => console.log('history.slots[0]', data.history.slots[0].name, data.history.slots[0].status))
-        .catch(err => {
-            console.log(err);
-            res.send({status: 'error'});
-        });
+        // httpGetPromise(sbHistoryUri)
+        // //.then(data => console.log('history.slots[0]', data.history.slots[0].name, data.history.slots[0].status))
+        // .then(data => console.log('history.slots[0]', data[0].name, data[0].status))
+        // .catch(err => {
+        //     console.log(err);
+        //     res.send({status: 'error'});
+        // });
 
         const transmission = new Transmission({
             host: settings.gears.tr.host,
@@ -132,7 +153,23 @@ const bind = app => {
             username: settings.gears.tr.user,
             password: settings.gears.tr.password
         });
-        transmissionPromise(transmission)
+        // transmissionPromise(transmission)
+        // .then(data => {
+        //     res.send({status: 'ok', list: data});
+        // })
+        // .catch(err => {
+        //     console.log(err);
+        //     res.send({status: 'error'});
+        // });
+
+        // Combine all calls with Promise.all(iterable);
+        Promise.all([httpGetPromise(sbHistoryUri), transmissionPromise(transmission)])
+        .then(data => {
+            //console.log('all', data);
+            return data.reduce((aList, otherList) => {
+                return aList.concat(otherList);
+            });
+        })
         .then(data => {
             res.send({status: 'ok', list: data});
         })
@@ -140,8 +177,6 @@ const bind = app => {
             console.log(err);
             res.send({status: 'error'});
         });
-
-        // Combine all calls with Promise.all(iterable);
     });
 };
 
