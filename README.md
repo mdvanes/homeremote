@@ -78,6 +78,18 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
     "ownerinfo": {
         "uid": 1000,
         "gid": 1000
+    },
+    "gears": {
+        "sn": {
+            "uri": "http://192.168.0.1:8000/",
+            "apikey": "123"
+        },
+        "tr": {
+            "host": "192.168.0.1",
+            "port": "8000",
+            "user": "username",
+            "password": "password"
+        }
     }
 }
 ```

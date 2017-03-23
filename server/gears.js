@@ -52,7 +52,7 @@ const sbQueuePromise = url => {
         if(data.queue) {
             return data.queue.slots.map( entry => {
                 return {
-                    type: 'sbhi',
+                    type: 'sbq',
                     name: entry.name,
                     percentage: entry.percentage,
                     status: entry.status
