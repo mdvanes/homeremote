@@ -46,20 +46,19 @@ class GetMusic extends React.Component {
             </tr>;
         });
         return (
-            <div className="row">
-                <div className="col-lg-6">
-                    <table className="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <table className="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th></th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
         );
     }
 }
