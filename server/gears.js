@@ -86,6 +86,20 @@ const sbHistoryPromise = url => {
     });
 };
 
+const mapTransmissionStatusCode = type => {
+    const codeMap = {
+        0: 'Stopped',
+        1: 'CHECK_WAIT',
+        2: 'CHECK',
+        3: 'DOWNLOAD_WAIT',
+        4: 'Downloading',
+        5: 'SEED_WAIT',
+        6: 'Seeding',
+        7: 'ISOLATED'
+    };
+    return codeMap[type] ? codeMap[type] : 'Unknown';
+};
+
 const transmissionPromise = transmission => {
     return new Promise((resolve, reject) => {
         //console.log('transmission.status', transmission.status, settings.gears.tr.host);
@@ -99,7 +113,7 @@ const transmissionPromise = transmission => {
                 let status = 'Getting metadata';
                 if(entry.totalSize > 0) {
                     percentage = Math.round((entry.haveValid / entry.totalSize) * 100); // TODO use entry.percentDone?
-                    status = '';
+                    status = mapTransmissionStatusCode(entry.status);
                 } else {
                     percentage = entry.metadataPercentComplete;
                 }
