@@ -21,7 +21,8 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 
 //import '../library/bootstrap/css/bootstrap.min.css';
-import '!style-loader!css-loader!sass-loader!../sass/homeRemote.scss';
+import 'flexboxgrid/dist/flexboxgrid.min.css';
+import '../sass/homeRemote.scss';
 
 // testcase for Flow
 // var str: number = 'hello world!';
@@ -62,30 +63,34 @@ class Main extends React.Component {
                     <MenuItem>Menu Item 2</MenuItem>
                 </Drawer>
                 <StatusBar/>
-                <div className="col-xs-12 col-md-3">
-                    <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
-                    <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
-                    <ButtonGroup label=" n" icon="lightbulb_outline" type="switchlight" id="6"/>
-                    <ButtonGroup label=" s" icon="lightbulb_outline" type="switchlight" id="7"/>
-                    {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
-                    {/*<MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>*/}
-                </div>
-                <div className="col-xs-12 col-md-2">
-                    {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
-                    <div className="row">
-                        <div className="col-xs-6 col-md-12 margin-top">
-                            <Toggle label="" id="radio" icon="music_note"/>{/* Music on server */}
-                        </div>
-                        <div className="col-xs-6 col-md-12 margin-top">
-                            <Toggle label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+                <div className="row">
+                    <div className="col-xs-12 col-md-3">
+                        <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
+                        <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
+                        <ButtonGroup label=" n" icon="lightbulb_outline" type="switchlight" id="6"/>
+                        <ButtonGroup label=" s" icon="lightbulb_outline" type="switchlight" id="7"/>
+                        {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
+                        {/*<MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>*/}
+                    </div>
+                    <div className="col-xs-12 col-md-2">
+                        {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
+                        <div className="row">
+                            <div className="col-xs-6 col-md-12 margin-top">
+                                <Toggle label="" id="radio" icon="music_note"/>{/* Music on server */}
+                            </div>
+                            <div className="col-xs-6 col-md-12 margin-top">
+                                <Toggle label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="col-xs-12 col-md-7 margin-top">
-                    <Log infoUrl="/radio/info"/>
+                    <div className="col-xs-12 col-md-4">
+                        <GetMusic/>
+                    </div>
+                    <div className="col-xs-12 col-md-3 margin-top">
+                        <Log infoUrl="/radio/info"/>
+                    </div>
                 </div>
                 <FileManager/>
-                <GetMusic/>
                 <Gears/>
             </div>
         </MuiThemeProvider>)
