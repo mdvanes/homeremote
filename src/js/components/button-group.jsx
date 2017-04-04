@@ -1,4 +1,7 @@
 import React from 'react';
+import {Card, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import FontIcon from 'material-ui/FontIcon';
 import logger from '../logger';
 
 class ButtonGroup extends React.Component {
@@ -48,21 +51,29 @@ class ButtonGroup extends React.Component {
     render() {
         let icon = <i></i>;
         if(this.props.icon) {
-            icon = <i className={'glyphicon glyphicon-' + this.props.icon}></i>;
+            icon = <FontIcon className="material-icons">{this.props.icon}</FontIcon>;
         }
         return (
-            <div className="btn-group btn-group-justified margin-top">
-                <a href="#" className="btn btn-default" onClick={this.sendOn}>
-                    <i className="glyphicon glyphicon-plus-sign"></i>
-                </a>{/* for this.onChange, the bind is done in the constructor */}
-                <span className="btn" disabled>
-                    {icon}
-                    {this.props.label}
-                </span>
-                <a href="#" className="btn btn-default" onClick={this.sendOff}>
-                    <i className="glyphicon glyphicon-minus-sign"></i>
-                </a>
-            </div>
+            <Card>
+                <CardText>
+                    <FlatButton
+                      backgroundColor="#a4c639"
+                      hoverColor="#8AA62F"
+                      onTouchTap={this.sendOn}
+                      icon={<FontIcon className="material-icons">radio_button_checked</FontIcon>}
+                    />
+                    <span className="btn" disabled>
+                        {icon}
+                        {this.props.label}
+                    </span>
+                    <FlatButton
+                      backgroundColor="#a4c639"
+                      hoverColor="#8AA62F"
+                      onTouchTap={this.sendOff}
+                      icon={<FontIcon className="material-icons">radio_button_unchecked</FontIcon>}
+                    />
+                </CardText>
+            </Card>
         );
     }
 }

@@ -1,7 +1,8 @@
 import React from 'react';
-import classNames from 'classnames';
 import $http from '../request';
 import logger from '../logger';
+import FlatButton from 'material-ui/FlatButton';
+import FontIcon from 'material-ui/FontIcon';
 
 class Toggle extends React.Component {
     constructor(props) {
@@ -45,21 +46,20 @@ class Toggle extends React.Component {
     }
 
     render() {
-        let btnClass = classNames({
-            'btn btn-lg btn-block': true,
-            'btn-success': this.state.isChecked,
-            'btn-danger': !this.state.isChecked,
-            'btn-icon': this.props.icon
-        });
+        let bgColor = this.state.isChecked ? 'green' : 'red';
         let icon = <i></i>;
         if(this.props.icon) {
-            icon = <i className={'glyphicon glyphicon-' + this.props.icon}></i>;
+            icon = <FontIcon className="material-icons">{this.props.icon}</FontIcon>;
         }
         return (
-            <button className={btnClass} onClick={this.sendToggle}>
-                {icon}
-                {this.props.label}
-            </button>
+            <FlatButton
+              backgroundColor={bgColor}
+              hoverColor="#8AA62F"
+              onTouchTap={this.sendToggle}
+              icon={icon}
+            >
+            {this.props.label}
+            </FlatButton>
         );
     }
 }
