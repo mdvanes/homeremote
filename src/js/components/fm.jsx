@@ -2,6 +2,8 @@ import React from 'react';
 import logger from '../logger';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import RenameButton from './RenameButton';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import FlatButton from 'material-ui/FlatButton';
 
 class FileManager extends React.Component {
     constructor(props) {
@@ -148,13 +150,13 @@ class FileManager extends React.Component {
         //});
         const rows = this.state.dirIndex.map(entry => {
             if( entry.isDir ) {
-                return <tr key={entry.name}>
-                    <td><i className="glyphicon glyphicon-folder-open"></i></td>
-                    <td onClick={() => {this.listDir(entry.name)}}>{entry.name}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>;
+                return <TableRow key={entry.name}>
+                    <TableRowColumn><i className="glyphicon glyphicon-folder-open"></i></TableRowColumn>
+                    <TableRowColumn onClick={() => {this.listDir(entry.name)}}>{entry.name}</TableRowColumn>
+                    <TableRowColumn></TableRowColumn>
+                    <TableRowColumn></TableRowColumn>
+                    <TableRowColumn></TableRowColumn>
+                </TableRow>;
             } else {
                 let filePath = this.state.dirName;
                 let fileName = entry.name;
@@ -164,54 +166,54 @@ class FileManager extends React.Component {
                 const targetLocations = this.state.targetLocations.map(entry => {
                     return <MenuItem key={entry} onClick={() => {this.mvToTargetLocation(filePath, fileName, entry)}}>{entry}</MenuItem>
                 });
-                return <tr key={entry.name}>
-                    <td>{entry.size}</td>
-                    <td>{entry.name}</td>
-                    <td>
+                return <TableRow key={entry.name}>
+                    <TableRowColumn>{entry.size}</TableRowColumn>
+                    <TableRowColumn>{entry.name}</TableRowColumn>
+                    <TableRowColumn>
                         <button className="btn btn-default" onClick={() => {this.ftpUpload(filePath)}}>upload</button>
-                    </td>
-                    <td>
+                    </TableRowColumn>
+                    <TableRowColumn>
                         <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
-                    </td>
-                    <td>
-                        <DropdownButton title="Move">
+                    </TableRowColumn>
+                    <TableRowColumn>
+                        <DropdownButton id={entry.name + '_ddb'} title="Move">
                             {targetLocations}
                         </DropdownButton>
-                    </td>
-                </tr>;
+                    </TableRowColumn>
+                </TableRow>;
             }
         });
         return (
             <div>
-                <table className="table table-striped table-hover">
-                    <caption>File Manager $[rootDir]/{this.state.dirName}</caption>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>FTP</th>
-                            <th>Rename</th>
-                            <th>Move</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td onClick={() => this.listDir('')}>/</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                <h1>File Manager $[rootDir]/{this.state.dirName}</h1>
+                <Table className="table table-striped table-hover">
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderColumn></TableHeaderColumn>
+                            <TableHeaderColumn>Name</TableHeaderColumn>
+                            <TableHeaderColumn>FTP</TableHeaderColumn>
+                            <TableHeaderColumn>Rename</TableHeaderColumn>
+                            <TableHeaderColumn>Move</TableHeaderColumn>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow>
+                            <TableRowColumn></TableRowColumn>
+                            <TableRowColumn onClick={() => this.listDir('')}>/</TableRowColumn>
+                            <TableRowColumn></TableRowColumn>
+                            <TableRowColumn></TableRowColumn>
+                            <TableRowColumn></TableRowColumn>
+                        </TableRow>
                         {rows}
-                    </tbody>
-                </table>
+                    </TableBody>
+                </Table>
                 <div className="row">
                     <div className="col-xs-6">
                         nr of entries: {rows.length}
                     </div>
                     <div className="col-xs-6">
-                        <button onClick={this.getFtpStatus} className="btn btn-default">Get FTP status</button>
-                        <button onClick={this.resetFilePermissions} className="btn btn-default">Fix Permissions</button>
+                        <FlatButton onClick={this.getFtpStatus} className="btn btn-default">Get FTP status</FlatButton>
+                        <FlatButton onClick={this.resetFilePermissions} className="btn btn-default">Fix Permissions</FlatButton>
                     </div>
                 </div>
             </div>
