@@ -30,10 +30,12 @@ import '../sass/homeRemote.scss';
 injectTapEventPlugin();
 
 const muiTheme = getMuiTheme({
-  palette: {
-    primary1Color: deepPurple900,
-  }
+    palette: {
+        primary1Color: deepPurple900,
+    }
 });
+//darkBaseTheme.palette.primary1Color = deepPurple900;
+//const muiTheme = getMuiTheme(darkBaseTheme);
 
 class Main extends React.Component {
 
@@ -48,52 +50,56 @@ class Main extends React.Component {
     }
 
     render() {
-        return (<MuiThemeProvider muiTheme={muiTheme}>
-            <div>
-                <AppBar
-                    title="HomeRemote"
-                    iconClassNameRight="muidocs-icon-navigation-expand-more"
-                    onLeftIconButtonTouchTap={this.toggleDrawer}
-                />
-                <Drawer open={this.state.open}>
-                    <AppBar title="AppBar"
+        return (
+            <MuiThemeProvider muiTheme={muiTheme}>
+                <div>
+                    <AppBar
+                        title="HomeRemote"
+                        iconClassNameRight="muidocs-icon-navigation-expand-more"
                         onLeftIconButtonTouchTap={this.toggleDrawer}
                     />
-                    <MenuItem>Menu Item</MenuItem>
-                    <MenuItem>Menu Item 2</MenuItem>
-                </Drawer>
-                <StatusBar/>
-                <div className="row">
-                    <div className="col-xs-12 col-md-3">
-                        <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
-                        <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
-                        <ButtonGroup label=" n" icon="lightbulb_outline" type="switchlight" id="6"/>
-                        <ButtonGroup label=" s" icon="lightbulb_outline" type="switchlight" id="7"/>
-                        {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
-                        {/*<MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>*/}
-                    </div>
-                    <div className="col-xs-12 col-md-2">
-                        {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
+                    <Drawer open={this.state.open}>
+                        <AppBar title="AppBar"
+                            onLeftIconButtonTouchTap={this.toggleDrawer}
+                        />
+                        <MenuItem>Menu Item</MenuItem>
+                        <MenuItem>Menu Item 2</MenuItem>
+                    </Drawer>
+                    <StatusBar/>
+                    <div className="container-fluid">
                         <div className="row">
-                            <div className="col-xs-6 col-md-12 margin-top">
-                                <Toggle label="" id="radio" icon="music_note"/>{/* Music on server */}
+                            <div className="col-xs-12 col-md-3">
+                                <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
+                                <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
+                                <ButtonGroup label=" n" icon="lightbulb_outline" type="switchlight" id="6"/>
+                                <ButtonGroup label=" s" icon="lightbulb_outline" type="switchlight" id="7"/>
+                                {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
+                                {/*<MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>*/}
                             </div>
-                            <div className="col-xs-6 col-md-12 margin-top">
-                                <Toggle label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+                            <div className="col-xs-12 col-md-2">
+                                {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
+                                <div className="row">
+                                    <div className="col-xs-6 col-md-12 margin-top">
+                                        <Toggle label="" id="radio" icon="music_note"/>{/* Music on server */}
+                                    </div>
+                                    <div className="col-xs-6 col-md-12 margin-top">
+                                        <Toggle label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-xs-12 col-md-4">
+                                <GetMusic/>
+                            </div>
+                            <div className="col-xs-12 col-md-3 margin-top">
+                                <Log infoUrl="/radio/info"/>
                             </div>
                         </div>
-                    </div>
-                    <div className="col-xs-12 col-md-4">
-                        <GetMusic/>
-                    </div>
-                    <div className="col-xs-12 col-md-3 margin-top">
-                        <Log infoUrl="/radio/info"/>
+                        <FileManager/>
+                        <Gears/>
                     </div>
                 </div>
-                <FileManager/>
-                <Gears/>
-            </div>
-        </MuiThemeProvider>)
+            </MuiThemeProvider>
+        )
     };
 }
 

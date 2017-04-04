@@ -51,18 +51,22 @@ var bind = function(app, log) {
 
     // Get "now playing" information
     app.get('/radio/info', function(req, res) {
-        var mplayerStatus = fs.readFileSync(settings.radiologpath, 'utf8');
-        var regex = /ICY Info: StreamTitle='(.*)'/g;
-        var m;
-        var result = '';
-        while ((m = regex.exec(mplayerStatus)) !== null) {
-            if (m.index === regex.lastIndex) {
-                regex.lastIndex++;
+        try {
+            const mplayerStatus = fs.readFileSync(settings.radiologpath, 'utf8');
+            const regex = /ICY Info: StreamTitle='(.*)'/g;
+            let m;
+            let result = '';
+            while ((m = regex.exec(mplayerStatus)) !== null) {
+                if (m.index === regex.lastIndex) {
+                    regex.lastIndex++;
+                }
+                // Only keep the last match as the result
+                result = m[1];
             }
-            // Only keep the last match as the result
-            result = m[1];
+            res.send({status: result});
+        } catch(ex) {
+            res.send({status: 'error: radio log not found'});
         }
-        res.send({status: result});
     });
 };
 
