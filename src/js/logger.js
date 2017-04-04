@@ -7,13 +7,17 @@ let logger = {};
 let writeLog = (...messages) => {
     let time = new Date();
     let timestamp = time.toTimeString().substring(0,8);
-    document.querySelector('.log').value = timestamp + ' ' +
-        messages.join(' ') + '\n' +
-        document.querySelector('.log').value;
+    const logElem = document.querySelector('.log');
+    const line = document.createElement('div');
+    line.innerHTML = `${timestamp} ${messages.join(' ')}\n`;
+    logElem.insertBefore(line, logElem.children[0]);
 };
 
 logger.clear = () => {
-    document.querySelector('.log').value = '';
+	const logElem = document.querySelector('.log');
+    Array.from(logElem.children).forEach(item => {
+    	logElem.removeChild(item);
+    });
 };
 
 logger.log = message => {
