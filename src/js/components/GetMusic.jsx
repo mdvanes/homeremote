@@ -1,5 +1,9 @@
 import React from 'react';
 import logger from '../logger';
+import {Card, CardText} from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
+import './GetMusic.scss';
 
 class GetMusic extends React.Component {
     constructor(props) {
@@ -71,40 +75,40 @@ class GetMusic extends React.Component {
 
     render() {
         return (
-            <div className="row">
-                <div className="col-lg-6">
+            <Card>
+                <CardText>
                     <form className="form-horizontal well well-sm">
                         <fieldset>
-                            <div className="form-group">
-                                <label htmlFor="getMusicUrl" className="col-lg-2 control-label">url</label>
-                                <div className="col-lg-10">
-                                    <input type="text" className="form-control" id="getMusicUrl" name="url" placeholder="url" value={this.state.url} onChange={this.handleChange}/>
-                                </div>
-                            </div>
-                            <button onClick={this.getInfo} className="btn btn-default">Get Info</button>
-                            <div className="form-group">
-                                <label htmlFor="getMusicTitle" className="col-lg-2 control-label">Title</label>
-                                <div className="col-lg-10">
-                                    <input type="text" className="form-control" id="getMusicTitle" name="title" placeholder="Title" value={this.state.title} onChange={this.handleChange}/>
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="getMusicArtist" className="col-lg-2 control-label">Artist</label>
-                                <div className="col-lg-10">
-                                    <input type="text" className="form-control" id="getMusicArtist" name="artist" placeholder="Artist" value={this.state.artist} onChange={this.handleChange}/>
-                                </div>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="getMusicAlbum" className="col-lg-2 control-label">Album</label>
-                                <div className="col-lg-10">
-                                    <input type="text" className="form-control" id="getMusicAlbum" name="album" placeholder="Album" value={this.state.album} onChange={this.handleChange}/>
-                                </div>
-                            </div>
-                            <button onClick={this.getMusic} className="btn btn-default">Get Music</button>
+                            <TextField
+                                floatingLabelText="URL"
+                                name="url"
+                                fullWidth={true}
+                                value={this.state.url}
+                                onChange={this.handleChange} />
+                            <FlatButton label="Get Info" primary={true} fullWidth={true} onTouchTap={this.getInfo} />
+                            <TextField
+                                floatingLabelText="Y'all suckas put tha title up in heya!"
+                                name="title"
+                                fullWidth={true}
+                                value={this.state.title}
+                                onChange={this.handleChange} />
+                            <TextField
+                                floatingLabelText="Artist"
+                                name="artist"
+                                fullWidth={true}
+                                value={this.state.artist}
+                                onChange={this.handleChange} />
+                            <TextField
+                                floatingLabelText="Album"
+                                name="album"
+                                fullWidth={true}
+                                value={this.state.album}
+                                onChange={this.handleChange} />
+                            <FlatButton label="Get Music" primary={true} fullWidth={true} onTouchTap={this.getMusic} />
                         </fieldset>
                     </form>
-                </div>
-            </div>
+                </CardText>
+            </Card>
         );
     }
 }

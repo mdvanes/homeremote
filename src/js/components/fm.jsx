@@ -21,6 +21,7 @@ class FileManager extends React.Component {
         this.getTargetLocations();
     }
 
+    // TODO all fetch calls should be done through a (combined) service. See https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md#style-y035 and http://stackoverflow.com/questions/35855781/having-services-in-react-application
     listDir(dirName) {
         if(this.state.dirName && this.state.dirName.length > 0 &&
             dirName && dirName.length > 0) {
