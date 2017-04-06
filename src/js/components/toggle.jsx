@@ -56,6 +56,7 @@ class Toggle extends React.Component {
               backgroundColor={bgColor}
               hoverColor="#8AA62F"
               onTouchTap={this.sendToggle}
+              fullWidth={true}
               icon={icon}
             >
             {this.props.label}

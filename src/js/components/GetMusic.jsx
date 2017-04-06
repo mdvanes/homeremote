@@ -87,7 +87,7 @@ class GetMusic extends React.Component {
                                 onChange={this.handleChange} />
                             <FlatButton label="Get Info" primary={true} fullWidth={true} onTouchTap={this.getInfo} />
                             <TextField
-                                floatingLabelText="Y'all suckas put tha title up in heya!"
+                                floatingLabelText="Title"
                                 name="title"
                                 fullWidth={true}
                                 value={this.state.title}
