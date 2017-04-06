@@ -1,5 +1,6 @@
 import React from 'react';
 import logger from '../logger';
+import './simple-material-table.scss';
 
 class GetMusic extends React.Component {
     constructor(props) {
@@ -46,7 +47,7 @@ class GetMusic extends React.Component {
             </tr>;
         });
         return (
-            <table className="table table-striped table-hover">
+            <table className="simple-material-table">
                 <thead>
                     <tr>
                         <th>Type</th>

@@ -1,0 +1,28 @@
+/* Material UI table adds unwanted features */
+table.simple-material-table {
+    border-collapse: collapse;
+    font-family: Roboto, sans-serif;
+    width: 100%;
+
+    th {
+        color: rgb(158, 158, 158);
+    }
+
+    th, td {
+        font-size: 12px;
+        font-weight: normal;
+        height: 56px;
+        padding-left: 24px;
+        padding-right: 24px;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    tr {
+        border-bottom: 1px solid rgb(224, 224, 224);
+        color: rgba(0, 0, 0, 0.9);
+        height: 48px;
+    }
+
+}
