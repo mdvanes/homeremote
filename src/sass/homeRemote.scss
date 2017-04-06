@@ -21,25 +21,24 @@ html, body {
 //     }
 // }
 
-// .margin-top {
-//     margin-top: 1em;
-// }
+.margin-top {
+    margin-top: 1em;
+}
 
 // textarea.form-control.log {
 //     color: #FFF;
 //     height: 300px;
 // }
 
-// .status-bar {
-//     display: none;
+.status-bar {
+    display: none;
 
-//     &.offline {
-//         color: black;
-//         display: block;
-//     }
-// }
+    &.offline {
+        color: black;
+        display: block;
+    }
+}
 
-// // TODO Move sass to webpack 
 // .table tbody td {
 //     > .btn, 
 //     > .btn-group {

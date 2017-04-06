@@ -1,8 +1,9 @@
 import React from 'react';
+import classNames from 'classnames';
 import $http from '../request';
 import logger from '../logger';
-import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
+import './toggle.scss';
 
 class Toggle extends React.Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class Toggle extends React.Component {
         if(!this.props.id) {
             throw new Error('property ID is required on Toggle');
         }
+        // TODO replace by Fetch
         $http('/' + this.props.id + '/status')
             .then(data => {
                 if(data.status === 'started') {
@@ -46,21 +48,21 @@ class Toggle extends React.Component {
     }
 
     render() {
-        let bgColor = this.state.isChecked ? 'green' : 'red';
-        let icon = <i></i>;
-        if(this.props.icon) {
-            icon = <FontIcon className="material-icons">{this.props.icon}</FontIcon>;
-        }
+        let btnClass = classNames({
+            'btn-toggle': true,
+            'btn-success': this.state.isChecked,
+            'btn-danger': !this.state.isChecked
+        });
+        let icon = <FontIcon style={{'font-size': '750%'}} className="material-icons">{this.props.icon}</FontIcon>;
         return (
-            <FlatButton
-              backgroundColor={bgColor}
-              hoverColor="#8AA62F"
+            <button
+              className="toggle-button"
+              className={btnClass}
               onTouchTap={this.sendToggle}
-              fullWidth={true}
-              icon={icon}
             >
+            {icon}
             {this.props.label}
-            </FlatButton>
+            </button>
         );
     }
 }
