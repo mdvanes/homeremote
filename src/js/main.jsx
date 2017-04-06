@@ -1,7 +1,13 @@
 // @flow
 
 import {render} from 'react-dom';
-import React from 'react'; // eslint-disable-line no-unused-vars
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
+
 import StatusBar from './components/status-bar';
 import ButtonGroup from './components/button-group';
 //import MacroButtonGroup from './components/macro-button-group';
@@ -30,6 +36,78 @@ import '../sass/homeRemote.scss';
 // var str: number = 'hello world!';
 
 injectTapEventPlugin();
+
+const DashboardView = () => (
+    <div className="container-fluid">
+        <div className="row margin-top">
+            <div className="col-xs-12 col-md-2">
+                <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
+                <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
+                <ButtonGroup label=" n" icon="lightbulb_outline" type="switchlight" id="6"/>
+                <ButtonGroup label=" s" icon="lightbulb_outline" type="switchlight" id="7"/>
+                {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
+                {/*<MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>*/}
+            </div>
+            <div className="col-xs-12 col-md-1">
+                {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
+                <div className="row">
+                    <div className="col-xs-6 col-md-12">
+                        <Toggle label="" id="radio" icon="music_note"/>{/* Music on server */}
+                    </div>
+                    <div className="col-xs-6 col-md-12">
+                        <Toggle label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+                    </div>
+                </div>
+            </div>
+            <div className="col-xs-12 col-md-3">
+                <GetMusic/>
+            </div>
+            <div className="col-xs-12 col-md-6">
+                <Log infoUrl="/radio/info"/>
+            </div>
+        </div>
+        <FileManager/>
+        <Gears/>
+    </div>
+)
+
+const LightView = () => (
+    <div className="col-xs-12 col-md-2 margin-top">
+        <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
+        <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
+        <ButtonGroup label=" n" icon="lightbulb_outline" type="switchlight" id="6"/>
+        <ButtonGroup label=" s" icon="lightbulb_outline" type="switchlight" id="7"/>
+        <div className="row margin-top">
+            <div className="col-xs-6">
+                <Toggle label="" id="radio" icon="music_note"/>{/* Music on server */}
+            </div>
+            <div className="col-xs-6">
+                <Toggle label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+            </div>
+        </div>
+    </div>
+)
+
+const MusicView = () => (
+    <div className="col-xs-12 col-md-3 margin-top">
+        <GetMusic/>
+        <Log infoUrl="/radio/info"/>
+    </div>
+)
+
+const FilesView = () => (
+    <div>
+        <FileManager/>
+        <Log infoUrl="/radio/info"/>
+    </div>
+)
+
+const GearsView = () => (
+    <div>
+        <Gears/>
+        <Log infoUrl="/radio/info"/>
+    </div>
+)
 
 const muiTheme = getMuiTheme({
     palette: {
@@ -60,49 +138,27 @@ class Main extends React.Component {
                         iconClassNameRight="muidocs-icon-navigation-expand-more"
                         onLeftIconButtonTouchTap={this.toggleDrawer}
                     />
-                    <Drawer open={this.state.open}>
-                        <AppBar
-                            onLeftIconButtonTouchTap={this.toggleDrawer}
-                            iconElementLeft={<IconButton><NavigationClose /></IconButton>}
-                        />
-                        <MenuItem>Dashboard</MenuItem>
-                        <MenuItem>Light</MenuItem>
-                        <MenuItem>Music</MenuItem>
-                        <MenuItem>Files</MenuItem>
-                        <MenuItem>Gears</MenuItem>
-                    </Drawer>
-                    <StatusBar/>
-                    <div className="container-fluid">
-                        <div className="row margin-top">
-                            <div className="col-xs-12 col-md-2">
-                                <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
-                                <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
-                                <ButtonGroup label=" n" icon="lightbulb_outline" type="switchlight" id="6"/>
-                                <ButtonGroup label=" s" icon="lightbulb_outline" type="switchlight" id="7"/>
-                                {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
-                                {/*<MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>*/}
-                            </div>
-                            <div className="col-xs-12 col-md-1">
-                                {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
-                                <div className="row">
-                                    <div className="col-xs-6 col-md-12">
-                                        <Toggle label="" id="radio" icon="music_note"/>{/* Music on server */}
-                                    </div>
-                                    <div className="col-xs-6 col-md-12">
-                                        <Toggle label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-md-3">
-                                <GetMusic/>
-                            </div>
-                            <div className="col-xs-12 col-md-6">
-                                <Log infoUrl="/radio/info"/>
-                            </div>
+                    <Router>
+                        <div>
+                            <Drawer open={this.state.open}>
+                                <AppBar
+                                    onLeftIconButtonTouchTap={this.toggleDrawer}
+                                    iconElementLeft={<IconButton><NavigationClose /></IconButton>}
+                                />
+                                <MenuItem><Link to="/">Dashboard</Link></MenuItem>
+                                <MenuItem><Link to="/r/light">Light</Link></MenuItem>
+                                <MenuItem><Link to="/r/music">Music</Link></MenuItem>
+                                <MenuItem><Link to="/r/files">Files</Link></MenuItem>
+                                <MenuItem><Link to="/r/gears">Gears</Link></MenuItem>
+                            </Drawer>
+                            <StatusBar/>
+                            <Route exact path="/" component={DashboardView}/>
+                            <Route path="/r/light" component={LightView}/>
+                            <Route path="/r/music" component={MusicView}/>
+                            <Route path="/r/files" component={FilesView}/>
+                            <Route path="/r/gears" component={GearsView}/>
                         </div>
-                        <FileManager/>
-                        <Gears/>
-                    </div>
+                    </Router>
                 </div>
             </MuiThemeProvider>
         )

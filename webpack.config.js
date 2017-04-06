@@ -26,7 +26,7 @@ const common = {
     devServer: {
         proxy: [
             {
-                context: ['/radio', '/motion', '/fm', '/switch', '/getMusic', '/gears'],
+                context: ['/radio', '/motion', '/fm', '/switch', '/getMusic', '/gears', '/r'],
                 target: 'http://localhost:3000',
                 secure: false
             }

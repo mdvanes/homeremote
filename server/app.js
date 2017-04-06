@@ -68,6 +68,9 @@ switcher.bind(app, log);
 filemanager.bind(app, log);
 getMusic.bind(app, log);
 gears.bind(app, log);
+app.get('/r/*', (req, res) => {
+    res.redirect('/');
+});
 
 if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // default is true
