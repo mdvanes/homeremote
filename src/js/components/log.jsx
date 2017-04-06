@@ -31,11 +31,11 @@ class Log extends React.Component {
 
     render() {
         return (
-            <Card>
-                <CardText>
+            <Card className="log-card">
+                <CardText className="log-card-text">
                     <div className="log"></div>
                 </CardText>
-                <CardActions>
+                <CardActions className="log-card-actions">
                     <FlatButton onClick={this.clear} label="clear"/>
                     <FlatButton onClick={this.getInfo} label="radio info"/>
                 </CardActions>
