@@ -1,0 +1,19 @@
+.button-group {
+    padding: 0 !important;
+
+    .label {
+        display: inline-block;
+        text-align: center;
+        vertical-align: middle;
+        width: 33%;
+    }
+}
+
+.button-group button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    line-height: 11px;
+    vertical-align: middle;
+    width: 33%;
+}

@@ -1,8 +1,9 @@
 import React from 'react';
 import {Card, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import logger from '../logger';
+import './button-group.scss';
+import {deepPurple500} from 'material-ui/styles/colors';
 
 class ButtonGroup extends React.Component {
     constructor(props) {
@@ -51,27 +52,21 @@ class ButtonGroup extends React.Component {
     render() {
         let icon = <i></i>;
         if(this.props.icon) {
-            icon = <FontIcon className="material-icons">{this.props.icon}</FontIcon>;
+            icon = <FontIcon style={{fontSize: '250%'}} className="material-icons">{this.props.icon}</FontIcon>;
         }
         return (
             <Card>
-                <CardText>
-                    <FlatButton
-                      backgroundColor="#a4c639"
-                      hoverColor="#8AA62F"
-                      onTouchTap={this.sendOn}
-                      icon={<FontIcon className="material-icons">radio_button_checked</FontIcon>}
-                    />
-                    <span className="btn" disabled>
+                <CardText className="button-group">
+                    <button onTouchTap={this.sendOn}>
+                        <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_checked</FontIcon>
+                    </button>
+                    <span className="label">
                         {icon}
                         {this.props.label}
                     </span>
-                    <FlatButton
-                      backgroundColor="#a4c639"
-                      hoverColor="#8AA62F"
-                      onTouchTap={this.sendOff}
-                      icon={<FontIcon className="material-icons">radio_button_unchecked</FontIcon>}
-                    />
+                    <button onTouchTap={this.sendOff}>
+                        <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_unchecked</FontIcon>
+                    </button>
                 </CardText>
             </Card>
         );
