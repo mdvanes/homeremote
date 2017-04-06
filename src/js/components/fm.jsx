@@ -4,6 +4,7 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import RenameButton from './RenameButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
+import FontIcon from 'material-ui/FontIcon';
 
 class FileManager extends React.Component {
     constructor(props) {
@@ -152,7 +153,7 @@ class FileManager extends React.Component {
         const rows = this.state.dirIndex.map(entry => {
             if( entry.isDir ) {
                 return <TableRow key={entry.name}>
-                    <TableRowColumn><i className="glyphicon glyphicon-folder-open"></i></TableRowColumn>
+                    <TableRowColumn><FontIcon className="material-icons">folder_open</FontIcon></TableRowColumn>
                     <TableRowColumn onClick={() => {this.listDir(entry.name)}}>{entry.name}</TableRowColumn>
                     <TableRowColumn></TableRowColumn>
                     <TableRowColumn></TableRowColumn>

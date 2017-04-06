@@ -1,6 +1,8 @@
 import React from 'react';
 import logger from '../logger';
 import './simple-material-table.scss';
+import FontIcon from 'material-ui/FontIcon';
+import {blue500, green800} from 'material-ui/styles/colors';
 
 class GetMusic extends React.Component {
     constructor(props) {
@@ -38,9 +40,16 @@ class GetMusic extends React.Component {
     }
 
     render() {
+        const getIcon = type => {
+            if(type === 'tr') {
+                return <FontIcon color={blue500} className="material-icons">directions_car</FontIcon>;
+            } else {
+                return <FontIcon color={green800} className="material-icons">queue</FontIcon>;
+            }
+        };
         const rows = this.state.list.map(entry => {
             return  <tr key={entry.name}>
-                <td>{entry.type}</td>
+                <td title={entry.type}>{getIcon(entry.type)}</td>
                 <td>{entry.name}</td>
                 <td>{entry.percentage}%</td>
                 <td>{entry.status}</td>
