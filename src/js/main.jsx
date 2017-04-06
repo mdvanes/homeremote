@@ -19,6 +19,8 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
+import IconButton from 'material-ui/IconButton';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
 
 //import '../library/bootstrap/css/bootstrap.min.css';
 import 'flexboxgrid/dist/flexboxgrid.min.css';
@@ -59,16 +61,20 @@ class Main extends React.Component {
                         onLeftIconButtonTouchTap={this.toggleDrawer}
                     />
                     <Drawer open={this.state.open}>
-                        <AppBar title="AppBar"
+                        <AppBar
                             onLeftIconButtonTouchTap={this.toggleDrawer}
+                            iconElementLeft={<IconButton><NavigationClose /></IconButton>}
                         />
-                        <MenuItem>Menu Item</MenuItem>
-                        <MenuItem>Menu Item 2</MenuItem>
+                        <MenuItem>Dashboard</MenuItem>
+                        <MenuItem>Light</MenuItem>
+                        <MenuItem>Music</MenuItem>
+                        <MenuItem>Files</MenuItem>
+                        <MenuItem>Gears</MenuItem>
                     </Drawer>
                     <StatusBar/>
                     <div className="container-fluid">
-                        <div className="row">
-                            <div className="col-xs-12 col-md-3">
+                        <div className="row margin-top">
+                            <div className="col-xs-12 col-md-2">
                                 <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
                                 <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
                                 <ButtonGroup label=" n" icon="lightbulb_outline" type="switchlight" id="6"/>
@@ -76,21 +82,21 @@ class Main extends React.Component {
                                 {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
                                 {/*<MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>*/}
                             </div>
-                            <div className="col-xs-12 col-md-2">
+                            <div className="col-xs-12 col-md-1">
                                 {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
                                 <div className="row">
-                                    <div className="col-xs-6 col-md-12 margin-top">
+                                    <div className="col-xs-6 col-md-12">
                                         <Toggle label="" id="radio" icon="music_note"/>{/* Music on server */}
                                     </div>
-                                    <div className="col-xs-6 col-md-12 margin-top">
+                                    <div className="col-xs-6 col-md-12">
                                         <Toggle label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-xs-12 col-md-4">
+                            <div className="col-xs-12 col-md-3">
                                 <GetMusic/>
                             </div>
-                            <div className="col-xs-12 col-md-3 margin-top">
+                            <div className="col-xs-12 col-md-6">
                                 <Log infoUrl="/radio/info"/>
                             </div>
                         </div>
