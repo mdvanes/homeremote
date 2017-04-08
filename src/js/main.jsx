@@ -145,11 +145,11 @@ class Main extends React.Component {
                                     onLeftIconButtonTouchTap={this.toggleDrawer}
                                     iconElementLeft={<IconButton><NavigationClose /></IconButton>}
                                 />
-                                <MenuItem><Link to="/">Dashboard</Link></MenuItem>
-                                <MenuItem><Link to="/r/light">Light</Link></MenuItem>
-                                <MenuItem><Link to="/r/music">Music</Link></MenuItem>
-                                <MenuItem><Link to="/r/files">Files</Link></MenuItem>
-                                <MenuItem><Link to="/r/gears">Gears</Link></MenuItem>
+                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/">Dashboard</Link></MenuItem>
+                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/light">Light</Link></MenuItem>
+                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/music">Music</Link></MenuItem>
+                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/files">Files</Link></MenuItem>
+                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/gears">Gears</Link></MenuItem>
                             </Drawer>
                             <StatusBar/>
                             <Route exact path="/" component={DashboardView}/>
