@@ -1,7 +1,7 @@
 import React from 'react';
 import logger from '../logger';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
 import RenameButton from './RenameButton';
+import MoveButton from './MoveButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -16,7 +16,6 @@ class FileManager extends React.Component {
         this.listDir = this.listDir.bind(this);
         this.ftpUpload = this.ftpUpload.bind(this);
         this.getTargetLocations = this.getTargetLocations.bind(this);
-        this.mvToTargetLocation = this.mvToTargetLocation.bind(this);
         this.resetFilePermissions = this.resetFilePermissions.bind(this);
         this.listDir('');
         this.getTargetLocations();
@@ -98,34 +97,6 @@ class FileManager extends React.Component {
         .catch(error => logger.error('error on fm/getTargetLocations: ' + error));
     }
 
-    // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
-    mvToTargetLocation(filePath, fileName, targetLocation) {
-        const confirmResult = confirm(`Confirm moving ${filePath}/${fileName} to ${targetLocation}`);
-        if(confirmResult) {
-            fetch('/fm/mvToTargetLocation', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    sourcePath: filePath,
-                    fileName: fileName,
-                    targetPath: targetLocation
-                })
-            })
-            .then(data => data.json())
-            .then(data => {
-                if(data.status === 'ok') {
-                    logger.log('move completed');
-                } else {
-                    throw new Error('move failed');
-                }
-            })
-            .catch(error => logger.error('error on fm/mvToTargetLocation: ' + error));
-        }
-    }
-
     resetFilePermissions() {
         const confirmResult = confirm('Confirm resetting file permissions to rwrwrw');
         if(confirmResult) {
@@ -160,14 +131,7 @@ class FileManager extends React.Component {
                     <TableRowColumn></TableRowColumn>
                 </TableRow>;
             } else {
-                let filePath = this.state.dirName;
-                let fileName = entry.name;
-                //if(this.state.dirName) {
-                //    filePath = this.state.dirName + '/' + filePath;
-                //}
-                const targetLocations = this.state.targetLocations.map(entry => {
-                    return <MenuItem key={entry} onClick={() => {this.mvToTargetLocation(filePath, fileName, entry)}}>{entry}</MenuItem>
-                });
+                const filePath = this.state.dirName;
                 return <TableRow key={entry.name}>
                     <TableRowColumn>{entry.size}</TableRowColumn>
                     <TableRowColumn>{entry.name}</TableRowColumn>
@@ -178,9 +142,7 @@ class FileManager extends React.Component {
                         <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
                     </TableRowColumn>
                     <TableRowColumn>
-                        <DropdownButton id={entry.name + '_ddb'} title="Move">
-                            {targetLocations}
-                        </DropdownButton>
+                        <MoveButton filePath={filePath} fileName={entry.name} targetLocations={this.state.targetLocations} />
                     </TableRowColumn>
                 </TableRow>;
             }
