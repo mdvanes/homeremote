@@ -68,8 +68,9 @@ switcher.bind(app, log);
 filemanager.bind(app, log);
 getMusic.bind(app, log);
 gears.bind(app, log);
+// Using the /r/ subpath for views, to easily match here and in webpack.config proxies
 app.get('/r/*', (req, res) => {
-    res.redirect('/');
+    res.sendfile(path.resolve(__dirname + '/../public/index.html'));
 });
 
 if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {

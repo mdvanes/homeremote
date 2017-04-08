@@ -17,6 +17,7 @@ const common = {
 
     output: {
         path: path.join(__dirname, 'public'),
+        publicPath: '/', // For paths to the js from the /r/ views
         filename: ('production' === process.env.NODE_ENV) ? 'js/[name]-[hash:6].js' : 'js/[name].js'
     },
 
