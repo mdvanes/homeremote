@@ -4,14 +4,19 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
 
+const initialDialogActions = [];
+const initialDialogTitle = 'Move to';
+
 export default class MoveButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
-            dialogActions: [],
-            dialogTitle: 'Move to',
-            snackBarOpen: false
+            dialogActions: initialDialogActions,
+            dialogTitle: initialDialogTitle,
+            snackBarOpen: false,
+            showLocationsList: true,
+            snackBarMessage: ''
         };
         this.handleOpen = this.handleOpen.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -23,7 +28,12 @@ export default class MoveButton extends React.Component {
     }
 
     handleClose() {
-        this.setState({open: false});
+        this.setState({
+            open: false,
+            dialogActions: initialDialogActions,
+            dialogTitle: initialDialogTitle,
+            showLocationsList: true
+        });
     }
 
     // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
@@ -43,14 +53,25 @@ export default class MoveButton extends React.Component {
         .then(data => data.json())
         .then(data => {
             this.handleClose();
-            this.setState({ snackBarOpen: true }); // TOOD also for failed
             if(data.status === 'ok') {
-                logger.log('move completed');
+                const message = 'Move completed';
+                logger.log(message);
+                this.setState({
+                    snackBarOpen: true,
+                    snackBarMessage: message
+                });
             } else {
                 throw new Error('move failed');
             }
         })
-        .catch(error => logger.error('error on fm/mvToTargetLocation: ' + error));
+        .catch(error => {
+            const message = 'error on fm/mvToTargetLocation: ' + error;
+            logger.error(message);
+            this.setState({
+                snackBarOpen: true,
+                snackBarMessage: message
+            });
+        });
     }
 
     confirmMove(filePath, fileName, targetLocation) {
@@ -59,7 +80,8 @@ export default class MoveButton extends React.Component {
                 <FlatButton label="Cancel" onTouchTap={this.handleClose} />,
                 <FlatButton label="OK" secondary={true} onTouchTap={() => {this.mvToTargetLocation(filePath, fileName, targetLocation)}} />
             ],
-            dialogTitle: `Confirm moving ${filePath}/${fileName} to ${targetLocation}`
+            dialogTitle: `Confirm moving ${filePath}/${fileName} to ${targetLocation}`,
+            showLocationsList: false
         });
         //const confirmResult = confirm(`Confirm moving ${filePath}/${fileName} to ${targetLocation}`);
     }
@@ -80,14 +102,18 @@ export default class MoveButton extends React.Component {
                 </li>
             );
         });
+        let locationsList = <span></span>;
+        if(this.state.showLocationsList) {
+            locationsList = <ul>{locations}</ul>;
+        }
         // TODO dynamically set "actions" to the confirm buttons, so the confirm dialog can be removed
         return (
             <div>
                 <Snackbar
                     open={this.state.snackBarOpen}
-                    message="Move completed"
+                    message={this.state.snackBarMessage}
                     autoHideDuration={4000}
-                    onRequestClose={this.handleRequestClose}
+                    onRequestClose={this.handleSnackbarClose}
                 />
                 <FlatButton label="Move" onTouchTap={this.handleOpen} />
                 <Dialog
@@ -97,9 +123,7 @@ export default class MoveButton extends React.Component {
                   actions={this.state.dialogActions}
                   onRequestClose={this.handleClose}
                 >
-                    <ul>
-                        {locations}
-                    </ul>
+                    {locationsList}
                 </Dialog>
             </div>
         );
