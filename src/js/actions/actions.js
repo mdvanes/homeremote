@@ -2,6 +2,7 @@
 
 export const LOG_INFO = 'LOG_INFO';
 export const LOG_ERROR = 'LOG_ERROR';
+export const HIDE_SHORT_MESSAGE = 'HIDE_SHORT_MESSAGE';
 export const CLEAR_LOG = 'CLEAR_LOG';
 
 /* util */
@@ -31,6 +32,14 @@ export function logError(...messages) {
         message: writeLog('ERROR:', ...messages),
         shortMessage: messages.join(' '),
         showShortMessage: true
+    };
+}
+
+export function hideShortMessage() {
+    return {
+        type: HIDE_SHORT_MESSAGE,
+        shortMessage: '',
+        showShortMessage: false
     };
 }
 

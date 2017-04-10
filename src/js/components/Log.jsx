@@ -15,7 +15,7 @@ class Log extends React.Component {
             snackBarMessage: ''
         };
         this.getInfo = this.getInfo.bind(this);
-        this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
+        //this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
     }
 
     // TODO Extract to container like ClearLogButton
@@ -39,12 +39,11 @@ class Log extends React.Component {
         .catch(error => logger.error('error on get info: ' + error));
     }
 
-    handleSnackbarClose() {
-        // TODO do this through LogContainer.mapDispatchToProps ?
-        this.setState({
-            snackBarOpen: false,
-        });
-    }
+    // handleSnackbarClose() {
+    //     this.setState({
+    //         snackBarOpen: false,
+    //     });
+    // }
 
     render() {
         return (
@@ -72,7 +71,7 @@ class Log extends React.Component {
                     open={this.props.showShortMessage}
                     message={this.props.shortMessage}
                     autoHideDuration={4000}
-                    onRequestClose={this.handleSnackbarClose}
+                    onRequestClose={this.props.onShortMessageHide}
                 />
             </Card>
         );
@@ -82,7 +81,8 @@ class Log extends React.Component {
 Log.propTypes = {
     loglines: PropTypes.arrayOf(PropTypes.shape({
         message: PropTypes.string.isRequired
-    }).isRequired).isRequired
+    }).isRequired).isRequired,
+    onShortMessageHide: PropTypes.func.isRequired
 }
 
 export default Log;

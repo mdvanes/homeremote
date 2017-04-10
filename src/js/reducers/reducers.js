@@ -1,4 +1,4 @@
-import { LOG_INFO, LOG_ERROR, CLEAR_LOG } from '../actions/actions';
+import { LOG_INFO, LOG_ERROR, HIDE_SHORT_MESSAGE, CLEAR_LOG } from '../actions/actions';
 import { combineReducers } from 'redux';
 
 // TODO to ES6 function
@@ -23,6 +23,7 @@ const short = (state = { shortMessage: '', showShortMessage: false }, action) =>
     switch(action.type) {
         case LOG_ERROR:
         case LOG_INFO:
+        case HIDE_SHORT_MESSAGE:
             return {
                 shortMessage: action.shortMessage,
                 showShortMessage: action.showShortMessage
@@ -38,7 +39,6 @@ const short = (state = { shortMessage: '', showShortMessage: false }, action) =>
 //     };
 // }
 
-// TODO skip combineReducers?
 const logApp = combineReducers({
     loglines,
     short
