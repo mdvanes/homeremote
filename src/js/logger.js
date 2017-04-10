@@ -1,7 +1,3 @@
-/**
- * Created by m.van.es on 6-2-2016.
- */
-
 let logger = {};
 
 let writeLog = (...messages) => {
