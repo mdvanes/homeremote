@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-//import { toggleTodo } from '../actions/actions';
+import { hideShortMessage } from '../actions/actions';
 import Log from '../components/Log';
 
 const mapStateToProps = (state) => {
@@ -10,11 +10,11 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = () => {
+const mapDispatchToProps = dispatch => {
     return {
-        // onTodoClick: (id) => {
-        //     dispatch(toggleTodo(id))
-        // }
+        onShortMessageHide: () => {
+            dispatch(hideShortMessage());
+        }
     };
 };
 
