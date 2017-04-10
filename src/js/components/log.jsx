@@ -2,15 +2,21 @@ import React from 'react';
 import logger from '../logger';
 import {Card, CardText, CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import Snackbar from 'material-ui/Snackbar';
 import './log.scss';
 
 class Log extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            snackBarOpen: false,
+            snackBarMessage: ''
+        };
         this.getInfo = this.getInfo.bind(this);
+        this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
     }
 
-    clear() {
+    static clear() {
         logger.clear();
     }
 
@@ -24,21 +30,39 @@ class Log extends React.Component {
         })
         .then(data => data.json())
         .then(data => {
-            logger.log(data.status);
+            const message = data.status;
+            logger.log(message);
+            this.setState({
+                snackBarOpen: true,
+                snackBarMessage: message
+            });
         })
         .catch(error => logger.error('error on get info: ' + error));
+    }
+
+    handleSnackbarClose() {
+        this.setState({
+            snackBarOpen: false,
+        });
     }
 
     render() {
         return (
             <Card className="log-card">
                 <CardText className="log-card-text">
-                    <div className="log"></div>
+                    <div></div>
                 </CardText>
+                <div className="log"></div>
                 <CardActions className="log-card-actions">
-                    <FlatButton onClick={this.clear} label="clear"/>
+                    <FlatButton onClick={Log.clear} label="clear"/>
                     <FlatButton onClick={this.getInfo} label="radio info"/>
                 </CardActions>
+                <Snackbar
+                    open={this.state.snackBarOpen}
+                    message={this.state.snackBarMessage}
+                    autoHideDuration={4000}
+                    onRequestClose={this.handleSnackbarClose}
+                />
             </Card>
         );
     }

@@ -8,6 +8,12 @@ import {
   Link
 } from 'react-router-dom';
 
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import logApp from './reducers/reducers.js'; // TODO remove .js ?
+import AddLogLine from './containers/AddLogLine';
+import VisibleLogLines from './containers/VisibleLogLines';
+
 import StatusBar from './components/status-bar';
 import ButtonGroup from './components/button-group';
 //import MacroButtonGroup from './components/macro-button-group';
@@ -37,9 +43,12 @@ import '../sass/homeRemote.scss';
 
 injectTapEventPlugin();
 
+// TODO extract these views to separate files and use ES6 syntax
 const DashboardView = () => (
     <div className="container-fluid">
         <div className="row margin-top">
+            <AddLogLine/>
+            <VisibleLogLines/>
             <div className="col-xs-12 col-md-2">
                 <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
                 <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
@@ -165,4 +174,7 @@ class Main extends React.Component {
     };
 }
 
-render(<Main/>, document.getElementById('app'));
+//console.log('test1', logApp);
+let store = createStore(logApp);
+
+render(<Provider store={store}><Main/></Provider>, document.getElementById('app'));
