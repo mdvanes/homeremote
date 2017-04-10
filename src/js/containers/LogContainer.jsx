@@ -1,12 +1,12 @@
 import { connect } from 'react-redux';
 //import { toggleTodo } from '../actions/actions';
-import LogLineList from '../components/LogLineList';
-
-// TODO to ES6 syntax
+import Log from '../components/Log';
 
 const mapStateToProps = (state) => {
     return {
-        loglines: state.loglines
+        loglines: state.loglines,
+        shortMessage: state.short.shortMessage,
+        showShortMessage: state.short.showShortMessage
     };
 };
 
@@ -18,9 +18,9 @@ const mapDispatchToProps = () => {
     };
 };
 
-const VisibleLogLines = connect(
+const LogContainer = connect(
     mapStateToProps,
     mapDispatchToProps
-)(LogLineList);
+)(Log);
 
-export default VisibleLogLines;
+export default LogContainer;

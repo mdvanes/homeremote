@@ -1,10 +1,12 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
-import { addLogline, clearLog } from '../actions/actions';
+import { logInfo, logError } from '../actions/actions';
 
-// TODO use ES6 class syntax and remove eslint disable above?
+// TODO Remove this file, everything has been moved to ClearLogButton
+
 let AddLogLine = ({ dispatch }) => {
   let input;
+  let input2;
 
   return (
     <div>
@@ -13,17 +15,32 @@ let AddLogLine = ({ dispatch }) => {
         if (!input.value.trim()) {
           return
         }
-        dispatch(addLogline(input.value))
+        dispatch(logInfo(input.value, 'AddLogLine-dummy'))
         input.value = ''
       }}>
         <input ref={node => {
           input = node
         }} />
         <button type="submit">
-          Add Logline
+          Log Info
         </button>
-        <button type="button" onClick={() => dispatch(clearLog())}>
+        {/*<button type="button" onClick={() => dispatch(clearLog())}>
         Clear log
+        </button>*/}
+      </form>
+      <form onSubmit={e => {
+        e.preventDefault()
+        if (!input2.value.trim()) {
+          return
+        }
+        dispatch(logError(input2.value, 'AddLogLine-dummy'))
+        input2.value = ''
+      }}>
+        <input ref={node => {
+          input2 = node
+        }} />
+        <button type="submit">
+          Log error
         </button>
       </form>
     </div>

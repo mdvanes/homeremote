@@ -1,5 +1,7 @@
 let logger = {};
 
+/* TODO remove, deprecated by actions/actions.js */
+
 let writeLog = (...messages) => {
     let time = new Date();
     let timestamp = time.toTimeString().substring(0,8);

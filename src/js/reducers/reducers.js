@@ -1,9 +1,11 @@
-import { ADD_LOGLINE, CLEAR_LOG } from '../actions/actions';
+import { LOG_INFO, LOG_ERROR, CLEAR_LOG } from '../actions/actions';
 import { combineReducers } from 'redux';
 
+// TODO to ES6 function
 function loglines(state = [], action) {
     switch (action.type) {
-        case ADD_LOGLINE:
+        case LOG_ERROR:
+        case LOG_INFO:
             return [
                 ...state,
                 {
@@ -17,6 +19,19 @@ function loglines(state = [], action) {
     }
 }
 
+const short = (state = { shortMessage: '', showShortMessage: false }, action) => {
+    switch(action.type) {
+        case LOG_ERROR:
+        case LOG_INFO:
+            return {
+                shortMessage: action.shortMessage,
+                showShortMessage: action.showShortMessage
+            };
+        default:
+            return state;
+    }
+};
+
 // export default function logApp(state = {}, action) {
 //     return {
 //         log: logReducer(state.log, action)
@@ -25,7 +40,8 @@ function loglines(state = [], action) {
 
 // TODO skip combineReducers?
 const logApp = combineReducers({
-    loglines
+    loglines,
+    short
 });
 
 export default logApp;
