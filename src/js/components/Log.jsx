@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import logger from '../logger';
 import {Card, CardText, CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Snackbar from 'material-ui/Snackbar';
+import ClearLogButton from '../containers/ClearLogButton';
+
 import './log.scss';
 
 class Log extends React.Component {
@@ -16,10 +18,7 @@ class Log extends React.Component {
         this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
     }
 
-    static clear() {
-        logger.clear();
-    }
-
+    // TODO Extract to container like ClearLogButton
     getInfo() {
         fetch(this.props.infoUrl, {
             method: 'GET',
@@ -41,6 +40,7 @@ class Log extends React.Component {
     }
 
     handleSnackbarClose() {
+        // TODO do this through LogContainer.mapDispatchToProps ?
         this.setState({
             snackBarOpen: false,
         });
@@ -50,16 +50,27 @@ class Log extends React.Component {
         return (
             <Card className="log-card">
                 <CardText className="log-card-text">
-                    <div></div>
+                    {this.props.loglines.map(logline =>
+                        <div key={logline.message}>
+                            {logline.message}
+                        </div>
+                    )}
                 </CardText>
                 <div className="log"></div>
                 <CardActions className="log-card-actions">
-                    <FlatButton onClick={Log.clear} label="clear"/>
+                    {/*<FlatButton onClick={Log.clear} label="clear"/>*/}
+                    <ClearLogButton/>
                     <FlatButton onClick={this.getInfo} label="radio info"/>
                 </CardActions>
-                <Snackbar
+                {/*<Snackbar
                     open={this.state.snackBarOpen}
                     message={this.state.snackBarMessage}
+                    autoHideDuration={4000}
+                    onRequestClose={this.handleSnackbarClose}
+                />*/}
+                <Snackbar
+                    open={this.props.showShortMessage}
+                    message={this.props.shortMessage}
                     autoHideDuration={4000}
                     onRequestClose={this.handleSnackbarClose}
                 />
@@ -67,4 +78,11 @@ class Log extends React.Component {
         );
     }
 }
+
+Log.propTypes = {
+    loglines: PropTypes.arrayOf(PropTypes.shape({
+        message: PropTypes.string.isRequired
+    }).isRequired).isRequired
+}
+
 export default Log;

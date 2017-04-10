@@ -12,13 +12,13 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import logApp from './reducers/reducers.js'; // TODO remove .js ?
 import AddLogLine from './containers/AddLogLine';
-import VisibleLogLines from './containers/VisibleLogLines';
+import LogContainer from './containers/LogContainer';
 
 import StatusBar from './components/status-bar';
 import ButtonGroup from './components/button-group';
 //import MacroButtonGroup from './components/macro-button-group';
 import Toggle from './components/toggle';
-import Log from './components/log';
+import Log from './components/Log';
 import FileManager from './components/fm';
 import GetMusic from './components/GetMusic';
 import Gears from './components/Gears';
@@ -47,8 +47,6 @@ injectTapEventPlugin();
 const DashboardView = () => (
     <div className="container-fluid">
         <div className="row margin-top">
-            <AddLogLine/>
-            <VisibleLogLines/>
             <div className="col-xs-12 col-md-2">
                 <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
                 <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
@@ -72,7 +70,8 @@ const DashboardView = () => (
                 <GetMusic/>
             </div>
             <div className="col-xs-12 col-md-6">
-                <Log infoUrl="/radio/info"/>
+                <AddLogLine/>
+                <LogContainer infoUrl="/radio/info"/>
             </div>
         </div>
         <FileManager/>
