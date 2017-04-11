@@ -28,7 +28,7 @@ class GetMusic extends React.Component {
         .then(data => data.json())
         .then(data => {
             if(data.status === 'ok') {
-                logger.log('info ok');
+                logger.log('Gears: data loaded');
                 this.setState({
                     list: data.list
                 });
