@@ -1,26 +1,30 @@
 import React from 'react';
-import logger from '../logger';
+import { connect } from 'react-redux';
+import { logInfo, logError } from '../actions/actions';
+//import logger from '../logger';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
-import Snackbar from 'material-ui/Snackbar';
+//import Snackbar from 'material-ui/Snackbar';
 
 const initialDialogActions = [];
 const initialDialogTitle = 'Move to';
 
-export default class MoveButton extends React.Component {
+// TODO modify to use the Log.jsx Snackbar
+
+class MoveButton extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             open: false,
             dialogActions: initialDialogActions,
             dialogTitle: initialDialogTitle,
-            snackBarOpen: false,
+            //snackBarOpen: false,
             showLocationsList: true,
-            snackBarMessage: ''
+            //snackBarMessage: ''
         };
         this.handleOpen = this.handleOpen.bind(this);
         this.handleClose = this.handleClose.bind(this);
-        this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
+        //this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
     }
 
     handleOpen() {
@@ -54,23 +58,25 @@ export default class MoveButton extends React.Component {
         .then(data => {
             this.handleClose();
             if(data.status === 'ok') {
-                const message = 'Move completed';
-                logger.log(message);
-                this.setState({
-                    snackBarOpen: true,
-                    snackBarMessage: message
-                });
+                // const message = 'Move completed';
+                // logger.log(message);
+                // this.setState({
+                //     snackBarOpen: true,
+                //     snackBarMessage: message
+                // });
+                this.props.logInfo('Move completed');
             } else {
                 throw new Error('move failed');
             }
         })
         .catch(error => {
-            const message = 'error on fm/mvToTargetLocation: ' + error;
-            logger.error(message);
-            this.setState({
-                snackBarOpen: true,
-                snackBarMessage: message
-            });
+            // const message = 'error on fm/mvToTargetLocation: ' + error;
+            // logger.error(message);
+            // this.setState({
+            //     snackBarOpen: true,
+            //     snackBarMessage: message
+            // });
+            this.props.logError('error on fm/mvToTargetLocation: ' + error);
         });
     }
 
@@ -86,11 +92,11 @@ export default class MoveButton extends React.Component {
         //const confirmResult = confirm(`Confirm moving ${filePath}/${fileName} to ${targetLocation}`);
     }
 
-    handleSnackbarClose() {
-        this.setState({
-            snackBarOpen: false,
-        });
-    };
+    // handleSnackbarClose() {
+    //     this.setState({
+    //         snackBarOpen: false,
+    //     });
+    // };
 
     render() {
         const locations = this.props.targetLocations.map(entry => {
@@ -109,12 +115,12 @@ export default class MoveButton extends React.Component {
         // TODO dynamically set "actions" to the confirm buttons, so the confirm dialog can be removed
         return (
             <div>
-                <Snackbar
+                {/*<Snackbar
                     open={this.state.snackBarOpen}
                     message={this.state.snackBarMessage}
                     autoHideDuration={4000}
                     onRequestClose={this.handleSnackbarClose}
-                />
+                />*/}
                 <FlatButton label="Move" onTouchTap={this.handleOpen} />
                 <Dialog
                   title={this.state.dialogTitle}
@@ -129,3 +135,20 @@ export default class MoveButton extends React.Component {
         );
     }
 };
+
+const mapStateToProps = () => {
+    return {};
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        logInfo: (...messages) => {
+            dispatch(logInfo(...messages));
+        },
+        logError: (...messages) => {
+            dispatch(logError(...messages));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MoveButton);

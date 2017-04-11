@@ -10,7 +10,7 @@ import {
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import logApp from './reducers/reducers.js'; // TODO remove .js ?
+import logApp from './reducers/reducers';
 import AddLogLine from './containers/AddLogLine';
 import LogContainer from './containers/LogContainer';
 
@@ -18,8 +18,9 @@ import StatusBar from './components/status-bar';
 import ButtonGroup from './components/button-group';
 //import MacroButtonGroup from './components/macro-button-group';
 import Toggle from './components/toggle';
-import Log from './components/Log';
-import FileManager from './components/fm';
+//import Log from './components/Log';
+//import FileManager from './components/fm';
+import FileManagerContainer from './containers/FileManagerContainer';
 import GetMusic from './components/GetMusic';
 import Gears from './components/Gears';
 
@@ -74,7 +75,7 @@ const DashboardView = () => (
                 <LogContainer infoUrl="/radio/info"/>
             </div>
         </div>
-        <FileManager/>
+        <FileManagerContainer/>
         <Gears/>
     </div>
 )
@@ -99,21 +100,21 @@ const LightView = () => (
 const MusicView = () => (
     <div className="col-xs-12 col-md-3 margin-top">
         <GetMusic/>
-        <Log infoUrl="/radio/info"/>
+        <LogContainer infoUrl="/radio/info"/>
     </div>
 )
 
 const FilesView = () => (
     <div>
-        <FileManager/>
-        <Log infoUrl="/radio/info"/>
+        <FileManagerContainer/>
+        <LogContainer infoUrl="/radio/info"/>
     </div>
 )
 
 const GearsView = () => (
     <div>
         <Gears/>
-        <Log infoUrl="/radio/info"/>
+        <LogContainer infoUrl="/radio/info"/>
     </div>
 )
 

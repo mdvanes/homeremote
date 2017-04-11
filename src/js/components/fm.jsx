@@ -1,7 +1,6 @@
 import React from 'react';
-import logger from '../logger';
 import RenameButton from './RenameButton';
-import MoveButton from './MoveButton';
+import MoveButton from '../containers/MoveButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -15,6 +14,7 @@ class FileManager extends React.Component {
         };
         this.listDir = this.listDir.bind(this);
         this.ftpUpload = this.ftpUpload.bind(this);
+        this.getFtpStatus = this.getFtpStatus.bind(this);
         this.getTargetLocations = this.getTargetLocations.bind(this);
         this.resetFilePermissions = this.resetFilePermissions.bind(this);
         this.listDir('');
@@ -44,7 +44,7 @@ class FileManager extends React.Component {
                 dirName: data.dir
             });
         })
-        .catch(error => logger.error('error on fm/list/path: ' + error));
+        .catch(error => this.props.logError('error on fm/list/path: ' + error));
     }
 
     ftpUpload(filePath) {
@@ -62,7 +62,7 @@ class FileManager extends React.Component {
         .then(data => {
             console.log(data);
         })
-        .catch(error => logger.error('error on fm/ftp: ' + error));
+        .catch(error => this.props.logError('error on fm/ftp: ' + error));
     }
 
     getFtpStatus() {
@@ -75,9 +75,9 @@ class FileManager extends React.Component {
         })
         .then(data => data.json())
         .then(data => {
-            logger.log(`FTP status: ${data.ftpStatus}`);
+            this.props.logInfo(`FTP status: ${data.ftpStatus}`);
         })
-        .catch(error => logger.error('error on fm/ftpstatus: ' + error));
+        .catch(error => this.props.logError('error on fm/ftpstatus: ' + error));
     }
 
     getTargetLocations() {
@@ -94,7 +94,7 @@ class FileManager extends React.Component {
                 targetLocations: data.targetLocations
             });
         })
-        .catch(error => logger.error('error on fm/getTargetLocations: ' + error));
+        .catch(error => this.props.logError('error on fm/getTargetLocations: ' + error));
     }
 
     resetFilePermissions() {
@@ -109,9 +109,9 @@ class FileManager extends React.Component {
             })
             .then(data => data.json())
             .then(data => {
-                logger.log(`Reset file permissions: ${data.status}`);
+                this.props.logInfo(`Reset file permissions: ${data.status}`);
             })
-            .catch(error => logger.error('error on fm/resetFilePermissions: ' + error));
+            .catch(error => this.props.logError('error on fm/resetFilePermissions: ' + error));
         }
     }
 
