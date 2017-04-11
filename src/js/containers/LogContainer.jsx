@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { hideShortMessage } from '../actions/actions';
 import Log from '../components/Log';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         loglines: state.loglines,
         shortMessage: state.short.shortMessage,
