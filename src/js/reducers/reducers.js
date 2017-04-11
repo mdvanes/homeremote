@@ -1,8 +1,7 @@
 import { LOG_INFO, LOG_ERROR, HIDE_SHORT_MESSAGE, CLEAR_LOG } from '../actions/actions';
 import { combineReducers } from 'redux';
 
-// TODO to ES6 function
-function loglines(state = [], action) {
+const loglines = (state = [], action) => {
     switch (action.type) {
         case LOG_ERROR:
         case LOG_INFO:
@@ -17,7 +16,7 @@ function loglines(state = [], action) {
         default:
             return state;
     }
-}
+};
 
 const short = (state = { shortMessage: '', showShortMessage: false }, action) => {
     switch(action.type) {

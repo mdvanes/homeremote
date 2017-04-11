@@ -7,15 +7,17 @@ import ClearLogButton from '../containers/ClearLogButton';
 
 import './log.scss';
 
+// TODO Log from outside this scope, e.g. from button-group.jsx
+// Should make containers/button-group-container.jsx and dispatch logInfo there
+
 class Log extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            snackBarOpen: false,
-            snackBarMessage: ''
-        };
+        // this.state = {
+        //     snackBarOpen: false,
+        //     snackBarMessage: ''
+        // };
         this.getInfo = this.getInfo.bind(this);
-        //this.handleSnackbarClose = this.handleSnackbarClose.bind(this);
     }
 
     // TODO Extract to container like ClearLogButton
@@ -31,19 +33,13 @@ class Log extends React.Component {
         .then(data => {
             const message = data.status;
             logger.log(message);
-            this.setState({
-                snackBarOpen: true,
-                snackBarMessage: message
-            });
+            // this.setState({
+            //     snackBarOpen: true,
+            //     snackBarMessage: message
+            // });
         })
         .catch(error => logger.error('error on get info: ' + error));
     }
-
-    // handleSnackbarClose() {
-    //     this.setState({
-    //         snackBarOpen: false,
-    //     });
-    // }
 
     render() {
         return (
@@ -57,16 +53,9 @@ class Log extends React.Component {
                 </CardText>
                 <div className="log"></div>
                 <CardActions className="log-card-actions">
-                    {/*<FlatButton onClick={Log.clear} label="clear"/>*/}
                     <ClearLogButton/>
                     <FlatButton onClick={this.getInfo} label="radio info"/>
                 </CardActions>
-                {/*<Snackbar
-                    open={this.state.snackBarOpen}
-                    message={this.state.snackBarMessage}
-                    autoHideDuration={4000}
-                    onRequestClose={this.handleSnackbarClose}
-                />*/}
                 <Snackbar
                     open={this.props.showShortMessage}
                     message={this.props.shortMessage}
