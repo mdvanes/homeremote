@@ -21,22 +21,6 @@ Read log file with:
 ## Installation
 
 
-### Elro Home Easy
-
-*Outdated, see Domoticz*
-
-install 
-
-* ```git clone https://github.com/mdvanes/he853-remote.git```
-* ```sudo apt-get install libusb-1.0-0-dev```
-* ```make```
-* ```sudo ./he853``` e.g. ```sudo ./he853 001 1``` (0 is off, 1 is on)
-
-there are 4 switches with id's 001, 002, 003, 004
-
-See the repo for how to add switches. See below for information for installing Elro Home Easy on Raspberry Pi.
-
-
 ### Domoticz
 
 Install [Domoticz](https://www.domoticz.com). Use the domain name + port as domoticzuri in the settings.json, e.g. http://192.168.0.19:8080.
@@ -44,9 +28,9 @@ Install [Domoticz](https://www.domoticz.com). Use the domain name + port as domo
 
 ### Node server
 
-Will call the Elro binary directly through Node. This requires that the node server upstart script is run as root.
+Requires that the node server upstart script is run as root. (Was because of ELRO, no longer needed?)
 
-On the server with the Elro USB stick plugged in, install in /opt (because of upstart script):
+Install in /opt (because of upstart script):
 
 * cache git credentials for this session: ```git config --global credential.helper cache```
 * ```cd /opt``
@@ -110,9 +94,8 @@ On the server with the Elro USB stick plugged in, install in /opt (because of up
 ### Upstart scripts
 
 For the node server and toggles (e.g. radio toggle). Broadcast toggle upstart script and server need to be installed on a remote machine.
-There are no upstart scripts for the (fire and forget) Elro switches.
 
-On the server with the Elro USB stick, and speakers plugged in, install the homeremote and playradio upstart scripts:
+On the server (with speakers plugged in), install the homeremote and playradio upstart scripts:
 
 * ```sudo cp upstart/homeremote.conf /etc/init/```
 * homeremote should now be startable with ```sudo service homeremote start``` 
@@ -123,7 +106,7 @@ On the server with the Elro USB stick, and speakers plugged in, install the home
 
 ### Notes for installing on Raspberry Pi
 
-To install the server (also for a proxy just to control the Home Easy USB stick) on a Pi with OSMC:
+To install the server on a Pi with OSMC:
 
 * If git not installed: ```sudo apt-get install git```
 * Install newest version of node, but don't use apt-get 
@@ -133,22 +116,8 @@ To install the server (also for a proxy just to control the Home Easy USB stick)
     * untar and cd into the untarred dir
     * copy to /usr/local/ ```sudo cp -R * /usr/local/```
     * test with ```node -v```
-
-* Follow steps under "On the server with the Elro USB stick plugged in" above.
-    * npm install can take a long time on a RPi, at least 12 minutes on a RPi2
-    * the settings.json should be configured to have no heserverip and enableAuth=false, if the RPi only serves as a proxy to access the Home Easy USB stick:
-    ```
-    {
-        "hepath": "/home/foo/elro/he853-remote",
-        "heserverip": "",
-        "enableAuth": false,
-        "radiologpath": "/tmp/homeremote-playradio-status.log"
-    }
-    ```
-    * an (empty) users.htpasswd is needed, at least for the moment.
+* npm install can take a long time on a RPi, at least 12 minutes on a RPi2
     * test with ```node /opt/homeremote/app.js``` before setting up the upstart scripts
-    * if this is supposed to be a proxy, set up the other homeremote server, that provides the webaccess and is securely behind HTTPS and basic AUTH to point to this server in the settings.json heserverip.
-      E.g. if the proxy server address is http://192.168.0.19:3000, set up the main homeremote server with: ```"heserverip":"http://192.168.0.19:3000"``` and restart the main server with ```sudo service homeremote restart```
     * At this time OSMC doesn't use Upstart, but it is possible to set up a daemon service. See below for more details. 
 * Server is on http://localhost:3000/
 
@@ -193,49 +162,6 @@ WantedBy=multi-user.target
 * ```git config --global http.sslVerify false``` 
 * and afterwards enable with ```git config --global http.sslVerify true```
 
-#### Installing Home Easy on Raspberry Pi with OSMC:
-
-* If git not installed: ```sudo apt-get install git```
-* ```git clone https://github.com/mdvanes/he853-remote.git```
-* (for usb.h and gcc) ```sudo apt-get install libusb-1.0-0-dev libusb-dev build-essential```
-* mv he853-remote/libhid-0.2.16.tar.gz .
-* tar xvzf libhid-0.2.16.tar.gz
-* cd libhid-0.2.16
-* ./configure
-* make
-* got error, followed steps from (based on http://matthewcmcmillan.blogspot.nl/2013/03/compiling-libhid-for-raspbian-linux-on.html)
-* in /libhid-0.2.16/test/lshid.c
-
-```
-#!c
-    Here is the code before making the edit:
-
-    39 /* only here to prevent the unused warning */
-    40 /* TODO remove */
-    41 len = *((unsigned long*)custom);
-    42
-    43 /* Obtain the device's full path */
-    
-    Here is the code after the edit.
-    You need to comment out line 41 and then add len = len; and custom = custom;
-    
-    39 /* only here to prevent the unused warning */
-    40 /* TODO remove */
-    41 //len = *((unsigned long*)custom);
-    42 len = len;
-    43 custom = custom;
-    44
-    45 /* Obtain the device's full path */
-```
-
-* make
-* sudo make install
-* cd ../he853-remote
-* pico he853-remote/hid-libusb.c
-* change ```include <libusb.h>``` to ```<libusb-1.0/libusb.h>```
-* make
-* plug in
-* test with ```sudo ./he853 002 1```
 
 ## Set up localhost SSL
 
@@ -261,14 +187,7 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 
 ## TODO
 
-* DONE js sourcemap doesn't work
-* Replace double installation (part on RPi) with API calls to Domoticz on port 8080
-* FTP and file manager for often used tasks
-* Youtube script
 * Remove all HTTPS, only use behind Reverse Proxy with HTTPS
-* OUTDATED Disable HTTP, only allow HTTPS
-* OUTDATED Although HTTPS works with a self-signed certificate, try HTTPS with letsencrypt (https://github.com/Daplie/node-letsencrypt or http://blog.bguiz.com/2015/12/16/letsencrypt-tls-certs-nodejs/)
-* add timer to turn a switch on or off. Maybe with: https://www.npmjs.com/package/node-schedule
 * add http basic authentication (or better digest access?)
 * strip packages from package.json until no longer works, because there are some unused packages in there
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
@@ -277,5 +196,3 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 * bunyan logging in grunt-express
 * bunyan logging on RPi (requires npm on RPi)
 * should have rotating logs (bunyan offers support for it)
-* combine modules in Babel or sourcemaps on Babel->Uglify
-* Use webpack-dev server with middleware
