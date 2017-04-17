@@ -1,9 +1,9 @@
 import React from 'react';
 import RenameButton from './RenameButton';
 import MoveButton from '../containers/MoveButton';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
+import './simple-material-table.scss';
 
 class FileManager extends React.Component {
     constructor(props) {
@@ -123,61 +123,61 @@ class FileManager extends React.Component {
         //});
         const rows = this.state.dirIndex.map(entry => {
             if( entry.isDir ) {
-                return <TableRow key={entry.name}>
-                    <TableRowColumn><FontIcon className="material-icons">folder_open</FontIcon></TableRowColumn>
-                    <TableRowColumn onClick={() => {this.listDir(entry.name)}}>{entry.name}</TableRowColumn>
-                    <TableRowColumn></TableRowColumn>
-                    <TableRowColumn></TableRowColumn>
-                    <TableRowColumn></TableRowColumn>
-                </TableRow>;
+                return <tr key={entry.name}>
+                    <td><FontIcon className="material-icons">folder_open</FontIcon></td>
+                    <td onClick={() => {this.listDir(entry.name)}}>{entry.name}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>;
             } else {
                 const filePath = this.state.dirName;
-                return <TableRow key={entry.name}>
-                    <TableRowColumn>{entry.size}</TableRowColumn>
-                    <TableRowColumn>{entry.name}</TableRowColumn>
-                    <TableRowColumn>
-                        <button className="btn btn-default" onClick={() => {this.ftpUpload(filePath)}}>upload</button>
-                    </TableRowColumn>
-                    <TableRowColumn>
+                return <tr key={entry.name}>
+                    <td>{entry.size}</td>
+                    <td>{entry.name}</td>
+                    <td>
+                        <FlatButton onTouchTap={() => {this.ftpUpload(filePath)}} label="upload"/>
+                    </td>
+                    <td>
                         <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
-                    </TableRowColumn>
-                    <TableRowColumn>
+                    </td>
+                    <td>
                         <MoveButton filePath={filePath} fileName={entry.name} targetLocations={this.state.targetLocations} />
-                    </TableRowColumn>
-                </TableRow>;
+                    </td>
+                </tr>;
             }
         });
         return (
             <div>
                 <h1>File Manager $[rootDir]/{this.state.dirName}</h1>
-                <Table className="table table-striped table-hover">
-                    <TableHeader>
-                        <TableRow>
-                            <TableHeaderColumn></TableHeaderColumn>
-                            <TableHeaderColumn>Name</TableHeaderColumn>
-                            <TableHeaderColumn>FTP</TableHeaderColumn>
-                            <TableHeaderColumn>Rename</TableHeaderColumn>
-                            <TableHeaderColumn>Move</TableHeaderColumn>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        <TableRow>
-                            <TableRowColumn></TableRowColumn>
-                            <TableRowColumn onClick={() => this.listDir('')}>/</TableRowColumn>
-                            <TableRowColumn></TableRowColumn>
-                            <TableRowColumn></TableRowColumn>
-                            <TableRowColumn></TableRowColumn>
-                        </TableRow>
+                <table className="simple-material-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>FTP</th>
+                            <th>Rename</th>
+                            <th>Move</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td onTouchTap={() => this.listDir('')}>/</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
                         {rows}
-                    </TableBody>
-                </Table>
+                    </tbody>
+                </table>
                 <div className="row">
                     <div className="col-xs-6">
                         nr of entries: {rows.length}
                     </div>
                     <div className="col-xs-6">
-                        <FlatButton onClick={this.getFtpStatus} className="btn btn-default">Get FTP status</FlatButton>
-                        <FlatButton onClick={this.resetFilePermissions} className="btn btn-default">Fix Permissions</FlatButton>
+                        <FlatButton onTouchTap={this.getFtpStatus} primary={true} label="Get FTP status"/>
+                        <FlatButton onTouchTap={this.resetFilePermissions} primary={true} label="Fix Permissions"/>
                     </div>
                 </div>
             </div>
