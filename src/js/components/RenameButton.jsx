@@ -1,5 +1,6 @@
 import React from 'react';
 import logger from '../logger';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class RenameButton extends React.Component {
     constructor(props) {
@@ -41,6 +42,6 @@ export default class RenameButton extends React.Component {
     }
 
     render() {
-        return <button className="btn btn-default" onClick={this.rename}>rename</button>
+        return <FlatButton onTouchTap={this.rename} label="rename"/>
     }
 }

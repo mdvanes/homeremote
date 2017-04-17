@@ -8,3 +8,11 @@
 /dummy-homeremote-playradio-status.log
 
 public/js/library/bootstrap/fonts/
+
+homeremote\.sublime-project
+
+homeremote\.sublime-workspace
+
+polymer\.sublime-project
+
+polymer\.sublime-workspace
