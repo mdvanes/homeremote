@@ -59,9 +59,10 @@ class FileManager extends React.Component {
             })
         })
         .then(data => data.json())
-        .then(data => {
-            console.log(data);
-        })
+        // .then(data => {
+        //     console.log(data);
+        // })
+        .then(() =>  this.props.logInfo(`Started upload of ${filePath}`))
         .catch(error => this.props.logError('error on fm/ftp: ' + error));
     }
 
@@ -131,7 +132,7 @@ class FileManager extends React.Component {
                     <td></td>
                 </tr>;
             } else {
-                const filePath = this.state.dirName;
+                const filePath = this.state.dirName ? this.state.dirName + '/' + entry.name : entry.name;
                 return <tr key={entry.name}>
                     <td>{entry.size}</td>
                     <td>{entry.name}</td>
