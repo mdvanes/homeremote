@@ -3,6 +3,12 @@
 Web GUI in ES6 React for a Node backend that calls scripts spread out over several debian/ubuntu servers. The scripts 
 are Upstart scripts to start/stop a radio playing service and direct shell calls to toggle a remote control for lightswitches.
 
+Material Design:
+
+* Material UI
+* Keep.google.com
+* https://codelabs.developers.google.com/codelabs/polymer-2-carousel/
+
 
 ## Run
 
