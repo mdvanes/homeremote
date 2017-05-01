@@ -14,7 +14,8 @@ class MoveButton extends React.Component {
             open: false,
             dialogActions: initialDialogActions,
             dialogTitle: initialDialogTitle,
-            showLocationsList: true
+            showLocationsList: true,
+            message: ''
         };
         this.handleOpen = this.handleOpen.bind(this);
         this.handleClose = this.handleClose.bind(this);
@@ -29,7 +30,8 @@ class MoveButton extends React.Component {
             open: false,
             dialogActions: initialDialogActions,
             dialogTitle: initialDialogTitle,
-            showLocationsList: true
+            showLocationsList: true,
+            message: ''
         });
     }
 
@@ -65,8 +67,9 @@ class MoveButton extends React.Component {
                 <FlatButton label="Cancel" onTouchTap={this.handleClose} />,
                 <FlatButton label="OK" secondary={true} onTouchTap={() => {this.mvToTargetLocation(filePath, fileName, targetLocation)}} />
             ],
-            dialogTitle: `Confirm moving ${filePath}/${fileName} to ${targetLocation}`,
-            showLocationsList: false
+            dialogTitle: 'Confirm',
+            showLocationsList: false,
+            message: `Confirm moving ${filePath}/${fileName} to ${targetLocation}`
         });
     }
 
@@ -94,6 +97,7 @@ class MoveButton extends React.Component {
                   actions={this.state.dialogActions}
                   onRequestClose={this.handleClose}
                 >
+                    {this.state.message}
                     {locationsList}
                 </Dialog>
             </div>

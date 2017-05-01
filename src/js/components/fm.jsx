@@ -143,7 +143,7 @@ class FileManager extends React.Component {
                         <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
                     </td>
                     <td>
-                        <MoveButton filePath={filePath} fileName={entry.name} targetLocations={this.state.targetLocations} />
+                        <MoveButton filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
                     </td>
                 </tr>;
             }
