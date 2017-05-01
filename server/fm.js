@@ -123,14 +123,14 @@ var bind = function(app) {
                 if(result) {
                     return fsp.exists(req.body.targetPath);
                 } else {
-                    throw new Error('sourcePath does not exist');
+                    throw new Error('sourcePath does not exist: ' + sourcePath);
                 }
             })
             .then(result => {
                 if(result) {
                     return fsp.move(sourcePath, targetNewFile);
                 } else {
-                    throw new Error('targetPath does not exist');
+                    throw new Error('targetPath does not exist: ' + req.body.targetPath);
                 }
             })
             .then(() => {
