@@ -36,7 +36,6 @@ export default class FileManagerSmall extends FileManager {
         const nrOfEntries = `${rows.length} entries`;
         return (
             <div>
-                {/*<h1>File Manager $[rootDir]/{this.state.dirName}</h1>*/}
                 <Card style={{backgroundColor: deepPurple200}}
                       onTouchTap={() => this.listDir('')}>
                     <CardHeader
@@ -46,9 +45,6 @@ export default class FileManagerSmall extends FileManager {
                 </Card>
                 {rows}
                 <div className="row">
-                    {/*<div className="col-xs-6">*/}
-                        {/*nr of entries: {rows.length}*/}
-                    {/*</div>*/}
                     <div className="col-xs-6">
                         <FlatButton onTouchTap={this.getFtpStatus} primary={true} label="Get FTP status"/>
                         <FlatButton onTouchTap={this.resetFilePermissions} primary={true} label="Fix Permissions"/>
