@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { logInfo, logError } from '../actions/actions';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import Divider from 'material-ui/Divider';
+
+import './MoveButton.scss';
 
 const initialDialogActions = [];
 const initialDialogTitle = 'Move to';
@@ -76,31 +79,37 @@ class MoveButton extends React.Component {
     render() {
         const locations = this.props.targetLocations.map(entry => {
             return (
-                <li
+                <div
+                    className="modal-line"
                     onTouchTap={() => {this.confirmMove(this.props.filePath, this.props.fileName, entry)}}
                     key={entry}>
+                    <Divider/>
                     {entry}
-                </li>
+                </div>
             );
         });
         let locationsList = <span></span>;
         if(this.state.showLocationsList) {
-            locationsList = <ul>{locations}</ul>;
+            locationsList = <div><Divider/>{locations}</div>;
         }
         return (
-            <div>
+            <span>
                 <FlatButton label="Move" onTouchTap={this.handleOpen} />
                 <Dialog
-                  title={this.state.dialogTitle}
-                  modal={false}
-                  open={this.state.open}
-                  actions={this.state.dialogActions}
-                  onRequestClose={this.handleClose}
+                    contentStyle={{
+                        maxWidth: 'auto',
+                        width: '95%'
+                    }}
+                    title={this.state.dialogTitle}
+                    modal={false}
+                    open={this.state.open}
+                    actions={this.state.dialogActions}
+                    onRequestClose={this.handleClose}
                 >
                     {this.state.message}
                     {locationsList}
                 </Dialog>
-            </div>
+            </span>
         );
     }
 };
