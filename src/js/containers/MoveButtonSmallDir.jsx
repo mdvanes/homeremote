@@ -9,6 +9,7 @@ class MoveButtonSmallDir extends React.Component {
             <div>
                 <p>some text</p>
                 <p>tl {this.props.targetLocations}</p>
+                <p>fp {this.props.filePath}</p>
                 <p>fn {this.props.fileName}</p>
             </div>
         );
@@ -18,6 +19,7 @@ class MoveButtonSmallDir extends React.Component {
 const mapStateToProps = state => {
     return {
         targetLocations: state.moveParams.targetLocations,
+        filePath: state.moveParams.filePath,
         fileName: state.moveParams.fileName
     };
 };

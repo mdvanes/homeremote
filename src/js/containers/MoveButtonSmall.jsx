@@ -12,17 +12,16 @@ class MoveButtonSmall extends React.Component {
 
     // TODO might be better http://stackoverflow.com/questions/43081961/navigate-in-code-with-react-router-dom-4-0
     goToDir() {
-        // TODO
         // dispatch the targetLocations for this entry
         // dispatch this.props.filePath, this.props.fileName
-        this.props.setMoveParams(this.props.targetLocations, this.props.fileName);
+        this.props.setMoveParams(this.props.targetLocations, this.props.filePath, this.props.fileName);
         // redirect to MoveButtonSmallDir -> done by Link
     }
 
     render() {
         return (
             <Link onTouchTap={this.goToDir} to="/r/movebuttondir">
-                <FlatButton label="debugSmallMove" />
+                <FlatButton label="smallMove" />
             </Link>
         );
     }
@@ -34,14 +33,8 @@ const mapStateToProps = () => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        // logInfo: (...messages) => {
-        //     dispatch(logInfo(...messages));
-        // },
-        // logError: (...messages) => {
-        //     dispatch(logError(...messages));
-        // },
-        setMoveParams: (targetLocations, fileName) => {
-            dispatch(setMoveParams(targetLocations, fileName));
+        setMoveParams: (targetLocations, filePath, fileName) => {
+            dispatch(setMoveParams(targetLocations, filePath, fileName));
         }
     };
 };
