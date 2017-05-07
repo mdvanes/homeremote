@@ -1,6 +1,6 @@
 let logger = {};
 
-/* TODO remove, deprecated by actions/actions.js */
+/* TODO remove, deprecated by actions/index.js */
 
 let writeLog = (...messages) => {
     let time = new Date();

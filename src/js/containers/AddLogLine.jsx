@@ -1,6 +1,6 @@
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { connect } from 'react-redux';
-import { logInfo, logError } from '../actions/actions';
+import { logInfo, logError } from '../actions';
 
 // TODO Remove this file, everything has been moved to ClearLogButton
 

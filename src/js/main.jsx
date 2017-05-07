@@ -10,7 +10,7 @@ import {
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import homeRemoteReducers from './reducers/reducers';
+import homeRemoteReducers from './reducers';
 
 import DashboardView from './views/DashboardView';
 import LightView from './views/LightView';
