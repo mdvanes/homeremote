@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { hideShortMessage } from '../actions/actions';
+import { hideShortMessage } from '../actions';
 import Log from '../components/Log';
 
 const mapStateToProps = state => {

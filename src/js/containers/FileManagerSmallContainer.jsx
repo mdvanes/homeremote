@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { logInfo, logError } from '../actions/actions';
+import { logInfo, logError } from '../actions';
 import FileManagerSmall from '../components/fmSmall';
 
 const mapStateToProps = () => {

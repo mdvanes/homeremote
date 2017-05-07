@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { clearLog } from '../actions/actions';
+import { clearLog } from '../actions';
 import FlatButton from 'material-ui/FlatButton';
 
 class ClearLog extends React.Component {
