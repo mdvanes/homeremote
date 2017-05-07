@@ -3,7 +3,7 @@
 import React from 'react'; // eslint-disable-line
 import FileManager from './fm';
 import RenameButton from './RenameButton';
-import MoveButton from '../containers/MoveButton';
+import MoveButtonSmall from '../containers/MoveButtonSmall';
 import {Card, CardActions, CardHeader} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
@@ -27,7 +27,7 @@ export default class FileManagerSmall extends FileManager {
                     <CardActions>
                         <FlatButton onTouchTap={() => {this.ftpUpload(filePath)}} label="upload"/>
                         <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
-                        <MoveButton filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
+                        <MoveButtonSmall filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
                     </CardActions>
                     {/*<CardText>Some text</CardText>*/}
                 </Card>;

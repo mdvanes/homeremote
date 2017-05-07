@@ -72,6 +72,6 @@ Log.propTypes = {
         message: PropTypes.string.isRequired
     }).isRequired).isRequired,
     onShortMessageHide: PropTypes.func.isRequired
-}
+};
 
 export default Log;

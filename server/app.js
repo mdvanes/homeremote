@@ -60,8 +60,11 @@ process.argv.forEach(function (val, index) {
 
 // Set routes
 broadcast.bind(app, log, debug);
-radio.bind(app, log, debug);
-motion.bind(app, log, debug);
+if(!debug) {
+    // Do not start motion in debugmode, because of sudo password requests.
+    radio.bind(app, log, debug);
+    motion.bind(app, log, debug);
+}
 togglestub.bind(app);
 clickstub.bind(app);
 switcher.bind(app, log);
