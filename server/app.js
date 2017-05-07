@@ -73,7 +73,12 @@ getMusic.bind(app, log);
 gears.bind(app, log);
 // Using the /r/ subpath for views, to easily match here and in webpack.config proxies
 app.get('/r/*', (req, res) => {
-    res.sendfile(path.resolve(__dirname + '/../public/index.html'));
+    if(!debug) {
+        res.sendfile(path.resolve(__dirname + '/../public/index.html'));
+    } else {
+        // Better solution: https://forum-archive.vuejs.org/topic/836/webpack-hot-reloading-possible-with-express-server/6
+        res.redirect('/');
+    }
 });
 
 if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {

@@ -1,4 +1,4 @@
-import { LOG_INFO, LOG_ERROR, HIDE_SHORT_MESSAGE, CLEAR_LOG } from '../actions/actions'; // eslint-disable-line no-unused-vars
+import { LOG_INFO, LOG_ERROR, HIDE_SHORT_MESSAGE, CLEAR_LOG, SET_MOVE_PARAMS } from '../actions/actions'; // eslint-disable-line no-unused-vars
 import { combineReducers } from 'redux';
 
 const loglines = (state = [], action) => {
@@ -50,9 +50,20 @@ const short = (state = { shortMessage: '', showShortMessage: false }, action) =>
     return state;
 };
 
-const logApp = combineReducers({
+const moveParams = (state = { targetLocations: [], fileName: '' }, action) => {
+    if(action.type === SET_MOVE_PARAMS) {
+        return {
+            targetLocations: action.targetLocations,
+            fileName: action.fileName
+        };
+    }
+    return state;
+};
+
+const homeRemoteReducers = combineReducers({
     loglines,
-    short
+    short,
+    moveParams
 });
 
-export default logApp;
+export default homeRemoteReducers;

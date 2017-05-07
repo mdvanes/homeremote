@@ -4,6 +4,7 @@ export const LOG_INFO = 'LOG_INFO';
 export const LOG_ERROR = 'LOG_ERROR';
 export const HIDE_SHORT_MESSAGE = 'HIDE_SHORT_MESSAGE';
 export const CLEAR_LOG = 'CLEAR_LOG';
+export const SET_MOVE_PARAMS = 'SET_MOVE_PARAMS';
 
 /* util */
 
@@ -43,8 +44,16 @@ export function hideShortMessage() {
     };
 }
 
-export function clearLog() {
+export const clearLog = () => {
     return {
         type: CLEAR_LOG
     };
-}
+};
+
+export const setMoveParams = (targetLocations, fileName) => {
+    return {
+        type: SET_MOVE_PARAMS,
+        targetLocations,
+        fileName
+    };
+};
