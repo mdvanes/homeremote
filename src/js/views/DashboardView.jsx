@@ -1,7 +1,7 @@
 import React from 'react';
 import ButtonGroup from '../components/button-group';
 //import MacroButtonGroup from './components/macro-button-group';
-import Toggle from '../components/toggle';
+import ToggleContainer from '../containers/ToggleContainer';
 import GetMusic from '../components/GetMusic';
 import GearsContainer from '../containers/GearsContainer';
 
@@ -26,10 +26,10 @@ export default class DashboardView extends React.Component {
                         {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
                         <div className="row">
                             <div className="col-xs-6 col-md-12">
-                                <Toggle label="" id="radio" icon="music_note"/>{/* Music on server */}
+                                <ToggleContainer label="" id="radio" icon="music_note"/>{/* Music on server */}
                             </div>
                             <div className="col-xs-6 col-md-12">
-                                <Toggle label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+                                <ToggleContainer label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
                             </div>
                         </div>
                     </div>
@@ -37,7 +37,6 @@ export default class DashboardView extends React.Component {
                         <GetMusic/>
                     </div>
                     <div className="col-xs-12 col-md-6">
-                        {/*<AddLogLine/>*/}
                         <LogContainer infoUrl="/radio/info"/>
                     </div>
                 </div>

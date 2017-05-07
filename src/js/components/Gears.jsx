@@ -14,9 +14,6 @@ class Gears extends React.Component {
     }
 
     getInfo() {
-        //logger.log('Get Info: ' + this.state.url);
-        //event.preventDefault();
-
         fetch('/gears/info', {
             method: 'GET',
             headers: {
