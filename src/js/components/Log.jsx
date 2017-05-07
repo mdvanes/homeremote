@@ -36,8 +36,8 @@ class Log extends React.Component {
         return (
             <Card className="log-card">
                 <CardText className="log-card-text">
-                    {this.props.loglines.map(logline =>
-                        <div key={logline.message}>
+                    {this.props.loglines.map((logline, index) =>
+                        <div key={index}>
                             {logline.message}
                         </div>
                     )}
