@@ -42,9 +42,7 @@ const common = {
             files: ['src/sass/**/*.scss']
         }),
         new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false
-            },
+            compress: ('production' === process.env.NODE_ENV) ? { warnings: false } : false,
             sourceMap: true
         }),
         // This will inject the bundle name incl. hash into the HTML

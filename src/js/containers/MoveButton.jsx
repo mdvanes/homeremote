@@ -96,10 +96,6 @@ class MoveButton extends React.Component {
             <span>
                 <FlatButton label="Move" onTouchTap={this.handleOpen} />
                 <Dialog
-                    contentStyle={{
-                        maxWidth: 'auto',
-                        width: '95%'
-                    }}
                     title={this.state.dialogTitle}
                     modal={false}
                     open={this.state.open}
@@ -112,11 +108,11 @@ class MoveButton extends React.Component {
             </span>
         );
     }
-};
+}
 
 const mapStateToProps = () => {
     return {};
-}
+};
 
 const mapDispatchToProps = dispatch => {
     return {

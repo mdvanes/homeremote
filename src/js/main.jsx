@@ -17,6 +17,7 @@ import LightView from './views/LightView';
 import MusicView from './views/MusicView';
 import FilesView from './views/FilesView';
 import GearsView from './views/GearsView';
+import MoveButtonSmallDir from './components/MoveButtonSmallDir';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import {deepPurple900} from 'material-ui/styles/colors';
@@ -79,6 +80,7 @@ class Main extends React.Component {
                                 <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/music">Music</Link></MenuItem>
                                 <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/files">Files</Link></MenuItem>
                                 <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/gears">Gears</Link></MenuItem>
+                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/movebuttondir">mv debug</Link></MenuItem>
                             </Drawer>
                             <StatusBar/>
                             <Route exact path="/" component={DashboardView}/>
@@ -86,6 +88,7 @@ class Main extends React.Component {
                             <Route path="/r/music" component={MusicView}/>
                             <Route path="/r/files" component={FilesView}/>
                             <Route path="/r/gears" component={GearsView}/>
+                            <Route path="/r/movebuttondir" component={MoveButtonSmallDir}/>
                         </div>
                     </Router>
                 </div>
