@@ -3,7 +3,7 @@ import ButtonGroup from '../components/button-group';
 //import MacroButtonGroup from './components/macro-button-group';
 import Toggle from '../components/toggle';
 import GetMusic from '../components/GetMusic';
-import Gears from '../components/Gears';
+import GearsContainer from '../containers/GearsContainer';
 
 import LogContainer from '../containers/LogContainer';
 //import AddLogLine from '../containers/AddLogLine';
@@ -42,7 +42,7 @@ export default class DashboardView extends React.Component {
                     </div>
                 </div>
                 <FileManagerContainer/>
-                <Gears/>
+                <GearsContainer/>
             </div>
         );
     }

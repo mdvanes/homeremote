@@ -1,10 +1,9 @@
-import React from 'react';
-import logger from '../logger';
+import React, { PropTypes } from 'react';
 import './simple-material-table.scss';
 import FontIcon from 'material-ui/FontIcon';
 import {blue500, green800} from 'material-ui/styles/colors';
 
-class GetMusic extends React.Component {
+class Gears extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -28,7 +27,7 @@ class GetMusic extends React.Component {
         .then(data => data.json())
         .then(data => {
             if(data.status === 'ok') {
-                logger.log('Gears: data loaded');
+                this.props.logInfo('Gears: data loaded');
                 this.setState({
                     list: data.list
                 });
@@ -36,7 +35,7 @@ class GetMusic extends React.Component {
                 throw new Error('gears info failed');
             }
         })
-        .catch(error => logger.error('error on gears/info: ' + error));
+        .catch(error => this.props.logError('error on gears/info: ' + error));
     }
 
     render() {
@@ -72,4 +71,10 @@ class GetMusic extends React.Component {
         );
     }
 }
-export default GetMusic;
+
+Gears.propTypes = {
+    logError: PropTypes.func.isRequired,
+    logInfo: PropTypes.func.isRequired
+};
+
+export default Gears;
