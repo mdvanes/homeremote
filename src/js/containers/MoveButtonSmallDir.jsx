@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { logInfo, logError } from '../actions';
 import {Card, CardHeader} from 'material-ui/Card';
 import {deepPurple200} from 'material-ui/styles/colors';
@@ -32,29 +33,28 @@ class MoveButtonSmallDir extends React.Component {
 
     // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
     mvToTargetLocation(filePath, fileName, targetLocation) {
-        console.log('moving', filePath, fileName, targetLocation);
-        // fetch('/fm/mvToTargetLocation', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         sourcePath: filePath,
-        //         fileName: fileName,
-        //         targetPath: targetLocation
-        //     })
-        // })
-        // .then(data => data.json())
-        // .then(data => {
-        //     this.handleClose();
-        //     if(data.status === 'ok') {
-        //         this.props.logInfo('Move completed');
-        //     } else {
-        //         throw new Error('move failed');
-        //     }
-        // })
-        // .catch(error => this.props.logError('error on fm/mvToTargetLocation: ' + error));
+        fetch('/fm/mvToTargetLocation', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                sourcePath: filePath,
+                fileName: fileName,
+                targetPath: targetLocation
+            })
+        })
+        .then(data => data.json())
+        .then(data => {
+            this.handleClose();
+            if(data.status === 'ok') {
+                this.props.logInfo('Move completed');
+            } else {
+                throw new Error('move failed');
+            }
+        })
+        .catch(error => this.props.logError('error on fm/mvToTargetLocation: ' + error));
     }
 
     confirmMove(filePath, fileName, targetLocation) {
@@ -62,7 +62,9 @@ class MoveButtonSmallDir extends React.Component {
             open: true,
             dialogActions: [
                 <FlatButton label="Cancel" onTouchTap={this.handleClose} />,
-                <FlatButton label="OK" secondary={true} onTouchTap={() => {this.mvToTargetLocation(filePath, fileName, targetLocation)}} />
+                <Link onTouchTap={() => {this.mvToTargetLocation(filePath, fileName, targetLocation)}} to="/r/files">
+                    <FlatButton label="OK" secondary={true} />
+                </Link>
             ],
             message: `Confirm moving ${filePath}/${fileName} to ${targetLocation}`
         });
@@ -74,6 +76,7 @@ class MoveButtonSmallDir extends React.Component {
                 key={entry}
                 onTouchTap={() => {this.confirmMove(this.props.filePath, this.props.fileName, entry)}}>
                 <CardHeader
+                    style={{wordBreak: 'break-word'}}
                     title={entry} />
             </Card>;
         });
@@ -86,10 +89,12 @@ class MoveButtonSmallDir extends React.Component {
                 </Card>
                 {rows}
                 <Dialog
-                    // contentStyle={{
-                    //     maxWidth: 'auto',
-                    //     width: '95%'
-                    // }}
+                    contentStyle={{
+                        maxHeight: 'auto',
+                        maxWidth: 'auto',
+                        wordBreak: 'break-word',
+                        width: '95%'
+                    }}
                     title='Confirm'
                     modal={false}
                     open={this.state.open}

@@ -21,7 +21,7 @@ class MoveButtonSmall extends React.Component {
     render() {
         return (
             <Link onTouchTap={this.goToDir} to="/r/movebuttondir">
-                <FlatButton label="smallMove" />
+                <FlatButton label="Move" />
             </Link>
         );
     }
