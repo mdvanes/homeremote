@@ -13,7 +13,7 @@ class ClearLog extends React.Component {
 
 const mapStateToProps = () => {
     return {};
-}
+};
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -21,6 +21,6 @@ const mapDispatchToProps = dispatch => {
             return dispatch(clearLog());
         }
     };
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ClearLog);

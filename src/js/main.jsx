@@ -10,14 +10,14 @@ import {
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import logApp from './reducers/reducers';
+import homeRemoteReducers from './reducers/reducers';
 
 import DashboardView from './views/DashboardView';
 import LightView from './views/LightView';
 import MusicView from './views/MusicView';
 import FilesView from './views/FilesView';
 import GearsView from './views/GearsView';
-import MoveButtonSmallDir from './components/MoveButtonSmallDir';
+import MoveButtonSmallDir from './containers/MoveButtonSmallDir';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import {deepPurple900} from 'material-ui/styles/colors';
@@ -97,6 +97,6 @@ class Main extends React.Component {
     };
 }
 
-let store = createStore(logApp);
+let store = createStore(homeRemoteReducers);
 
 render(<Provider store={store}><Main/></Provider>, document.getElementById('app'));

@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 //import { Router as BrowserRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 //import createHistory from 'history/createBrowserHistory'
-import { logInfo, logError } from '../actions/actions';
+import { logInfo, logError, setMoveParams } from '../actions/actions';
 //import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 //import Divider from 'material-ui/Divider';
@@ -13,6 +14,7 @@ import FlatButton from 'material-ui/FlatButton';
 //const history = createHistory();
 // const initialDialogActions = [];
 // const initialDialogTitle = 'Move to';
+
 
 class MoveButtonSmall extends React.Component {
     constructor(props) {
@@ -39,7 +41,8 @@ class MoveButtonSmall extends React.Component {
         //browserHistory.push('/r/movebuttondir');
         //console.log('history', this.context, this.context.router, this.context.router.history);
         // history.push('/r/movebuttondir');
-        window.location = '/r/movebuttondir';
+        this.props.setMoveParams(this.props.targetLocations, this.props.fileName);
+        //window.location = '/r/movebuttondir';
     }
 
     render() {
@@ -60,6 +63,7 @@ class MoveButtonSmall extends React.Component {
         }*/
         return (
             <span>
+                <Link onTouchTap={this.goToDir} to="/r/movebuttondir"><FlatButton label="debugSmallMove" /></Link>
                 <FlatButton label="sMove" onTouchTap={this.goToDir} />
                 {/*<Dialog
                     contentStyle={{
@@ -91,6 +95,9 @@ const mapDispatchToProps = dispatch => {
         },
         logError: (...messages) => {
             dispatch(logError(...messages));
+        },
+        setMoveParams: (targetLocations, fileName) => {
+            dispatch(setMoveParams(targetLocations, fileName));
         }
     };
 };
