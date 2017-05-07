@@ -25,6 +25,7 @@ import {deepPurple900} from 'material-ui/styles/colors';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import StatusBar from './components/status-bar';
+import GlobalSnackBar from './containers/GlobalSnackBar';
 import AppBar from 'material-ui/AppBar';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
@@ -75,12 +76,11 @@ class Main extends React.Component {
                                     onLeftIconButtonTouchTap={this.toggleDrawer}
                                     iconElementLeft={<IconButton><NavigationClose /></IconButton>}
                                 />
-                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/">Dashboard</Link></MenuItem>
-                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/light">Light</Link></MenuItem>
-                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/music">Music</Link></MenuItem>
-                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/files">Files</Link></MenuItem>
-                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/gears">Gears</Link></MenuItem>
-                                <MenuItem><Link onTouchTap={this.toggleDrawer} to="/r/movebuttondir">mv debug</Link></MenuItem>
+                                <Link onTouchTap={this.toggleDrawer} to="/"><MenuItem>Dashboard</MenuItem></Link>
+                                <Link onTouchTap={this.toggleDrawer} to="/r/light"><MenuItem>Light</MenuItem></Link>
+                                <Link onTouchTap={this.toggleDrawer} to="/r/music"><MenuItem>Music</MenuItem></Link>
+                                <Link onTouchTap={this.toggleDrawer} to="/r/files"><MenuItem>Files</MenuItem></Link>
+                                <Link onTouchTap={this.toggleDrawer} to="/r/gears"><MenuItem>Gears</MenuItem></Link>
                             </Drawer>
                             <StatusBar/>
                             <Route exact path="/" component={DashboardView}/>
@@ -91,6 +91,7 @@ class Main extends React.Component {
                             <Route path="/r/movebuttondir" component={MoveButtonSmallDir}/>
                         </div>
                     </Router>
+                    <GlobalSnackBar/>
                 </div>
             </MuiThemeProvider>
         )

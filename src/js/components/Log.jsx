@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import logger from '../logger';
 import {Card, CardText, CardActions} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import Snackbar from 'material-ui/Snackbar';
 import ClearLogButton from '../containers/ClearLogButton';
 
 import './log.scss';
@@ -13,10 +12,6 @@ import './log.scss';
 class Log extends React.Component {
     constructor(props) {
         super(props);
-        // this.state = {
-        //     snackBarOpen: false,
-        //     snackBarMessage: ''
-        // };
         this.getInfo = this.getInfo.bind(this);
     }
 
@@ -33,10 +28,6 @@ class Log extends React.Component {
         .then(data => {
             const message = data.status;
             logger.log(message);
-            // this.setState({
-            //     snackBarOpen: true,
-            //     snackBarMessage: message
-            // });
         })
         .catch(error => logger.error('error on get info: ' + error));
     }
@@ -56,12 +47,6 @@ class Log extends React.Component {
                     <ClearLogButton/>
                     <FlatButton onClick={this.getInfo} label="radio info"/>
                 </CardActions>
-                <Snackbar
-                    open={this.props.showShortMessage}
-                    message={this.props.shortMessage}
-                    autoHideDuration={4000}
-                    onRequestClose={this.props.onShortMessageHide}
-                />
             </Card>
         );
     }
@@ -70,8 +55,7 @@ class Log extends React.Component {
 Log.propTypes = {
     loglines: PropTypes.arrayOf(PropTypes.shape({
         message: PropTypes.string.isRequired
-    }).isRequired).isRequired,
-    onShortMessageHide: PropTypes.func.isRequired
+    }).isRequired).isRequired
 };
 
 export default Log;
