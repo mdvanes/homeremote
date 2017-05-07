@@ -1,25 +1,32 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import $http from '../request';
-import logger from '../logger';
 import FontIcon from 'material-ui/FontIcon';
 import './toggle.scss';
 
 class Toggle extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {isChecked: false};
         if(!this.props.id) {
             throw new Error('property ID is required on Toggle');
         }
-        // TODO replace by Fetch
-        $http('/' + this.props.id + '/status')
+
+        fetch('/' + this.props.id + '/status', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
             .then(data => {
                 if(data.status === 'started') {
                     this.setState({isChecked: true});
                 }
             })
-            .catch(error => logger.error('error on toggle: ' + error));
+            .catch(error => this.props.logError('error on toggle: ' + error));
+
         this.onChange = this.onChange.bind(this);
         this.sendToggle = this.sendToggle.bind(this);
     }
@@ -36,7 +43,14 @@ class Toggle extends React.Component {
         } else {
             url += 'start';
         }
-        $http(url)
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(data => data.json())
             .then(data => {
                 if(data.status === 'started') {
                     this.setState({isChecked: true});
@@ -44,21 +58,20 @@ class Toggle extends React.Component {
                     this.setState({isChecked: false});
                 }
             })
-            .catch(error => logger.error('error on toggle: ' + error));
+            .catch(error => this.props.logError('error on toggle: ' + error));
     }
 
     render() {
         let btnClass = classNames({
-            'btn-toggle': true,
+            'btn-toggle toggle-button': true,
             'btn-success': this.state.isChecked,
             'btn-danger': !this.state.isChecked
         });
         let icon = <FontIcon style={{fontSize: '750%'}} className="material-icons">{this.props.icon}</FontIcon>;
         return (
             <button
-              className="toggle-button"
-              className={btnClass}
-              onTouchTap={this.sendToggle}
+                className={btnClass}
+                onTouchTap={this.sendToggle}
             >
             {icon}
             {this.props.label}
@@ -66,4 +79,10 @@ class Toggle extends React.Component {
         );
     }
 }
+
+Toggle.propTypes = {
+    logError: PropTypes.func.isRequired,
+    logInfo: PropTypes.func.isRequired
+};
+
 export default Toggle;
