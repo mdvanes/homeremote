@@ -50,10 +50,12 @@ export const clearLog = () => {
     };
 };
 
-export const setMoveParams = (targetLocations, fileName) => {
+export const setMoveParams = (targetLocations, filePath, fileName) => {
+    console.log('setMoveParams', targetLocations.length, filePath, fileName);
     return {
         type: SET_MOVE_PARAMS,
         targetLocations,
+        filePath,
         fileName
     };
 };
