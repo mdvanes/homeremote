@@ -99,6 +99,7 @@ const bind = app => {
                 const [artist, title] = info.title.split(' - ');
                 res.send({status: 'ok', artist, title});
             } else {
+                console.log('GetMusic Info failed: ' + info + ' - ' + err);
                 res.send({status: 'error'});
             }
         });
