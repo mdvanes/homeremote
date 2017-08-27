@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1"/>
+	<style>
+html {
+	font-family: sans-serif;
+	font-size: 2rem;
+}
+form {
+	max-width: 40em;
+}
+		label {
+			display: block;
+		}
+		.form-group {
+			margin-bottom: 1em;
+		}
+		.form-input {
+			font-size: 1rem;
+			width: 100%;
+		}
+		.button {
+			background: #311b92;
+			border: none;
+			color: white;
+			font-size: 1rem;
+			padding: 0.5em;
+		}
+	</style>
+</head>
+<body>
+<form action="/login" method="post">
+	<div class="form-group">
+		<label>Username</label>
+		<input class="form-input" type="text" name="username"/><br/>
+	</div>
+	<div class="form-group">
+		<label>Password</label>
+		<input class="form-input" type="password" name="password"/>
+	</div>
+	<div>
+		<input class="button" type="submit" value="Submit"/>
+	</div>
+</form>
+</body>
+</html>
