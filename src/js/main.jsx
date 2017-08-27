@@ -81,6 +81,7 @@ class Main extends React.Component {
                                 <Link onTouchTap={this.toggleDrawer} to="/r/music"><MenuItem>Music</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/files"><MenuItem>Files</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/gears"><MenuItem>Gears</MenuItem></Link>
+                                <a href="logout"><MenuItem>Log out</MenuItem></a>
                             </Drawer>
                             <StatusBar/>
                             <Route exact path="/" component={DashboardView}/>

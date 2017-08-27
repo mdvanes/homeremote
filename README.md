@@ -193,6 +193,7 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 
 ## TODO
 
+* test time travel debug (redux)
 * Remove all HTTPS, only use behind Reverse Proxy with HTTPS
 * add http basic authentication (or better digest access?)
 * strip packages from package.json until no longer works, because there are some unused packages in there
