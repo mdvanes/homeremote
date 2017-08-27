@@ -5,6 +5,7 @@
 /public/_babel
 /settings.json
 /users.htpasswd
+/auth.json
 /dummy-homeremote-playradio-status.log
 
 public/js/library/bootstrap/fonts/

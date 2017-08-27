@@ -2,10 +2,9 @@
 /* eslint-env node */
 
 let express = require('express');
+let debug = false;
 const app = express();
 const http = require('http');
-    //https = require('https'),
-    //fs = require('fs'),
 const path = require('path');
 const bunyan = require('bunyan');
 const broadcast = require('./broadcast.js');
@@ -18,12 +17,13 @@ const filemanager = require('./fm.js');
 const getMusic = require('./getMusic.js');
 const gears = require('./gears.js');
 const settings = require('../settings.json');
-let debug = false;
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 const bodyParser = require('body-parser');
+const auth = require('../auth.json');
+
 app.use(bodyParser.json()); // for parsing application/json
 
 // Configuration
@@ -41,35 +41,20 @@ let log = bunyan.createLogger({
     ]
 });
 
-// TODO remove
-// let basic = auth.basic({
-//     realm: 'HomeRemote', // pages with the same root URL and realm share credentials
-//     file: path.join(__dirname, '../users.htpasswd')
-// });
-// let options = {
-//     key: fs.readFileSync('keys/server.key'),
-//     cert: fs.readFileSync('keys/server.cert')
-// };
-
 passport.use(new LocalStrategy(
-    function(username, password, done) {
-        console.log('incoming credentials', username, password);
-        // TODO from JSON
-        if(username === 'john' && password === 'test') {
-            return done(null, {username: 'john', id: 1});
+    function(requestedUsername, requestedPassword, done) {
+        const retrievedUsers = auth.users.filter(user => {
+            return user.name === requestedUsername;
+        });
+        if(retrievedUsers &&
+            retrievedUsers.length === 1 &&
+            retrievedUsers[0].name === requestedUsername &&
+            retrievedUsers[0].password === requestedPassword
+        ) {
+            return done(null, retrievedUsers[0]);
         } else {
             return done(null, false, { message: 'Incorrect username/password.' });
         }
-        // User.findOne({ username: username }, function (err, user) {
-        //     if (err) { return done(err); }
-        //     if (!user) {
-        //         return done(null, false, { message: 'Incorrect username.' });
-        //     }
-        //     if (!user.validPassword(password)) {
-        //         return done(null, false, { message: 'Incorrect password.' });
-        //     }
-        //     return done(null, user);
-        // });
     }
 ));
 
@@ -85,11 +70,16 @@ passport.serializeUser(function(user, cb) {
 });
 
 passport.deserializeUser(function(id, cb) {
-    // db.users.findById(id, function (err, user) {
-    //     if (err) { return cb(err); }
-    //     cb(null, user);
-    // });
-    cb(null, {username: 'john', id: 1}); // TODO from JSON
+    const retrievedUsers = auth.users.filter(user => {
+        return user.id === id;
+    });
+    if(retrievedUsers &&
+        retrievedUsers.length === 1 &&
+        retrievedUsers[0].id === id
+    ) {
+        return cb(null, retrievedUsers[0]);
+    }
+    return cb('cannot deserialize user');
 });
 
 app.set('views', __dirname + '/views');
@@ -129,39 +119,18 @@ app.get('/r/*', (req, res) => {
 
 if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // enableAuth: default is true
-    console.log('using authentication'); // TODO remove
     //https://github.com/passport/express-4.x-local-example
     app.use(require('morgan')('combined'));
     app.use(require('cookie-parser')());
     app.use(bodyParser.urlencoded({ extended: true }));
     // https://github.com/expressjs/session
-    // TODO use better secret
-    app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+    if(!auth.salt) {
+        throw new Error('set salt in auth.json');
+    }
+    app.use(session({ secret: auth.salt, resave: false, saveUninitialized: false }));
 
     app.use(passport.initialize());
     app.use(passport.session());
-
-    // TODO remove
-    // app.get('/',
-    //     function(req, res) {
-    //         //res.render('home', { user: req.user });
-    //         app.use(express.static('public'));
-    //         res.redirect('/')
-    //     });
-    // app.use(
-    //     //auth.connect(basic),
-    //     express.static('public')
-    // );
-    // http://passportjs.org/docs
-    // app.configure(function() {
-    //     app.use(express.static('public'));
-    //     // app.use(express.cookieParser());
-    //     // app.use(express.bodyParser());
-    //     // app.use(express.session({ secret: 'keyboard cat' }));
-    //     app.use(passport.initialize());
-    //     app.use(passport.session());
-    //     //app.use(app.router);
-    // });
 
     app.get('/login', (req, res) => {
         res.render('login');
@@ -193,4 +162,3 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
 }
 
 http.createServer(app).listen(3000, () => log.info('HomeRemote listening at http://localhost:3000') );
-// TODO Remove - https.createServer(options, app).listen(3443, () => log.info('HomeRemote listening at https://localhost:3443') );
