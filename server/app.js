@@ -16,12 +16,13 @@ const switcher = require('./switch.js');
 const filemanager = require('./fm.js');
 const getMusic = require('./getMusic.js');
 const gears = require('./gears.js');
-const settings = require('../settings.json');
 const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 const bodyParser = require('body-parser');
+
+const settings = require('../settings.json');
 const auth = require('../auth.json');
 
 app.use(bodyParser.json()); // for parsing application/json
