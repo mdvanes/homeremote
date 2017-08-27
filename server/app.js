@@ -115,9 +115,8 @@ if(!debug) {
 togglestub.bind(app);
 clickstub.bind(app);
 switcher.bind(app, log);
-filemanager.bind(app, log);
 getMusic.bind(app, log);
-gears.bind(app, log);
+
 // Using the /r/ subpath for views, to easily match here and in webpack.config proxies
 app.get('/r/*', (req, res) => {
     if(!debug) {
@@ -183,6 +182,10 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     app.use(
         connectEnsureLogin(),
         express.static('public'));
+
+    gears.bind(app, log);
+    filemanager.bind(app, log);
+
 } else {
     app.use(
         express.static('public')

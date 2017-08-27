@@ -15,6 +15,7 @@ class Gears extends React.Component {
 
     getInfo() {
         fetch('/gears/info', {
+            credentials: 'same-origin',
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
