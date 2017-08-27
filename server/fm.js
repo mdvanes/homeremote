@@ -6,6 +6,7 @@ const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
 const PromiseFtp = require('promise-ftp');
 const prettyBytes = require('pretty-bytes');
+const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
 const fileToFileInfo = subPath => {
     return file => {
@@ -40,9 +41,9 @@ const resetPermissionsForDirContent = location => {
         });
 };
 
-var bind = function(app) {
+const bind = function(app) {
 
-    app.post('/fm/list', function (req, res) {
+    app.post('/fm/list', connectEnsureLogin(), function (req, res) {
         console.log('call to http://%s:%s/fm/list/sub');
 
         console.log(`Trying path <${req.body.path}>`);
@@ -81,7 +82,7 @@ var bind = function(app) {
             });
     });
 
-    app.post('/fm/rename', (req, res) => {
+    app.post('/fm/rename', connectEnsureLogin(), (req, res) => {
         console.log('call to http://%s:%s/fm/rename');
         //console.log(req.body.path, req.body.src, req.body.target);
 
@@ -96,14 +97,14 @@ var bind = function(app) {
 
     });
 
-    app.get('/fm/getTargetLocations', (req, res) => {
+    app.get('/fm/getTargetLocations', connectEnsureLogin(), (req, res) => {
         const targetLocations = settings.fm.targetLocations.map(location => {
             return location.path;
         });
         res.send({status: 'ok', targetLocations});
     });
 
-    app.get('/fm/resetFilePermissions', (req, res) => {
+    app.get('/fm/resetFilePermissions', connectEnsureLogin(), (req, res) => {
         const actions = settings.fm.targetLocations.map(resetPermissionsForDirContent);
         Promise.all(actions)
             .then(() => {
@@ -115,7 +116,7 @@ var bind = function(app) {
             });
     });
 
-    app.post('/fm/mvToTargetLocation', (req, res) => {
+    app.post('/fm/mvToTargetLocation', connectEnsureLogin(), (req, res) => {
         const sourcePath = rootPath + '/' + req.body.sourcePath + '/' + req.body.fileName;
         const targetNewFile = req.body.targetPath + '/' + req.body.fileName;
         fsp.exists(sourcePath)
@@ -144,11 +145,11 @@ var bind = function(app) {
 
     let ftpStatus = 'nothing started';
 
-    app.get('/fm/ftpstatus', (req, res) => {
+    app.get('/fm/ftpstatus', connectEnsureLogin(), (req, res) => {
         res.send({status: 'ok', ftpStatus});
     });
 
-    app.post('/fm/ftp', (req, res) => {
+    app.post('/fm/ftp', connectEnsureLogin(), (req, res) => {
         const path = rootPath + '/' + req.body.path;
         ftpStatus = `Starting upload of ${path} to ${settings.ftp.remotePath}`;
         console.log(`FTP will try to send ${path} to ${settings.ftp.remotePath}`);

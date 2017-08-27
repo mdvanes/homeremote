@@ -28,6 +28,7 @@ class FileManager extends React.Component {
             dirName = this.state.dirName + '/' + dirName;
         }
         fetch('/fm/list/', {
+            credentials: 'same-origin',
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -49,6 +50,7 @@ class FileManager extends React.Component {
 
     ftpUpload(filePath) {
         fetch('/fm/ftp/', {
+            credentials: 'same-origin',
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -68,6 +70,7 @@ class FileManager extends React.Component {
 
     getFtpStatus() {
         fetch('/fm/ftpstatus', {
+            credentials: 'same-origin',
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -83,6 +86,7 @@ class FileManager extends React.Component {
 
     getTargetLocations() {
         fetch('/fm/getTargetLocations', {
+            credentials: 'same-origin',
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -102,6 +106,7 @@ class FileManager extends React.Component {
         const confirmResult = confirm('Confirm resetting file permissions to rwrwrw');
         if(confirmResult) {
             fetch('/fm/resetFilePermissions', {
+                credentials: 'same-origin',
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',

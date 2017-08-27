@@ -147,7 +147,7 @@ const bind = app => {
     // history.slots[0].name
     // history.slots[0].status
 
-    app.get('/gears/info', function (req, res) {
+    app.get('/gears/info', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
         console.log('Call to http://%s:%s/gears/info');
 
         const sbQueueUri = `${settings.gears.sn.uri}sabnzbd/api?mode=queue&output=json&apikey=${settings.gears.sn.apikey}`;
