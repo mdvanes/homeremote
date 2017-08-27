@@ -91,7 +91,17 @@ Install in /opt (because of upstart script):
   * sudo apt-get install ffmpeg eyed3 # to get ffmpeg, eyeD3
 * it is possible to install HomeRemote on multiple servers, have the USB stick in one of them and call one from another by setting a URL in heserverip, like: http://192.168.0.25:3000
 * it is possible to disable authentication (for servers that are only accessible within the LAN) by setting enableAuth to false (default is true)
-* create a users.htpasswd in the root and add one user per line in the format: ```username:password```
+* create a auth.json in the root and content should be: 
+```
+{
+  "salt": "SOME_RANDOM_TEXT",
+  "users": [{
+    "id": 1,
+    "name": "username",
+    "password": "password"
+  }]
+}
+```
 * the /keys dir contains a server.cert and server.key. The ones in the repo are for localhost, and so only usable for debugging. Create your own (see below, Set up localhost SSL) for the target domain and place in the /keys dir.
 * set up the router for access to the SSL server (do not allow non-SSL access from outside the network), enable port forwarding to <ip of this server>:3443
 * ```npm run start``` or ```node server/app.js``` or ```sudo service homeremote restart``` (see below)
