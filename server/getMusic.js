@@ -46,7 +46,7 @@ const writer = new id3.Writer();
 //     });
 // };
 
-const downloadPromise = (url, artist, title) => {
+const downloadPromise = (log, url, artist, title) => {
     return new Promise((resolve, reject) => {
         let fileName = encodeURIComponent(url);
         if(artist && artist.length > 0 && title && title.length > 0) {
@@ -62,14 +62,14 @@ const downloadPromise = (url, artist, title) => {
             if(err) {
                 reject('youtubedl.exec failed:' + err);
             } else {
-                console.log('youtubedl.exec finished:', output);
+                log.info('youtubedl.exec finished:', output);
                 resolve({path: targetPath, fileName});
             }
         });
     });
 };
 
-const setMetadataPromise = (path, fileName, artist, title, album) => {
+const setMetadataPromise = (log, path, fileName, artist, title, album) => {
     return new Promise((resolve, reject) => {
         if(artist && artist.length > 0 && title && title.length > 0) {
             const file = new id3.File(path);
@@ -79,7 +79,7 @@ const setMetadataPromise = (path, fileName, artist, title, album) => {
                 if (err) {
                     reject('set metadata failed: ' + err);
                 } else {
-                    console.log('id3 finished');
+                    log.info('id3 finished');
                     resolve({path, fileName});
                 }
             });
@@ -87,10 +87,10 @@ const setMetadataPromise = (path, fileName, artist, title, album) => {
     });
 };
 
-const bind = app => {
+const bind = (app, log) => {
 
     app.post('/getMusic/info', function (req, res) {
-        console.log('Call to http://%s:%s/getMusic/info');
+        log.info('Call to /getMusic/info');
 
         // url, options, callback
         youtubedl.getInfo(req.body.url, null, (err, info) => {
@@ -99,29 +99,29 @@ const bind = app => {
                 const [artist, title] = info.title.split(' - ');
                 res.send({status: 'ok', artist, title});
             } else {
-                console.log('GetMusic Info failed: ' + info + ' - ' + err);
+                log.error('GetMusic Info failed: ' + info + ' - ' + err);
                 res.send({status: 'error'});
             }
         });
     });
 
     app.post('/getMusic/music', function (req, res) {
-        console.log('Call to http://%s:%s/getMusic/music');
+        log.info('Call to /getMusic/music');
 
         let fileName = '';
         let path = '';
-        downloadPromise(req.body.url, req.body.artist, req.body.title)
+        downloadPromise(log, req.body.url, req.body.artist, req.body.title)
         .then(data => {
             path = data.path;
             fileName = data.fileName;
-            return setMetadataPromise(data.path, data.fileName, req.body.artist, req.body.title, req.body.album);
+            return setMetadataPromise(log, data.path, data.fileName, req.body.artist, req.body.title, req.body.album);
         })
         // 775 octal for rwxrwxr-x / 664 octal for rwrwr-
         .then(data => fsp.chmod(data.path, '664'))
         .then(() => fsp.chown(path, settings.ownerinfo.uid, settings.ownerinfo.gid))
         .then(() => res.send({status: 'ok', fileName}))
         .catch(err => {
-            console.log(err);
+            log.error(err);
             res.send({status: 'error'});
         });
     });
