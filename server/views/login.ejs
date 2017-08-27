@@ -28,9 +28,24 @@ form {
 			font-size: 1rem;
 			padding: 0.5em;
 		}
+		.error {
+			color: red;
+			display: none;
+		}
+		#close-error {
+			background-color: #ccc;
+			display: inline-block;
+			cursor: pointer;
+			height: 1em;
+			text-align: center;
+			width: 1em;
+		}
 	</style>
 </head>
 <body>
+
+<h3 class="error">Login failed <span id="close-error">✕</span></h3>
+
 <form action="/login" method="post">
 	<div class="form-group">
 		<label>Username</label>
@@ -44,5 +59,16 @@ form {
 		<input class="button" type="submit" value="Submit"/>
 	</div>
 </form>
+
+<script>
+	if(window.location.search==='?failed') {
+	    console.log('failed');
+	    document.querySelector('.error').style.display = 'block';
+	}
+	document.getElementById('close-error').addEventListener('click', function(ev) {
+        document.querySelector('.error').style.display = 'none';
+	});
+</script>
+
 </body>
 </html>
