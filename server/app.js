@@ -1,26 +1,28 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-let express = require('express'),
-    app = express(),
-    http = require('http'),
-    https = require('https'),
-    fs = require('fs'),
-    path = require('path'),
-    auth = require('http-auth'),
-    bunyan = require('bunyan'),
-    broadcast = require('./broadcast.js'),
-    radio = require('./radio.js'),
-    motion = require('./motion.js'),
-    togglestub = require('./togglestub.js'),
-    clickstub = require('./clickstub.js'),
-    switcher = require('./switch.js'),
-    filemanager = require('./fm.js'),
-    getMusic = require('./getMusic.js'),
-    gears = require('./gears.js'),
-    settings = require('../settings.json'),
-    debug = false;
-
+let express = require('express');
+const app = express();
+const http = require('http');
+    //https = require('https'),
+    //fs = require('fs'),
+const path = require('path');
+const bunyan = require('bunyan');
+const broadcast = require('./broadcast.js');
+const radio = require('./radio.js');
+const motion = require('./motion.js');
+const togglestub = require('./togglestub.js');
+const clickstub = require('./clickstub.js');
+const switcher = require('./switch.js');
+const filemanager = require('./fm.js');
+const getMusic = require('./getMusic.js');
+const gears = require('./gears.js');
+const settings = require('../settings.json');
+let debug = false;
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 const bodyParser = require('body-parser');
 app.use(bodyParser.json()); // for parsing application/json
 
@@ -39,15 +41,59 @@ let log = bunyan.createLogger({
     ]
 });
 
-let basic = auth.basic({
-    realm: 'HomeRemote', // pages with the same root URL and realm share credentials
-    file: path.join(__dirname, '../users.htpasswd')
+// TODO remove
+// let basic = auth.basic({
+//     realm: 'HomeRemote', // pages with the same root URL and realm share credentials
+//     file: path.join(__dirname, '../users.htpasswd')
+// });
+// let options = {
+//     key: fs.readFileSync('keys/server.key'),
+//     cert: fs.readFileSync('keys/server.cert')
+// };
+
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+        console.log('incoming credentials', username, password);
+        // TODO from JSON
+        if(username === 'john' && password === 'test') {
+            return done(null, {username: 'john', id: 1});
+        } else {
+            return done(null, false, { message: 'Incorrect username/password.' });
+        }
+        // User.findOne({ username: username }, function (err, user) {
+        //     if (err) { return done(err); }
+        //     if (!user) {
+        //         return done(null, false, { message: 'Incorrect username.' });
+        //     }
+        //     if (!user.validPassword(password)) {
+        //         return done(null, false, { message: 'Incorrect password.' });
+        //     }
+        //     return done(null, user);
+        // });
+    }
+));
+
+// Configure Passport authenticated session persistence.
+//
+// In order to restore authentication state across HTTP requests, Passport needs
+// to serialize users into and deserialize users out of the session.  The
+// typical implementation of this is as simple as supplying the user ID when
+// serializing, and querying the user record by ID from the database when
+// deserializing.
+passport.serializeUser(function(user, cb) {
+    cb(null, user.id);
 });
 
-let options = {
-    key: fs.readFileSync('keys/server.key'),
-    cert: fs.readFileSync('keys/server.cert')
-};
+passport.deserializeUser(function(id, cb) {
+    // db.users.findById(id, function (err, user) {
+    //     if (err) { return cb(err); }
+    //     cb(null, user);
+    // });
+    cb(null, {username: 'john', id: 1}); // TODO from JSON
+});
+
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
 
 // Read application arguments
 process.argv.forEach(function (val, index) {
@@ -58,6 +104,7 @@ process.argv.forEach(function (val, index) {
     }
 });
 
+// TODO test if API routes are blocked when not logged in
 // Set routes
 broadcast.bind(app, log, debug);
 if(!debug) {
@@ -82,11 +129,60 @@ app.get('/r/*', (req, res) => {
 });
 
 if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
-    // default is true
+    // enableAuth: default is true
+    console.log('using authentication'); // TODO remove
+    //https://github.com/passport/express-4.x-local-example
+    app.use(require('morgan')('combined'));
+    app.use(require('cookie-parser')());
+    app.use(bodyParser.urlencoded({ extended: true }));
+    // https://github.com/expressjs/session
+    // TODO use better secret
+    app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    // TODO remove
+    // app.get('/',
+    //     function(req, res) {
+    //         //res.render('home', { user: req.user });
+    //         app.use(express.static('public'));
+    //         res.redirect('/')
+    //     });
+    // app.use(
+    //     //auth.connect(basic),
+    //     express.static('public')
+    // );
+    // http://passportjs.org/docs
+    // app.configure(function() {
+    //     app.use(express.static('public'));
+    //     // app.use(express.cookieParser());
+    //     // app.use(express.bodyParser());
+    //     // app.use(express.session({ secret: 'keyboard cat' }));
+    //     app.use(passport.initialize());
+    //     app.use(passport.session());
+    //     //app.use(app.router);
+    // });
+
+    app.get('/login', (req, res) => {
+        res.render('login');
+    });
+    app.post(
+        '/login',
+        passport.authenticate('local', { failureRedirect: '/login?failed' }),
+        (req, res) => {
+            console.log('post login');
+            res.redirect('/');
+    });
+    app.get('/logout',
+        function(req, res){
+            req.logout();
+            res.redirect('/');
+        });
+
     app.use(
-        auth.connect(basic),
-        express.static('public')
-    );
+        connectEnsureLogin(),
+        express.static('public'));
 } else {
     app.use(
         express.static('public')
@@ -94,4 +190,4 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
 }
 
 http.createServer(app).listen(3000, () => log.info('HomeRemote listening at http://localhost:3000') );
-https.createServer(options, app).listen(3443, () => log.info('HomeRemote listening at https://localhost:3443') );
+// TODO Remove - https.createServer(options, app).listen(3443, () => log.info('HomeRemote listening at https://localhost:3443') );
