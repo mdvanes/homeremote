@@ -6,6 +6,7 @@ const youtubedl = require('youtube-dl');
 const settings = require('../settings.json');
 const id3 = require('id3-writer');
 const writer = new id3.Writer();
+const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
 // TODO note: ffmpeg/ffprobe is required as an OS dependency
 // TODO also eyeD3: sudo apt-get install eyed3
@@ -89,7 +90,7 @@ const setMetadataPromise = (log, path, fileName, artist, title, album) => {
 
 const bind = (app, log) => {
 
-    app.post('/getMusic/info', function (req, res) {
+    app.post('/getMusic/info', connectEnsureLogin(), function (req, res) {
         log.info('Call to /getMusic/info');
 
         // url, options, callback
@@ -105,7 +106,7 @@ const bind = (app, log) => {
         });
     });
 
-    app.post('/getMusic/music', function (req, res) {
+    app.post('/getMusic/music', connectEnsureLogin(), function (req, res) {
         log.info('Call to /getMusic/music');
 
         let fileName = '';

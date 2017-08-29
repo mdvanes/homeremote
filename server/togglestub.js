@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-var bind = function(app) {
-    app.get('/togglestub/start', function (req, res) {
+const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
+
+const bind = function(app) {
+    app.get('/togglestub/start', connectEnsureLogin(), function (req, res) {
         console.log('call to http://%s:%s/togglestub/start');
         res.send({status: 'started'});
     });
 
-    app.get('/togglestub/stop', function (req, res) {
+    app.get('/togglestub/stop', connectEnsureLogin(),function (req, res) {
         console.log('call to http://%s:%s/togglestub/stop');
         res.send({status: 'stopped'});
     });
 
-    app.get('/togglestub/status', function (req, res) {
+    app.get('/togglestub/status', connectEnsureLogin(),function (req, res) {
         console.log('call to http://%s:%s/togglestub/status');
         if(Math.random() < 0.5) {
             res.send({status: 'started'});

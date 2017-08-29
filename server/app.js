@@ -10,8 +10,6 @@ const bunyan = require('bunyan');
 const broadcast = require('./broadcast.js');
 const radio = require('./radio.js');
 const motion = require('./motion.js');
-const togglestub = require('./togglestub.js');
-const clickstub = require('./clickstub.js');
 const switcher = require('./switch.js');
 const filemanager = require('./fm.js');
 const getMusic = require('./getMusic.js');
@@ -95,18 +93,10 @@ process.argv.forEach(function (val, index) {
     }
 });
 
-// TODO test if API routes are blocked when not logged in
+// TODO test if API routes are blocked when not logged in //
 // Set routes
 broadcast.bind(app, log, debug);
-if(!debug) {
-    // Do not start motion in debugmode, because of sudo password requests.
-    radio.bind(app, log, debug);
-    motion.bind(app, log, debug);
-}
-togglestub.bind(app);
-clickstub.bind(app);
 switcher.bind(app, log);
-getMusic.bind(app, log);
 
 // Using the /r/ subpath for views, to easily match here and in webpack.config proxies
 app.get('/r/*', (req, res) => {
@@ -153,8 +143,15 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         connectEnsureLogin(),
         express.static('public'));
 
+    // Set routes
+    if(!debug) {
+        // Do not start motion in debugmode, because of sudo password requests.
+        radio.bind(app, log, debug);
+        motion.bind(app, log, debug);
+    }
     gears.bind(app, log);
     filemanager.bind(app, log);
+    getMusic.bind(app, log);
 
 } else {
     app.use(

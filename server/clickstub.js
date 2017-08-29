@@ -1,14 +1,16 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-var bind = function(app) {
-    app.get('/clickstub/on', function (req, res) {
+const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
+
+const bind = function(app) {
+    app.get('/clickstub/on', connectEnsureLogin(), function (req, res) {
         console.log('call to http://%s:%s/clickstub/on');
         // Expected result something like: Sending command[1] to deviceId[1]
         res.send({status: 'received'});
     });
 
-    app.get('/clickstub/off', function (req, res) {
+    app.get('/clickstub/off', connectEnsureLogin(), function (req, res) {
         console.log('call to http://%s:%s/clickstub/off');
         res.send({status: 'received'});
     });
