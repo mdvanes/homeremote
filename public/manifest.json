@@ -1,5 +1,5 @@
 {
-  "name": "HomeRemote",
+  "short_name": "HomeRemote",
   "description": "Remote for home automation",
   "icons": [
     {
@@ -9,7 +9,6 @@
       "density": 4.0
     }
   ],
-  "start_url": ".",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#3F51B5",
