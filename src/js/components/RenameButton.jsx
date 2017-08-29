@@ -18,6 +18,7 @@ export default class RenameButton extends React.Component {
         if(target) {
             // https://davidwalsh.name/fetch
             fetch('/fm/rename', {
+                credentials: 'same-origin',
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -34,7 +35,7 @@ export default class RenameButton extends React.Component {
                     throw new Error('status=' + response.status);
                 } else {
                     // TODO should just return statusCode 205 and reset content
-                    logger.log('Succesfully renamed');
+                    logger.log('Successfully renamed');
                 }
             })
             .catch(error => logger.error('error on fm/rename: ' + error));

@@ -1,6 +1,5 @@
 import React from 'react';
 import classNames from 'classnames';
-import $http from '../request';
 
 /**
  * Used to check online/offline status for AppCache
@@ -9,9 +8,17 @@ class StatusBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {isOnline: false};
-        $http('/index.html')
-            .then(() =>  this.setState({isOnline: true}))
-            .catch(() => this.setState({isOnline: false}));
+
+        fetch('/index.html', {
+            credentials: 'same-origin',
+            method: 'GET',
+            headers: {
+                'Accept': 'text/html',
+                'Content-Type': 'text/html'
+            }
+        })
+        .then(() =>  this.setState({isOnline: true}))
+        .catch(() => this.setState({isOnline: false}));
     }
 
     render() {
