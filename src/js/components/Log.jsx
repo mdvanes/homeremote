@@ -18,6 +18,7 @@ class Log extends React.Component {
     // TODO Extract to container like ClearLogButton
     getInfo() {
         fetch(this.props.infoUrl, {
+            credentials: 'same-origin',
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
