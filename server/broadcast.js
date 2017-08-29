@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-var exec = require('child_process').exec;
+const exec = require('child_process').exec;
+const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
-var bind = function(app, log, debug) {
-    app.get('/broadcast/start', function (req, res) {
-        console.log('call to http://%s:%s/broadcast/start');
+const bind = function(app, log, debug) {
+    app.get('/broadcast/start', connectEnsureLogin(), function (req, res) {
+        log.info('call to /broadcast/start');
 
         if(debug) {
             setTimeout(function() {
@@ -25,7 +26,7 @@ var bind = function(app, log, debug) {
         }
     });
 
-    app.get('/broadcast/stop', function (req, res) {
+    app.get('/broadcast/stop', connectEnsureLogin(), function (req, res) {
         if(debug) {
             log.warn('debug: /broadcast/stop always return ok');
             res.send('ok');
@@ -42,7 +43,7 @@ var bind = function(app, log, debug) {
         }
     });
 
-    app.get('/broadcast/status', function (req, res) {
+    app.get('/broadcast/status', connectEnsureLogin(), function (req, res) {
         // cmd: sudo service broadcastxxx status
         //
         // options:

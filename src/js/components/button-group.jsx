@@ -18,6 +18,7 @@ class ButtonGroup extends React.Component {
 
     sendState(state) {
         fetch(`/switch/${this.props.id}`, {
+            credentials: 'same-origin',
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -35,7 +36,7 @@ class ButtonGroup extends React.Component {
             if(data.status !== 'received') {
                 logger.error(`error on send-${state}: ${data.status}`);
             } else {
-                logger.log('ok');
+                logger.log(`switch ${this.props.id} ${state}`);
             }
         })
         .catch(error => logger.error(`error on send-${state}: ${error}`));
