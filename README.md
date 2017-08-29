@@ -213,9 +213,6 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 
 ## TODO
 
-* test time travel debug (redux)
-* Remove all HTTPS, only use behind Reverse Proxy with HTTPS
-* add http basic authentication (or better digest access?)
 * strip packages from package.json until no longer works, because there are some unused packages in there
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
 * Add static typing with Flow: doesn't work on Windows but works on Ubuntu and probably on Travis. The problem is that this requires transpilation to remove the typing, so it would not be possible to build on Windows anymore.
