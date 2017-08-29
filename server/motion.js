@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-var exec = require('child_process').exec;
+const exec = require('child_process').exec;
+const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
-var bind = function(app, log) {
+const bind = function(app, log) {
 
-    app.get('/motion/start', function (req, res) {
-        console.log('call to http://%s:%s/motion/start');
-
+    app.get('/motion/start', connectEnsureLogin(), function (req, res) {
+        log.info('call to /motion/start');
         exec('sudo service motion start', function(error, stdout, stderr){
             log.info('['+stdout+']');
             if(stdout.indexOf('motion start/') > -1) {
@@ -19,8 +19,8 @@ var bind = function(app, log) {
         });
     });
 
-    app.get('/motion/stop', function (req, res) {
-        console.log('call to http://%s:%s/motion/stop');
+    app.get('/motion/stop', connectEnsureLogin(), function (req, res) {
+        log.info('call to /motion/stop');
         exec('sudo service motion stop', function(error, stdout, stderr){
             log.info('['+stdout+']');
             if(stdout.indexOf('motion stop/') > -1) {
@@ -32,8 +32,8 @@ var bind = function(app, log) {
         });
     });
 
-    app.get('/motion/status', function (req, res) {
-        console.log('call to http://%s:%s/motion/status');
+    app.get('/motion/status', connectEnsureLogin(), function (req, res) {
+        log.info('call to /motion/status');
         exec('sudo service motion status', function(error, stdout, stderr){
             log.info('['+stdout+']');
             if(stdout.indexOf('motion start/') > -1) {
