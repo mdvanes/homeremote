@@ -216,7 +216,6 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 * strip packages from package.json until no longer works, because there are some unused packages in there
 * extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
 * Add static typing with Flow: doesn't work on Windows but works on Ubuntu and probably on Travis. The problem is that this requires transpilation to remove the typing, so it would not be possible to build on Windows anymore.
-* React Native output
 * bunyan logging in grunt-express
 * bunyan logging on RPi (requires npm on RPi)
 * should have rotating logs (bunyan offers support for it)
