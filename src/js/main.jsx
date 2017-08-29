@@ -99,6 +99,9 @@ class Main extends React.Component {
     };
 }
 
-let store = createStore(homeRemoteReducers);
+const store = createStore(
+    homeRemoteReducers,
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 render(<Provider store={store}><Main/></Provider>, document.getElementById('app'));
