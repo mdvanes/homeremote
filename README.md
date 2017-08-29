@@ -23,6 +23,14 @@ Read log file with:
 
 ![Screenshot](screenshot.png)
 
+## Updating
+
+* stop `sudo service homeremote stop`
+* `cd /opt/homeremote`
+* update `git pull origin master`
+* test run `node server/app.js | bunyan`
+* start `sudo service homeremote start`
+
 
 ## Installation
 
@@ -39,7 +47,7 @@ Requires that the node server upstart script is run as root. (Was because of ELR
 Install in /opt (because of upstart script):
 
 * cache git credentials for this session: ```git config --global credential.helper cache```
-* ```cd /opt``
+* `cd /opt`
 * check out with ```sudo git clone``` to create /opt/homeremote (update later with ```git pull origin master```)
 * change ownership of the created /opt/homeremote to a normal user with ```sudo chown -R```
 * ```npm i --production```
