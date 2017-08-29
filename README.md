@@ -25,6 +25,8 @@ Read log file with:
 
 ## Updating
 
+* `npm build`
+* confirm that the new public/js/*.js is added to git
 * stop `sudo service homeremote stop`
 * `cd /opt/homeremote`
 * update `git pull origin master`
