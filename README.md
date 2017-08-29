@@ -213,3 +213,5 @@ Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
 * bunyan logging in grunt-express
 * bunyan logging on RPi (requires npm on RPi)
 * should have rotating logs (bunyan offers support for it)
+
+Currently it is required when using :8080 to navigate to /login manually after each server restart

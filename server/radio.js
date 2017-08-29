@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-var exec = require('child_process').exec,
-    fs = require('fs'),
-    settings = require('../settings.json');
+const exec = require('child_process').exec;
+const fs = require('fs');
+const settings = require('../settings.json');
+const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
-var bind = function(app, log) {
+const bind = function(app, log) {
 
-    app.get('/radio/start', function (req, res) {
-        console.log('call to http://%s:%s/radio/start');
+    app.get('/radio/start', connectEnsureLogin(), function (req, res) {
+        log.info('call to /radio/start');
 
         exec('sudo service playradio start', function(error, stdout, stderr){
             log.info('['+stdout+']');
@@ -21,8 +22,8 @@ var bind = function(app, log) {
         });
     });
 
-    app.get('/radio/stop', function (req, res) {
-        console.log('call to http://%s:%s/radio/stop');
+    app.get('/radio/stop', connectEnsureLogin(), function (req, res) {
+        log.info('call to /radio/stop');
         exec('sudo service playradio stop', function(error, stdout, stderr){
             log.info('['+stdout+']');
             if(stdout.indexOf('playradio stop/') > -1) {
@@ -34,8 +35,8 @@ var bind = function(app, log) {
         });
     });
 
-    app.get('/radio/status', function (req, res) {
-        console.log('call to http://%s:%s/radio/status');
+    app.get('/radio/status', connectEnsureLogin(), function (req, res) {
+        log.info('call to /radio/status');
         exec('sudo service playradio status', function(error, stdout, stderr){
             log.info('['+stdout+']');
             if(stdout.indexOf('playradio start/') > -1) {
@@ -50,7 +51,7 @@ var bind = function(app, log) {
     });
 
     // Get "now playing" information
-    app.get('/radio/info', function(req, res) {
+    app.get('/radio/info', connectEnsureLogin(), function(req, res) {
         try {
             const mplayerStatus = fs.readFileSync(settings.radiologpath, 'utf8');
             const regex = /ICY Info: StreamTitle='(.*)'/g;

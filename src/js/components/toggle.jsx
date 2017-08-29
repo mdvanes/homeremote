@@ -13,6 +13,7 @@ class Toggle extends React.Component {
         }
 
         fetch('/' + this.props.id + '/status', {
+            credentials: 'same-origin',
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -44,6 +45,7 @@ class Toggle extends React.Component {
             url += 'start';
         }
         fetch(url, {
+            credentials: 'same-origin',
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

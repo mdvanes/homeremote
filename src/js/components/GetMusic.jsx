@@ -24,6 +24,7 @@ class GetMusic extends React.Component {
         event.preventDefault();
 
         fetch('/getMusic/info', {
+            credentials: 'same-origin',
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -50,6 +51,7 @@ class GetMusic extends React.Component {
         event.preventDefault();
 
         fetch('/getMusic/music', {
+            credentials: 'same-origin',
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
