@@ -7,7 +7,6 @@ const app = express();
 const http = require('http');
 const path = require('path');
 const bunyan = require('bunyan');
-const broadcast = require('./broadcast.js');
 const radio = require('./radio.js');
 const motion = require('./motion.js');
 const switcher = require('./switch.js');
@@ -93,21 +92,6 @@ process.argv.forEach(function (val, index) {
     }
 });
 
-// TODO test if API routes are blocked when not logged in //
-// Set routes
-broadcast.bind(app, log, debug);
-switcher.bind(app, log);
-
-// Using the /r/ subpath for views, to easily match here and in webpack.config proxies
-app.get('/r/*', (req, res) => {
-    if(!debug) {
-        res.sendfile(path.resolve(__dirname + '/../public/index.html'));
-    } else {
-        // Better solution: https://forum-archive.vuejs.org/topic/836/webpack-hot-reloading-possible-with-express-server/6
-        res.redirect('/');
-    }
-});
-
 if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // enableAuth: default is true
     //https://github.com/passport/express-4.x-local-example
@@ -130,13 +114,12 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         '/login',
         passport.authenticate('local', { failureRedirect: '/login?failed' }),
         (req, res) => {
-            console.log('post login');
             res.redirect('/');
     });
     app.get('/logout',
         function(req, res){
             req.logout();
-            res.redirect('/');
+            res.redirect('/login');
         });
 
     app.use(
@@ -149,9 +132,21 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         radio.bind(app, log, debug);
         motion.bind(app, log, debug);
     }
+    switcher.bind(app, log);
     gears.bind(app, log);
     filemanager.bind(app, log);
     getMusic.bind(app, log);
+    //broadcast.bind(app, log, debug);
+
+    // Using the /r/ subpath for views, to easily match here and in webpack.config proxies
+    app.get('/r/*', connectEnsureLogin(), (req, res) => {
+        if(!debug) {
+            res.sendfile(path.resolve(__dirname + '/../public/index.html'));
+        } else {
+            // Better solution: https://forum-archive.vuejs.org/topic/836/webpack-hot-reloading-possible-with-express-server/6
+            res.redirect('/');
+        }
+    });
 
 } else {
     app.use(

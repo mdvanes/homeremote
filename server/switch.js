@@ -3,10 +3,11 @@
 
 const settings = require('../settings.json');
 const rp = require('request-promise');
+const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
 const bind = function(app, log) {
 
-    app.post('/switch/:id', function (req, res) {
+    app.post('/switch/:id', connectEnsureLogin(), function (req, res) {
         const switchId = req.params.id;
         const switchType = req.body.type;
         let newState = 'Off';
@@ -14,7 +15,7 @@ const bind = function(app, log) {
             newState = 'On';
         }
 
-        console.log(`Call to http://${req.get('host')}/switch/${switchId} [state: ${newState} domoticzuri: ${settings.domoticzuri}]`);
+        log.info(`Call to http://${req.get('host')}/switch/${switchId} [state: ${newState} domoticzuri: ${settings.domoticzuri}]`);
         if(settings.domoticzuri && settings.domoticzuri.length > 0) {
             const targetUri = `${settings.domoticzuri}/json.htm?type=command&param=${switchType}&idx=${switchId}&switchcmd=${newState}`;
             rp(targetUri)
