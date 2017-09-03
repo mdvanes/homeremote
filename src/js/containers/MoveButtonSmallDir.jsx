@@ -34,6 +34,7 @@ class MoveButtonSmallDir extends React.Component {
     // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
     mvToTargetLocation(filePath, fileName, targetLocation) {
         fetch('/fm/mvToTargetLocation', {
+            credentials: 'same-origin',
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
