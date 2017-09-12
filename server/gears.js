@@ -108,23 +108,27 @@ const transmissionPromise = transmission => {
             if(err) {
                 reject('transmissionPromise failed:' + err.message);
             }
-            const result = arg.torrents.map(entry => {
-                let percentage = 0;
-                let status = 'Getting metadata';
-                if(entry.totalSize > 0) {
-                    percentage = Math.round((entry.haveValid / entry.totalSize) * 100); // TODO use entry.percentDone?
-                    status = mapTransmissionStatusCode(entry.status);
-                } else {
-                    percentage = entry.metadataPercentComplete;
-                }
-                return {
-                    type: 'tr',
-                    name: entry.name,
-                    percentage,
-                    status
-                };
-            });
-            resolve(result);
+            if(arg) {
+                const result = arg.torrents.map(entry => {
+                    let percentage = 0;
+                    let status = 'Getting metadata';
+                    if(entry.totalSize > 0) {
+                        percentage = Math.round((entry.haveValid / entry.totalSize) * 100); // TODO use entry.percentDone?
+                        status = mapTransmissionStatusCode(entry.status);
+                    } else {
+                        percentage = entry.metadataPercentComplete;
+                    }
+                    return {
+                        type: 'tr',
+                        name: entry.name,
+                        percentage,
+                        status
+                    };
+                });
+                resolve(result);
+            } else {
+                reject('transmissionPromise failed: remote server unavailable')
+            }
         });
         //transmission.sessionStats(function(err, result){
         //    if(err){
