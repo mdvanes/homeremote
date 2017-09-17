@@ -42,7 +42,7 @@ const bind = function(app, log) {
             log.info('['+stdout+']');
             if(stdout.indexOf('Active: active') > -1) {
                 res.send({status: 'started'});
-            } else if(stdout.indexOf('Active: failed') > -1) {
+            } else if(stdout.indexOf('Active: failed') > -1 || stdout.indexOf('Active: inactive') > -1) {
                 res.send({status: 'stopped'});
             } else {
                 log.error(stdout + '|' + stderr);
