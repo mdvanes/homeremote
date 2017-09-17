@@ -1,0 +1,13 @@
+# place in /lib/systemd/system/motion.service
+# commands:
+# sudo service motion start
+# sudo service motion stop
+# sudo service motion status
+# sudo service motion restart
+# reload the configuration with: initctl reload-configuration
+
+[Unit]
+Description=run motion daemon for webcam
+
+[Service]
+ExecStart=/usr/bin/motion -c /home/martin/.motion/motion.conf &
