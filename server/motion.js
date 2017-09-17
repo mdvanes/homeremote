@@ -10,7 +10,9 @@ const bind = function(app, log) {
         log.info('call to /motion/start');
         exec('sudo service motion start', function(error, stdout, stderr){
             log.info('['+stdout+']');
-            if(stdout.indexOf('motion start/') > -1) {
+            // TODO Upstart gave more information when starting/stopping, do a better check for systemd
+            //if(stdout.indexOf('motion start/') > -1) {
+            if(stdout.length === 0) {
                 res.send({status: 'started'});
             } else {
                 log.error(stderr);
@@ -23,7 +25,9 @@ const bind = function(app, log) {
         log.info('call to /motion/stop');
         exec('sudo service motion stop', function(error, stdout, stderr){
             log.info('['+stdout+']');
-            if(stdout.indexOf('motion stop/') > -1) {
+            // TODO Upstart gave more information when starting/stopping, do a better check for systemd
+            //if(stdout.indexOf('motion stop/') > -1) {
+            if(stdout.length === 0) {
                 res.send({status: 'stopped'});
             } else {
                 log.error(stderr);
@@ -36,9 +40,9 @@ const bind = function(app, log) {
         log.info('call to /motion/status');
         exec('sudo service motion status', function(error, stdout, stderr){
             log.info('['+stdout+']');
-            if(stdout.indexOf('motion start/') > -1) {
+            if(stdout.indexOf('Active: active') > -1) {
                 res.send({status: 'started'});
-            } else if(stdout.indexOf('motion stop/') > -1) {
+            } else if(stdout.indexOf('Active: failed') > -1) {
                 res.send({status: 'stopped'});
             } else {
                 log.error(stdout + '|' + stderr);
