@@ -1,0 +1,13 @@
+# place in /lib/systemd/system/homeremote.service
+# commands:
+# sudo service homeremote start
+# sudo service homeremote stop
+# sudo service homeremote status
+# sudo service homeremote restart
+
+[Unit]
+Description=run node server for homeremote
+
+[Service]
+WorkingDirectory=/opt/homeremote/
+ExecStart=/usr/local/bin/node server/app.js
