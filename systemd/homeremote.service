@@ -4,6 +4,7 @@
 # sudo service homeremote stop
 # sudo service homeremote status
 # sudo service homeremote restart
+# reload the configuration with: initctl reload-configuration
 
 [Unit]
 Description=run node server for homeremote
