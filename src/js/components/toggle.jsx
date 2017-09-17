@@ -60,7 +60,7 @@ class Toggle extends React.Component {
                     this.setState({isChecked: false});
                 }
             })
-            .catch(error => this.props.logError('error on toggle: ' + error));
+            .catch(error => this.props.logError(`error on ${this.props.label} toggle: ` + error));
     }
 
     render() {
