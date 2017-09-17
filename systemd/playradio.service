@@ -1,0 +1,15 @@
+# place in /lib/systemd/system/playradio.service
+# commands:
+# sudo service playradio start
+# sudo service playradio stop
+# sudo service playradio status
+# sudo service playradio restart
+# reload the configuration with: initctl reload-configuration
+
+[Unit]
+Description=toggle play radio
+
+[Service]
+WorkingDirectory=/opt/homeremote/
+Environment=RADIOURL=http://icecast.omroep.nl/radio2-bb-mp3
+ExecStart=/usr/bin/mplayer ${RADIOURL} > /tmp/homeremote-playradio-status.log
