@@ -13,10 +13,12 @@ const bind = function(app, log) {
 
         exec('sudo service playradio start', function(error, stdout, stderr){
             log.info('['+stdout+']');
-            if(stdout.indexOf('playradio start/') > -1) {
+            // TODO Upstart gave more information when starting/stopping, do a better check for systemd
+            //if(stdout.indexOf('playradio start/') > -1) {
+            if(stdout.length === 0) {
                 res.send({status: 'started'});
             } else {
-                log.error(stderr);
+                log.error(error + ' ' + stderr);
                 res.send('error');
             }
         });
@@ -26,10 +28,12 @@ const bind = function(app, log) {
         log.info('call to /radio/stop');
         exec('sudo service playradio stop', function(error, stdout, stderr){
             log.info('['+stdout+']');
-            if(stdout.indexOf('playradio stop/') > -1) {
+            // TODO Upstart gave more information when starting/stopping, do a better check for systemd
+            //if(stdout.indexOf('playradio stop/') > -1) {
+            if(stdout.length === 0) {
                 res.send({status: 'stopped'});
             } else {
-                log.error(stderr);
+                log.error(error + ' ' + stderr);
                 res.send('error');
             }
         });
@@ -39,12 +43,12 @@ const bind = function(app, log) {
         log.info('call to /radio/status');
         exec('sudo service playradio status', function(error, stdout, stderr){
             log.info('['+stdout+']');
-            if(stdout.indexOf('playradio start/') > -1) {
+            if(stdout.indexOf('Active: active') > -1) {
                 res.send({status: 'started'});
-            } else if(stdout.indexOf('playradio stop/') > -1) {
+            } else if(stdout.indexOf('Active: failed') > -1) {
                 res.send({status: 'stopped'});
             } else {
-                log.error(stdout + '|' + stderr);
+                log.error(error + ' ' + stdout + '|' + stderr);
                 res.send('error');
             }
         });

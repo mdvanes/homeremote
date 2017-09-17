@@ -12,4 +12,4 @@ Description=toggle play radio
 [Service]
 WorkingDirectory=/opt/homeremote/
 Environment=RADIOURL=http://icecast.omroep.nl/radio2-bb-mp3
-ExecStart=/usr/bin/mplayer ${RADIOURL} > /tmp/homeremote-playradio-status.log
+ExecStart=/usr/bin/mplayer ${RADIOURL} > /tmp/homeremote-playradio-status.log &
