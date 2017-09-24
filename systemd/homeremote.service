@@ -5,10 +5,11 @@
 # sudo service homeremote status
 # sudo service homeremote restart
 # reload the configuration with: initctl reload-configuration
+# inspect the logs with: journalctl -u homeremote
 
 [Unit]
 Description=run node server for homeremote
 
 [Service]
 WorkingDirectory=/opt/homeremote/
-ExecStart=/usr/local/bin/node server/app.js
+ExecStart=/usr/local/bin/node server/app.js | /usr/bin/bunyan
