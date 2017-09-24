@@ -14,43 +14,12 @@ class Toggle extends React.Component {
     constructor(props) {
         super(props);
         this.state = {status: STATES.OFF};
-        if(!this.props.id) {
-            throw new Error('property ID is required on Toggle');
-        }
-
-        fetch('/' + this.props.id + '/status', {
-            credentials: 'same-origin',
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(data => data.json())
-            .then(data => {
-                if(data.status === 'started') {
-                    this.setState({status: STATES.ON});
-                } else if(data.status === 'stopped') {
-                    this.setState({status: STATES.OFF});
-                } else {
-                    this.setState({status: STATES.ERROR});
-                }
-            })
-            .catch(error => {
-                this.props.logError('error on toggle: ' + error);
-                this.setState({status: STATES.ERROR});
-            });
-
         this.sendToggle = this.sendToggle.bind(this);
+        this.getService = this.getService.bind(this);
+        this.getService(`/${this.props.id}/status`);
     }
 
-    sendToggle() {
-        let url = `/${this.props.id}/`;
-        if(this.state.status === STATES.ON) {
-            url += 'stop';
-        } else {
-            url += 'start';
-        }
+    getService(url) {
         fetch(url, {
             credentials: 'same-origin',
             method: 'GET',
@@ -75,6 +44,16 @@ class Toggle extends React.Component {
             });
     }
 
+    sendToggle() {
+        let url = `/${this.props.id}/`;
+        if(this.state.status === STATES.ON) {
+            url += 'stop';
+        } else {
+            url += 'start';
+        }
+        this.getService(url);
+    }
+
     render() {
         let btnClass = classNames({
             'btn-toggle toggle-button': true,
@@ -95,6 +74,7 @@ class Toggle extends React.Component {
 }
 
 Toggle.propTypes = {
+    id: PropTypes.string.isRequired,
     logError: PropTypes.func.isRequired,
     logInfo: PropTypes.func.isRequired
 };
