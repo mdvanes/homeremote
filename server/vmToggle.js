@@ -10,7 +10,7 @@ const bind = function(app, endpointName, serviceName, log) {
     app.get(`/${endpointName}/start`, connectEnsureLogin(), function (req, res) {
         log.info(`call to /${endpointName}/start`);
 
-        exec(`VBoxManage startvm "${settings.vm.vmName}" --type headless`, function(error, stdout, stderr){
+        exec(`sudo VBOX_USER_HOME=${settings.vm.userHome} VBoxManage startvm "${settings.vm.vmName}" --type headless`, function(error, stdout, stderr){
             log.info('['+stdout+']');
             // TODO Upstart gave more information when starting/stopping, do a better check for systemd
             if(stdout.indexOf('has been successfully started') > -1) {
@@ -25,7 +25,7 @@ const bind = function(app, endpointName, serviceName, log) {
 
     app.get(`/${endpointName}/stop`, connectEnsureLogin(), function (req, res) {
         log.info(`call to /${endpointName}/stop`);
-        exec(`VBoxManage controlvm "${settings.vm.vmName}" poweroff`, function(error, stdout, stderr){
+        exec(`sudo VBOX_USER_HOME=${settings.vm.userHome} VBoxManage controlvm "${settings.vm.vmName}" poweroff`, function(error, stdout, stderr){
             log.info('['+stdout+']');
             // TODO Upstart gave more information when starting/stopping, do a better check for systemd
             if(stdout.indexOf('100%') > -1) {
@@ -40,7 +40,7 @@ const bind = function(app, endpointName, serviceName, log) {
 
     app.get(`/${endpointName}/status`, connectEnsureLogin(), function (req, res) {
         log.info(`call to /${endpointName}/status`);
-        exec(`VBoxManage showvminfo "${settings.vm.vmName}" | grep State`, function(error, stdout, stderr){
+        exec(`sudo VBOX_USER_HOME=${settings.vm.userHome} VBoxManage showvminfo "${settings.vm.vmName}" | grep State`, function(error, stdout, stderr){
             log.info('['+stdout+']');
             if(stdout.indexOf('running (') > -1) {
                 res.send({status: 'started'});

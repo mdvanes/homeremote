@@ -90,6 +90,10 @@ Install in /opt (because of upstart script):
             "user": "username",
             "password": "password"
         }
+    },
+    "vm": {
+        "vmName": "name-of-the-vm",
+        "userHome" "/home/USER/.config/VirtualBox"
     }
 }
 ```
