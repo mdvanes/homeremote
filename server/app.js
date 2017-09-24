@@ -8,7 +8,9 @@ const http = require('http');
 const path = require('path');
 const bunyan = require('bunyan');
 const radio = require('./radio.js');
-const motion = require('./motion.js');
+//const motion = require('./motion.js');
+const serviceToggle = require('./serviceToggle.js');
+const vmToggle = require('./vmToggle.js');
 const switcher = require('./switch.js');
 const filemanager = require('./fm.js');
 const getMusic = require('./getMusic.js');
@@ -130,7 +132,12 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     if(!debug) {
         // Do not start motion in debugmode, because of sudo password requests.
         radio.bind(app, log, debug);
-        motion.bind(app, log, debug);
+        //motion.bind(app, log, debug);
+        //serviceToggle.bind(app, 'endpointname', 'serviceName', log, debug);
+        //serviceToggle.bind(app, 'motion', 'motion', log, debug);
+        serviceToggle.bind(app, 'radio', 'playradio', log, debug);
+        serviceToggle.bind(app, 'motion', 'motion', log, debug);
+        vmToggle.bind(app, 'vm', 'vm', log, debug);
     }
     switcher.bind(app, log);
     gears.bind(app, log);
