@@ -41,18 +41,12 @@ class Toggle extends React.Component {
                 this.setState({status: STATES.ERROR});
             });
 
-        //this.onChange = this.onChange.bind(this);
         this.sendToggle = this.sendToggle.bind(this);
     }
 
-    // onChange() {
-    //     console.log('onchange', this, this.state);
-    //     this.setState({isChecked: !this.state.isChecked});
-    // }
-
     sendToggle() {
         let url = `/${this.props.id}/`;
-        if(this.state.isChecked) {
+        if(this.state.status === STATES.ON) {
             url += 'stop';
         } else {
             url += 'start';
@@ -75,7 +69,10 @@ class Toggle extends React.Component {
                     this.setState({status: STATES.ERROR});
                 }
             })
-            .catch(error => this.props.logError(`error on ${this.props.label} toggle: ` + error));
+            .catch(error => {
+                this.props.logError('error on toggle: ' + error);
+                this.setState({status: STATES.ERROR});
+            });
     }
 
     render() {
