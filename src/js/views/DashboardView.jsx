@@ -31,6 +31,9 @@ export default class DashboardView extends React.Component {
                             <div className="col-xs-6 col-md-12">
                                 <ToggleContainer label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
                             </div>
+                            <div className="col-xs-6 col-md-12">
+                                <ToggleContainer label="" id="vm" icon="computer"/>{/* VM on server */}
+                            </div>
                         </div>
                     </div>
                     <div className="col-xs-12 col-md-3">
