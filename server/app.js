@@ -7,7 +7,7 @@ const app = express();
 const http = require('http');
 const path = require('path');
 const bunyan = require('bunyan');
-const radio = require('./radio.js');
+const nowplaying = require('./nowplaying.js');
 //const motion = require('./motion.js');
 const serviceToggle = require('./serviceToggle.js');
 const vmToggle = require('./vmToggle.js');
@@ -131,7 +131,7 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // Set routes
     if(!debug) {
         // Do not start motion in debugmode, because of sudo password requests.
-        radio.bind(app, log, debug);
+        nowplaying.bind(app, log, debug);
         //motion.bind(app, log, debug);
         //serviceToggle.bind(app, 'endpointname', 'serviceName', log, debug);
         //serviceToggle.bind(app, 'motion', 'motion', log, debug);

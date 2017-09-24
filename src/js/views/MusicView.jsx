@@ -7,7 +7,7 @@ export default class MusicView extends React.Component {
         return (
             <div className="col-xs-12 col-md-3 margin-top">
                 <GetMusic/>
-                <LogContainer infoUrl="/radio/info"/>
+                <LogContainer infoUrl="/nowplaying/info"/>
             </div>
         );
     }
