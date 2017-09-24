@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-//const exec = require('child_process').exec;
-const fs = require('fs');
-const settings = require('../settings.json');
+const exec = require('child_process').exec;
+//const fs = require('fs');
+//const settings = require('../settings.json');
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
 const bind = function(app, log) {
@@ -56,21 +56,23 @@ const bind = function(app, log) {
 
     // TODO rename file & endpoint to "nowplaying"
     // Get "now playing" information
-    app.get('/radio/info', connectEnsureLogin(), function(req, res) {
-        log.info('call to /radio/info');
+    app.get('/nowplaying/info', connectEnsureLogin(), function(req, res) {
+        log.info('call to /nowplaying/info');
         try {
-            const mplayerStatus = fs.readFileSync(settings.radiologpath, 'utf8');
-            const regex = /ICY Info: StreamTitle='(.*)'/g;
-            let m;
-            let result = '';
-            while ((m = regex.exec(mplayerStatus)) !== null) {
-                if (m.index === regex.lastIndex) {
-                    regex.lastIndex++;
+            //const mplayerStatus = fs.readFileSync(settings.radiologpath, 'utf8');
+            exec('journalctl -u playradio | grep ICY', function(error, stdout/*, stderr*/) {
+                const regex = /ICY Info: StreamTitle='(.*)'/g;
+                let m;
+                let result = '';
+                while ((m = regex.exec(stdout)) !== null) {
+                    if (m.index === regex.lastIndex) {
+                        regex.lastIndex++;
+                    }
+                    // Only keep the last match as the result
+                    result = m[1];
                 }
-                // Only keep the last match as the result
-                result = m[1];
-            }
-            res.send({status: result});
+                res.send({status: result});
+            });
         } catch(ex) {
             res.send({status: 'error: radio log not found'});
         }

@@ -7,7 +7,7 @@ export default class FilesView extends React.Component {
         return (
             <div>
                 <FileManagerSmallContainer/>
-                <LogContainer infoUrl="/radio/info"/>
+                <LogContainer infoUrl="/nowplaying/info"/>
             </div>
         );
     }
