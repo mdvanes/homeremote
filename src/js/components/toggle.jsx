@@ -16,6 +16,7 @@ class Toggle extends React.Component {
         this.state = {status: STATES.OFF};
         this.sendToggle = this.sendToggle.bind(this);
         this.getService = this.getService.bind(this);
+        this.logState = this.logState.bind(this);
         this.getService(`/${this.props.id}/status`);
     }
 
@@ -44,13 +45,20 @@ class Toggle extends React.Component {
             });
     }
 
+    logState(state, id) {
+        if(id === 'vm') {
+            this.props.logError(`Sending ${id} ${state}`);
+        }
+    }
+
     sendToggle() {
+        let newState = 'start';
         let url = `/${this.props.id}/`;
         if(this.state.status === STATES.ON) {
-            url += 'stop';
-        } else {
-            url += 'start';
+            newState = 'stop';
         }
+        url += newState;
+        this.logState(newState, this.props.id);
         this.getService(url);
     }
 
