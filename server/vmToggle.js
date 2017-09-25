@@ -45,7 +45,7 @@ const bind = function(app, endpointName, serviceName, log) {
             log.info('['+stdout+']');
             if(stdout.indexOf('running (') > -1) {
                 res.send({status: 'started'});
-            } else if(stdout.indexOf('powered off (') > -1) {
+            } else if(stdout.indexOf('powered off (') > -1 || stdout.indexOf('aborted (') > -1) {
                 res.send({status: 'stopped'});
             } else {
                 log.error(error + ' ' + stdout + '|' + stderr);
