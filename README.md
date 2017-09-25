@@ -93,7 +93,7 @@ Install in /opt (because of upstart script):
     },
     "vm": {
         "vmName": "name-of-the-vm",
-        "userHome" "/home/USER/.config/VirtualBox"
+        "userName" "USER"
     }
 }
 ```

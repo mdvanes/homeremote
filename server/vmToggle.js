@@ -10,7 +10,7 @@ const bind = function(app, endpointName, serviceName, log) {
     app.get(`/${endpointName}/start`, connectEnsureLogin(), function (req, res) {
         log.info(`call to /${endpointName}/start`);
 
-        exec(`sudo VBOX_USER_HOME=${settings.vm.userHome} VBoxManage startvm "${settings.vm.vmName}" --type headless`, function(error, stdout, stderr){
+        exec(`sudo -u ${settings.vm.userName} VBoxManage startvm "${settings.vm.vmName}" --type headless`, function(error, stdout, stderr){
             log.info('['+stdout+']');
             // TODO Upstart gave more information when starting/stopping, do a better check for systemd
             if(stdout.indexOf('has been successfully started') > -1) {
@@ -25,7 +25,7 @@ const bind = function(app, endpointName, serviceName, log) {
 
     app.get(`/${endpointName}/stop`, connectEnsureLogin(), function (req, res) {
         log.info(`call to /${endpointName}/stop`);
-        exec(`sudo VBOX_USER_HOME=${settings.vm.userHome} VBoxManage controlvm "${settings.vm.vmName}" poweroff`, function(error, stdout, stderr){
+        exec(`sudo -u ${settings.vm.userName} VBoxManage controlvm "${settings.vm.vmName}" poweroff`, function(error, stdout, stderr){
             log.info('['+stdout+']');
             // TODO Upstart gave more information when starting/stopping, do a better check for systemd
             if(stdout.indexOf('100%') > -1) {
@@ -38,9 +38,10 @@ const bind = function(app, endpointName, serviceName, log) {
         });
     });
 
+    // TODO now it is possible that the service is started both as USER and as ROOT (but with config in the USER dir)
     app.get(`/${endpointName}/status`, connectEnsureLogin(), function (req, res) {
         log.info(`call to /${endpointName}/status`);
-        exec(`sudo VBOX_USER_HOME=${settings.vm.userHome} VBoxManage showvminfo "${settings.vm.vmName}" | grep State`, function(error, stdout, stderr){
+        exec(`sudo -u ${settings.vm.userName} VBoxManage showvminfo "${settings.vm.vmName}" | grep State`, function(error, stdout, stderr){
             log.info('['+stdout+']');
             if(stdout.indexOf('running (') > -1) {
                 res.send({status: 'started'});
