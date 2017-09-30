@@ -94,7 +94,14 @@ Install in /opt (because of upstart script):
     "vm": {
         "vmName": "name-of-the-vm",
         "userName" "USER"
-    }
+    },
+    "shell": [
+        {
+            "name": "SomeLabel",
+            "cmd": "ls",
+            "mapping": ["json properties of which the value must be shown"]
+        }
+    ]
 }
 ```
 * ownerinfo: the uid and gid of the user account for the "Get Music" feature
