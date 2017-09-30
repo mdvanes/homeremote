@@ -29,7 +29,7 @@ class Log extends React.Component {
         .then(data => data.json())
         .then(data => {
             const message = data.status;
-            this.props.logInfo(message);
+            this.props.logInfo('Now playing: ' + message);
         })
         .catch(error => this.props.logError('error on get info: ' + error));
     }
