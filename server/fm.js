@@ -41,12 +41,12 @@ const resetPermissionsForDirContent = location => {
         });
 };
 
-const bind = function(app) {
+const bind = function(app, log) {
 
     app.post('/fm/list', connectEnsureLogin(), function (req, res) {
-        console.log('call to http://%s:%s/fm/list/sub');
+        log.info('Call to /fm/list');
 
-        console.log(`Trying path <${req.body.path}>`);
+        log.info(`Trying path <${req.body.path}>`);
         const subPath = req.body.path;
 
         if(!rootPath) {
@@ -77,21 +77,20 @@ const bind = function(app) {
                 res.send({status: 'ok', list: fileInfos, dir: subPath});
             })
             .catch(error => {
-                console.log(error);
+                log.error(error);
                 res.send({status: 'error'});
             });
     });
 
     app.post('/fm/rename', connectEnsureLogin(), (req, res) => {
-        console.log('call to http://%s:%s/fm/rename');
-        //console.log(req.body.path, req.body.src, req.body.target);
+        log.info('Call to /fm/rename');
 
         const src = rootPath + '/' + req.body.path + '/' + req.body.src;
         const target = rootPath + '/' + req.body.path + '/' + req.body.target;
         fsp.move(src, target, {overwrite: true})
             .then(() => res.sendStatus(205)) // 205, reset content
             .catch(error => {
-                console.log('/fm/rename', error);
+                log.error('/fm/rename', error);
                 res.sendStatus(500);
             });
 
@@ -111,7 +110,7 @@ const bind = function(app) {
                 res.send({status: 'ok'});
             })
             .catch(error => {
-                console.log(error);
+                log.error(error);
                 res.send({status: 'error'});
             });
     });
@@ -138,7 +137,7 @@ const bind = function(app) {
                 res.send({status: 'ok'});
             })
             .catch(err => {
-                console.log('ERROR mvToTargetLocation:', err);
+                log.error('ERROR mvToTargetLocation:', err);
                 res.send({status: 'error'});
             });
     });
@@ -152,7 +151,7 @@ const bind = function(app) {
     app.post('/fm/ftp', connectEnsureLogin(), (req, res) => {
         const path = rootPath + '/' + req.body.path;
         ftpStatus = `Starting upload of ${path} to ${settings.ftp.remotePath}`;
-        console.log(`FTP will try to send ${path} to ${settings.ftp.remotePath}`);
+        log.info(`FTP will try to send ${path} to ${settings.ftp.remotePath}`);
 
         const ftp = new PromiseFtp();
         ftp.connect({
@@ -161,7 +160,7 @@ const bind = function(app) {
             password: settings.ftp.password,
             secure: false})
         .then(serverMessage => {
-            console.log('Server message: ' + serverMessage);
+            log.info('Server message: ' + serverMessage);
         })
         // .then(() => {
         //     return ftp.list(settings.ftp.remotePath);
@@ -184,16 +183,16 @@ const bind = function(app) {
             const fileNameArr = path.split('/'); // TODO path and filename should be passed as separate POST params
             const fileName = fileNameArr[fileNameArr.length - 1];
             const remoteTargetPath = settings.ftp.remotePath + '/' + fileName;
-            console.log('src', path, 'target', remoteTargetPath);
+            log.info('src', path, 'target', remoteTargetPath);
             return ftp.put(path, remoteTargetPath);
         })
         .then(() => {
             ftpStatus = `Upload of ${path} to ${settings.ftp.remotePath} succeeded`;
-            console.log(ftpStatus);
+            log.info(ftpStatus);
             return ftp.end();
         })
         .catch(error => {
-            console.log('error:', error);
+            log.error('error:', error);
             ftpStatus = `Upload of ${path} to ${settings.ftp.remotePath} failed: ${error}`;
             return ftp.end();
         });
