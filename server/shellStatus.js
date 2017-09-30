@@ -1,11 +1,21 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-const exec = require('child_process').exec;
+let exec = null;
 const settings = require('../settings.json');
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
-const bind = function(app, endpointName, log) {
+const bind = function(app, endpointName, log, debug) {
+
+    if(debug) {
+        log.info(`Debug mode is enabled for ${endpointName}`);
+        exec = function(cmd, cb) {
+            log.info(`${endpointName}: Stubbed exec of "${cmd}"`);
+            cb(null, '{"bar": "baz", "bat": "man"}');
+        };
+    } else {
+        exec = require('child_process').exec;
+    }
 
     const execPromise = (cmd, name, mapping) => {
         return new Promise((resolve, reject) => {
