@@ -11,6 +11,7 @@ const nowplaying = require('./nowplaying.js');
 //const motion = require('./motion.js');
 const serviceToggle = require('./serviceToggle.js');
 const vmToggle = require('./vmToggle.js');
+const shellStatus = require('./shellStatus.js');
 const switcher = require('./switch.js');
 const filemanager = require('./fm.js');
 const getMusic = require('./getMusic.js');
@@ -139,6 +140,7 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         serviceToggle.bind(app, 'motion', 'motion', log, debug);
         vmToggle.bind(app, 'vm', 'vm', log, debug);
     }
+    shellStatus.bind(app, 'shell', log, debug);
     switcher.bind(app, log);
     gears.bind(app, log);
     filemanager.bind(app, log);
