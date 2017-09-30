@@ -38,10 +38,6 @@ const bind = function(app, endpointName, log) {
 
         Promise.all(execPromises)
             .then(data => {
-                log.info('br', data);
-                return data;
-            })
-            .then(data => {
                 res.send({status: 'ok', entries: data});
             })
             .catch(err => {
