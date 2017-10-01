@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-const exec = require('child_process').exec;
+const exec = require('../test/server/mockatoo').mock('child_process', 'serviceToggle').exec;
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
 const bind = function(app, endpointName, serviceName, log) {
@@ -54,6 +54,4 @@ const bind = function(app, endpointName, serviceName, log) {
 
 };
 
-module.exports = {
-    bind: bind
-};
+module.exports = {bind};

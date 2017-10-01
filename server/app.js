@@ -133,12 +133,9 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     if(!debug) {
         // Do not start motion in debugmode, because of sudo password requests.
         nowplaying.bind(app, log, debug);
-        //motion.bind(app, log, debug);
-        //serviceToggle.bind(app, 'endpointname', 'serviceName', log, debug);
-        //serviceToggle.bind(app, 'motion', 'motion', log, debug);
-        serviceToggle.bind(app, 'radio', 'playradio', log, debug);
-        serviceToggle.bind(app, 'motion', 'motion', log, debug);
     }
+    serviceToggle.bind(app, 'radio', 'playradio', log);
+    serviceToggle.bind(app, 'motion', 'motion', log);
     vmToggle.bind(app, 'vm', 'vm', log);
     shellStatus.bind(app, 'shell', log);
     switcher.bind(app, log);
