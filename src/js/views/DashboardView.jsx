@@ -12,8 +12,8 @@ import FileManagerContainer from '../containers/FileManagerContainer';
 export default class DashboardView extends React.Component {
     render() {
         return (
-            <div className="container-fluid" style={{backgroundColor: '#e0e0e0'}}>
-                <div className="row margin-top">
+            <div className="container-fluid" style={{backgroundColor: '#e0e0e0', paddingBottom: '1em', paddingTop: '1em'}}>
+                <div className="row">
                     <div className="col-xs-12 col-md-2">
                         <ButtonGroup label=" l" icon="lightbulb_outline" type="switchscene" id="1"/>
                         <ButtonGroup label=" k" icon="lightbulb_outline" type="switchlight" id="5"/>
