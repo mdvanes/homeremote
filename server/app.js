@@ -138,8 +138,8 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         //serviceToggle.bind(app, 'motion', 'motion', log, debug);
         serviceToggle.bind(app, 'radio', 'playradio', log, debug);
         serviceToggle.bind(app, 'motion', 'motion', log, debug);
-        vmToggle.bind(app, 'vm', 'vm', log, debug);
     }
+    vmToggle.bind(app, 'vm', 'vm', log, debug);
     shellStatus.bind(app, 'shell', log, debug);
     switcher.bind(app, log);
     gears.bind(app, log);
