@@ -2,6 +2,7 @@ import React from 'react';
 import ButtonGroup from '../components/button-group';
 //import MacroButtonGroup from './components/macro-button-group';
 import ToggleContainer from '../containers/ToggleContainer';
+import {Card, CardText} from 'material-ui/Card';
 import GetMusic from '../components/GetMusic';
 import GearsContainer from '../containers/GearsContainer';
 
@@ -21,25 +22,27 @@ export default class DashboardView extends React.Component {
                         <ButtonGroup label=" s" icon="lightbulb_outline" type="switchlight" id="7"/>
                         {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
                         {/*<MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>*/}
-                    </div>
-                    <div className="col-xs-12 col-md-1">
-                        {/*<Toggle label="" id="togglestub" icon="volume-up"/>*/}{/* Broadcast */}
-                        <div className="row">
-                            <div className="col-xs-6 col-md-12">
-                                <ToggleContainer label="" id="radio" icon="music_note"/>{/* Music on server */}
-                            </div>
-                            <div className="col-xs-6 col-md-12">
-                                <ToggleContainer label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
-                            </div>
-                            <div className="col-xs-6 col-md-12">
-                                <ToggleContainer label="" id="vm" icon="computer"/>{/* VM on server */}
-                            </div>
-                        </div>
+
+                        {/*/!*<Toggle label="" id="togglestub" icon="volume-up"/>*!//!* Broadcast *!/*/}
+                        <Card style={{marginTop: '0.5em'}}>
+                            <CardText className="row">
+                                <div className="col-xs-4">
+                                    <ToggleContainer label="" id="radio" icon="music_note"/>{/* Music on server */}
+                                </div>
+                                <div className="col-xs-4">
+                                    <ToggleContainer label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+                                </div>
+                                <div className="col-xs-4">
+                                    <ToggleContainer label="" id="vm" icon="computer"/>{/* VM on server */}
+                                </div>
+                            </CardText>
+                        </Card>
+
                     </div>
                     <div className="col-xs-12 col-md-3">
                         <GetMusic/>
                     </div>
-                    <div className="col-xs-12 col-md-6">
+                    <div className="col-xs-12 col-md-7">
                         <LogContainer infoUrl="/nowplaying/info"/>
                     </div>
                 </div>
