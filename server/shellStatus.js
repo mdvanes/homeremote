@@ -10,6 +10,20 @@ const bind = function(app, endpointName, log) {
     const execPromise = (cmd, name, mapping) => {
         return new Promise((resolve, reject) => {
             exec(cmd, function(error, stdout, stderr) {
+
+                // TODO reduce cyclomatic complexity
+                // const actions = [
+                //     {
+                //         condition: () => (error && error.length > 0) || (stderr && stderr.length > 0),
+                //         result: () => {
+                //             log.error([error, stdout, stderr].join('|'));
+                //             reject(`Error executing ${cmd}`);
+                //         }
+                //     }
+                // ];
+                // const selectedAction = actions.filter(action => action.condition()).reduce(acc, fn); // TODO acc, fn
+                // selectedAction();
+
                 if((error && error.length > 0) || (stderr && stderr.length > 0)) {
                     log.error([error, stdout, stderr].join('|'));
                     reject(`Error executing ${cmd}`);
