@@ -12,7 +12,7 @@
     "watch": "npm-watch"
   },
   "watch": {
-    "startdebug": "server/**/*.js"
+    "startdebug": ["server/**/*.js", "test/server/**/*.js"]
   },
   "private": true,
   "repository": "",
