@@ -140,7 +140,7 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         serviceToggle.bind(app, 'motion', 'motion', log, debug);
     }
     vmToggle.bind(app, 'vm', 'vm', log, debug);
-    shellStatus.bind(app, 'shell', log, debug);
+    shellStatus.bind(app, 'shell', log);
     switcher.bind(app, log);
     gears.bind(app, log);
     filemanager.bind(app, log);

@@ -1,22 +1,11 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-//let exec = null;
 const exec = require('../test/server/mockatoo').mock(require('child_process').exec, require('../test/server/shellStatus.mock'));
 const settings = require('../settings.json');
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
 const bind = function(app, endpointName, log) {
-
-    // if(debug) {
-    //     log.info(`Debug mode is enabled for ${endpointName}`);
-    //     exec = function(cmd, cb) {
-    //         log.info(`${endpointName}: Stubbed exec of "${cmd}"`);
-    //         cb(null, '{"bar": "baz", "bat": "man"}');
-    //     };
-    // } else {
-    //     exec = require('child_process').exec;
-    // }
 
     const execPromise = (cmd, name, mapping) => {
         return new Promise((resolve, reject) => {
