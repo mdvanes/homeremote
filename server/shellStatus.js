@@ -9,17 +9,23 @@ const bind = function(app, endpointName, log) {
 
     const execPromise = (cmd, name, mapping) => {
         return new Promise((resolve, reject) => {
-            exec(cmd, function(error, stdout, stderr){
-                if(stdout.length > 0 && Array.isArray(mapping)) {
+            exec(cmd, function(error, stdout, stderr) {
+                if((error && error.length > 0) || (stderr && stderr.length > 0)) {
+                    log.error([error, stdout, stderr].join('|'));
+                    reject(`Error executing ${cmd}`);
+                } else if(!Array.isArray(mapping)) {
+                    log.error([error, stdout, stderr, mapping].join('|'));
+                    reject(`Config invalid for ${cmd}`);
+                } else if(!stdout && stdout.length <= 0) {
+                    const result = 'No result';
+                    resolve({result, name});
+                } else {
                     const jsonOut = JSON.parse(stdout);
                     const result = mapping.reduce((acc, prop) => {
                         return acc + ' ' + jsonOut[prop];
                     }, '');
 
                     resolve({result, name});
-                } else {
-                    log.error(error + ' ' + stdout + '|' + stderr);
-                    reject();
                 }
             });
         });
