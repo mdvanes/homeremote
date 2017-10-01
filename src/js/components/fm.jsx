@@ -4,6 +4,7 @@ import MoveButton from '../containers/MoveButton';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import './simple-material-table.scss';
+import {Card, CardText, CardHeader, CardActions} from 'material-ui/Card';
 
 class FileManager extends React.Component {
     constructor(props) {
@@ -153,11 +154,13 @@ class FileManager extends React.Component {
                 </tr>;
             }
         });
+        const title = 'File Manager $[rootDir]/' + this.state.dirName;
         return (
-            <div>
-                <h1>File Manager $[rootDir]/{this.state.dirName}</h1>
-                <table className="simple-material-table">
-                    <thead>
+            <Card style={{marginBottom: '1em', marginTop: '1em'}}>
+                <CardHeader title={title}/>
+                <CardText>
+                    <table className="simple-material-table">
+                        <thead>
                         <tr>
                             <th></th>
                             <th>Name</th>
@@ -165,8 +168,8 @@ class FileManager extends React.Component {
                             <th>Rename</th>
                             <th>Move</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <tr>
                             <td></td>
                             <td onTouchTap={() => this.listDir('')}>/</td>
@@ -175,18 +178,21 @@ class FileManager extends React.Component {
                             <td></td>
                         </tr>
                         {rows}
-                    </tbody>
-                </table>
-                <div className="row">
-                    <div className="col-xs-6">
-                        nr of entries: {rows.length}
+                        </tbody>
+                    </table>
+                </CardText>
+                <CardActions>
+                    <div className="row">
+                        <div className="col-xs-6">
+                            nr of entries: {rows.length}
+                        </div>
+                        <div className="col-xs-6">
+                            <FlatButton onTouchTap={this.getFtpStatus} primary={true} label="Get FTP status"/>
+                            <FlatButton onTouchTap={this.resetFilePermissions} primary={true} label="Fix Permissions"/>
+                        </div>
                     </div>
-                    <div className="col-xs-6">
-                        <FlatButton onTouchTap={this.getFtpStatus} primary={true} label="Get FTP status"/>
-                        <FlatButton onTouchTap={this.resetFilePermissions} primary={true} label="Fix Permissions"/>
-                    </div>
-                </div>
-            </div>
+                </CardActions>
+            </Card>
         );
     }
 }
