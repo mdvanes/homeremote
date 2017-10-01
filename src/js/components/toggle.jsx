@@ -68,7 +68,7 @@ class Toggle extends React.Component {
             'btn-success': this.state.status === STATES.ON,
             'btn-danger': this.state.status === STATES.OFF
         });
-        let icon = <FontIcon style={{fontSize: '750%'}} className="material-icons">{this.props.icon}</FontIcon>;
+        let icon = <FontIcon style={{fontSize: '380%'}} className="material-icons">{this.props.icon}</FontIcon>;
         return (
             <button
                 className={btnClass}
