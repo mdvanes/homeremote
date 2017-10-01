@@ -140,7 +140,7 @@ const transmissionPromise = transmission => {
     });
 };
 
-const bind = app => {
+const bind = (app, log) => {
     // api?mode=queue&output=json&apikey=3
     //
     // queue.slots[0].filename
@@ -152,7 +152,7 @@ const bind = app => {
     // history.slots[0].status
 
     app.get('/gears/info', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
-        console.log('Call to http://%s:%s/gears/info');
+        log.info('Call to /gears/info');
 
         const sbQueueUri = `${settings.gears.sn.uri}sabnzbd/api?mode=queue&output=json&apikey=${settings.gears.sn.apikey}`;
         const sbHistoryUri = `${settings.gears.sn.uri}sabnzbd/api?mode=history&output=json&apikey=${settings.gears.sn.apikey}`;
@@ -174,7 +174,7 @@ const bind = app => {
             res.send({status: 'ok', list: data});
         })
         .catch(err => {
-            console.log(err);
+            log.error(err);
             res.send({status: 'error'});
         });
     });
