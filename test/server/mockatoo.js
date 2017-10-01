@@ -9,8 +9,11 @@ example:
 normal:
 const exec = require('child_process').exec;
 
-mocked
+mocked:
 const exec = require('../test/server/mockatoo').mock(require('child_process').exec, require('../test/server/mock1'));
+
+TODO goal:
+const exec = require('../test/server/mockatoo').mock('child_process', 'shellStatus').exec;
  */
 
 const bunyan = require('bunyan');
@@ -35,7 +38,6 @@ function mock(toMock, mockConfig) {
     process.argv.forEach(function (val, index) {
         // Detect debug mode
         if(index === 2 && val === '--debugremote') {
-            //log.warn('Running in debug mode!');
             debug = true;
         }
     });
