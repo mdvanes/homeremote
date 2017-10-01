@@ -9,7 +9,7 @@ module.exports = {
                 if(cmd === 'foo/1') {
                     cb(null, '{"bar": "baz", "bat": "man"}');
                 } else {
-                    cb(null, '');
+                    cb('Connection refused', '', 'Connection refused');
                 }
             }
         }
