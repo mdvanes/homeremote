@@ -38,6 +38,7 @@ function mock(toMock, mockConfig) {
             debug = true;
         }
     });
+    //debug = false;
 
     if(debug) {
         log.info(`Mocking calls to ${toMock} for ${mockConfig}`);
