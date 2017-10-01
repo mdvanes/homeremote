@@ -10,9 +10,6 @@ normal:
 const exec = require('child_process').exec;
 
 mocked:
-const exec = require('../test/server/mockatoo').mock(require('child_process').exec, require('../test/server/mock1'));
-
-TODO goal:
 const exec = require('../test/server/mockatoo').mock('child_process', 'shellStatus').exec;
  */
 
@@ -43,11 +40,12 @@ function mock(toMock, mockConfig) {
     });
 
     if(debug) {
-        log.info(`Mocking calls to ${toMock.name}`, mockConfig, debug);
-        return mockConfig.mockExec(log);
+        log.info(`Mocking calls to ${toMock} for ${mockConfig}`);
+        const mockConfigFile = require(`../../test/server/${mockConfig}.mock`);
+        return mockConfigFile.mockExec(log, mockConfig);
     }
 
-    return toMock;
+    return require(toMock);
 }
 
 module.exports = { mock };

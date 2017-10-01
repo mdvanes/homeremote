@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-const exec = require('../test/server/mockatoo').mock(require('child_process').exec, require('../test/server/shellStatus.mock'));
+const exec = require('../test/server/mockatoo').mock('child_process', 'shellStatus').exec;
 const settings = require('../settings.json');
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
