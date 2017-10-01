@@ -24,7 +24,10 @@ const bind = function(app, endpointName, log) {
                 // const selectedAction = actions.filter(action => action.condition()).reduce(acc, fn); // TODO acc, fn
                 // selectedAction();
 
-                if((error && error.length > 0) || (stderr && stderr.length > 0)) {
+                if(error && error.length > 0 && error.indexOf('Connection refused') > -1) {
+                    const result = 'Not found';
+                    resolve({result, name});
+                } else if((error && error.length > 0) || (stderr && stderr.length > 0)) {
                     log.error([error, stdout, stderr].join('|'));
                     reject(`Error executing ${cmd}`);
                 } else if(!Array.isArray(mapping)) {
