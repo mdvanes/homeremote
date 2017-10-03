@@ -9,20 +9,8 @@ const bind = function(app, endpointName, log) {
 
     const execPromise = (cmd, name, mapping) => {
         return new Promise((resolve, reject) => {
+            /* eslint-disable complexity */
             exec(cmd, function(error, stdout, stderr) {
-
-                // TODO reduce cyclomatic complexity
-                // const actions = [
-                //     {
-                //         condition: () => (error && error.length > 0) || (stderr && stderr.length > 0),
-                //         result: () => {
-                //             log.error([error, stdout, stderr].join('|'));
-                //             reject(`Error executing ${cmd}`);
-                //         }
-                //     }
-                // ];
-                // const selectedAction = actions.filter(action => action.condition()).reduce(acc, fn); // TODO acc, fn
-                // selectedAction();
 
                 if(stderr && stderr.length > 0 && stderr.indexOf('Connection refused') > -1) {
                     const result = 'Not found';
@@ -45,6 +33,7 @@ const bind = function(app, endpointName, log) {
                     resolve({result, name});
                 }
             });
+            /* eslint-enable complexity */
         });
     };
 
@@ -52,7 +41,7 @@ const bind = function(app, endpointName, log) {
         log.info(`call to /${endpointName}/status`);
 
         const execPromises = settings.shell.map(setting => {
-            if(!setting.cmd || !setting.name || !setting.mapping) {
+            if(!(setting.cmd && setting.name && setting.mapping)) {
                 res.send({status: 'error', message: 'invalid setting properties'});
                 return;
             }
