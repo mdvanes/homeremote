@@ -154,17 +154,27 @@ const bind = (app, log) => {
     app.get('/gears/info', require('connect-ensure-login').ensureLoggedIn(), function (req, res) {
         log.info('Call to /gears/info');
 
-        const sbQueueUri = `${settings.gears.sn.uri}sabnzbd/api?mode=queue&output=json&apikey=${settings.gears.sn.apikey}`;
-        const sbHistoryUri = `${settings.gears.sn.uri}sabnzbd/api?mode=history&output=json&apikey=${settings.gears.sn.apikey}`;
-        const transmission = new Transmission({
-            host: settings.gears.tr.host,
-            port: settings.gears.tr.port,
-            username: settings.gears.tr.user,
-            password: settings.gears.tr.password
-        });
+        const promiseArr = [];
+
+        if(settings.gears.sn) {
+            const sbQueueUri = `${settings.gears.sn.uri}sabnzbd/api?mode=queue&output=json&apikey=${settings.gears.sn.apikey}`;
+            const sbHistoryUri = `${settings.gears.sn.uri}sabnzbd/api?mode=history&output=json&apikey=${settings.gears.sn.apikey}`;
+            promiseArr.push(sbQueuePromise(sbQueueUri));
+            promiseArr.push(sbHistoryPromise(sbHistoryUri));
+        }
+
+        if(settings.gears.tr) {
+            const transmission = new Transmission({
+                host: settings.gears.tr.host,
+                port: settings.gears.tr.port,
+                username: settings.gears.tr.user,
+                password: settings.gears.tr.password
+            });
+            promiseArr.push(transmissionPromise(transmission));
+        }
 
         // Combine all calls with Promise.all(iterable);
-        Promise.all([sbQueuePromise(sbQueueUri), sbHistoryPromise(sbHistoryUri), transmissionPromise(transmission)])
+        Promise.all(promiseArr)
         .then(data => {
             return data.reduce((aList, otherList) => {
                 return aList.concat(otherList);
