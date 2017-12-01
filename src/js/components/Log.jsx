@@ -9,36 +9,6 @@ import './log.scss';
 // Should make containers/button-group-container.jsx and dispatch logInfo there
 
 class Log extends React.Component {
-    constructor(props) {
-        super(props);
-        this.getShellStatus = this.getShellStatus.bind(this);
-        this.getShellStatus();
-    }
-
-    // TODO extract to separate file?
-    getShellStatus() {
-        fetch('/shell/status', {
-            credentials: 'same-origin',
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(data => data.json())
-        .then(data => {
-            if(data.status === 'ok') {
-                const resultString = data.entries.map(entry => {
-                    return `${entry.name} ${entry.result}`;
-                }).join(' / ');
-                this.props.logInfo(`getShellStatus: ${resultString}`);
-            } else {
-                throw new Error('getShellStatus failed');
-            }
-        })
-        .catch(error => this.props.logError('error on getShellStatus: ' + error));
-    }
-
     render() {
         return (
             <Card className="log-card">
