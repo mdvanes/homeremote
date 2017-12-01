@@ -43,7 +43,7 @@ export default class DashboardView extends React.Component {
                         <GetMusic/>
                     </div>
                     <div className="col-xs-12 col-md-7">
-                        <LogContainer infoUrl="/nowplaying/info"/>
+                        <LogContainer/>
                     </div>
                 </div>
                 <FileManagerContainer/>
