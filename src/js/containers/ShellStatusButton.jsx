@@ -1,16 +1,48 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { logInfo, logError } from '../actions';
-import FlatButton from 'material-ui/FlatButton';
 
 class ShellStatusButton extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            label: 'not loaded'
+        };
+        this.setLabel = this.setLabel.bind(this);
+        this.logStatus = this.logStatus.bind(this);
         this.getShellStatus = this.getShellStatus.bind(this);
-        this.getShellStatus();
+        this.setLabel();
     }
 
-    getShellStatus() {
+    setLabel() {
+        this.getShellStatus(data => {
+            if(data.status === 'ok' && data.entries.length === 2) {
+                this.setState({
+                    label: data.entries[1].result
+                });
+            } else {
+                this.setState({
+                    label: 'err'
+                });
+                throw new Error('getShellStatus failed');
+            }
+        });
+    }
+
+    logStatus() {
+        this.getShellStatus(data => {
+            if(data.status === 'ok') {
+                const resultString = data.entries.map(entry => {
+                    return `${entry.name} ${entry.result}`;
+                }).join(' / ');
+                this.props.logInfo(`getShellStatus: ${resultString}`);
+            } else {
+                throw new Error('getShellStatus failed');
+            }
+        });
+    }
+
+    getShellStatus(fn) {
         fetch('/shell/status', {
             credentials: 'same-origin',
             method: 'GET',
@@ -20,23 +52,25 @@ class ShellStatusButton extends React.Component {
             }
         })
         .then(data => data.json())
-        .then(data => {
-            if(data.status === 'ok') {
-                const resultString = data.entries.map(entry => {
-                    return `${entry.name} ${entry.result}`;
-                }).join(' / ');
-                this.props.logInfo(`getShellStatus: ${resultString}`);
-            } else {
-                throw new Error('getShellStatus failed');
-            }
-        })
+        .then(fn)
         .catch(error => this.props.logError('error on getShellStatus: ' + error));
     }
 
     render() {
-        const foo = 'bar';
         return (
-            <FlatButton label={foo} onTouchTap={this.getShellStatus}/>
+            <div
+                style={{
+                    background: 'rgba(0,0,0,0.3)',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontSize: '10px',
+                    padding: '0.5em 1em',
+                    width: '60px',
+                    wordBreak: 'break-all'
+                }}
+                onTouchTap={this.logStatus}>
+                {this.state.label}
+            </div>
         );
     }
 }
