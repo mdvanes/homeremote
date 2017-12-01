@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import {Card, CardText, CardActions} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
 import ClearLogButton from '../containers/ClearLogButton';
+import RadioInfoButton from '../containers/RadioInfoButton';
 
 import './log.scss';
 
@@ -11,27 +11,8 @@ import './log.scss';
 class Log extends React.Component {
     constructor(props) {
         super(props);
-        this.getInfo = this.getInfo.bind(this);
         this.getShellStatus = this.getShellStatus.bind(this);
         this.getShellStatus();
-    }
-
-    // TODO Extract to container like ClearLogButton
-    getInfo() {
-        fetch(this.props.infoUrl, {
-            credentials: 'same-origin',
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(data => data.json())
-        .then(data => {
-            const message = data.status;
-            this.props.logInfo('Now playing: ' + message);
-        })
-        .catch(error => this.props.logError('error on get info: ' + error));
     }
 
     // TODO extract to separate file?
@@ -71,7 +52,7 @@ class Log extends React.Component {
                 <div className="log"></div>
                 <CardActions className="log-card-actions">
                     <ClearLogButton/>
-                    <FlatButton onClick={this.getInfo} label="radio info"/>
+                    <RadioInfoButton/>
                 </CardActions>
             </Card>
         );

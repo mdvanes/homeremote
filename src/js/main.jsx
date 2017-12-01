@@ -31,6 +31,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import FlatButton from 'material-ui/FlatButton';
 
 import 'flexboxgrid/dist/flexboxgrid.min.css';
 import '../sass/homeRemote.scss';
@@ -66,7 +67,7 @@ class Main extends React.Component {
                 <div>
                     <AppBar
                         title="HomeRemote"
-                        iconClassNameRight="muidocs-icon-navigation-expand-more"
+                        iconElementRight={<FlatButton label="upload"/>}
                         onLeftIconButtonTouchTap={this.toggleDrawer}
                     />
                     <Router>
