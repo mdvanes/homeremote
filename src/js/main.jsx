@@ -17,6 +17,7 @@ import LightView from './views/LightView';
 import MusicView from './views/MusicView';
 import FilesView from './views/FilesView';
 import GearsView from './views/GearsView';
+import LogView from './views/LogView';
 import MoveButtonSmallDir from './containers/MoveButtonSmallDir';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
@@ -77,19 +78,21 @@ class Main extends React.Component {
                                     onLeftIconButtonTouchTap={this.toggleDrawer}
                                     iconElementLeft={<IconButton><NavigationClose /></IconButton>}
                                 />
-                                <Link onTouchTap={this.toggleDrawer} to="/"><MenuItem>Dashboard</MenuItem></Link>
-                                <Link onTouchTap={this.toggleDrawer} to="/r/light"><MenuItem>Light</MenuItem></Link>
+                                <Link onTouchTap={this.toggleDrawer} to="/"><MenuItem>Light</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/music"><MenuItem>Music</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/files"><MenuItem>Files</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/gears"><MenuItem>Gears</MenuItem></Link>
+                                <Link onTouchTap={this.toggleDrawer} to="/r/log"><MenuItem>Log</MenuItem></Link>
+                                <Link onTouchTap={this.toggleDrawer} to="/r/dashboard"><MenuItem>Dashboard</MenuItem></Link>
                                 <a href="logout"><MenuItem>Log out</MenuItem></a>
                             </Drawer>
                             <StatusBar/>
-                            <Route exact path="/" component={DashboardView}/>
-                            <Route path="/r/light" component={LightView}/>
+                            <Route exact path="/" component={LightView}/>
                             <Route path="/r/music" component={MusicView}/>
                             <Route path="/r/files" component={FilesView}/>
                             <Route path="/r/gears" component={GearsView}/>
+                            <Route path="/r/log" component={LogView}/>
+                            <Route path="/r/dashboard" component={DashboardView}/>
                             <Route path="/r/movebuttondir" component={MoveButtonSmallDir}/>
                         </div>
                     </Router>
