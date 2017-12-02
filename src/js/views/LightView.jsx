@@ -14,11 +14,14 @@ export default class LightView extends React.Component {
                 <ButtonGroup label=" s" icon="lightbulb_outline" type="switchlight" id="7"/>
                 <Card style={{marginTop: '0.5em'}}>
                     <CardText className="row">
-                        <div className="col-xs-6">
-                            <ToggleContainer label="" id="radio" icon="music_note"/>{/* Music on server */}
+                        <div className="col-xs-4">
+                            <ToggleContainer confirm={false} label="" id="radio" icon="music_note"/>{/* Music on server */}
                         </div>
-                        <div className="col-xs-6">
-                            <ToggleContainer label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+                        <div className="col-xs-4">
+                            <ToggleContainer confirm={false} label="" id="motion" icon="videocam"/>{/* Webcam/motion on server */}
+                        </div>
+                        <div className="col-xs-4">
+                            <ToggleContainer confirm={true} label="" id="vm" icon="computer"/>{/* VM on server */}
                         </div>
                     </CardText>
                 </Card>
