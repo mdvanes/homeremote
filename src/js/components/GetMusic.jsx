@@ -1,5 +1,4 @@
 import React from 'react';
-import logger from '../logger';
 import {Card, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
@@ -20,7 +19,7 @@ class GetMusic extends React.Component {
     }
 
     getInfo(event) {
-        logger.log('Get Info: ' + this.state.url);
+        this.props.logInfo('Get Info: ' + this.state.url);
         event.preventDefault();
 
         fetch('/getMusic/info', {
@@ -37,17 +36,17 @@ class GetMusic extends React.Component {
         .then(data => data.json())
         .then(data => {
             if(data.status === 'ok') {
-                logger.log('info ok');
+                //this.props.logInfo('info ok');
                 this.setState({title: data.title, artist: data.artist});
             } else {
                 throw new Error('getMusic info failed');
             }
         })
-        .catch(error => logger.error('error on getMusic/info: ' + error));
+        .catch(error => this.props.logError('error on getMusic/info: ' + error));
     }
 
     getMusic(event) {
-        logger.log('Get Music: ' + this.state.url);
+        this.props.logInfo('Get Music: ' + this.state.url);
         event.preventDefault();
 
         fetch('/getMusic/music', {
@@ -67,12 +66,12 @@ class GetMusic extends React.Component {
         .then(data => data.json())
         .then(data => {
             if(data.status === 'ok') {
-                logger.log(`Get music completed to: ${data.fileName}`);
+                this.props.logInfo(`Get music completed to: ${data.fileName}`);
             } else {
                 throw new Error('getMusic music failed');
             }
         })
-        .catch(error => logger.error('error on getMusic/music: ' + error));
+        .catch(error => this.props.logError('error on getMusic/music: ' + error));
     }
 
     render() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import GetMusic from '../components/GetMusic';
+import GetMusic from '../containers/GetMusicContainer';
 import LogContainer from '../containers/LogContainer';
 
 export default class MusicView extends React.Component {

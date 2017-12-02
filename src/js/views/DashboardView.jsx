@@ -3,7 +3,7 @@ import ButtonGroup from '../components/button-group';
 //import MacroButtonGroup from './components/macro-button-group';
 import ToggleContainer from '../containers/ToggleContainer';
 import {Card, CardText} from 'material-ui/Card';
-import GetMusic from '../components/GetMusic';
+import GetMusic from '../containers/GetMusicContainer';
 import GearsContainer from '../containers/GearsContainer';
 
 import LogContainer from '../containers/LogContainer';
