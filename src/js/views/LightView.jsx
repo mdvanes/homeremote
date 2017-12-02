@@ -1,5 +1,5 @@
 import React from 'react';
-import ButtonGroup from '../components/button-group';
+import ButtonGroup from '../containers/button-group';
 //import MacroButtonGroup from './components/macro-button-group';
 import ToggleContainer from '../containers/ToggleContainer';
 import {Card, CardText} from 'material-ui/Card';

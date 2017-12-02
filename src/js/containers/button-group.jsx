@@ -1,7 +1,8 @@
 import React from 'react';
 import {Card, CardText} from 'material-ui/Card';
 import FontIcon from 'material-ui/FontIcon';
-import logger from '../logger';
+import { connect } from 'react-redux';
+import { logInfo, logError } from '../actions';
 import './button-group.scss';
 import {deepPurple500} from 'material-ui/styles/colors';
 
@@ -34,12 +35,12 @@ class ButtonGroup extends React.Component {
         })
         .then(data => {
             if(data.status !== 'received') {
-                logger.error(`error on send-${state}: ${data.status}`);
+                this.props.logError(`error on send-${state}: ${data.status}`);
             } else {
-                logger.log(`switch ${this.props.id} ${state}`);
+                this.props.logInfo(`Switch ${this.props.id} ${state}`);
             }
         })
-        .catch(error => logger.error(`error on send-${state}: ${error}`));
+        .catch(error => this.props.logError(`error on send-${state}: ${error}`));
     }
 
     sendOn() {
@@ -73,4 +74,20 @@ class ButtonGroup extends React.Component {
         );
     }
 }
-export default ButtonGroup;
+
+const mapStateToProps = () => {
+    return {};
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        logInfo: (...messages) => {
+            dispatch(logInfo(...messages));
+        },
+        logError: (...messages) => {
+            dispatch(logError(...messages));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ButtonGroup);
