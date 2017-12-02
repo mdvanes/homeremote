@@ -51,6 +51,7 @@ class Toggle extends React.Component {
         }
     }
 
+    /* eslint-disable complexity */
     sendToggle() {
         let newState = 'start';
         let url = `/${this.props.id}/`;
@@ -58,9 +59,16 @@ class Toggle extends React.Component {
             newState = 'stop';
         }
         url += newState;
+        if(this.props.confirm) {
+            const confirmResult = confirm(`Proceed with ${newState} for ${this.props.id}?`);
+            if(!confirmResult) {
+                return; // break out of function before calling the service
+            }
+        }
         this.logState(newState, this.props.id);
         this.getService(url);
     }
+    /* eslint-enable complexity */
 
     render() {
         let btnClass = classNames({
@@ -83,6 +91,7 @@ class Toggle extends React.Component {
 
 Toggle.propTypes = {
     id: PropTypes.string.isRequired,
+    confirm: PropTypes.bool.isRequired,
     logError: PropTypes.func.isRequired,
     logInfo: PropTypes.func.isRequired
 };
