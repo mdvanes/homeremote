@@ -1,5 +1,5 @@
 import React from 'react';
-import RenameButton from './RenameButton';
+import RenameButton from '../containers/RenameButton';
 import MoveButton from '../containers/MoveButton';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';

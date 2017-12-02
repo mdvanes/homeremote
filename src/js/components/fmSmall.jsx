@@ -2,7 +2,7 @@
 
 import React from 'react'; // eslint-disable-line
 import FileManager from './fm';
-import RenameButton from './RenameButton';
+import RenameButton from '../containers/RenameButton';
 import MoveButtonSmall from '../containers/MoveButtonSmall';
 import {Card, CardActions, CardHeader} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
