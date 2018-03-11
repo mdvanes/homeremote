@@ -31,8 +31,10 @@ class MoveButtonSmallDir extends React.Component {
         });
     }
 
+    // TODO duplicate code with MoveButton.jsx
     // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
     mvToTargetLocation(filePath, fileName, targetLocation) {
+        this.props.logInfo(`Start moving ${fileName}`);
         fetch('/fm/mvToTargetLocation', {
             credentials: 'same-origin',
             method: 'POST',
@@ -50,9 +52,9 @@ class MoveButtonSmallDir extends React.Component {
         .then(data => {
             this.handleClose();
             if(data.status === 'ok') {
-                this.props.logInfo('Move completed');
+                this.props.logInfo(`Move of ${fileName} completed`);
             } else {
-                throw new Error('move failed');
+                throw new Error(`Move of ${fileName} failed`);
             }
         })
         .catch(error => this.props.logError('error on fm/mvToTargetLocation: ' + error));
