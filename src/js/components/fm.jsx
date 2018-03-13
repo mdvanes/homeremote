@@ -15,14 +15,15 @@ class FileManager extends React.Component {
         };
         this.listDir = this.listDir.bind(this);
         this.ftpUpload = this.ftpUpload.bind(this);
-        this.getFtpStatus = this.getFtpStatus.bind(this);
+        //this.getFtpStatus = this.getFtpStatus.bind(this);
+        //this.props.getFtpStatus(this.state.dirIndex);
         this.getTargetLocations = this.getTargetLocations.bind(this);
         this.resetFilePermissions = this.resetFilePermissions.bind(this);
         this.listDir('');
         this.getTargetLocations();
     }
 
-    // TODO all fetch calls should be done through a (combined) service. See https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md#style-y035 and http://stackoverflow.com/questions/35855781/having-services-in-react-application
+    // TODO all fetch calls should be done through a (combined) service (use thunk). See https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md#style-y035 and http://stackoverflow.com/questions/35855781/having-services-in-react-application
     listDir(dirName) {
         if(this.state.dirName && this.state.dirName.length > 0 &&
             dirName && dirName.length > 0) {
@@ -67,22 +68,6 @@ class FileManager extends React.Component {
         // })
         .then(() =>  this.props.logInfo(`Started upload of ${filePath}`))
         .catch(error => this.props.logError('error on fm/ftp: ' + error));
-    }
-
-    getFtpStatus() {
-        fetch('/fm/ftpstatus', {
-            credentials: 'same-origin',
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(data => data.json())
-        .then(data => {
-            this.props.logInfo(`FTP status: ${data.ftpStatus}`);
-        })
-        .catch(error => this.props.logError('error on fm/ftpstatus: ' + error));
     }
 
     getTargetLocations() {
@@ -187,7 +172,7 @@ class FileManager extends React.Component {
                             nr of entries: {rows.length}
                         </div>
                         <div className="col-xs-6">
-                            <FlatButton onTouchTap={this.getFtpStatus} primary={true} label="Get FTP status"/>
+                            <FlatButton onTouchTap={this.props.getFtpStatus} primary={true} label="Get FTP status"/>
                             <FlatButton onTouchTap={this.resetFilePermissions} primary={true} label="Fix Permissions"/>
                         </div>
                     </div>
