@@ -9,7 +9,8 @@ import {
 } from 'react-router-dom';
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
 import homeRemoteReducers from './reducers';
 
 import DashboardView from './views/DashboardView';
@@ -103,9 +104,10 @@ class Main extends React.Component {
     };
 }
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
     homeRemoteReducers,
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    composeEnhancers(applyMiddleware(thunk))
 );
 
 render(<Provider store={store}><Main/></Provider>, document.getElementById('app'));

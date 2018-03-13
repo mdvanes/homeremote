@@ -58,3 +58,12 @@ export const setMoveParams = (targetLocations, filePath, fileName) => {
         fileName
     };
 };
+
+// Example of thunk with param
+// export const showFtpStatus2 = (status, dirIndex) => {
+//     return {
+//         type: 'SHOW_FTP_STATUS_2',
+//         status,
+//         dirIndex
+//     }
+// }
