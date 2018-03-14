@@ -9,8 +9,8 @@ import {Card, CardText, CardHeader, CardActions} from 'material-ui/Card';
 const progressStyle = movePercentage => {
     return {
         backgroundColor: '#311b92', // TODO import color
-        width: `calc(${Math.round(movePercentage * 100)}vw - 111px)`,
-        height: '10px',
+        width: `${Math.round(movePercentage * 100)}%`,
+        height: '100%',
         position: 'absolute',
         left: 0,
         bottom: 0
@@ -143,8 +143,7 @@ class FileManager extends React.Component {
                     movePercentage = this.props.moveProgress && this.props.moveProgress.percentage ? this.props.moveProgress.percentage : 0;
                }
                 return <tr key={entry.name}>
-                    <td style={{position: 'relative'}}>
-                        <div style={progressStyle(movePercentage)}></div>
+                    <td>
                         {entry.size}
                     </td>
                     <td>{entry.name}</td>
@@ -154,7 +153,11 @@ class FileManager extends React.Component {
                     <td>
                         <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
                     </td>
-                    <td>
+                    <td style={{
+                        position: 'relative',
+                        backgroundColor: movePercentage ? '#9c9ad2' : 'transparent' // TODO import color
+                    }}>
+                        <div style={progressStyle(movePercentage)}></div>
                         <MoveButton filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
                     </td>
                 </tr>;
