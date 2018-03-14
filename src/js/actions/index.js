@@ -5,6 +5,7 @@ export const LOG_ERROR = 'LOG_ERROR';
 export const HIDE_SHORT_MESSAGE = 'HIDE_SHORT_MESSAGE';
 export const CLEAR_LOG = 'CLEAR_LOG';
 export const SET_MOVE_PARAMS = 'SET_MOVE_PARAMS';
+export const SET_MOVE_PROGRESS = 'SET_MOVE_PROGRESS';
 
 /* util */
 
@@ -67,3 +68,12 @@ export const setMoveParams = (targetLocations, filePath, fileName) => {
 //         dirIndex
 //     }
 // }
+
+export const setMoveProgress = (percentage, filePath, fileName) => {
+    return {
+        type: SET_MOVE_PROGRESS,
+        percentage,
+        filePath,
+        fileName
+    };
+};

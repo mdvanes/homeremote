@@ -1,26 +1,38 @@
 import { connect } from 'react-redux';
-import { logInfo, logError } from '../actions';
+import { logInfo, logError, setMoveProgress } from '../actions';
 import FileManager from '../components/fm';
 
-// const socket = new WebSocket('ws://localhost:8081'); // TODO what is the correct URL??
-// socket.onopen = () => socket.send(JSON.stringify({type: 'init'}));
-//
-// const wsMessageTypeHandlers = {
-//     'move-progress': data => console.log('move-progress', (data.percentage * 100) + '%')
-//     //'move-progress': () => dispatch(foo(socket))
-// };
-//
-// socket.onmessage = function(message) {
-//     console.log('Socket server message', message);
-//     const data = JSON.parse(message.data);
-//     if(wsMessageTypeHandlers.hasOwnProperty(data.type)) {
-//         wsMessageTypeHandlers[data.type](data);
-//     }
-// };
+// TODO copy progress update with web socket -> on message do dispatch -> update "copy state" for "filename" in store -> show in UI
+// TODO web socket back-end code in app.js
+// TODO initial connect to web socket
+// TODO connectEnsureLogin for web socket
+// TODO start/end move can be with normal thunk, no web socket
+// TODO replace copy by move, see https://github.com/sindresorhus/cp-file and https://github.com/sindresorhus/move-file/blob/master/index.js
+
+function setupSocket() {
+    return function(dispatch) {
+        const socket = new WebSocket('ws://localhost:8081'); // TODO what is the correct URL??
+        socket.onopen = () => socket.send(JSON.stringify({type: 'init'}));
+
+        const wsMessageTypeHandlers = {
+            //'move-progress': data => console.log('move-progress', Math.round(data.percentage * 100) + '%')
+            //'move-progress': data => dispatch(setMoveProgress(socket, data.percentage, data.filePath, data.fileName))
+            'move-progress': data => dispatch(setMoveProgress(data.percentage, data.filePath, data.fileName))
+        };
+
+        socket.onmessage = function(message) {
+            console.log('Socket server message', message);
+            const data = JSON.parse(message.data);
+            if(wsMessageTypeHandlers.hasOwnProperty(data.type)) {
+                wsMessageTypeHandlers[data.type](data);
+            }
+        };
+    };
+}
 
 // This is a simple thunk
 function getFtpStatus(/*dirIndex*/) {
-    return function (dispatch) {
+    return function(dispatch) {
         return fetch('/fm/ftpstatus', {
             credentials: 'same-origin',
             method: 'GET',
@@ -38,8 +50,10 @@ function getFtpStatus(/*dirIndex*/) {
     }
 }
 
-const mapStateToProps = () => {
-    return {};
+const mapStateToProps = state => {
+    return {
+        moveProgress: state.moveProgress
+    };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -50,7 +64,8 @@ const mapDispatchToProps = dispatch => {
         logError: (...messages) => {
             dispatch(logError(...messages));
         },
-        getFtpStatus: dirIndex => dispatch(getFtpStatus(dirIndex))
+        getFtpStatus: dirIndex => dispatch(getFtpStatus(dirIndex)),
+        setupSocket: () => dispatch(setupSocket())
     };
 };
 
