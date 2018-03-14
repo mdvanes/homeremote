@@ -6,6 +6,17 @@ import FontIcon from 'material-ui/FontIcon';
 import './simple-material-table.scss';
 import {Card, CardText, CardHeader, CardActions} from 'material-ui/Card';
 
+const progressStyle = movePercentage => {
+    return {
+        backgroundColor: '#311b92', // TODO import color
+        width: `calc(${Math.round(movePercentage * 100)}vw - 111px)`,
+        height: '10px',
+        position: 'absolute',
+        left: 0,
+        bottom: 0
+    };
+};
+
 class FileManager extends React.Component {
     constructor(props) {
         super(props);
@@ -21,6 +32,7 @@ class FileManager extends React.Component {
         this.resetFilePermissions = this.resetFilePermissions.bind(this);
         this.listDir('');
         this.getTargetLocations();
+        this.props.setupSocket();
     }
 
     // TODO all fetch calls should be done through a (combined) service (use thunk). See https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md#style-y035 and http://stackoverflow.com/questions/35855781/having-services-in-react-application
@@ -124,8 +136,17 @@ class FileManager extends React.Component {
                 </tr>;
             } else {
                 const filePath = this.state.dirName ? this.state.dirName + '/' + entry.name : entry.name;
+                let movePercentage = null;
+                if(this.props.moveProgress && this.state.dirName === this.props.moveProgress.filePath &&
+                        entry.name === this.props.moveProgress.fileName
+                ) {
+                    movePercentage = this.props.moveProgress && this.props.moveProgress.percentage ? this.props.moveProgress.percentage : 0;
+               }
                 return <tr key={entry.name}>
-                    <td>{entry.size}</td>
+                    <td style={{position: 'relative'}}>
+                        <div style={progressStyle(movePercentage)}></div>
+                        {entry.size}
+                    </td>
                     <td>{entry.name}</td>
                     <td>
                         <FlatButton onTouchTap={() => {this.ftpUpload(filePath)}} label="upload"/>
