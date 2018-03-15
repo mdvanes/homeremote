@@ -168,7 +168,7 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // TODO upgrade passport. Check if ws direct is possible. Check if connectEnsureLogin does anything
     app.ws('/echo', (ws/*, req*/) => {
         ws.on('message', msg => {
-            console.log('ws will echo', msg);
+            log.info('ws will echo', msg);
             ws.send(msg);
         });
     });
