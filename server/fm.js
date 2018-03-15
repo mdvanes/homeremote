@@ -2,11 +2,15 @@
 /* eslint-env node */
 
 const fsp = require('fs-promise');
+const cpFile = require('cp-file');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
 const PromiseFtp = require('promise-ftp');
 const prettyBytes = require('pretty-bytes');
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
+
+
+
 
 const fileToFileInfo = subPath => {
     return file => {
@@ -128,7 +132,22 @@ const bind = function(app, log) {
             })
             .then(result => {
                 if(result) {
-                    return fsp.move(sourcePath, targetNewFile);
+                    // fsp.move does not support "progress" reporting
+                    //return fsp.move(sourcePath, targetNewFile);
+                    // cpy does support "progress" reporting https://github.com/sindresorhus/cpy#progress-reporting, but sibling util https://github.com/sindresorhus/move-file does not
+                    return cpFile(sourcePath, targetNewFile)
+                        .on('progress', () => {
+                            // emit to websocket here, only to initiating client to preserve resources? or all clients?
+                            //console.log(`progress for copying ${req.body.fileName} is ${data.percent}`);
+                            /* Logs:
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0
+...
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.9993328571618337
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.9996358689438718
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.99993888072591
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 1
+                             */
+                        });
                 } else {
                     throw new Error('targetPath does not exist: ' + req.body.targetPath);
                 }
@@ -201,4 +220,8 @@ const bind = function(app, log) {
     });
 };
 
-module.exports = { bind };
+const wsbind = function() {
+    console.log('bound');
+};
+
+module.exports = { bind, wsbind };

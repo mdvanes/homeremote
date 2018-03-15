@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { logInfo, logError, setMoveProgress } from '../actions';
 import FileManager from '../components/fm';
 
-// TODO copy progress update with web socket -> on message do dispatch -> update "copy state" for "filename" in store -> show in UI
 // TODO web socket back-end code in app.js
 // TODO initial connect to web socket
 // TODO connectEnsureLogin for web socket
@@ -11,7 +10,8 @@ import FileManager from '../components/fm';
 
 function setupSocket() {
     return function(dispatch) {
-        const socket = new WebSocket('ws://localhost:8081'); // TODO what is the correct URL??
+        //const socket = new WebSocket('ws://localhost:8081'); // TODO what is the correct URL??
+        const socket = new WebSocket('ws://localhost:3000/echo'); // TODO what is the correct URL??
         socket.onopen = () => socket.send(JSON.stringify({type: 'init'}));
 
         const wsMessageTypeHandlers = {
