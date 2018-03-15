@@ -10,10 +10,11 @@ import FileManager from '../components/fm';
 
 function constructWsOrigin() {
     // TODO remove debug url
-    const prot = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const portSuffix = window.location.port === '' ? '' : `:${window.location.port}`;
     return window.location.hostname === 'localhost' ?
         'ws://localhost:3000' :
-        `${prot}://${window.location.hostname}:${window.location.port}`;
+        `${protocol}//${window.location.hostname}${portSuffix}`;
 }
 
 function setupSocket() {
