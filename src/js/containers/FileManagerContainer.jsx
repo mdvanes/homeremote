@@ -8,10 +8,16 @@ import FileManager from '../components/fm';
 // TODO start/end move can be with normal thunk, no web socket
 // TODO replace copy by move, see https://github.com/sindresorhus/cp-file and https://github.com/sindresorhus/move-file/blob/master/index.js
 
+function constructWsOrigin() {
+    // TODO remove debug url
+    return window.location.hostname === 'localhost' ?
+        'ws://localhost:3000' :
+        `ws://${window.location.hostname}:${window.location.port}`;
+}
+
 function setupSocket() {
     return function(dispatch) {
-        //const socket = new WebSocket('ws://localhost:8081'); // TODO what is the correct URL??
-        const socket = new WebSocket('ws://localhost:3000/echo'); // TODO what is the correct URL??
+        const socket = new WebSocket(`${constructWsOrigin()}/echo`);
         socket.onopen = () => socket.send(JSON.stringify({type: 'init'}));
 
         const wsMessageTypeHandlers = {
