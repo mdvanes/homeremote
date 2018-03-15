@@ -1,6 +1,6 @@
 {
   "name": "HomeRemote",
-  "version": "1.1.6-alpha.1",
+  "version": "1.1.6-alpha.2",
   "description": "Remote for home automation",
   "scripts": {
     "start": "node server/app.js",
