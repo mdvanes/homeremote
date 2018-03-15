@@ -12,7 +12,7 @@ function constructWsOrigin() {
     // TODO remove debug url
     return window.location.hostname === 'localhost' ?
         'ws://localhost:3000' :
-        `ws://${window.location.hostname}:${window.location.port}`;
+        `wss://${window.location.hostname}:${window.location.port}`;
 }
 
 function setupSocket() {
