@@ -2,15 +2,11 @@
 /* eslint-env node */
 
 const fsp = require('fs-promise');
-const cpFile = require('cp-file');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
 const PromiseFtp = require('promise-ftp');
 const prettyBytes = require('pretty-bytes');
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
-
-
-
 
 const fileToFileInfo = subPath => {
     return file => {
@@ -132,22 +128,7 @@ const bind = function(app, log) {
             })
             .then(result => {
                 if(result) {
-                    // fsp.move does not support "progress" reporting
-                    //return fsp.move(sourcePath, targetNewFile);
-                    // cpy does support "progress" reporting https://github.com/sindresorhus/cpy#progress-reporting, but sibling util https://github.com/sindresorhus/move-file does not
-                    return cpFile(sourcePath, targetNewFile)
-                        .on('progress', () => {
-                            // emit to websocket here, only to initiating client to preserve resources? or all clients?
-                            //console.log(`progress for copying ${req.body.fileName} is ${data.percent}`);
-                            /* Logs:
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0
-...
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.9993328571618337
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.9996358689438718
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.99993888072591
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 1
-                             */
-                        });
+                    return fsp.move(sourcePath, targetNewFile);
                 } else {
                     throw new Error('targetPath does not exist: ' + req.body.targetPath);
                 }
@@ -178,50 +159,46 @@ const bind = function(app, log) {
             user: settings.ftp.user,
             password: settings.ftp.password,
             secure: false})
-        .then(serverMessage => {
-            log.info('Server message: ' + serverMessage);
-        })
-        // .then(() => {
-        //     return ftp.list(settings.ftp.remotePath);
-        // })
-        // .then(list => {
-        //     console.dir(list);
-        // })
-        .then(() => {
-            // Getting 550 Read-Only if not first cwd to target dir
-            return ftp.cwd(settings.ftp.remotePath);
-        })
-        // .then(() => {
-        //     return ftp.status();
-        // })
-        // .then(status => {
-        //     console.log('ftpstatus', status);
-        //     return;
-        // })
-        .then(() => {
-            const fileNameArr = path.split('/'); // TODO path and filename should be passed as separate POST params
-            const fileName = fileNameArr[fileNameArr.length - 1];
-            const remoteTargetPath = settings.ftp.remotePath + '/' + fileName;
-            log.info('src', path, 'target', remoteTargetPath);
-            return ftp.put(path, remoteTargetPath);
-        })
-        .then(() => {
-            ftpStatus = `Upload of ${path} to ${settings.ftp.remotePath} succeeded`;
-            log.info(ftpStatus);
-            return ftp.end();
-        })
-        .catch(error => {
-            log.error('error:', error);
-            ftpStatus = `Upload of ${path} to ${settings.ftp.remotePath} failed: ${error}`;
-            return ftp.end();
-        });
+            .then(serverMessage => {
+                log.info('Server message: ' + serverMessage);
+            })
+            // .then(() => {
+            //     return ftp.list(settings.ftp.remotePath);
+            // })
+            // .then(list => {
+            //     console.dir(list);
+            // })
+            .then(() => {
+                // Getting 550 Read-Only if not first cwd to target dir
+                return ftp.cwd(settings.ftp.remotePath);
+            })
+            // .then(() => {
+            //     return ftp.status();
+            // })
+            // .then(status => {
+            //     console.log('ftpstatus', status);
+            //     return;
+            // })
+            .then(() => {
+                const fileNameArr = path.split('/'); // TODO path and filename should be passed as separate POST params
+                const fileName = fileNameArr[fileNameArr.length - 1];
+                const remoteTargetPath = settings.ftp.remotePath + '/' + fileName;
+                log.info('src', path, 'target', remoteTargetPath);
+                return ftp.put(path, remoteTargetPath);
+            })
+            .then(() => {
+                ftpStatus = `Upload of ${path} to ${settings.ftp.remotePath} succeeded`;
+                log.info(ftpStatus);
+                return ftp.end();
+            })
+            .catch(error => {
+                log.error('error:', error);
+                ftpStatus = `Upload of ${path} to ${settings.ftp.remotePath} failed: ${error}`;
+                return ftp.end();
+            });
 
         res.send({status: 'ok'});
     });
 };
 
-const wsbind = function() {
-    console.log('bound');
-};
-
-module.exports = { bind, wsbind };
+module.exports = { bind };
