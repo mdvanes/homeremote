@@ -13,7 +13,9 @@ const mapDispatchToProps = dispatch => {
         },
         logError: (...messages) => {
             dispatch(logError(...messages));
-        }
+        },
+        getFtpStatus: () => console.log('nyi small getFtpStatus'),
+        setupSocket: () => console.log('nyi small setupSocket')
     };
 };
 
