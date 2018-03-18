@@ -39,38 +39,24 @@ class MoveButton extends React.Component {
     }
 
     // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
-    mvToTargetLocation(filePath, fileName, targetLocation) {
+    mvToTargetLocation(filePath, fileName, targetLocation, socket) {
         this.props.logInfo(`Start moving ${fileName}`);
-        fetch('/fm/mvToTargetLocation', {
-            credentials: 'same-origin',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                sourcePath: filePath,
-                fileName: fileName,
-                targetPath: targetLocation
-            })
-        })
-        .then(data => data.json())
-        .then(data => {
-            this.handleClose();
-            if(data.status === 'ok') {
-                this.props.logInfo(`Move of ${fileName} completed`);
-            } else {
-                throw new Error(`Move of ${fileName} failed`);
-            }
-        })
-        .catch(error => this.props.logError('error on fm/mvToTargetLocation: ' + error));
+        this.handleClose();
+
+        // TODO replace passing socket by storing in Redux store
+        socket.send(JSON.stringify({
+            type: 'startMove',
+            sourcePath: filePath,
+            fileName: fileName,
+            targetPath: targetLocation
+        }));
     }
 
-    confirmMove(filePath, fileName, targetLocation) {
+    confirmMove(filePath, fileName, targetLocation, socket) {
         this.setState({
             dialogActions: [
                 <FlatButton label="Cancel" onTouchTap={this.handleClose} />,
-                <FlatButton label="OK" secondary={true} onTouchTap={() => {this.mvToTargetLocation(filePath, fileName, targetLocation)}} />
+                <FlatButton label="OK" secondary={true} onTouchTap={() => {this.mvToTargetLocation(filePath, fileName, targetLocation, socket)}} />
             ],
             dialogTitle: 'Confirm',
             showLocationsList: false,
@@ -83,7 +69,7 @@ class MoveButton extends React.Component {
             return (
                 <div
                     className="modal-line"
-                    onTouchTap={() => {this.confirmMove(this.props.filePath, this.props.fileName, entry)}}
+                    onTouchTap={() => {this.confirmMove(this.props.filePath, this.props.fileName, entry, this.props.socket)}}
                     key={entry}>
                     <Divider/>
                     {entry}

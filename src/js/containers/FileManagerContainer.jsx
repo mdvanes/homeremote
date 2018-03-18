@@ -5,10 +5,10 @@ import FileManager from '../components/fm';
 // TODO Upgrade React to v16, Fix production build/minification/stage js/min.js
 // TODO web socket back-end code in app.js
 // TODO initial connect to web socket
-// TODO connectEnsureLogin for web socket
-// TODO start/end move can be with normal thunk, no web socket
+// TODO connectEnsureLogin for web socket (test security)
+// TODO also move progress for fmsmall
 // TODO replace copy by move, see https://github.com/sindresorhus/cp-file and https://github.com/sindresorhus/move-file/blob/master/index.js
-
+// TODO do ws progress for ftp upload
 
 /*
 
@@ -62,8 +62,9 @@ function setupSocket() {
 
         const wsMessageTypeHandlers = {
             //'move-progress': data => console.log('move-progress', Math.round(data.percentage * 100) + '%')
-            //'move-progress': data => dispatch(setMoveProgress(socket, data.percentage, data.filePath, data.fileName))
-            'move-progress': data => dispatch(setMoveProgress(data.percentage, data.filePath, data.fileName))
+            'move-progress': data => dispatch(setMoveProgress(data.percentage, data.filePath, data.fileName)),
+            'move-done': data => dispatch(logInfo(`Move of ${data.fileName} completed`)),
+            'move-failed': data => dispatch(logError(`Move of ${data.fileName} failed`))
         };
 
         socket.onmessage = function(message) {

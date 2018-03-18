@@ -49,7 +49,7 @@ const createMoveProgressMessage = (msg, percentage) => {
         percentage: percentage,
         filePath: msg.sourcePath,
         fileName: msg.fileName
-    })
+    });
 };
 
 const moveFile = (ws, msg, log) => {
@@ -67,44 +67,16 @@ const moveFile = (ws, msg, log) => {
         .then(result => {
             if(result) {
                 // Send initial progress to initialize progress bar
-                // ws.send(JSON.stringify({
-                //     type: 'move-progress',
-                //     percentage: 0.0001,
-                //     filePath: msg.sourcePath,
-                //     fileName: msg.fileName
-                // }));
                 ws.send(createMoveProgressMessage(msg, 0.0001));
                 // cpy does support "progress" reporting https://github.com/sindresorhus/cpy#progress-reporting, but sibling util https://github.com/sindresorhus/move-file does not
                 return cpFile(sourcePath, targetNewFile)
                     .on('progress', data => {
-                        // // emit to websocket here, only to initiating client to preserve resources? or all clients?
-                        // ws.send(JSON.stringify({
-                        //     type: 'move-progress',
-                        //     percentage: data.percent,
-                        //     filePath: parsedMsg.sourcePath,
-                        //     fileName: parsedMsg.fileName
-                        // }));
-                        //console.log(`progress for copying ${req.body.fileName} is ${data.percent}`);
-                        /* Logs:
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0
-...
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.9993328571618337
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.9996358689438718
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.99993888072591
-[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 1
-                         */
-
-                        // TODO nothing is being rendered if I send to many updates
+                        // NOTE nothing is being rendered if too many updates are sent
                         const now = Date.now(); //performance.now();
                         // Throttle to max one update per 500ms
                         if(lastWsSend && (now - lastWsSend) >= 500) {
                             // emit to websocket here, only to initiating client to preserve resources? or all clients?
-                            ws.send(JSON.stringify({
-                                type: 'move-progress',
-                                percentage: data.percent,
-                                filePath: msg.sourcePath,
-                                fileName: msg.fileName
-                            }));
+                            ws.send(createMoveProgressMessage(msg, data.percent));
                         }
                         lastWsSend = now;
                     });
@@ -113,13 +85,22 @@ const moveFile = (ws, msg, log) => {
             }
         })
         .then(() => {
-            //res.send({status: 'ok'}); // TODO
+            // TODO chain "delete original file" here
+            ws.send(JSON.stringify({
+                type: 'move-done',
+                filePath: msg.sourcePath,
+                fileName: msg.fileName
+            }))
         })
         .catch(err => {
             log.error('ERROR mvToTargetLocation:', err);
-            //res.send({status: 'error'}); // TODO
+            ws.send(JSON.stringify({
+                type: 'move-failed',
+                filePath: msg.sourcePath,
+                fileName: msg.fileName
+            }))
         });
-}
+};
 
 const bind = function(app, expressWs, log) {
 
