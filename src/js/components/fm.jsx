@@ -5,16 +5,34 @@ import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import './simple-material-table.scss';
 import {Card, CardText, CardHeader, CardActions} from 'material-ui/Card';
+import {deepPurple900, deepPurple200} from 'material-ui/styles/colors';
 
 const progressStyle = movePercentage => {
     return {
-        backgroundColor: '#311b92', // TODO import color
+        backgroundColor: deepPurple900,
         width: `${Math.round(movePercentage * 100)}%`,
         height: '100%',
         position: 'absolute',
         left: 0,
         bottom: 0
     };
+};
+
+const progressWrapperStyle = movePercentage => {
+    return {
+        position: 'relative',
+        backgroundColor: movePercentage ? deepPurple200 : 'transparent'
+    }
+};
+
+const getMovePercentage = (state, props, entry) => {
+    if(props.moveProgress && state.dirName === props.moveProgress.filePath &&
+        entry.name === props.moveProgress.fileName
+    ) {
+        return props.moveProgress && props.moveProgress.percentage ? props.moveProgress.percentage : 0;
+    } else {
+        return null;
+    }
 };
 
 class FileManager extends React.Component {
@@ -32,8 +50,7 @@ class FileManager extends React.Component {
         this.resetFilePermissions = this.resetFilePermissions.bind(this);
         this.listDir('');
         this.getTargetLocations();
-        this.socket = this.props.setupSocket();
-        //console.log('socket', socket);
+        this.props.setupSocket();
     }
 
     // TODO all fetch calls should be done through a (combined) service (use thunk). See https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md#style-y035 and http://stackoverflow.com/questions/35855781/having-services-in-react-application
@@ -137,12 +154,7 @@ class FileManager extends React.Component {
                 </tr>;
             } else {
                 const filePath = this.state.dirName ? this.state.dirName + '/' + entry.name : entry.name;
-                let movePercentage = null;
-                if(this.props.moveProgress && this.state.dirName === this.props.moveProgress.filePath &&
-                        entry.name === this.props.moveProgress.fileName
-                ) {
-                    movePercentage = this.props.moveProgress && this.props.moveProgress.percentage ? this.props.moveProgress.percentage : 0;
-               }
+                let movePercentage = getMovePercentage(this.state, this.props, entry);
                 return <tr key={entry.name}>
                     <td>
                         {entry.size}
@@ -154,12 +166,9 @@ class FileManager extends React.Component {
                     <td>
                         <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
                     </td>
-                    <td style={{
-                        position: 'relative',
-                        backgroundColor: movePercentage ? '#9c9ad2' : 'transparent' // TODO import color
-                    }}>
+                    <td style={progressWrapperStyle(movePercentage)}>
                         <div style={progressStyle(movePercentage)}></div>
-                        <MoveButton filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} socket={this.socket} />
+                        <MoveButton filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
                     </td>
                 </tr>;
             }

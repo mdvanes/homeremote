@@ -81,7 +81,6 @@ function setupSocket() {
         };
 
         dispatch(setFileManagerSocket(socket));
-        return socket;
     };
 }
 
