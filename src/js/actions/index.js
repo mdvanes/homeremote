@@ -6,6 +6,7 @@ export const HIDE_SHORT_MESSAGE = 'HIDE_SHORT_MESSAGE';
 export const CLEAR_LOG = 'CLEAR_LOG';
 export const SET_MOVE_PARAMS = 'SET_MOVE_PARAMS';
 export const SET_MOVE_PROGRESS = 'SET_MOVE_PROGRESS';
+export const SET_FILEMANAGER_SOCKET = 'SET_FILEMANAGER_SOCKET';
 
 /* util */
 
@@ -76,4 +77,11 @@ export const setMoveProgress = (percentage, filePath, fileName) => {
         filePath,
         fileName
     };
+};
+
+export const setFileManagerSocket = socket => {
+    return {
+        type: SET_FILEMANAGER_SOCKET,
+        socket
+    }
 };
