@@ -39,12 +39,11 @@ class MoveButton extends React.Component {
     }
 
     // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
-    mvToTargetLocation(filePath, fileName, targetLocation, socket) {
+    mvToTargetLocation(filePath, fileName, targetLocation) {
         this.props.logInfo(`Start moving ${fileName}`);
         this.handleClose();
 
-        // TODO replace passing socket by storing in Redux store
-        socket.send(JSON.stringify({
+        this.props.fileManagerSocket.send(JSON.stringify({
             type: 'startMove',
             sourcePath: filePath,
             fileName: fileName,
@@ -52,11 +51,11 @@ class MoveButton extends React.Component {
         }));
     }
 
-    confirmMove(filePath, fileName, targetLocation, socket) {
+    confirmMove(filePath, fileName, targetLocation) {
         this.setState({
             dialogActions: [
                 <FlatButton label="Cancel" onTouchTap={this.handleClose} />,
-                <FlatButton label="OK" secondary={true} onTouchTap={() => {this.mvToTargetLocation(filePath, fileName, targetLocation, socket)}} />
+                <FlatButton label="OK" secondary={true} onTouchTap={() => {this.mvToTargetLocation(filePath, fileName, targetLocation)}} />
             ],
             dialogTitle: 'Confirm',
             showLocationsList: false,
@@ -69,7 +68,7 @@ class MoveButton extends React.Component {
             return (
                 <div
                     className="modal-line"
-                    onTouchTap={() => {this.confirmMove(this.props.filePath, this.props.fileName, entry, this.props.socket)}}
+                    onTouchTap={() => {this.confirmMove(this.props.filePath, this.props.fileName, entry)}}
                     key={entry}>
                     <Divider/>
                     {entry}
@@ -98,8 +97,10 @@ class MoveButton extends React.Component {
     }
 }
 
-const mapStateToProps = () => {
-    return {};
+const mapStateToProps = state => {
+    return {
+        fileManagerSocket: state.fileManager.socket
+    };
 };
 
 const mapDispatchToProps = dispatch => {

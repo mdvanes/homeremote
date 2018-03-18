@@ -1,14 +1,17 @@
 import { connect } from 'react-redux';
-import { logInfo, logError, setMoveProgress } from '../actions';
+import { logInfo, logError, setMoveProgress, setFileManagerSocket } from '../actions';
 import FileManager from '../components/fm';
 
+// TODO store socket in Redux store
+// TODO delete after move
 // TODO Upgrade React to v16, Fix production build/minification/stage js/min.js
 // TODO web socket back-end code in app.js
 // TODO initial connect to web socket
 // TODO connectEnsureLogin for web socket (test security)
 // TODO also move progress for fmsmall
+// TODO cancel move button
 // TODO replace copy by move, see https://github.com/sindresorhus/cp-file and https://github.com/sindresorhus/move-file/blob/master/index.js
-// TODO do ws progress for ftp upload
+// TODO do ws progress for ftp upload (if promise-ftp api supports it)
 
 /*
 
@@ -46,6 +49,7 @@ export const AddItem = (data) => ({
 
  */
 
+/* eslint-disable complexity */
 function constructWsOrigin() {
     // TODO remove debug url
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -54,6 +58,7 @@ function constructWsOrigin() {
         'ws://localhost:3000' :
         `${protocol}//${window.location.hostname}${portSuffix}`;
 }
+/* eslint-enable complexity */
 
 function setupSocket() {
     return function(dispatch) {
@@ -75,6 +80,7 @@ function setupSocket() {
             }
         };
 
+        dispatch(setFileManagerSocket(socket));
         return socket;
     };
 }
