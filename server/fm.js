@@ -2,11 +2,13 @@
 /* eslint-env node */
 
 const fsp = require('fs-promise');
+const cpFile = require('cp-file');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
 const PromiseFtp = require('promise-ftp');
 const prettyBytes = require('pretty-bytes');
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
+// TODO requires node 8.5 -> const { performance } = require('perf_hooks');
 
 const fileToFileInfo = subPath => {
     return file => {
@@ -41,7 +43,85 @@ const resetPermissionsForDirContent = location => {
         });
 };
 
-const bind = function(app, log) {
+const createMoveProgressMessage = (msg, percentage) => {
+    return JSON.stringify({
+        type: 'move-progress',
+        percentage: percentage,
+        filePath: msg.sourcePath,
+        fileName: msg.fileName
+    })
+};
+
+const moveFile = (ws, msg, log) => {
+    let lastWsSend = null;
+    const sourcePath = rootPath + '/' + msg.sourcePath + '/' + msg.fileName;
+    const targetNewFile = msg.targetPath + '/' + msg.fileName;
+    fsp.exists(sourcePath)
+        .then(result => {
+            if(result) {
+                return fsp.exists(msg.targetPath);
+            } else {
+                throw new Error('sourcePath does not exist: ' + sourcePath);
+            }
+        })
+        .then(result => {
+            if(result) {
+                // Send initial progress to initialize progress bar
+                // ws.send(JSON.stringify({
+                //     type: 'move-progress',
+                //     percentage: 0.0001,
+                //     filePath: msg.sourcePath,
+                //     fileName: msg.fileName
+                // }));
+                ws.send(createMoveProgressMessage(msg, 0.0001));
+                // cpy does support "progress" reporting https://github.com/sindresorhus/cpy#progress-reporting, but sibling util https://github.com/sindresorhus/move-file does not
+                return cpFile(sourcePath, targetNewFile)
+                    .on('progress', data => {
+                        // // emit to websocket here, only to initiating client to preserve resources? or all clients?
+                        // ws.send(JSON.stringify({
+                        //     type: 'move-progress',
+                        //     percentage: data.percent,
+                        //     filePath: parsedMsg.sourcePath,
+                        //     fileName: parsedMsg.fileName
+                        // }));
+                        //console.log(`progress for copying ${req.body.fileName} is ${data.percent}`);
+                        /* Logs:
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0
+...
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.9993328571618337
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.9996358689438718
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 0.99993888072591
+[1] [startdebug] progress for copying QI.S15E07.Opposites.EXTENDED.480p.x264-mSD.mkv is 1
+                         */
+
+                        // TODO nothing is being rendered if I send to many updates
+                        const now = Date.now(); //performance.now();
+                        // Throttle to max one update per 500ms
+                        if(lastWsSend && (now - lastWsSend) >= 500) {
+                            // emit to websocket here, only to initiating client to preserve resources? or all clients?
+                            ws.send(JSON.stringify({
+                                type: 'move-progress',
+                                percentage: data.percent,
+                                filePath: msg.sourcePath,
+                                fileName: msg.fileName
+                            }));
+                        }
+                        lastWsSend = now;
+                    });
+            } else {
+                throw new Error('targetPath does not exist: ' + msg.targetPath);
+            }
+        })
+        .then(() => {
+            //res.send({status: 'ok'}); // TODO
+        })
+        .catch(err => {
+            log.error('ERROR mvToTargetLocation:', err);
+            //res.send({status: 'error'}); // TODO
+        });
+}
+
+const bind = function(app, expressWs, log) {
 
     app.post('/fm/list', connectEnsureLogin(), function (req, res) {
         log.info('Call to /fm/list');
@@ -115,32 +195,45 @@ const bind = function(app, log) {
             });
     });
 
-    app.post('/fm/mvToTargetLocation', connectEnsureLogin(), (req, res) => {
-        const sourcePath = rootPath + '/' + req.body.sourcePath + '/' + req.body.fileName;
-        const targetNewFile = req.body.targetPath + '/' + req.body.fileName;
-        fsp.exists(sourcePath)
-            .then(result => {
-                if(result) {
-                    return fsp.exists(req.body.targetPath);
-                } else {
-                    throw new Error('sourcePath does not exist: ' + sourcePath);
-                }
-            })
-            .then(result => {
-                if(result) {
-                    return fsp.move(sourcePath, targetNewFile);
-                } else {
-                    throw new Error('targetPath does not exist: ' + req.body.targetPath);
-                }
-            })
-            .then(() => {
-                res.send({status: 'ok'});
-            })
-            .catch(err => {
-                log.error('ERROR mvToTargetLocation:', err);
-                res.send({status: 'error'});
-            });
-    });
+    const progressEndpoint = '/fm/mvToTargetLocationProgress';
+    //app.ws(progressEndpoint, () => {}); // (ws, req) => {}
+    app.ws(progressEndpoint, (ws/*, req*/) => {
+        ws.on('message', msg => {
+            const parsedMsg = JSON.parse(msg);
+            console.log('received', parsedMsg, parsedMsg.type);
+            if(parsedMsg.type === 'startMove') {
+                moveFile(ws, parsedMsg, log);
+            }
+        })
+    }); // (ws, req) => {}
+
+    // app.post('/fm/mvToTargetLocation', connectEnsureLogin(), (req, res) => {
+    //     const sourcePath = rootPath + '/' + req.body.sourcePath + '/' + req.body.fileName;
+    //     const targetNewFile = req.body.targetPath + '/' + req.body.fileName;
+    //     fsp.exists(sourcePath)
+    //         .then(result => {
+    //             if(result) {
+    //                 return fsp.exists(req.body.targetPath);
+    //             } else {
+    //                 throw new Error('sourcePath does not exist: ' + sourcePath);
+    //             }
+    //         })
+    //         .then(result => {
+    //             if(result) {
+    //                 // fsp.move does not support "progress" reporting
+    //                 return fsp.move(sourcePath, targetNewFile);
+    //             } else {
+    //                 throw new Error('targetPath does not exist: ' + req.body.targetPath);
+    //             }
+    //         })
+    //         .then(() => {
+    //             res.send({status: 'ok'});
+    //         })
+    //         .catch(err => {
+    //             log.error('ERROR mvToTargetLocation:', err);
+    //             res.send({status: 'error'});
+    //         });
+    // });
 
     let ftpStatus = 'nothing started';
 

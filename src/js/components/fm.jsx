@@ -32,7 +32,8 @@ class FileManager extends React.Component {
         this.resetFilePermissions = this.resetFilePermissions.bind(this);
         this.listDir('');
         this.getTargetLocations();
-        this.props.setupSocket();
+        this.socket = this.props.setupSocket();
+        //console.log('socket', socket);
     }
 
     // TODO all fetch calls should be done through a (combined) service (use thunk). See https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md#style-y035 and http://stackoverflow.com/questions/35855781/having-services-in-react-application
@@ -158,7 +159,7 @@ class FileManager extends React.Component {
                         backgroundColor: movePercentage ? '#9c9ad2' : 'transparent' // TODO import color
                     }}>
                         <div style={progressStyle(movePercentage)}></div>
-                        <MoveButton filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
+                        <MoveButton filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} socket={this.socket} />
                     </td>
                 </tr>;
             }

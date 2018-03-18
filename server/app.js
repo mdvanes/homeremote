@@ -22,8 +22,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 const bodyParser = require('body-parser');
 const server = http.createServer(app);
-//const expressWs = require('express-ws')(app, server); // eslint-disable-line no-unused-vars
-require('express-ws')(app, server);
+const expressWs = require('express-ws')(app, server);
+//require('express-ws')(app, server);
 
 const settings = require('../settings.json');
 const auth = require('../auth.json');
@@ -161,7 +161,7 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     shellStatus.bind(app, 'shell', log);
     switcher.bind(app, log);
     gears.bind(app, log);
-    filemanager.bind(app, log);
+    filemanager.bind(app, expressWs, log);
     getMusic.bind(app, log);
     //broadcast.bind(app, log, debug);
 

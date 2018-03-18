@@ -2,11 +2,49 @@ import { connect } from 'react-redux';
 import { logInfo, logError, setMoveProgress } from '../actions';
 import FileManager from '../components/fm';
 
+// TODO Upgrade React to v16, Fix production build/minification/stage js/min.js
 // TODO web socket back-end code in app.js
 // TODO initial connect to web socket
 // TODO connectEnsureLogin for web socket
 // TODO start/end move can be with normal thunk, no web socket
 // TODO replace copy by move, see https://github.com/sindresorhus/cp-file and https://github.com/sindresorhus/move-file/blob/master/index.js
+
+
+/*
+
+Sending:
+
+in JSX:
+dispatch(addNewItemSocket(socket,items.size,newItem))
+
+in action:
+export const addNewItemSocket = (socket,id,item) => {
+	return (dispatch) => {
+		let postData = {
+				id:id+1,
+				item:item,
+				completed:false
+		     }
+	    socket.emit('addItem',postData)
+	}
+}
+
+
+Receiving:
+socket.on('itemAdded',(res)=>{
+		   console.dir(res)
+		   dispatch(AddItem(res))
+})
+
+export const AddItem = (data) => ({
+	type: "ADD_ITEM",
+	item: data.item,
+	itemId:data.id,
+	completed:data.completed
+})
+
+
+ */
 
 function constructWsOrigin() {
     // TODO remove debug url
@@ -19,7 +57,7 @@ function constructWsOrigin() {
 
 function setupSocket() {
     return function(dispatch) {
-        const socket = new WebSocket(`${constructWsOrigin()}/echo`);
+        const socket = new WebSocket(`${constructWsOrigin()}/fm/mvToTargetLocationProgress`);
         socket.onopen = () => socket.send(JSON.stringify({type: 'init'}));
 
         const wsMessageTypeHandlers = {
@@ -35,6 +73,8 @@ function setupSocket() {
                 wsMessageTypeHandlers[data.type](data);
             }
         };
+
+        return socket;
     };
 }
 
