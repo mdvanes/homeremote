@@ -5,6 +5,7 @@ const short = (state = { shortMessage: '', showShortMessage: false }, action) =>
         shortMessage: action.shortMessage,
         showShortMessage: action.showShortMessage
     };
+    // TODO this accidentally works: e.g. the imported LOG_INFO is not used as a key, a new key shadowing this value is created
     const actionTypeMap = {
         LOG_ERROR: newLogState,
         LOG_INFO: newLogState,
