@@ -31,6 +31,7 @@ Read log file with:
 * `cd /opt/homeremote`
 * update `git pull origin master`
 * test run `node server/app.js | bunyan`
+* build for production: `npm run build` to create updated JS and source map
 * start `sudo service homeremote start`
 
 
