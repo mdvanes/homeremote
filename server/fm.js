@@ -54,6 +54,7 @@ const createMoveProgressMessage = (msg, percentage) => {
 
 const moveFile = (ws, msg, log) => {
     let lastWsSend = null;
+    // TODO secure agains path traversal
     const sourcePath = rootPath + '/' + msg.sourcePath + '/' + msg.fileName;
     const targetNewFile = msg.targetPath + '/' + msg.fileName;
     fs.exists(sourcePath)
@@ -85,18 +86,17 @@ const moveFile = (ws, msg, log) => {
             }
         })
         .then(() => {
-            // TODO chain "delete original file" here
-            /*
-            const fs = require('fs-extra')
-            fs.remove('/tmp/myfile')
-            .then(() => {
-              console.log('success!')
-            })
-            .catch(err => {
-              console.error(err)
-            })
-             */
+            // Delete the source file after success
+            if(fs.lstatSync(sourcePath).isFile()) {
+                return fs.remove(sourcePath);
+            } else {
+                throw new Error(`can not delete sourcePath if directory ${sourcePath}`)
+            }
+        })
+        .then(() => {
+            // Done, so send "100%" progress
             ws.send(createMoveProgressMessage(msg, 1));
+            // Done, so mark as done
             ws.send(JSON.stringify({
                 type: 'move-done',
                 filePath: msg.sourcePath,
