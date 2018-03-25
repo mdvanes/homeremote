@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { logInfo, logError, setMoveProgress, setFileManagerSocket, setFileManagerDirIndex } from '../actions';
 import FileManager from '../components/fm';
 
-// TODO listdir should be in Redux store and updated after a "move" action
 // TODO Upgrade React to v16, Fix production build/minification/stage js/min.js
 // TODO Upgrade Node, but before adding features check if it can deploy on server
 // TODO connectEnsureLogin for web socket (test security)
