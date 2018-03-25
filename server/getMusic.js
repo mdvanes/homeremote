@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-const fsp = require('fs-promise');
+const fs = require('fs-extra');
 const youtubedl = require('youtube-dl');
 const settings = require('../settings.json');
 const id3 = require('id3-writer');
@@ -118,8 +118,8 @@ const bind = (app, log) => {
             return setMetadataPromise(log, data.path, data.fileName, req.body.artist, req.body.title, req.body.album);
         })
         // 775 octal for rwxrwxr-x / 664 octal for rwrwr-
-        .then(data => fsp.chmod(data.path, '664'))
-        .then(() => fsp.chown(path, settings.ownerinfo.uid, settings.ownerinfo.gid))
+        .then(data => fs.chmod(data.path, '664'))
+        .then(() => fs.chown(path, settings.ownerinfo.uid, settings.ownerinfo.gid))
         .then(() => res.send({status: 'ok', fileName}))
         .catch(err => {
             log.error(err);
