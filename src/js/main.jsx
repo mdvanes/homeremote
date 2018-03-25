@@ -70,13 +70,13 @@ class Main extends React.Component {
                     <AppBar
                         title="HomeRemote"
                         iconElementRight={<ShellStatusButton />}
-                        onLeftIconButtonTouchTap={this.toggleDrawer}
+                        onLeftIconButtonClick={this.toggleDrawer}
                     />
                     <Router>
                         <div>
                             <Drawer open={this.state.open}>
                                 <AppBar
-                                    onLeftIconButtonTouchTap={this.toggleDrawer}
+                                    onLeftIconButtonClick={this.toggleDrawer}
                                     iconElementLeft={<IconButton><NavigationClose /></IconButton>}
                                 />
                                 <Link onTouchTap={this.toggleDrawer} to="/"><MenuItem>Light</MenuItem></Link>
