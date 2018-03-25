@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import './simple-material-table.scss';
 import FontIcon from 'material-ui/FontIcon';
 import {blue500, green800} from 'material-ui/styles/colors';
