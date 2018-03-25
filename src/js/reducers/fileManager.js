@@ -5,19 +5,20 @@ const fileManager = (state = {
     dirIndex: [{name: 'No files yet'}],
     dirName: ''
 }, action) => {
-    if(action.type === SET_FILEMANAGER_SOCKET) {
-        return Object.assign({}, state, {
+    const actionTypeMap = {
+        [SET_FILEMANAGER_SOCKET]: Object.assign({}, state, {
             socket: action.socket
-        });
-    } else if(action.type === SET_DIR_INDEX) {
-        return Object.assign({}, state, {
+        }),
+        [SET_DIR_INDEX]: Object.assign({}, state, {
             dirName: action.dirName,
             dirIndex: action.dirIndex
-        });
-    } else if(action.type === LIST_DIR) {
-        return Object.assign({}, state, {
+        }),
+        [LIST_DIR]: Object.assign({}, state, {
             dirName: action.dirName
-        });
+        })
+    };
+    if(actionTypeMap.hasOwnProperty(action.type)) {
+        return actionTypeMap[action.type];
     }
     return state;
 };
