@@ -69,6 +69,7 @@
     "express": "^4.13.1",
     "express-session": "^1.15.2",
     "express-ws": "^3.0.0",
+    "fs-extra": "^5.0.0",
     "fs-promise": "^2.0.0",
     "http-auth": "^2.2.8",
     "material-ui": "^0.17.1",
