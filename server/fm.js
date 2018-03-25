@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-const fsp = require('fs-promise');
+const fs = require('fs-extra');
 const cpFile = require('cp-file');
 const settings = require('../settings.json');
 const rootPath = settings.fm.rootPath;
@@ -12,7 +12,7 @@ const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
 const fileToFileInfo = subPath => {
     return file => {
-        return fsp.stat(rootPath + '/' + subPath + '/' + file)
+        return fs.stat(rootPath + '/' + subPath + '/' + file)
             .then(stat => {
                 return {
                     name: file,
@@ -28,7 +28,7 @@ const resetPermissionsForDirContent = location => {
 
     // Only set permissions for the files in this dir, not the dir itself
     // Using chmodr(p), this had the side effect that dir itself was unreadable, but the contens were correct
-    fsp.readdir(location.path)
+    fs.readdir(location.path)
         .then(files => {
             if(!files) {
                 throw new Error(`Possibly invalid path: ${location.path}`);
@@ -36,7 +36,7 @@ const resetPermissionsForDirContent = location => {
             const actions = files.map(file => {
                 //console.log('setting permission for ', location.path + '/' + file);
                 // 775 octal for rwxrwxr-x / 666 octal for rwrwrw
-                return fsp.chmod(location.path + '/' + file, '666');
+                return fs.chmod(location.path + '/' + file, '666');
             });
             const results = Promise.all(actions);
             return results;
@@ -56,10 +56,10 @@ const moveFile = (ws, msg, log) => {
     let lastWsSend = null;
     const sourcePath = rootPath + '/' + msg.sourcePath + '/' + msg.fileName;
     const targetNewFile = msg.targetPath + '/' + msg.fileName;
-    fsp.exists(sourcePath)
+    fs.exists(sourcePath)
         .then(result => {
             if(result) {
-                return fsp.exists(msg.targetPath);
+                return fs.exists(msg.targetPath);
             } else {
                 throw new Error('sourcePath does not exist: ' + sourcePath);
             }
@@ -86,6 +86,17 @@ const moveFile = (ws, msg, log) => {
         })
         .then(() => {
             // TODO chain "delete original file" here
+            /*
+            const fs = require('fs-extra')
+            fs.remove('/tmp/myfile')
+            .then(() => {
+              console.log('success!')
+            })
+            .catch(err => {
+              console.error(err)
+            })
+             */
+            ws.send(createMoveProgressMessage(msg, 1));
             ws.send(JSON.stringify({
                 type: 'move-done',
                 filePath: msg.sourcePath,
@@ -115,7 +126,7 @@ const bind = function(app, expressWs, log) {
             return;
         }
 
-        fsp.readdir(rootPath + '/' + subPath)
+        fs.readdir(rootPath + '/' + subPath)
             .then(files => {
                 if(!files) {
                     throw new Error(`Possibly invalid path: ${rootPath}/${subPath}`);
@@ -148,7 +159,7 @@ const bind = function(app, expressWs, log) {
 
         const src = rootPath + '/' + req.body.path + '/' + req.body.src;
         const target = rootPath + '/' + req.body.path + '/' + req.body.target;
-        fsp.move(src, target, {overwrite: true})
+        fs.move(src, target, {overwrite: true})
             .then(() => res.sendStatus(205)) // 205, reset content
             .catch(error => {
                 log.error('/fm/rename', error);
