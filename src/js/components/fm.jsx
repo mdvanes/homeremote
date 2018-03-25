@@ -7,6 +7,7 @@ import './simple-material-table.scss';
 import {Card, CardText, CardHeader, CardActions} from 'material-ui/Card';
 import {deepPurple900, deepPurple200} from 'material-ui/styles/colors';
 
+// TODO Convert (mostly) to CSS Modules
 const progressStyle = movePercentage => {
     return {
         backgroundColor: deepPurple900,
@@ -25,8 +26,8 @@ const progressWrapperStyle = movePercentage => {
     }
 };
 
-const getMovePercentage = (state, props, entry) => {
-    if(props.moveProgress && state.dirName === props.moveProgress.filePath &&
+const getMovePercentage = (props, entry) => {
+    if(props.moveProgress && props.dirName === props.moveProgress.filePath &&
         entry.name === props.moveProgress.fileName
     ) {
         return props.moveProgress && props.moveProgress.percentage ? props.moveProgress.percentage : 0;
@@ -39,46 +40,47 @@ class FileManager extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            dirIndex: [{name: 'No files yet'}],
+            //dirIndex: [{name: 'No files yet'}],
             targetLocations: []
         };
-        this.listDir = this.listDir.bind(this);
+        //this.listDir = this.listDir.bind(this);
         this.ftpUpload = this.ftpUpload.bind(this);
         //this.getFtpStatus = this.getFtpStatus.bind(this);
         //this.props.getFtpStatus(this.state.dirIndex);
         this.getTargetLocations = this.getTargetLocations.bind(this);
         this.resetFilePermissions = this.resetFilePermissions.bind(this);
-        this.listDir('');
+        //this.listDir('');
+        this.props.listDir(null, '');
         this.getTargetLocations();
         this.props.setupSocket();
     }
 
     // TODO all fetch calls should be done through a (combined) service (use thunk). See https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md#style-y035 and http://stackoverflow.com/questions/35855781/having-services-in-react-application
-    listDir(dirName) {
-        if(this.state.dirName && this.state.dirName.length > 0 &&
-            dirName && dirName.length > 0) {
-            dirName = this.state.dirName + '/' + dirName;
-        }
-        fetch('/fm/list/', {
-            credentials: 'same-origin',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                path: dirName
-            })
-        })
-        .then(data => data.json())
-        .then(data => {
-            this.setState({
-                dirIndex: data.list,
-                dirName: data.dir
-            });
-        })
-        .catch(error => this.props.logError('error on fm/list/path: ' + error));
-    }
+    // listDir(dirName) {
+    //     if(this.state.dirName && this.state.dirName.length > 0 &&
+    //         dirName && dirName.length > 0) {
+    //         dirName = this.state.dirName + '/' + dirName;
+    //     }
+    //     fetch('/fm/list/', {
+    //         credentials: 'same-origin',
+    //         method: 'POST',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //             path: dirName
+    //         })
+    //     })
+    //     .then(data => data.json())
+    //     .then(data => {
+    //         this.setState({
+    //             dirName: data.dir
+    //         });
+    //         this.props.setFileManagerDirIndex(data.list);
+    //     })
+    //     .catch(error => this.props.logError('error on fm/list/path: ' + error));
+    // }
 
     ftpUpload(filePath) {
         fetch('/fm/ftp/', {
@@ -143,18 +145,18 @@ class FileManager extends React.Component {
         //const targetLocations = this.state.targetLocations.map(entry => {
         //    return <MenuItem onClick={() => {this.mvToTargetLocation(filePath, entry)}}>{entry}</MenuItem>
         //});
-        const rows = this.state.dirIndex.map(entry => {
+        const rows = this.props.dirIndex.map(entry => {
             if( entry.isDir ) {
                 return <tr key={entry.name}>
                     <td><FontIcon className="material-icons">folder_open</FontIcon></td>
-                    <td onClick={() => {this.listDir(entry.name)}}>{entry.name}</td>
+                    <td onClick={() => {this.props.listDir(this.props.dirName, entry.name)}}>{entry.name}</td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>;
             } else {
-                const filePath = this.state.dirName ? this.state.dirName + '/' + entry.name : entry.name;
-                let movePercentage = getMovePercentage(this.state, this.props, entry);
+                const filePath = this.props.dirName ? this.props.dirName + '/' + entry.name : entry.name;
+                let movePercentage = getMovePercentage(this.props, entry);
                 return <tr key={entry.name}>
                     <td>
                         {entry.size}
@@ -164,16 +166,16 @@ class FileManager extends React.Component {
                         <FlatButton onTouchTap={() => {this.ftpUpload(filePath)}} label="upload"/>
                     </td>
                     <td>
-                        <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
+                        <RenameButton path={this.props.dirName} src={entry.name} suggestion={this.props.dirName}/>
                     </td>
                     <td style={progressWrapperStyle(movePercentage)}>
                         <div style={progressStyle(movePercentage)}></div>
-                        <MoveButton filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
+                        <MoveButton filePath={this.props.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
                     </td>
                 </tr>;
             }
         });
-        const title = 'File Manager $[rootDir]/' + this.state.dirName;
+        const title = 'File Manager $[rootDir]/' + this.props.dirName;
         return (
             <Card style={{marginBottom: '1em', marginTop: '1em'}}>
                 <CardHeader title={title}/>
@@ -191,7 +193,7 @@ class FileManager extends React.Component {
                         <tbody>
                         <tr>
                             <td></td>
-                            <td onTouchTap={() => this.listDir('')}>/</td>
+                            <td onTouchTap={() => this.props.listDir(this.props.dirName, '')}>/</td>
                             <td></td>
                             <td></td>
                             <td></td>

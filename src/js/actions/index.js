@@ -7,6 +7,8 @@ export const CLEAR_LOG = 'CLEAR_LOG';
 export const SET_MOVE_PARAMS = 'SET_MOVE_PARAMS';
 export const SET_MOVE_PROGRESS = 'SET_MOVE_PROGRESS';
 export const SET_FILEMANAGER_SOCKET = 'SET_FILEMANAGER_SOCKET';
+export const SET_DIR_INDEX = 'SET_DIR_INDEX';
+export const LIST_DIR = 'LIST_DIR';
 
 /* util */
 
@@ -83,5 +85,20 @@ export const setFileManagerSocket = socket => {
     return {
         type: SET_FILEMANAGER_SOCKET,
         socket
+    }
+};
+
+export const setFileManagerDirIndex = (dirName, dirIndex) => {
+    return {
+        type: SET_DIR_INDEX,
+        dirName,
+        dirIndex
+    }
+};
+
+export const fileManagerListDir = dirName => {
+    return {
+        type: LIST_DIR,
+        dirName
     }
 };
