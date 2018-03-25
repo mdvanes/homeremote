@@ -4,6 +4,8 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const common = {
 
@@ -50,7 +52,22 @@ const common = {
             filename: 'index.html',
             template: 'src/index.templates.ejs',
             inject: 'body'
-        })
+        }),
+        new CleanWebpackPlugin(['public']),
+        new CopyWebpackPlugin([
+            {
+                from: 'src/favicon.ico',
+                to: 'favicon.ico'
+            },
+            {
+                from: 'src/launcher-icon-4x.png',
+                to: 'launcher-icon-4x.png'
+            },
+            {
+                from: 'src/manifest.json',
+                to: 'manifest.json'
+            }
+        ])
     ],
 
     module: {
