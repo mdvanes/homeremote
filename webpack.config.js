@@ -74,7 +74,7 @@ const common = {
         rules: [
             {
                 test: /\.jsx?$/,
-                loaders: ['babel-loader?presets[]=react,presets[]=es2015', 'eslint-loader']
+                loaders: ['babel-loader?presets[]=react,presets[]=env', 'eslint-loader']
             },
             {
                 test: /\.js?$/,
