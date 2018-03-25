@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { logInfo, logError, setMoveProgress, setFileManagerSocket, setFileManagerDirIndex } from '../actions';
 import FileManager from '../components/fm';
 
-// TODO Upgrade React to v16, Fix production build/minification/stage js/min.js
 // TODO Upgrade Node, but before adding features check if it can deploy on server
 // TODO connectEnsureLogin for web socket (test security)
 // TODO also move progress for fmsmall
@@ -23,6 +22,7 @@ function constructWsOrigin() {
 }
 /* eslint-enable complexity */
 
+/* eslint-disable complexity */
 function listDir(oldDirName, newDirName) {
     return function(dispatch) {
         // Create the target dirname by suffixing it to the currently selected dir
@@ -52,6 +52,7 @@ function listDir(oldDirName, newDirName) {
             .catch(error => dispatch(logError('error on fm/list/path: ' + error)));
     }
 }
+/* eslint-enable complexity */
 
 function setupSocket() {
     return function(dispatch, getState) {

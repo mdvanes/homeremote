@@ -26,6 +26,7 @@ const progressWrapperStyle = movePercentage => {
     }
 };
 
+/* eslint-disable complexity */
 const getMovePercentage = (props, entry) => {
     if(props.moveProgress && props.dirName === props.moveProgress.filePath &&
         entry.name === props.moveProgress.fileName
@@ -35,6 +36,7 @@ const getMovePercentage = (props, entry) => {
         return null;
     }
 };
+/* eslint-enable complexity */
 
 class FileManager extends React.Component {
     constructor(props) {
