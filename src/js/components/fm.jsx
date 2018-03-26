@@ -8,7 +8,7 @@ import {Card, CardText, CardHeader, CardActions} from 'material-ui/Card';
 import {deepPurple900, deepPurple200} from 'material-ui/styles/colors';
 
 // TODO Convert (mostly) to CSS Modules
-const progressStyle = movePercentage => {
+export const progressStyle = movePercentage => {
     return {
         backgroundColor: deepPurple900,
         width: `${Math.round(movePercentage * 100)}%`,
@@ -19,7 +19,7 @@ const progressStyle = movePercentage => {
     };
 };
 
-const progressWrapperStyle = movePercentage => {
+export const progressWrapperStyle = movePercentage => {
     return {
         position: 'relative',
         backgroundColor: movePercentage ? deepPurple200 : 'transparent'
@@ -27,7 +27,7 @@ const progressWrapperStyle = movePercentage => {
 };
 
 /* eslint-disable complexity */
-const getMovePercentage = (props, entry) => {
+export const getMovePercentage = (props, entry) => {
     if(props.moveProgress && props.dirName === props.moveProgress.filePath &&
         entry.name === props.moveProgress.fileName
     ) {
@@ -158,7 +158,7 @@ class FileManager extends React.Component {
                 </tr>;
             } else {
                 const filePath = this.props.dirName ? this.props.dirName + '/' + entry.name : entry.name;
-                let movePercentage = getMovePercentage(this.props, entry);
+                const movePercentage = getMovePercentage(this.props, entry);
                 return <tr key={entry.name}>
                     <td>
                         {entry.size}

@@ -31,33 +31,18 @@ class MoveButtonSmallDir extends React.Component {
         });
     }
 
-    // TODO duplicate code with MoveButton.jsx
+    // TODO duplicate code with MoveButton.jsx (extend MoveButton.jsx?)
     // TODO make more secure by supplying only the ID of the targetLocation and not allow freeform paths
     mvToTargetLocation(filePath, fileName, targetLocation) {
         this.props.logInfo(`Start moving ${fileName}`);
-        fetch('/fm/mvToTargetLocation', {
-            credentials: 'same-origin',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                sourcePath: filePath,
-                fileName: fileName,
-                targetPath: targetLocation
-            })
-        })
-        .then(data => data.json())
-        .then(data => {
-            this.handleClose();
-            if(data.status === 'ok') {
-                this.props.logInfo(`Move of ${fileName} completed`);
-            } else {
-                throw new Error(`Move of ${fileName} failed`);
-            }
-        })
-        .catch(error => this.props.logError('error on fm/mvToTargetLocation: ' + error));
+        this.handleClose();
+
+        this.props.fileManagerSocket.send(JSON.stringify({
+            type: 'startMove',
+            sourcePath: filePath,
+            fileName: fileName,
+            targetPath: targetLocation
+        }));
     }
 
     confirmMove(filePath, fileName, targetLocation) {
@@ -115,7 +100,8 @@ const mapStateToProps = state => {
     return {
         targetLocations: state.moveParams.targetLocations,
         filePath: state.moveParams.filePath,
-        fileName: state.moveParams.fileName
+        fileName: state.moveParams.fileName,
+        fileManagerSocket: state.fileManager.socket
     };
 };
 
