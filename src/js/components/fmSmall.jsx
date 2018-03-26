@@ -1,7 +1,7 @@
 // for small screens, extend fm.jsx and only change rendering.
 
 import React from 'react'; // eslint-disable-line
-import FileManager from './fm';
+import FileManager, { getMovePercentage, progressWrapperStyle, progressStyle } from './fm';
 import RenameButton from '../containers/RenameButton';
 import MoveButtonSmall from '../containers/MoveButtonSmall';
 import {Card, CardActions, CardHeader} from 'material-ui/Card';
@@ -11,23 +11,30 @@ import {deepPurple200} from 'material-ui/styles/colors';
 
 export default class FileManagerSmall extends FileManager {
     render() {
-        const rows = this.state.dirIndex.map(entry => {
+        const rows = this.props.dirIndex.map(entry => {
             if(entry.isDir) {
                 return <Card
                     key={entry.name}
-                    onTouchTap={() => {this.listDir(entry.name)}}>
+                    onTouchTap={() => {this.props.listDir(this.props.dirName, entry.name)}}>
                     <CardHeader
                         title={entry.name}
                         avatar={<FontIcon className="material-icons">folder_open</FontIcon>} />
                 </Card>;
             } else {
-                const filePath = this.state.dirName ? this.state.dirName + '/' + entry.name : entry.name;
+                const filePath = this.props.dirName ? this.props.dirName + '/' + entry.name : entry.name;
+                const movePercentage = getMovePercentage(this.props, entry);
+                const wrapperSmallStyle = progressWrapperStyle(movePercentage);
+                wrapperSmallStyle.display = 'inline-block';
+                const progressSmallStyle = progressStyle(movePercentage);
                 return <Card key={entry.name}>
                     <CardHeader title={entry.name} subtitle={entry.size}/>
                     <CardActions>
                         <FlatButton onTouchTap={() => {this.ftpUpload(filePath)}} label="upload"/>
-                        <RenameButton path={this.state.dirName} src={entry.name} suggestion={this.state.dirName}/>
-                        <MoveButtonSmall filePath={this.state.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
+                        <RenameButton path={this.props.dirName} src={entry.name} suggestion={this.props.dirName}/>
+                        <div style={wrapperSmallStyle}>
+                            <div style={progressSmallStyle}></div>
+                            <MoveButtonSmall filePath={this.props.dirName} fileName={entry.name} targetLocations={this.state.targetLocations} />
+                        </div>
                     </CardActions>
                     {/*<CardText>Some text</CardText>*/}
                 </Card>;
@@ -37,16 +44,16 @@ export default class FileManagerSmall extends FileManager {
         return (
             <div>
                 <Card style={{backgroundColor: deepPurple200}}
-                      onTouchTap={() => this.listDir('')}>
+                      onTouchTap={() => this.props.listDir(this.props.dirName, '')}>
                     <CardHeader
-                        title={this.state.dirName}
+                        title={this.props.dirName}
                         subtitle={nrOfEntries}
                         avatar={<FontIcon className="material-icons">subdirectory_arrow_left</FontIcon>}/>
                 </Card>
                 {rows}
                 <div className="row">
                     <div className="col-xs-6">
-                        <FlatButton onTouchTap={this.getFtpStatus} primary={true} label="Get FTP status"/>
+                        <FlatButton onTouchTap={this.props.getFtpStatus} primary={true} label="Get FTP status"/>
                         <FlatButton onTouchTap={this.resetFilePermissions} primary={true} label="Fix Permissions"/>
                     </div>
                 </div>
