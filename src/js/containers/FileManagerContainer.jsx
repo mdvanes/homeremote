@@ -2,8 +2,8 @@ import { connect } from 'react-redux';
 import { logInfo, logError, setMoveProgress, setFileManagerSocket, setFileManagerDirIndex } from '../actions';
 import FileManager from '../components/fm';
 
-// TODO Upgrade Node, but before adding features check if it can deploy on server
-// TODO connectEnsureLogin for web socket (test security)
+// TODO Upgrade Node, but before adding features check if it can deploy on server. Upgrade node dependencies
+// TODO connectEnsureLogin for web socket (test security with automated tests)
 // TODO also move progress for fmsmall
 // Release 1.2.0
 // TODO allow multiple (parallel, consecutive) moves without overwriting the state of existing move
