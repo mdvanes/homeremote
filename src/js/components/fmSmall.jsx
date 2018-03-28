@@ -7,7 +7,37 @@ import MoveButtonSmall from '../containers/MoveButtonSmall';
 import {Card, CardActions, CardHeader} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
-import {deepPurple200} from 'material-ui/styles/colors';
+import {teal100, teal400, deepPurple200} from 'material-ui/styles/colors';
+
+const progressWrapperStyleGlobal = () => {
+    return {
+        backgroundColor: teal100,
+        height: '1.5em',
+        fontFamily: 'Roboto, sans-serif',
+        position: 'relative',
+        overflow: 'hidden'
+    }
+};
+
+const progressStyleGlobal = movePercentage => {
+    return {
+        backgroundColor: teal400,
+        width: `${Math.round(movePercentage * 100)}%`,
+        height: '100%'
+    };
+};
+
+const progressTextStyleGlobal = () => {
+    return {
+        position: 'absolute',
+        top: 0,
+        padding: '0.1em 0.5em',
+        wordBreak: 'break-all',
+        width: '100vw',
+        height: '1.1em',
+        overflow: 'hidden'
+    }
+};
 
 export default class FileManagerSmall extends FileManager {
     render() {
@@ -41,8 +71,21 @@ export default class FileManagerSmall extends FileManager {
             }
         });
         const nrOfEntries = `${rows.length} entries`;
+        let moveElem = null;
+        if(this.props.moveProgress &&
+            this.props.moveProgress.fileName &&
+            this.props.moveProgress.percentage &&
+            this.props.moveProgress.percentage !== 1) {
+            moveElem = (<div style={progressWrapperStyleGlobal()}>
+                    <div style={progressStyleGlobal(this.props.moveProgress.percentage)}></div>
+                    <div style={progressTextStyleGlobal()}>
+                        Copying {this.props.moveProgress.fileName}
+                    </div>
+                </div>);
+        }
         return (
             <div>
+                {moveElem}
                 <Card style={{backgroundColor: deepPurple200}}
                       onTouchTap={() => this.props.listDir(this.props.dirName, '')}>
                     <CardHeader

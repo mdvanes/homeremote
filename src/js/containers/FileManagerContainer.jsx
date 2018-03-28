@@ -2,9 +2,7 @@ import { connect } from 'react-redux';
 import { logInfo, logError, setMoveProgress, setFileManagerSocket, setFileManagerDirIndex } from '../actions';
 import FileManager from '../components/fm';
 
-// TODO Upgrade Node, but before adding features check if it can deploy on server. Upgrade node dependencies
 // TODO connectEnsureLogin for web socket (test security with automated tests)
-// TODO also move progress for fmsmall
 // Release 1.2.0
 // TODO allow multiple (parallel, consecutive) moves without overwriting the state of existing move
 // TODO cancel move button
@@ -23,7 +21,7 @@ function constructWsOrigin() {
 /* eslint-enable complexity */
 
 /* eslint-disable complexity */
-function listDir(oldDirName, newDirName) {
+export function listDir(oldDirName, newDirName) {
     return function(dispatch) {
         // Create the target dirname by suffixing it to the currently selected dir
         let dirName = newDirName;
@@ -54,7 +52,7 @@ function listDir(oldDirName, newDirName) {
 }
 /* eslint-enable complexity */
 
-function setupSocket() {
+export function setupSocket() {
     return function(dispatch, getState) {
         const socket = new WebSocket(`${constructWsOrigin()}/fm/mvToTargetLocationProgress`);
         socket.onopen = () => socket.send(JSON.stringify({type: 'init'}));
@@ -82,7 +80,7 @@ function setupSocket() {
 }
 
 // This is a simple thunk
-function getFtpStatus(/*dirIndex*/) {
+export function getFtpStatus(/*dirIndex*/) {
     return function(dispatch) {
         return fetch('/fm/ftpstatus', {
             credentials: 'same-origin',
