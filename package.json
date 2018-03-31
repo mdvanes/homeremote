@@ -86,6 +86,7 @@
     "request-promise": "^4.2.2",
     "transmission": "^0.4.9",
     "ws": "^5.0.0",
+    "list-endpoints-express": "^1.0.1",
     "youtube-dl": "^1.12.1"
   }
 }

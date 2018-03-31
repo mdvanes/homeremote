@@ -23,6 +23,7 @@ const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 const bodyParser = require('body-parser');
 const server = http.createServer(app);
 const expressWs = require('express-ws')(app, server);
+const listEndpointsExpress = require('list-endpoints-express');
 //require('express-ws')(app, server);
 
 const settings = require('../settings.json');
@@ -166,12 +167,12 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     //broadcast.bind(app, log, debug);
 
     // TODO upgrade passport. Check if ws direct is possible. Check if connectEnsureLogin does anything
-    app.ws('/echo', (ws/*, req*/) => {
-        ws.on('message', msg => {
-            log.info('ws will echo', msg);
-            ws.send(msg);
-        });
-    });
+    // app.ws('/echo', (ws/*, req*/) => {
+    //     ws.on('message', msg => {
+    //         log.info('ws will echo', msg);
+    //         ws.send(msg);
+    //     });
+    // });
 
     // Using the /r/ subpath for views, to easily match here and in webpack.config proxies
     app.get('/r/*', connectEnsureLogin(), (req, res) => {
@@ -182,7 +183,6 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
             res.redirect('/');
         }
     });
-
 } else {
     app.use(
         express.static('public')
@@ -192,3 +192,4 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
 
 server.listen(3000, () => log.info('HomeRemote listening at http://localhost:3000') );
 
+log.info('Registered endpoints:\n', JSON.stringify(listEndpointsExpress(app), null, 2));
