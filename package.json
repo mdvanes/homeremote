@@ -9,7 +9,8 @@
     "startdebug": "npm run lint && node server/app.js --debugremote | bunyan",
     "lint": "esw webpack.config.* server --color",
     "lint:watch": "npm run lint -- --watch",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "test": "npm run lint && ./node_modules/.bin/jest"
   },
   "watch": {
     "startdebug": [
@@ -41,9 +42,11 @@
     "express": "^4.15.2",
     "file-loader": "^1.1.11",
     "flexboxgrid": "^6.3.1",
+    "frisby": "^2.0.14",
     "html-webpack-plugin": "^3.1.0",
     "iconv": "^2.2.1",
     "id3-writer": "^1.2.2",
+    "jest": "^22.4.3",
     "material-ui": "^0.20.0",
     "node-sass": "^4.5.0",
     "npm-watch": "^0.3.0",
