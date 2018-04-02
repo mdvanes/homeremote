@@ -14,7 +14,7 @@ Material Design:
 
 For the moment, `npm i` is not enough. After `npm i` also run `buildPatchExpressWs.sh` until PR has been accepted.
 
-After installation (see below), use ```sudo server homeremote start``` and go to https://localhost:3443
+After installation (see below), use ```sudo service homeremote start``` and go to https://localhost:3443
 
 Read log file with:
 
@@ -55,13 +55,16 @@ To run API tests, first build and run the server:
 
 ## Updating
 
-* `npm build`
-* confirm that the new public/js/*.js is added to git
+* `npm build` and test locally
+* set build version in package.json and push commits
+* ssh to server
 * stop `sudo service homeremote stop`
 * `cd /opt/homeremote`
 * update `git pull origin master`
-* test run `node server/app.js | bunyan`
+* update dependencies `npm i`
+* install patched express-ws (if needed): `chmod +x buildPatchExpressWs.sh` and `./buildPatchExpressWs.sh`
 * build for production: `npm run build` to create updated JS and source map
+* test run `node server/app.js | bunyan`
 * start `sudo service homeremote start`
 
 
