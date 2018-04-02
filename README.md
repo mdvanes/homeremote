@@ -38,8 +38,16 @@ To run API tests, first build and run the server:
 
 * `npm run build`
 * `npm run start`
-* in second terminal: `./test/curl-ws.sh` and after completion without errors ctrl+c
+// This does not work as expected, it keeps the first websocket open instead of continuing * in second terminal: `./test/curl-ws.sh` and after completion without errors ctrl+c
 * in second terminal: `npm run test`
+* in the browser (localhost:3000) be logged out and run:
+    * probe non-existing ws endpoint `const socket1 = new WebSocket('ws://localhost:3000/hack'); socket1.onopen = () => socket1.send(JSON.stringify({type: 'init'}));`
+    * probe (the only) existing ws endpoint `const socket2 = new WebSocket('ws://localhost:3000/fm/mvToTargetLocationProgress'); socket2.onopen = () => socket2.send(JSON.stringify({type: 'init'}));`
+    * both should give no error, but in the Network panel no responses are received.
+    * now login and run:
+    * probe non-existing ws endpoint `const socket1 = new WebSocket('ws://localhost:3000/hack'); socket1.onopen = () => socket1.send(JSON.stringify({type: 'init'}));`
+    * probe (the only) existing ws endpoint `const socket2 = new WebSocket('ws://localhost:3000/fm/mvToTargetLocationProgress'); socket2.onopen = () => socket2.send(JSON.stringify({type: 'init'}));`
+
 
 ## Screenshot
 

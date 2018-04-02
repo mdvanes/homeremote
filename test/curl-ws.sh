@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Login with test credentials
 curl 'http://localhost:3000/login' \
     -H 'Pragma: no-cache' \
     -H 'Origin: http://localhost:8080' \
