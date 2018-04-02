@@ -188,44 +188,19 @@ const bind = function(app, expressWs, log) {
     });
 
     const progressEndpoint = '/fm/mvToTargetLocationProgress';
-    //app.ws(progressEndpoint, () => {}); // (ws, req) => {}
     app.ws(progressEndpoint, (ws/*, req*/) => {
         ws.on('message', msg => {
             const parsedMsg = JSON.parse(msg);
-            console.log('received', parsedMsg, parsedMsg.type);
+            //log.info('received', parsedMsg, parsedMsg.type);
             if(parsedMsg.type === 'startMove') {
                 moveFile(ws, parsedMsg, log);
+            } else if(parsedMsg.type === 'init') {
+                ws.send(JSON.stringify({
+                    type: 'init-received'
+                }))
             }
         })
-    }); // (ws, req) => {}
-
-    // app.post('/fm/mvToTargetLocation', connectEnsureLogin(), (req, res) => {
-    //     const sourcePath = rootPath + '/' + req.body.sourcePath + '/' + req.body.fileName;
-    //     const targetNewFile = req.body.targetPath + '/' + req.body.fileName;
-    //     fsp.exists(sourcePath)
-    //         .then(result => {
-    //             if(result) {
-    //                 return fsp.exists(req.body.targetPath);
-    //             } else {
-    //                 throw new Error('sourcePath does not exist: ' + sourcePath);
-    //             }
-    //         })
-    //         .then(result => {
-    //             if(result) {
-    //                 // fsp.move does not support "progress" reporting
-    //                 return fsp.move(sourcePath, targetNewFile);
-    //             } else {
-    //                 throw new Error('targetPath does not exist: ' + req.body.targetPath);
-    //             }
-    //         })
-    //         .then(() => {
-    //             res.send({status: 'ok'});
-    //         })
-    //         .catch(err => {
-    //             log.error('ERROR mvToTargetLocation:', err);
-    //             res.send({status: 'error'});
-    //         });
-    // });
+    });
 
     let ftpStatus = 'nothing started';
 

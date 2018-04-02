@@ -10,7 +10,7 @@
     "lint": "esw webpack.config.* server --color",
     "lint:watch": "npm run lint -- --watch",
     "watch": "npm-watch",
-    "test": "npm run lint && ./node_modules/.bin/jest"
+    "test": "npm run lint && node_modules/.bin/jest"
   },
   "watch": {
     "startdebug": [
@@ -39,7 +39,6 @@
     "eslint-plugin-react": "^7.7.0",
     "eslint-watch": "^3.0.1",
     "esprima-fb": "^15001.1001.0-dev-harmony-fb",
-    "express": "^4.15.2",
     "file-loader": "^1.1.11",
     "flexboxgrid": "^6.3.1",
     "frisby": "^2.0.14",
@@ -78,9 +77,9 @@
     "cookie-parser": "^1.4.3",
     "cp-file": "^5.0.0",
     "ejs": "^2.5.8",
-    "express": "^4.13.1",
+    "express": "^4.15.2",
     "express-session": "^1.15.2",
-    "express-ws": "^3.0.0",
+    "express-ws": "git://github.com/mdvanes/express-ws.git",
     "fs-extra": "^5.0.0",
     "morgan": "^1.9.0",
     "passport-local": "^1.0.0",

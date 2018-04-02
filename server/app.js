@@ -29,24 +29,6 @@ const listEndpointsExpress = require('list-endpoints-express');
 const settings = require('../settings.json');
 const auth = require('../auth.json');
 
-
-
-
-
-// https://stackoverflow.com/questions/47683909/cant-set-headers-after-they-are-sent-error-happens-with-socket-io
-// const wss = new WebSocket.Server({ server });
-// console.log(WebSocket, wss)
-// // Also mount the app here
-// server.on('request', app); // TODO connectEnsureLogin???
-//
-// // wss.on('connection', function connection(ws /*, req*/) {
-// //     console.log('connected via web socket', ws);
-// //     filemanager.wsbind();
-// // });
-
-
-
-
 app.use(bodyParser.json()); // for parsing application/json
 
 // Configuration
@@ -166,14 +148,6 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     getMusic.bind(app, log);
     //broadcast.bind(app, log, debug);
 
-    // TODO upgrade passport. Check if ws direct is possible. Check if connectEnsureLogin does anything
-    // app.ws('/echo', (ws/*, req*/) => {
-    //     ws.on('message', msg => {
-    //         log.info('ws will echo', msg);
-    //         ws.send(msg);
-    //     });
-    // });
-
     // Using the /r/ subpath for views, to easily match here and in webpack.config proxies
     app.get('/r/*', connectEnsureLogin(), (req, res) => {
         if(!debug) {
@@ -183,12 +157,12 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
             res.redirect('/');
         }
     });
+
 } else {
     app.use(
         express.static('public')
     );
 }
-
 
 server.listen(3000, () => log.info('HomeRemote listening at http://localhost:3000') );
 
