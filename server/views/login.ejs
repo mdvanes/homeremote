@@ -61,7 +61,21 @@ form {
 </form>
 
 <script>
-	if(window.location.search==='?failed') {
+
+	// A websocket connection to this endpoint should not and can't be made when logged out
+	// Instead it actually crashes the server.
+	// https://github.com/HenningM/express-ws/issues/64
+	// In fact on any endpoint also e.g. const socket = new WebSocket('ws://localhost:3000/afds');
+
+    // const socket = new WebSocket('ws://localhost:3000/fm/mvToTargetLocationProgress');
+    // socket.onopen = () => socket.send(JSON.stringify({type: 'init'}));
+
+	// Compare logging out and calling http://localhost:3000/fm/getTargetLocations
+	// It does not crash, but redirects to http://localhost:3000/login
+	// The same behavior with or without connectEnsureLogin() middleware on the endpoint
+
+
+    if(window.location.search==='?failed') {
 	    console.log('failed');
 	    document.querySelector('.error').style.display = 'block';
 	}

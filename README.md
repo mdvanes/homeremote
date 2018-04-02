@@ -12,12 +12,34 @@ Material Design:
 
 ## Run
 
+For the moment, `npm i` is not enough. After `npm i` also run `buildPatchExpressWs.sh` until PR has been accepted.
+
 After installation (see below), use ```sudo server homeremote start``` and go to https://localhost:3443
 
 Read log file with:
 
 * ```bunyan -o short homeremote-error.log``` (or bunyan /var/log/foo.log). Bunyan has many options for filtering.
 
+
+## Test
+
+Tests will run
+
+* lint (server/client)
+* Jest API test
+
+The API tests try to access all the HTTP endpoints when logged out, to see if they are
+secure. 
+
+Also run curl-ws.sh manually. It will call (existing and non-existing) websocket endpoints when logged 
+out to see if the server crashes (https://github.com/HenningM/express-ws/issues/64)
+
+To run API tests, first build and run the server:
+
+* `npm run build`
+* `npm run start`
+* in second terminal: `./test/curl-ws.sh` and after completion without errors ctrl+c
+* in second terminal: `npm run test`
 
 ## Screenshot
 
