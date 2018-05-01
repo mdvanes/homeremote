@@ -2,8 +2,6 @@ import { connect } from 'react-redux';
 import { logInfo, logError, setMoveProgress, setFileManagerSocket, setFileManagerDirIndex } from '../actions';
 import FileManager from '../components/fm';
 
-// TODO connectEnsureLogin for web socket (test security with automated tests with a mix of jade, puppeteer, frisby and curl scripts. Also generate a list of all endpoints)
-// Release 1.2.0
 // TODO allow multiple (parallel, consecutive) moves without overwriting the state of existing move
 // TODO cancel move button
 // TODO replace copy by move, see https://github.com/sindresorhus/cp-file and https://github.com/sindresorhus/move-file/blob/master/index.js
