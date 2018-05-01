@@ -87,7 +87,7 @@ class MoveButtonSmallDir extends React.Component {
                     modal={false}
                     open={this.state.open}
                     actions={this.state.dialogActions}
-                    onRequestClose={this.handleClose}
+                    // Sometimes on open of the modal, it immediately closes. Might be caused by this handling of the overlay click: onRequestClose={this.handleClose}
                 >
                     {this.state.message}
                 </Dialog>
