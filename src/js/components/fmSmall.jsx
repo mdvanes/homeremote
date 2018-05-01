@@ -23,7 +23,8 @@ const progressStyleGlobal = movePercentage => {
     return {
         backgroundColor: teal400,
         width: `${Math.round(movePercentage * 100)}%`,
-        height: '100%'
+        height: '100%',
+        transition: 'width 500ms'
     };
 };
 
@@ -40,6 +41,7 @@ const progressTextStyleGlobal = () => {
 };
 
 export default class FileManagerSmall extends FileManager {
+    /* eslint-disable complexity */
     render() {
         const rows = this.props.dirIndex.map(entry => {
             if(entry.isDir) {
@@ -103,4 +105,5 @@ export default class FileManagerSmall extends FileManager {
             </div>
         );
     }
+    /* eslint-enable complexity */
 }
