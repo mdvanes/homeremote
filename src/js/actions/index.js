@@ -9,6 +9,7 @@ export const SET_MOVE_PROGRESS = 'SET_MOVE_PROGRESS';
 export const SET_FILEMANAGER_SOCKET = 'SET_FILEMANAGER_SOCKET';
 export const SET_DIR_INDEX = 'SET_DIR_INDEX';
 export const LIST_DIR = 'LIST_DIR';
+export const SET_SWITCHES = 'SET_SWITCHES';
 
 /* util */
 
@@ -100,5 +101,12 @@ export const fileManagerListDir = dirName => {
     return {
         type: LIST_DIR,
         dirName
+    }
+};
+
+export const setSwitches = (switches) => {
+    return {
+        type: SET_SWITCHES,
+        switches
     }
 };

@@ -3,6 +3,7 @@ import short from './short';
 import moveParams from './moveParams';
 import moveProgress from './moveProgress';
 import fileManager from './fileManager';
+import switchesList from './switchesList';
 import { combineReducers } from 'redux';
 
 const homeRemoteReducers = combineReducers({
@@ -10,7 +11,8 @@ const homeRemoteReducers = combineReducers({
     short,
     moveParams,
     moveProgress,
-    fileManager
+    fileManager,
+    switchesList
 });
 
 export default homeRemoteReducers;
