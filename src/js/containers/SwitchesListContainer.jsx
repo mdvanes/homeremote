@@ -15,8 +15,7 @@ export function getSwitches() {
     })
       .then(data => data.json())
       .then(data => {
-        console.log(data)
-        dispatch(logInfo(`Got switches: ${data.switches.length}`)); // TODO log something useful
+        dispatch(logInfo(`Got switches: ${data.switches.map(aSwitch => aSwitch.name).join(', ')}`));
         dispatch(setSwitches(data.switches));
       })
       .catch(error => dispatch(logError(`error on /switches: ${error}`)));
