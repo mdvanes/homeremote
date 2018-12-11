@@ -58,6 +58,7 @@ To run API tests, first build and run the server:
 * `npm build` and test locally
 * set build version in package.json and push commits
 * ssh to server
+* stop "services" via web app, if running.
 * stop `sudo service homeremote stop`
 * `cd /opt/homeremote`
 * update `git pull origin master`
