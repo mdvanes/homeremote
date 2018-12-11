@@ -1,6 +1,6 @@
 {
   "name": "HomeRemote",
-  "version": "1.2.4",
+  "version": "1.2.5-alpha.1",
   "description": "Remote for home automation",
   "scripts": {
     "devserver": "concurrently --kill-others \"node node_modules/.bin/webpack-dev-server --host 0.0.0.0 --config webpack.config.js --content-base ./public --inline --hot\" \"npm run watch\"",
