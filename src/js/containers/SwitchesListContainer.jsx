@@ -5,7 +5,7 @@ import SwitchesList from '../components/SwitchesList';
 // This is a simple thunk
 export function getSwitches() {
   return function(dispatch) {
-    fetch('switches', {
+    fetch('/switches', {
       credentials: 'same-origin',
       method: 'GET',
       headers: {
