@@ -2,10 +2,10 @@
 /* eslint-env node */
 
 const exec = require('../test/server/mockatoo').mock('child_process', 'shellStatus').exec;
-const settings = require('../settings.json');
+// const settings = require('../settings.json');
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
-const bind = function(app, endpointName, log) {
+const bind = function(app, endpointName, log, settings) {
 
     const execPromise = (cmd, name, mapping) => {
         return new Promise((resolve, reject) => {
@@ -37,10 +37,10 @@ const bind = function(app, endpointName, log) {
         });
     };
 
-    app.get(`/${endpointName}/status`, connectEnsureLogin(), function (req, res) {
+    app.get(`/${endpointName}/status`, connectEnsureLogin(), (req, res) => {
         log.info(`call to /${endpointName}/status`);
 
-        const execPromises = settings.shell.map(setting => {
+        const execPromises = settings.map(setting => {
             if(!(setting.cmd && setting.name && setting.mapping)) {
                 res.send({status: 'error', message: 'invalid setting properties'});
                 return;
@@ -50,7 +50,16 @@ const bind = function(app, endpointName, log) {
 
         Promise.all(execPromises)
             .then(data => {
-                res.send({status: 'ok', entries: data});
+                console.log(data)
+                if(data[0].indexOf && data[0].indexOf('Active: active') > -1) {
+                    res.send({status: 'started'});
+                } else if(data[0].indexOf && data[0].indexOf('Active: failed') > -1 || data.indexOf('Active: inactive') > -1) {
+                    res.send({status: 'stopped'});
+                } else {
+                    // Otherwise, return an array of the entry data
+                    res.send({status: 'ok', entries: data});
+                    // TODO handle errors like in serviceToggle.js (detect with stderr set? or exitcode?)
+                }
             })
             .catch(err => {
                 log.error(err);

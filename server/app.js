@@ -121,13 +121,20 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         '/login',
         passport.authenticate('local', { failureRedirect: '/login?failed' }),
         (req, res) => {
-            res.redirect('/');
-    });
+            const redirectUrl = req.session && req.session.returnTo ? req.session.returnTo : '/';
+            delete req.session.returnTo;
+            res.redirect(redirectUrl);
+        });
     app.get('/logout',
         function(req, res){
             req.logout();
             res.redirect('/login');
         });
+    app.get('/r/logout',
+      function(req, res){
+          req.logout();
+          res.redirect('/login');
+      });
 
     app.use(
         connectEnsureLogin(),
@@ -141,7 +148,8 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     serviceToggle.bind(app, 'radio', 'playradio', log);
     serviceToggle.bind(app, 'motion', 'motion', log);
     vmToggle.bind(app, 'vm', 'vm', log);
-    shellStatus.bind(app, 'shell', log);
+    shellStatus.bind(app, 'shell', log, require('../settings.json').shell);
+///    shellStatus.bind(app, 'vmservices', log, require('../settings.json').vmservices);
     switcher.bind(app, log);
     gears.bind(app, log);
     filemanager.bind(app, expressWs, log);
