@@ -37,9 +37,9 @@ const bind = function(app, endpointName, serviceName, log) {
         });
     });
 
-    app.get(`/${endpointName}/status`, connectEnsureLogin(), function (req, res) {
+    app.get(`/${endpointName}/status`, connectEnsureLogin(), (req, res) => {
         log.info(`call to /${endpointName}/status`);
-        exec(`sudo service ${serviceName} status`, function(error, stdout, stderr){
+        exec(`sudo service ${serviceName} status`, (error, stdout, stderr) => {
             log.info('['+stdout+']');
             if(stdout.indexOf('Active: active') > -1) {
                 res.send({status: 'started'});
