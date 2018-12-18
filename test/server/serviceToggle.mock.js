@@ -8,8 +8,14 @@ module.exports = {
                 log.info(`Stubbed exec of "${cmd}" for "${mockConfig}"`);
                 if(cmd === 'sudo service playradio status') {
                     cb(null, 'Active: active');
+                } else if(cmd === 'sudo service playradio start') {
+                    cb(null, '');
+                } else if(cmd === 'sudo service playradio stop') {
+                    cb(null, '');
                 } else if(cmd === 'sudo service motion status') {
                     cb(null, 'Active: active');
+                } else if(cmd === 'sudo -u foofoofoofoofoofoo VBoxManage showvminfo "bar" | grep State') {
+                    cb(null, 'running (');
                 } else {
                     cb(null, 'Active: inactive');
                 }
