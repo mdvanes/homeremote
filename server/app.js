@@ -10,7 +10,7 @@ const bunyan = require('bunyan');
 const nowplaying = require('./nowplaying.js');
 //const motion = require('./motion.js');
 const serviceToggle = require('./serviceToggle.js');
-const vmToggle = require('./vmToggle.js');
+// const vmToggle = require('./vmToggle.js');
 const shellStatus = require('./shellStatus.js');
 const switcher = require('./switch.js');
 const filemanager = require('./fm.js');
@@ -121,7 +121,9 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         '/login',
         passport.authenticate('local', { failureRedirect: '/login?failed' }),
         (req, res) => {
-            const redirectUrl = req.session && req.session.returnTo ? req.session.returnTo : '/';
+            const redirectUrl = req.session && req.session.returnTo && req.session.returnTo.indexOf('/r') === 0
+              ? req.session.returnTo
+              : '/';
             delete req.session.returnTo;
             res.redirect(redirectUrl);
         });
@@ -145,11 +147,46 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         // Do not start motion in debugmode, because of sudo password requests.
         nowplaying.bind(app, log, debug);
     }
-    serviceToggle.bind(app, 'radio', 'playradio', log);
-    serviceToggle.bind(app, 'motion', 'motion', log);
-    vmToggle.bind(app, 'vm', 'vm', log);
-    shellStatus.bind(app, 'shell', log, require('../settings.json').shell);
-///    shellStatus.bind(app, 'vmservices', log, require('../settings.json').vmservices);
+    // serviceToggle.bind(app, 'radio', 'playradio', log);
+    //serviceToggle.bind(app, 'radio', require('../settings.json').toggles.playradio, log);
+    const bindRadioToggle = serviceToggle.hob({
+       start: 'sudo service playradio start',
+       stop: 'sudo service playradio stop',
+       status: 'sudo service playradio status'
+     });
+    bindRadioToggle(app, 'radio', log);
+
+    // serviceToggle.bind(app, 'motion', 'motion', log);
+    const bindMotionToggle = serviceToggle.hob({
+      start: 'sudo service motion start',
+      stop: 'sudo service motion stop',
+      status: 'sudo service motion status'
+    });
+    bindMotionToggle(app, 'motion', log);
+
+    // vmToggle.bind(app, 'vm', 'vm', log); // TODO replace this one too?
+    // const vmSettings = {
+    //   status: `sudo -u ${vmSettingsLoaded.userName} VBoxManage showvminfo "${vmSettingsLoaded.vmName}" | grep State`,
+    //   start: `sudo -u ${settings.vm.userName} VBoxManage startvm "${settings.vm.vmName}" --type headless`,
+    //   stop: `sudo -u ${settings.vm.userName} VBoxManage controlvm "${settings.vm.vmName}" poweroff`,
+    //   isStarted: 'running (',
+    //   isStopped: ['powered off (', 'aborted (']
+    // };
+    const bindVmToggle = serviceToggle.hob({
+      start: `sudo -u ${settings.vm.userName} VBoxManage startvm "${settings.vm.vmName}" --type headless`,
+      stop: `sudo -u ${settings.vm.userName} VBoxManage controlvm "${settings.vm.vmName}" poweroff`,
+      status: `sudo -u ${settings.vm.userName} VBoxManage showvminfo "${settings.vm.vmName}" | grep State`
+    });
+    bindVmToggle(app, 'vm', log);
+
+    const bindVmServicesToggle = serviceToggle.hob({
+      start: 'sudo service vmservices start',
+      stop: 'sudo service vmservices stop',
+      status: 'sudo service vmservices status'
+    });
+    bindVmServicesToggle(app, 'vmservices', log);
+
+    shellStatus.bind(app, 'shell', log);
     switcher.bind(app, log);
     gears.bind(app, log);
     filemanager.bind(app, expressWs, log);
