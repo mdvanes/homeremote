@@ -29,6 +29,12 @@ const listEndpointsExpress = require('list-endpoints-express');
 const settings = require('../settings.json');
 const auth = require('../auth.json');
 
+const createServiceSettings = settingName => ({
+  start: `sudo service ${settingName} start`,
+  stop: `sudo service ${settingName} stop`,
+  status: `sudo service ${settingName} status`
+});
+
 app.use(bodyParser.json()); // for parsing application/json
 
 // Configuration
@@ -149,29 +155,14 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     }
     // serviceToggle.bind(app, 'radio', 'playradio', log);
     //serviceToggle.bind(app, 'radio', require('../settings.json').toggles.playradio, log);
-    const bindRadioToggle = serviceToggle.hob({
-       start: 'sudo service playradio start',
-       stop: 'sudo service playradio stop',
-       status: 'sudo service playradio status'
-     });
+    const bindRadioToggle = serviceToggle.hob(createServiceSettings('playradio'));
     bindRadioToggle(app, 'radio', log);
 
     // serviceToggle.bind(app, 'motion', 'motion', log);
-    const bindMotionToggle = serviceToggle.hob({
-      start: 'sudo service motion start',
-      stop: 'sudo service motion stop',
-      status: 'sudo service motion status'
-    });
+    const bindMotionToggle = serviceToggle.hob(createServiceSettings('motion'));
     bindMotionToggle(app, 'motion', log);
 
-    // vmToggle.bind(app, 'vm', 'vm', log); // TODO replace this one too?
-    // const vmSettings = {
-    //   status: `sudo -u ${vmSettingsLoaded.userName} VBoxManage showvminfo "${vmSettingsLoaded.vmName}" | grep State`,
-    //   start: `sudo -u ${settings.vm.userName} VBoxManage startvm "${settings.vm.vmName}" --type headless`,
-    //   stop: `sudo -u ${settings.vm.userName} VBoxManage controlvm "${settings.vm.vmName}" poweroff`,
-    //   isStarted: 'running (',
-    //   isStopped: ['powered off (', 'aborted (']
-    // };
+    // vmToggle.bind(app, 'vm', 'vm', log);
     const bindVmToggle = serviceToggle.hob({
       start: `sudo -u ${settings.vm.userName} VBoxManage startvm "${settings.vm.vmName}" --type headless`,
       stop: `sudo -u ${settings.vm.userName} VBoxManage controlvm "${settings.vm.vmName}" poweroff`,
@@ -179,11 +170,7 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     });
     bindVmToggle(app, 'vm', log);
 
-    const bindVmServicesToggle = serviceToggle.hob({
-      start: 'sudo service vmservices start',
-      stop: 'sudo service vmservices stop',
-      status: 'sudo service vmservices status'
-    });
+    const bindVmServicesToggle = serviceToggle.hob(createServiceSettings('vmservices'));
     bindVmServicesToggle(app, 'vmservices', log);
 
     shellStatus.bind(app, 'shell', log);
