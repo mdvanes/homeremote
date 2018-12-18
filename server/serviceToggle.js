@@ -4,6 +4,10 @@
 const exec = require('../test/server/mockatoo').mock('child_process', 'serviceToggle').exec;
 const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 
+/**
+ * Utilities for binding service toggles
+ */
+
 // Promisified app.get
 const appGetPromise = (app, url) => (
   new Promise((resolve) => (
@@ -190,4 +194,11 @@ const hob = settings => {
   // }
 };
 
-module.exports = {hob};
+// TODO needs cleaning and tests
+
+// TODO test on dev machine without mock
+
+module.exports = {
+  hob,
+  bindAction
+};
