@@ -96,6 +96,16 @@ const startStopActions = [
   {
     condition: stdout => stdout.length === 0,
     action: (res, statusCode) => res.send({status: statusCode})
+  },
+  /* VM actions */
+  /* Split actions for vm to other? */
+  {
+    condition: stdout => stdout.indexOf('has been successfully started') > -1,
+    action: res => res.send({status: 'started'})
+  },
+  {
+    condition: stdout => stdout.indexOf('100%') > -1,
+    action: res => res.send({status: 'stopped'})
   }
 ];
 
@@ -103,11 +113,21 @@ const startStopActions = [
 const statusActions = [
   {
     condition: stdout => stdout.indexOf('Active: active') > -1,
-    action: (res) => res.send({status: 'started'})
+    action: res => res.send({status: 'started'})
   },
   {
     condition: stdout => stdout.indexOf('Active: failed') > -1 || stdout.indexOf('Active: inactive') > -1,
-    action: (res) => res.send({status: 'stopped'})
+    action: res => res.send({status: 'stopped'})
+  },
+  /* VM actions */
+  /* Split actions for vm to other? */
+  {
+    condition: stdout => stdout.indexOf('running (') > -1,
+    action: res => res.send({status: 'started'})
+  },
+  {
+    condition: stdout => stdout.indexOf('powered off (') > -1 || stdout.indexOf('aborted (') > -1,
+    action: res => res.send({status: 'stopped'})
   }
 ];
 
