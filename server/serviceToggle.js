@@ -8,15 +8,6 @@ const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
  * Utilities for binding service toggles
  */
 
-// Promisified app.get
-const appGetPromise = (app, url) => (
-  new Promise((resolve) => (
-    app.get(url, connectEnsureLogin(), (req, res) => (
-      resolve({req, res})
-    ))
-  ))
-);
-
 // Promisified exec
 const execPromise = startCmd => (
   new Promise((resolve, reject) => (
@@ -31,31 +22,32 @@ const execPromise = startCmd => (
 );
 
 async function bindAction(app, endpointName, log, settings, type, statusCode, actions) {
-  const {res} = await appGetPromise(app, `/${endpointName}/${type}`);
-  try {
-    log.info(`call to /${endpointName}/${type}`);
-    const stdout = await execPromise(settings[type]);
-    log.info(`/${endpointName}/${type} stdout [${stdout}]`);
-    // if(stdout.length === 0) {
-    //   res.send({status: statusCode});
-    // } else {
-    //   throw new Error('unexpected');
-    // }
-    // Abstract action selection that scales to unlimited conditions
-    const selectedAction = actions
-      .filter(action => action.condition(stdout))
-      .reduce((acc, action) => {
-        // By design, reduce will only keep the last match when the accumulator
-        // is ignored, so the order inside the actions array has significance.
-        return action.action;
-      }, () => {
-        throw new Error('Unexpected');
-      });
-    selectedAction(res, statusCode);
-  } catch(err) {
-    log.error(`Failed ${endpointName} ${type}`, err);
-    res.send('error');
-  }
+  app.get(`/${endpointName}/${type}`, connectEnsureLogin(), async (req, res) => {
+    try {
+      log.info(`call to /${endpointName}/${type}`);
+      const stdout = await execPromise(settings[type]);
+      log.info(`/${endpointName}/${type} stdout [${stdout}]`);
+      // if(stdout.length === 0) {
+      //   res.send({status: statusCode});
+      // } else {
+      //   throw new Error('unexpected');
+      // }
+      // Abstract action selection that scales to unlimited conditions
+      const selectedAction = actions
+        .filter(action => action.condition(stdout))
+        .reduce((acc, action) => {
+          // By design, reduce will only keep the last match when the accumulator
+          // is ignored, so the order inside the actions array has significance.
+          return action.action;
+        }, () => {
+          throw new Error('Unexpected');
+        });
+      selectedAction(res, statusCode);
+    } catch(err) {
+      log.error(`Failed ${endpointName} ${type}`, err);
+      res.send('error');
+    }
+  })
 }
 
 //   (app
@@ -216,7 +208,8 @@ const hob = settings => {
 
 // TODO needs cleaning and tests
 
-// TODO test on dev machine without mock
+// TODO test on dev machine without mock -- apparently very difficult...
+// It works starting and stopping once, than hangs
 
 module.exports = {
   hob,
