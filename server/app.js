@@ -8,9 +8,8 @@ const http = require('http');
 const path = require('path');
 const bunyan = require('bunyan');
 const nowplaying = require('./nowplaying.js');
-//const motion = require('./motion.js');
 const serviceToggle = require('./serviceToggle.js');
-// const vmToggle = require('./vmToggle.js');
+const hobToggle = require('./hobToggle.js');
 const shellStatus = require('./shellStatus.js');
 const switcher = require('./switch.js');
 const filemanager = require('./fm.js');
@@ -28,12 +27,6 @@ const listEndpointsExpress = require('list-endpoints-express');
 
 const settings = require('../settings.json');
 const auth = require('../auth.json');
-
-const createServiceSettings = settingName => ({
-  start: `sudo service ${settingName} start`,
-  stop: `sudo service ${settingName} stop`,
-  status: `sudo service ${settingName} status`
-});
 
 app.use(bodyParser.json()); // for parsing application/json
 
@@ -155,23 +148,26 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     }
     // serviceToggle.bind(app, 'radio', 'playradio', log);
     //serviceToggle.bind(app, 'radio', require('../settings.json').toggles.playradio, log);
-    const bindRadioToggle = serviceToggle.hob(createServiceSettings('playradio'));
-    bindRadioToggle(app, 'radio', log);
+    // const bindRadioToggle = serviceToggle.hob(createServiceSettings('playradio'));
+    // bindRadioToggle(app, 'radio', log);
+    serviceToggle.bind(app, 'playradio', log);
 
     // serviceToggle.bind(app, 'motion', 'motion', log);
-    const bindMotionToggle = serviceToggle.hob(createServiceSettings('motion'));
-    bindMotionToggle(app, 'motion', log);
+    // const bindMotionToggle = serviceToggle.hob(createServiceSettings('motion'));
+    // bindMotionToggle(app, 'motion', log);
+    serviceToggle.bind(app, 'motion', log);
 
     // vmToggle.bind(app, 'vm', 'vm', log);
-    const bindVmToggle = serviceToggle.hob({
+    const bindVmToggle = hobToggle.hob({
       start: `sudo -u ${settings.vm.userName} VBoxManage startvm "${settings.vm.vmName}" --type headless`,
       stop: `sudo -u ${settings.vm.userName} VBoxManage controlvm "${settings.vm.vmName}" poweroff`,
       status: `sudo -u ${settings.vm.userName} VBoxManage showvminfo "${settings.vm.vmName}" | grep State`
     });
     bindVmToggle(app, 'vm', log);
 
-    const bindVmServicesToggle = serviceToggle.hob(createServiceSettings('vmservices'));
-    bindVmServicesToggle(app, 'vmservices', log);
+    // const bindVmServicesToggle = serviceToggle.hob(createServiceSettings('vmservices'));
+    // bindVmServicesToggle(app, 'vmservices', log);
+    serviceToggle.bind(app, 'vmservices', log);
 
     shellStatus.bind(app, 'shell', log);
     switcher.bind(app, log);

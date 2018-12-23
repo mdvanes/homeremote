@@ -1,6 +1,6 @@
-// Run with `npx jest __tests__/server/serviceToggle_spec.js`
+// Run with `npx jest __tests__/server/hobToggle_spec.js`
 
-const serviceToggle = require('../../server/serviceToggle.js');
+const hobToggle = require('../../server/hobToggle.js');
 
 describe('bindAction', () => {
   it('should call app.get with the composed url', () => {
@@ -12,7 +12,7 @@ describe('bindAction', () => {
       error: jest.fn()
     };
     const settings = {};
-    serviceToggle.bindAction(app,
+    hobToggle.bindAction(app,
       'foo',
       log,
       settings,
