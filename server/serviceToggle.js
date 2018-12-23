@@ -12,7 +12,8 @@ const connectEnsureLogin = require('connect-ensure-login').ensureLoggedIn;
 const execPromise = startCmd => (
   new Promise((resolve, reject) => (
     exec(startCmd, (error, stdout, stderr) => {
-      if(error && error.code > 0) {
+      // error.code = 3 when service "Active: inactive (dead)" or "Active: failed"
+      if(error && error.code > 0 && error.code !== 3) {
         reject(`${error.code} ${stdout} ${stderr}`);
       } else {
         resolve(stdout);
@@ -209,7 +210,7 @@ const hob = settings => {
 // TODO needs cleaning and tests
 
 // TODO test on dev machine without mock -- apparently very difficult...
-// It works starting and stopping once, than hangs
+// Status handeling for "stopped" is incorrect, but correct for "started" and only for services, not vm
 
 module.exports = {
   hob,
