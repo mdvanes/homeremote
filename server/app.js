@@ -9,7 +9,7 @@ const path = require('path');
 const bunyan = require('bunyan');
 const nowplaying = require('./nowplaying.js');
 const serviceToggle = require('./serviceToggle.js');
-const hobToggle = require('./hobToggle.js');
+const vmToggle = require('./vmToggle.js');
 const shellStatus = require('./shellStatus.js');
 const switcher = require('./switch.js');
 const filemanager = require('./fm.js');
@@ -146,27 +146,9 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         // Do not start motion in debugmode, because of sudo password requests.
         nowplaying.bind(app, log, debug);
     }
-    // serviceToggle.bind(app, 'radio', 'playradio', log);
-    //serviceToggle.bind(app, 'radio', require('../settings.json').toggles.playradio, log);
-    // const bindRadioToggle = serviceToggle.hob(createServiceSettings('playradio'));
-    // bindRadioToggle(app, 'radio', log);
     serviceToggle.bind(app, 'playradio', log);
-
-    // serviceToggle.bind(app, 'motion', 'motion', log);
-    // const bindMotionToggle = serviceToggle.hob(createServiceSettings('motion'));
-    // bindMotionToggle(app, 'motion', log);
     serviceToggle.bind(app, 'motion', log);
-
-    // vmToggle.bind(app, 'vm', 'vm', log);
-    const bindVmToggle = hobToggle.hob({
-      start: `sudo -u ${settings.vm.userName} VBoxManage startvm "${settings.vm.vmName}" --type headless`,
-      stop: `sudo -u ${settings.vm.userName} VBoxManage controlvm "${settings.vm.vmName}" poweroff`,
-      status: `sudo -u ${settings.vm.userName} VBoxManage showvminfo "${settings.vm.vmName}" | grep State`
-    });
-    bindVmToggle(app, 'vm', log);
-
-    // const bindVmServicesToggle = serviceToggle.hob(createServiceSettings('vmservices'));
-    // bindVmServicesToggle(app, 'vmservices', log);
+    vmToggle.bind(app, log);
     serviceToggle.bind(app, 'vmservices', log);
 
     shellStatus.bind(app, 'shell', log);
