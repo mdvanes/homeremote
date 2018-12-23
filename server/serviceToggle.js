@@ -16,7 +16,7 @@ const execPromise = startCmd => (
       if(error && error.code > 0 && error.code !== 3) {
         reject(`${error.code} ${stdout} ${stderr}`);
       } else {
-        resolve(stdout);
+        resolve({stdout, exitCode: error.code});
       }
     })
   ))
@@ -26,8 +26,8 @@ async function bindAction(app, endpointName, log, settings, type, statusCode, ac
   app.get(`/${endpointName}/${type}`, connectEnsureLogin(), async (req, res) => {
     try {
       log.info(`call to /${endpointName}/${type}`);
-      const stdout = await execPromise(settings[type]);
-      log.info(`/${endpointName}/${type} stdout [${stdout}]`);
+      const {stdout, exitCode} = await execPromise(settings[type]);
+      log.info(`/${endpointName}/${type} stdout [${stdout}] [${exitCode}]`);
       // if(stdout.length === 0) {
       //   res.send({status: statusCode});
       // } else {
