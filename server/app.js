@@ -123,6 +123,7 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
             const redirectUrl = req.session && req.session.returnTo && req.session.returnTo.indexOf('/r') === 0
               ? req.session.returnTo
               : '/';
+            log.info(`/login redirectUrl: ${redirectUrl}`);
             delete req.session.returnTo;
             res.redirect(redirectUrl);
         });
@@ -161,7 +162,7 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // Using the /r/ subpath for views, to easily match here and in webpack.config proxies
     app.get('/r/*', connectEnsureLogin(), (req, res) => {
         if(!debug) {
-            res.sendfile(path.resolve(__dirname + '/../public/index.html'));
+            res.sendFile(path.resolve(__dirname + '/../public/index.html'));
         } else {
             // Better solution: https://forum-archive.vuejs.org/topic/836/webpack-hot-reloading-possible-with-express-server/6
             res.redirect('/');
