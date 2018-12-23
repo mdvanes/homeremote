@@ -16,7 +16,8 @@ const execPromise = startCmd => (
       if(error && error.code > 0 && error.code !== 3) {
         reject(`${error.code} ${stdout} ${stderr}`);
       } else {
-        resolve({stdout, exitCode: error.code});
+        const exitCode = error && error.code;
+        resolve({stdout, exitCode});
       }
     })
   ))
