@@ -130,6 +130,11 @@ Install in /opt (because of upstart script):
         "vmName": "name-of-the-vm",
         "userName" "USER"
     },
+    "vmservices": {
+        "host": "192.168.0.1",
+        "port": "1234",
+        "user": "username"
+    },
     "shell": [
         {
             "name": "SomeLabel",
