@@ -10,7 +10,7 @@ const bind = function(app, log) {
     stop: `ssh -p ${settings.vmservices.port} ${settings.vmservices.user}@${settings.vmservices.host} '~/stopServices.sh'`,
     status: `ssh -p ${settings.vmservices.port} ${settings.vmservices.user}@${settings.vmservices.host} '~/statusServices.sh'`,
   });
-  bindToggle(app, 'vm', log);
+  bindToggle(app, 'vmservices', log);
 };
 
 module.exports = { bind };
