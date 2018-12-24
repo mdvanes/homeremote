@@ -131,6 +131,7 @@ Install in /opt (because of upstart script):
         "userName" "USER"
     },
     "vmservices": {
+        "elevate": "elevation-prefix",
         "host": "192.168.0.1",
         "port": "1234",
         "user": "username"
