@@ -9,6 +9,7 @@ const path = require('path');
 const bunyan = require('bunyan');
 const nowplaying = require('./nowplaying.js');
 const serviceToggle = require('./serviceToggle.js');
+const vmServicesToggle = require('./vmServicesToggle.js');
 const vmToggle = require('./vmToggle.js');
 const shellStatus = require('./shellStatus.js');
 const switcher = require('./switch.js');
@@ -150,7 +151,7 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     serviceToggle.bind(app, 'playradio', log);
     serviceToggle.bind(app, 'motion', log);
     vmToggle.bind(app, log);
-    serviceToggle.bind(app, 'vmservices', log);
+    vmServicesToggle.bind(app, log);
 
     shellStatus.bind(app, 'shell', log);
     switcher.bind(app, log);
