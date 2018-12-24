@@ -139,6 +139,10 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
           res.redirect('/login');
       });
 
+    app.get('/manifest.json', (req, res) => {
+        res.sendFile(path.resolve(__dirname + '/../public/manifest.json'));
+    });
+
     app.use(
         connectEnsureLogin(),
         express.static('public'));
