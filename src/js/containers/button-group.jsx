@@ -51,22 +51,35 @@ class ButtonGroup extends React.Component {
         this.sendState('off');
     }
 
+    getIconElem() {
+        const { icon } = this.props;
+        return icon ? <FontIcon style={{fontSize: '250%'}} className="material-icons">{icon}</FontIcon> : <i></i>;
+    }
+
+    getLabelStr() {
+        const { label, dimLevel } = this.props;
+        return dimLevel ? `${label} (${dimLevel}%)` : label;
+    }
+
+    getButtonStyle(buttonType) {
+        const { status } = this.props;
+        return { backgroundColor: status === buttonType ? deepPurple500 : 'transparent' }
+    }
+
     render() {
-        let icon = <i></i>;
-        if(this.props.icon) {
-            icon = <FontIcon style={{fontSize: '250%'}} className="material-icons">{this.props.icon}</FontIcon>;
-        }
+        const iconElem = this.getIconElem();
+        const labelStr = this.getLabelStr();
         return (
             <Card>
                 <CardText className="button-group">
-                    <button onTouchTap={this.sendOn}>
+                    <button onTouchTap={this.sendOn} style={this.getButtonStyle('On')}>
                         <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_checked</FontIcon>
                     </button>
                     <span className="label">
-                        {icon}
-                        {this.props.label}
+                        {iconElem}
+                        {labelStr}
                     </span>
-                    <button onTouchTap={this.sendOff}>
+                    <button onTouchTap={this.sendOff} style={this.getButtonStyle('Off')}>
                         <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_unchecked</FontIcon>
                     </button>
                 </CardText>

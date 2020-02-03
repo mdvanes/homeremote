@@ -13,12 +13,13 @@ export default class SwitchesList extends React.Component {
 
   render() {
     const buttonGroups = this.props.switches
-      .map((aSwitch) => (<ButtonGroup
-        key={aSwitch.idx}
-        label={aSwitch.name.substring(0,1)}
-        icon="lightbulb_outline"
-        type={getType(aSwitch.type)}
-        id={aSwitch.idx}
+      .map(({idx, name, type, status, dimLevel}) => (<ButtonGroup
+        key={idx}
+        label={name}
+        type={getType(type)}
+        status={status}
+        dimLevel={dimLevel}
+        id={idx}
       />));
     return (
       <Fragment>
