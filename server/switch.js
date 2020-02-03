@@ -18,7 +18,9 @@ const bind = function(app, log) {
                       const switches = remoteResponseJson.result.map(item => ({
                           idx: item.idx,
                           type: item.Type,
-                          name: item.Name
+                          name: item.Name,
+                          status: item.Status,
+                          dimLevel: item.SwitchType === 'Dimmer' && item.Status === 'On' ? item.Level : null
                       }));
                       res.send({
                           status: 'received',
@@ -41,10 +43,7 @@ const bind = function(app, log) {
     app.post('/switch/:id', connectEnsureLogin(), (req, res) => {
         const switchId = req.params.id;
         const switchType = req.body.type;
-        let newState = 'Off';
-        if(req.body.state === 'on') {
-            newState = 'On';
-        }
+        const newState = req.body.state === 'on' ? 'On' : 'Off';
 
         log.info(`Call to http://${req.get('host')}/switch/${switchId} [state: ${newState} domoticzuri: ${settings.domoticzuri}]`);
         if(settings.domoticzuri && settings.domoticzuri.length > 0) {
