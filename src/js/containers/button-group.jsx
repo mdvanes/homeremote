@@ -70,7 +70,7 @@ class ButtonGroup extends React.Component {
         const iconElem = this.getIconElem();
         const labelStr = this.getLabelStr();
         return (
-            <Card>
+            <Card className="card">
                 <CardText className="button-group">
                     <button onTouchTap={this.sendOn} style={this.getButtonStyle('On')}>
                         <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_checked</FontIcon>
