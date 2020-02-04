@@ -6,6 +6,12 @@ import { logInfo, logError } from '../actions';
 import './button-group.scss';
 import {deepPurple500} from 'material-ui/styles/colors';
 
+const selectorStates = {
+    0: 'disarmed',
+    10: 'partarmed',
+    20: 'armed'
+};
+
 class ButtonGroup extends React.Component {
     constructor(props) {
         super(props);
@@ -57,7 +63,10 @@ class ButtonGroup extends React.Component {
     }
 
     getLabelStr() {
-        const { label, dimLevel } = this.props;
+        const { label, dimLevel, type } = this.props;
+        if ( type === 'selector' ) {
+            return `${label}: ${selectorStates[dimLevel]}`;
+        }
         return dimLevel !== null ? `${label} (${dimLevel}%)` : label;
     }
 
@@ -67,20 +76,21 @@ class ButtonGroup extends React.Component {
     }
 
     render() {
+        const { readOnly } = this.props;
         const iconElem = this.getIconElem();
         const labelStr = this.getLabelStr();
         return (
             <Card className="card">
                 <CardText className="button-group">
-                    <button onTouchTap={this.sendOn} style={this.getButtonStyle('On')}>
-                        <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_checked</FontIcon>
+                    <button onTouchTap={readOnly ? null : this.sendOn} style={this.getButtonStyle('On')}>
+                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_checked</FontIcon>}
                     </button>
                     <span className="label">
                         {iconElem}
                         {labelStr}
                     </span>
-                    <button onTouchTap={this.sendOff} style={this.getButtonStyle('Off')}>
-                        <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_unchecked</FontIcon>
+                    <button onTouchTap={readOnly ? null : this.sendOff} style={this.getButtonStyle('Off')}>
+                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_unchecked</FontIcon>}
                     </button>
                 </CardText>
             </Card>
