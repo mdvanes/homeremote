@@ -3,8 +3,8 @@
   "version": "1.4.0-alpha",
   "description": "Remote for home automation",
   "scripts": {
-    "devserver": "concurrently --kill-others \"node node_modules/.bin/webpack-dev-server --host 0.0.0.0 --config webpack.config.js --content-base ./public --inline --hot\" \"npm run watch\"",
-    "build": "npm run lint && NODE_ENV=production node node_modules/.bin/webpack --config webpack.config.js -p",
+    "devserver": "node writeGitInfo.js dev && concurrently --kill-others \"node node_modules/.bin/webpack-dev-server --host 0.0.0.0 --config webpack.config.js --content-base ./public --inline --hot\" \"npm run watch\"",
+    "build": "node writeGitInfo.js && npm run lint && NODE_ENV=production node node_modules/.bin/webpack --config webpack.config.js -p",
     "start": "node server/app.js",
     "startdebug": "npm run lint && node server/app.js --debugremote | bunyan",
     "lint": "esw webpack.config.* server --color",
@@ -81,6 +81,7 @@
     "express-session": "^1.15.2",
     "express-ws": "^4.0.0",
     "fs-extra": "^5.0.0",
+    "git-rev-sync": "^2.0.0",
     "list-endpoints-express": "^1.0.1",
     "morgan": "^1.9.0",
     "passport-local": "^1.0.0",
