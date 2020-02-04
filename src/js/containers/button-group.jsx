@@ -75,22 +75,34 @@ class ButtonGroup extends React.Component {
         return { backgroundColor: status === buttonType ? deepPurple500 : 'transparent' }
     }
 
+    // eslint-disable-next-line complexity
+    getIcon(side) {
+        const { label } = this.props; // TODO should be by type or something, not by name
+        if(side === 'left') {
+            return label === 'Blinds' ? 'arrow_drop_down' : 'radio_button_checked';
+        }
+        return label === 'Blinds' ? 'arrow_drop_up' : 'radio_button_unchecked';
+    }
+
+    // eslint-disable-next-line complexity
     render() {
         const { readOnly } = this.props;
         const iconElem = this.getIconElem();
         const labelStr = this.getLabelStr();
+        const leftIcon = this.getIcon('left');
+        const rightIcon = this.getIcon('right');
         return (
             <Card className="card">
                 <CardText className="button-group">
                     <button onTouchTap={readOnly ? null : this.sendOn} style={this.getButtonStyle('On')}>
-                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple900} className="material-icons">radio_button_checked</FontIcon>}
+                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple900} className="material-icons">{leftIcon}</FontIcon>}
                     </button>
                     <span className="label">
                         {iconElem}
                         {labelStr}
                     </span>
                     <button onTouchTap={readOnly ? null : this.sendOff} style={this.getButtonStyle('Off')}>
-                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple900} className="material-icons">radio_button_unchecked</FontIcon>}
+                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple900} className="material-icons">{rightIcon}</FontIcon>}
                     </button>
                 </CardText>
             </Card>
