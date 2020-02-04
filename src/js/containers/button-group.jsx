@@ -4,7 +4,7 @@ import FontIcon from 'material-ui/FontIcon';
 import { connect } from 'react-redux';
 import { logInfo, logError } from '../actions';
 import './button-group.scss';
-import {deepPurple500} from 'material-ui/styles/colors';
+import {deepPurple500, deepPurple900} from 'material-ui/styles/colors';
 
 const selectorStates = {
     0: 'disarmed',
@@ -83,14 +83,14 @@ class ButtonGroup extends React.Component {
             <Card className="card">
                 <CardText className="button-group">
                     <button onTouchTap={readOnly ? null : this.sendOn} style={this.getButtonStyle('On')}>
-                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_checked</FontIcon>}
+                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple900} className="material-icons">radio_button_checked</FontIcon>}
                     </button>
                     <span className="label">
                         {iconElem}
                         {labelStr}
                     </span>
                     <button onTouchTap={readOnly ? null : this.sendOff} style={this.getButtonStyle('Off')}>
-                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple500} className="material-icons">radio_button_unchecked</FontIcon>}
+                        {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple900} className="material-icons">radio_button_unchecked</FontIcon>}
                     </button>
                 </CardText>
             </Card>
