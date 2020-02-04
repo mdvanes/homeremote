@@ -15,12 +15,13 @@ const bind = function(app, log) {
               .then(function (remoteResponse) {
                   const remoteResponseJson = JSON.parse(remoteResponse);
                   if(remoteResponseJson.status === 'OK') {
-                      const switches = remoteResponseJson.result.map(item => ({
-                          idx: item.idx,
-                          type: item.Type,
-                          name: item.Name,
-                          status: item.Status,
-                          dimLevel: item.SwitchType === 'Dimmer' && item.Status === 'On' ? item.Level : null
+                      const switches = remoteResponseJson.result.map(({idx, Type, Name, Status, SwitchType, Level, Protected }) => ({
+                          idx,
+                          type: SwitchType === 'Selector' ? SwitchType : Type,
+                          name: Name,
+                          status: Status,
+                          dimLevel: (SwitchType === 'Dimmer' && Status === 'On') || SwitchType === 'Selector' ? Level : null,
+                          readOnly: Protected
                       }));
                       res.send({
                           status: 'received',
