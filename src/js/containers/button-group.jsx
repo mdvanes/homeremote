@@ -58,7 +58,7 @@ class ButtonGroup extends React.Component {
 
     getLabelStr() {
         const { label, dimLevel } = this.props;
-        return dimLevel ? `${label} (${dimLevel}%)` : label;
+        return dimLevel !== null ? `${label} (${dimLevel}%)` : label;
     }
 
     getButtonStyle(buttonType) {
