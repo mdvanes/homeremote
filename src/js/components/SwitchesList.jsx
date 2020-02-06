@@ -21,7 +21,8 @@ export default class SwitchesList extends React.Component {
   }
 
   render() {
-    const buttonGroups = this.props.switches
+    const { switches, getSwitches } = this.props;
+    const buttonGroups = switches
       .map(({idx, name, type, status, dimLevel, readOnly}) => (<ButtonGroup
         key={idx}
         label={name}
@@ -30,6 +31,7 @@ export default class SwitchesList extends React.Component {
         dimLevel={dimLevel}
         readOnly={readOnly}
         id={idx}
+        cb={getSwitches}
       />));
     return (
       <Fragment>

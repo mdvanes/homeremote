@@ -12,6 +12,29 @@ const selectorStates = {
     20: 'armed'
 };
 
+// TODO SwitchesList should also be FC
+// TODO Should not use connect, this is only presentational
+// TODO all data mapping (i.e. what is "readonly", what is "on") should be done in reducer
+// TODO needs TS
+// const ButtonGroup1 = ({ leftButton, rightButton, iconElem, label }) => {
+//     return (<Card className="card">
+//         <CardText className="button-group">
+//             {leftButton}
+//             {/*<button onTouchTap={readOnly ? null : this.sendOn} style={this.getButtonStyle('On')}>
+//                 {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple900} className="material-icons">{leftIcon}</FontIcon>}
+//             </button>*/}
+//             <span className="label">
+//                 {iconElem}
+//                 {label}
+//             </span>
+//             {rightButton}
+//             {/*<button onTouchTap={readOnly ? null : this.sendOff} style={this.getButtonStyle('Off')}>
+//                 {readOnly ? <div className="dummy"></div> : <FontIcon hoverColor={deepPurple900} className="material-icons">{rightIcon}</FontIcon>}
+//             </button>*/}
+//         </CardText>
+//     </Card>);
+// };
+
 class ButtonGroup extends React.Component {
     constructor(props) {
         super(props);
@@ -44,6 +67,7 @@ class ButtonGroup extends React.Component {
                 this.props.logError(`error on send-${state}: ${data.status}`);
             } else {
                 this.props.logInfo(`Switch ${this.props.id} ${state}`);
+                this.props.cb();
             }
         })
         .catch(error => this.props.logError(`error on send-${state}: ${error}`));
@@ -109,6 +133,8 @@ class ButtonGroup extends React.Component {
         );
     }
 }
+
+// console.log(ButtonGroup1);
 
 const mapStateToProps = () => {
     return {};
