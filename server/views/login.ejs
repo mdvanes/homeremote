@@ -4,13 +4,13 @@
 	<title>Login</title>
 	<meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1"/>
 	<style>
-html {
-	font-family: sans-serif;
-	font-size: 2rem;
-}
-form {
-	max-width: 40em;
-}
+		html {
+			font-family: sans-serif;
+			font-size: 2rem;
+		}
+		form {
+			max-width: 40em;
+		}
 		label {
 			display: block;
 		}
@@ -40,25 +40,39 @@ form {
 			text-align: center;
 			width: 1em;
 		}
+		.form-group-inline {
+			display: flex;
+			margin-top: 1rem;
+		}
+		.form-group-inline input {
+			margin-right: 1rem;
+		}
+		.label-info {
+			font-size: 0.6rem;
+		}
 	</style>
 </head>
 <body>
 
 <h3 class="error">Login failed <span id="close-error">✕</span></h3>
 
-<form action="/login" method="post">
+<form action="/login" method="post" id="form">
 	<div class="form-group">
 		<label>Username</label>
-		<input class="form-input" type="text" name="username"/><br/>
+		<input class="form-input" type="text" name="username" id="username"/><br/>
 	</div>
 	<div class="form-group">
 		<label>Password</label>
-		<input class="form-input" type="password" name="password"/>
+		<input class="form-input" type="password" name="password" id="password"/>
 	</div>
 	<div>
 		<input class="button" type="submit" value="Submit"/>
 	</div>
 </form>
+<div class="form-group-inline">
+	<input type="checkbox" id="hr-remember-me"/>
+	<label class="label-info" for="hr-remember-me">Remember me until logged out manually</label>
+</div>
 
 <script>
 
@@ -75,12 +89,33 @@ form {
 	// The same behavior with or without connectEnsureLogin() middleware on the endpoint
 
 
-    if(window.location.search==='?failed') {
+    if (window.location.search==='?failed') {
 	    console.log('failed');
 	    document.querySelector('.error').style.display = 'block';
 	}
 	document.getElementById('close-error').addEventListener('click', function(ev) {
         document.querySelector('.error').style.display = 'none';
+	});
+
+    if (localStorage.getItem('hr-remember-me')) {
+		document.getElementById('hr-remember-me').checked = true;
+
+		// auto submit
+		setTimeout(() => {
+			if (document.getElementById('username').value) {
+				document.getElementById('form').submit();
+			} else {
+				console.log('username not set');
+			}
+		}, 500);
+	}
+
+	document.getElementById('hr-remember-me').addEventListener('click', (ev) => {
+		if (ev.target.checked === true) {
+			localStorage.setItem('hr-remember-me', true);
+			return;
+		}
+		localStorage.removeItem('hr-remember-me');
 	});
 </script>
 

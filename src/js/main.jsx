@@ -85,7 +85,7 @@ class Main extends React.Component {
                                 <Link onTouchTap={this.toggleDrawer} to="/r/gears"><MenuItem>Gears</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/log"><MenuItem>Log</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/dashboard"><MenuItem>Dashboard</MenuItem></Link>
-                                <a href="logout"><MenuItem>Log out</MenuItem></a>
+                                <a onClick={() => { localStorage.removeItem('hr-remember-me') }} href="logout"><MenuItem>Log out</MenuItem></a>
                             </Drawer>
                             <StatusBar/>
                             <Route exact path="/" component={LightView}/>
