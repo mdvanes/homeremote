@@ -8,14 +8,14 @@ import GearsContainer from '../containers/GearsContainer';
 import LogContainer from '../containers/LogContainer';
 //import AddLogLine from '../containers/AddLogLine';
 import FileManagerContainer from '../containers/FileManagerContainer';
-import SwitchesListContainer from '../containers/SwitchesListContainer';
+import SwitchBarListContainer from '../containers/SwitchBarListContainer';
 
 const DashboardView = () => {
   return (
     <div className="container-fluid" style={{backgroundColor: '#e0e0e0', paddingBottom: '1em', paddingTop: '1em'}}>
       <div className="row">
         <div className="col-xs-12 col-md-2">
-          <SwitchesListContainer/>
+          <SwitchBarListContainer />
           {/*<ButtonGroup label=" 4" icon="lamp" id="clickstub"/>*/}
           {/*<MacroButtonGroup label=" All" icon="" id={['switch1', 'switch2', 'switch3', 'switch4']}/>*/}
 
