@@ -1,3 +1,11 @@
+* Refactor to fc: SwitchesList.jsx and button-group.jsx
+* Retrieve all devices for switchgroup and make expandable menu below it, so that it is not needed to add a switchgroup to favorites and also each of its devices separately 
+* Add disconnected status for Risco State
+* Upgrade react (remove shim in SwitchBarList), MUI, dependencies and add react-scripts (TS, start with SwitchBar.tsx)
+* Remember me strategy for PassportJS - Fix log on screen to prevent logging in if credentials available - working on Chrome 80 desktop (Linux), failing on Chrome 80 android
+* Add Storybook - start with SwitchBar.jsx
+* Fix "eslint-disable-next-line no-unused-vars" for react imports
+
 # HomeRemote
 
 Web GUI in ES6 React for a Node backend that calls scripts spread out over several debian/ubuntu servers. The scripts 

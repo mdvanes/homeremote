@@ -2,13 +2,13 @@
 import React from 'react';
 import ToggleContainer from '../containers/ToggleContainer';
 import {Card, CardText} from 'material-ui/Card';
-import SwitchesListContainer from '../containers/SwitchesListContainer';
+import SwitchBarListContainer from '../containers/SwitchBarListContainer';
 
 const HomeAutomationView = () => {
   return (
     <div className="col-xs-12 col-md-6 col-lg-3"
          style={{backgroundColor: '#e0e0e0', paddingBottom: '1em', paddingTop: '1em', height: '100vh'}}>
-      <SwitchesListContainer/>
+      <SwitchBarListContainer />
       <Card style={{marginTop: '0.5em'}}>
         <CardText className="row">
           <div className="col-xs-6 col-sm-3">
