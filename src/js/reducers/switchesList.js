@@ -1,6 +1,6 @@
 import { SET_SWITCHES } from '../actions/index';
 
-const fileManager = (state = {switches: [] }, action) => {
+const switchesList = (state = {switches: []}, action) => {
   if(action.type === SET_SWITCHES) {
     return {
       switches: action.switches
@@ -9,4 +9,4 @@ const fileManager = (state = {switches: [] }, action) => {
   return state;
 };
 
-export default fileManager;
+export default switchesList;
