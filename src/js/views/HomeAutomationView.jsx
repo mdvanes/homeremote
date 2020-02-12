@@ -4,7 +4,7 @@ import ToggleContainer from '../containers/ToggleContainer';
 import {Card, CardText} from 'material-ui/Card';
 import SwitchesListContainer from '../containers/SwitchesListContainer';
 
-const LightView = () => {
+const HomeAutomationView = () => {
   return (
     <div className="col-xs-12 col-md-6 col-lg-3"
          style={{backgroundColor: '#e0e0e0', paddingBottom: '1em', paddingTop: '1em', height: '100vh'}}>
@@ -29,4 +29,4 @@ const LightView = () => {
   );
 };
 
-export default LightView;
+export default HomeAutomationView;
