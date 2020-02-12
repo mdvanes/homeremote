@@ -14,7 +14,7 @@ import thunk from 'redux-thunk';
 import homeRemoteReducers from './reducers';
 
 import DashboardView from './views/DashboardView';
-import LightView from './views/LightView';
+import HomeAutomationView from './views/HomeAutomationView';
 import MusicView from './views/MusicView';
 import FilesView from './views/FilesView';
 import GearsView from './views/GearsView';
@@ -79,7 +79,7 @@ class Main extends React.Component {
                                     onLeftIconButtonClick={this.toggleDrawer}
                                     iconElementLeft={<IconButton><NavigationClose /></IconButton>}
                                 />
-                                <Link onTouchTap={this.toggleDrawer} to="/"><MenuItem>Light</MenuItem></Link>
+                                <Link onTouchTap={this.toggleDrawer} to="/"><MenuItem>Home Automation</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/music"><MenuItem>Music</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/files"><MenuItem>Files</MenuItem></Link>
                                 <Link onTouchTap={this.toggleDrawer} to="/r/gears"><MenuItem>Gears</MenuItem></Link>
@@ -88,7 +88,7 @@ class Main extends React.Component {
                                 <a onClick={() => { localStorage.removeItem('hr-remember-me') }} href="logout"><MenuItem>Log out</MenuItem></a>
                             </Drawer>
                             <StatusBar/>
-                            <Route exact path="/" component={LightView}/>
+                            <Route exact path="/" component={HomeAutomationView}/>
                             <Route path="/r/music" component={MusicView}/>
                             <Route path="/r/files" component={FilesView}/>
                             <Route path="/r/gears" component={GearsView}/>
