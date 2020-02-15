@@ -1,6 +1,6 @@
 {
   "name": "homeremote",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Home automation dashboard and PWA",
   "scripts": {
     "devserver": "node writeGitInfo.js dev && concurrently --kill-others \"node node_modules/.bin/webpack-dev-server --host 0.0.0.0 --config webpack.config.js --content-base ./public --inline --hot\" \"npm run watch\"",
