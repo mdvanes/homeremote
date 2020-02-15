@@ -1,5 +1,5 @@
 import {connect} from 'react-redux';
-import {logInfo, logError, setSwitches} from '../actions';
+import {logInfo, logError, setSwitches, toggleExpandScene} from '../actions';
 import SwitchBarList from '../components/SwitchBarList/SwitchBarList';
 import {bindActionCreators} from 'redux';
 
@@ -59,12 +59,13 @@ const sendOff = (...args) => dispatch => {
 
 const mapStateToProps = state => {
   return {
-    switches: state.switchesList.switches
+    switches: state.switchesList.switches,
+    expandedScenes: state.expandedScenes.expanded
   };
 };
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({getSwitches, sendOn, sendOff}, dispatch);
+  return bindActionCreators({getSwitches, sendOn, sendOff, toggleExpandScene}, dispatch);
   // bindActionCreators is shorthand for:
   // return {
   //   getSwitches: () => dispatch(getSwitches()),
