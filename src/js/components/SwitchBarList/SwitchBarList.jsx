@@ -53,14 +53,17 @@ const mapSwitchToSwitchBar = ({idx, name, type, dimLevel, readOnly, status, chil
   />}
 />);
 
-const SwitchBarList = ({ switches, sendOn, sendOff }) => {
+const getLabelAction = (hasChildren, cb) => hasChildren ? cb : false;
+
+const SwitchBarList = ({ switches, expandedScenes, sendOn, sendOff, toggleExpandScene }) => {
   const switchBars = switches
     .map((dSwitch) => {
       const hasChildren = dSwitch.children;
-      const labelAction = hasChildren ? () => { console.log('NYI this should toggle the children') } : false;
+      const labelAction = getLabelAction(hasChildren, () => { toggleExpandScene(dSwitch.idx) } );
+      const showChildren = expandedScenes.includes(dSwitch.idx);
       return (<Fragment key={`frag-${dSwitch.idx}`}>
         {mapSwitchToSwitchBar(dSwitch, sendOn, sendOff, labelAction)}
-        {hasChildren ? (
+        {hasChildren && showChildren ? (
           <div style={{'padding': '0.5em'}}>
             {hasChildren.map(switchChild => mapSwitchToSwitchBar(switchChild, sendOn, sendOff, false))}
           </div>) : null}

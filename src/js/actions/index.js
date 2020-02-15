@@ -10,6 +10,7 @@ export const SET_FILEMANAGER_SOCKET = 'SET_FILEMANAGER_SOCKET';
 export const SET_DIR_INDEX = 'SET_DIR_INDEX';
 export const LIST_DIR = 'LIST_DIR';
 export const SET_SWITCHES = 'SET_SWITCHES';
+export const TOGGLE_EXPAND_SCENE = 'TOGGLE_EXPAND_SCENE';
 
 /* util */
 
@@ -110,3 +111,8 @@ export const setSwitches = (switches) => {
         switches
     }
 };
+
+export const toggleExpandScene = (sceneIdx) => ({
+ type: TOGGLE_EXPAND_SCENE,
+ sceneIdx
+});
