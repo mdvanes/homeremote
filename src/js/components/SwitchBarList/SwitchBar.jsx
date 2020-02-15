@@ -19,13 +19,13 @@ const getIconElem = (icon) => {
  * @returns {*}
  * @constructor
  */
-const SwitchBar = ({ leftButton, rightButton, icon, label }) => {
+const SwitchBar = ({ leftButton, rightButton, icon, label, labelAction }) => {
     return (<Card className="card">
         <CardText className="button-group">
             {leftButton}
             <span className="label">
                 {getIconElem(icon)}
-                {label}
+                {labelAction ? <button onTouchTap={labelAction}>{label}</button> : label}
             </span>
             {rightButton}
         </CardText>
