@@ -99,6 +99,25 @@ process.argv.forEach(function (val, index) {
     }
 });
 
+const startsWithR = req => req.session && req.session.returnTo && req.session.returnTo.indexOf('/r');
+
+const handlePostLogin = (req, res) => {
+    if (req.body.remember) {
+        req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // Cookie expires after 30 days
+    } else {
+        req.session.cookie.expires = false; // Cookie expires at end of session
+    }
+    const redirectUrl = startsWithR(req) === 0 ? req.session.returnTo : '/';
+    log.info(`/login redirectUrl: ${redirectUrl}`);
+    delete req.session.returnTo;
+    res.redirect(redirectUrl);
+};
+
+const handleGetLogout = (req, res) => {
+    req.logout();
+    res.redirect('/login');
+};
+
 if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // enableAuth: default is true
     //https://github.com/passport/express-4.x-local-example
@@ -120,24 +139,9 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     app.post(
         '/login',
         passport.authenticate('local', { failureRedirect: '/login?failed' }),
-        (req, res) => {
-            const redirectUrl = req.session && req.session.returnTo && req.session.returnTo.indexOf('/r') === 0
-              ? req.session.returnTo
-              : '/';
-            log.info(`/login redirectUrl: ${redirectUrl}`);
-            delete req.session.returnTo;
-            res.redirect(redirectUrl);
-        });
-    app.get('/logout',
-        function(req, res){
-            req.logout();
-            res.redirect('/login');
-        });
-    app.get('/r/logout',
-      function(req, res){
-          req.logout();
-          res.redirect('/login');
-      });
+        handlePostLogin);
+    app.get('/logout', handleGetLogout);
+    app.get('/r/logout', handleGetLogout);
 
     app.get('/manifest.json', (req, res) => {
         res.sendFile(path.resolve(__dirname + '/../public/manifest.json'));

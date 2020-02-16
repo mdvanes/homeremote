@@ -42,7 +42,7 @@
 		}
 		.form-group-inline {
 			display: flex;
-			margin-top: 1rem;
+			margin-bottom: 1rem;
 		}
 		.form-group-inline input {
 			margin-right: 1rem;
@@ -65,14 +65,14 @@
 		<label>Password</label>
 		<input class="form-input" type="password" name="password" id="password"/>
 	</div>
+	<div class="form-group-inline">
+		<input type="checkbox" id="remember" name="remember"/>
+		<label class="label-info" for="remember">Remember me</label>
+	</div>
 	<div>
 		<input class="button" type="submit" value="Submit"/>
 	</div>
 </form>
-<div class="form-group-inline">
-	<input type="checkbox" id="hr-remember-me"/>
-	<label class="label-info" for="hr-remember-me">Remember me until logged out manually</label>
-</div>
 
 <div id="log" style="color: red;">
 </div>
@@ -97,45 +97,6 @@
 	}
 	document.getElementById('close-error').addEventListener('click', function(ev) {
         document.querySelector('.error').style.display = 'none';
-	});
-
-	// Related issues:
-	// https://stackoverflow.com/questions/57360830/chrome-75-x-latest-update-sets-internal-input-suggested-this-leads-to-smaller?noredirect=1&lq=1
-	// https://stackoverflow.com/questions/56026043/how-to-prevent-chrome-from-changing-font-when-autofilling-username-password
-	// Mobile Chrome sees the username as empty as long as the prefilled text is small. When clicking somewhere on the screen, the text becomes big and the value is correctly set into the DOM.
-	// interesting: when the text is small, it is in the input in a #shadow-root in a div[pseudo="-internal-input-suggested"
-	// see screenshot
-	// when the text is big, the input is in a #shadow-root in a div without any attributes
-	// note: it seems that running document.getElementById('username').placeholder programmatically triggers the switch from small to big text
-	// in fact, this works in the dev console, but not when embedded in the code.
-    // Requesting the placeholder or value is workaround for a Chrome render bug which makes the text switch from small to big and also sets the values properly
-    // not working: console.log(document.getElementById('username').focus());
-    // not working: document.getElementById("form").appendChild(document.createTextNode("hello, world"))
-
-    if (localStorage.getItem('hr-remember-me')) {
-		document.getElementById('hr-remember-me').checked = true;
-		// Requesting the placeholder or value is workaround for a Chrome render bug which makes the text switch from small to big and also sets the values properly
-		// console.log(document.getElementById('username').focus());
-
-		// auto submit
-		setTimeout(() => {
-			// Requesting the placeholder or value is workaround for a Chrome render bug which makes the text switch from small to big and also sets the values properly
-			// console.log(document.getElementById('username').focus());
-
-			if (document.getElementById('username').value) {
-				document.getElementById('form').submit();
-			} else {
-				document.getElementById('log').appendChild(document.createTextNode('! username not set'));
-			}
-		}, 500);
-	}
-
-	document.getElementById('hr-remember-me').addEventListener('click', (ev) => {
-		if (ev.target.checked === true) {
-			localStorage.setItem('hr-remember-me', true);
-			return;
-		}
-		localStorage.removeItem('hr-remember-me');
 	});
 </script>
 
