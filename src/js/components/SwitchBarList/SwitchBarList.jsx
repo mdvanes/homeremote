@@ -26,40 +26,44 @@ const getLeftIcon = label => label === 'Blinds' ? 'arrow_drop_down' : 'radio_but
 
 const getRightIcon = label => label === 'Blinds' ? 'arrow_drop_up' : 'radio_button_unchecked';
 
-const getNameAndChildren = (name, children) => children ? `${name} (${children.length})` : name;
+const getNameAndChildren = (name, children) => children ? `${name} ⯆` : name;
 
-const getLabel = ( name, dimLevel, type ) => {
-  if ( type === 'selector' ) {
+const getLabel = (name, dimLevel, type) => {
+  if (type === 'selector') {
     return `${name}: ${SELECTOR_STATES[dimLevel]}`;
   }
   return dimLevel !== null ? `${name} (${dimLevel}%)` : name;
 };
 
-const mapSwitchToSwitchBar = ({idx, name, type, dimLevel, readOnly, status, children}, sendOn, sendOff, labelAction) => (<SwitchBar
-  key={`switch-${idx}`}
-  label={getLabel(getNameAndChildren(name, children), dimLevel, getType(type))}
-  labelAction={labelAction}
-  leftButton={<SwitchBarInnerButton
-    isReadOnly={readOnly}
-    clickAction={() => sendOn(idx, getType(type))}
-    icon={getLeftIcon(name)}
-    isActive={status === 'On'}
-  />}
-  rightButton={<SwitchBarInnerButton
-    isReadOnly={readOnly}
-    clickAction={() => sendOff(idx, getType(type))}
-    icon={getRightIcon(name)}
-    isActive={status === 'Off'}
-  />}
-/>);
+const mapSwitchToSwitchBar = ({idx, name, type, dimLevel, readOnly, status, children}, sendOn, sendOff, labelAction) => (
+  <SwitchBar
+    key={`switch-${idx}`}
+    label={getLabel(getNameAndChildren(name, children), dimLevel, getType(type))}
+    labelAction={labelAction}
+    leftButton={<SwitchBarInnerButton
+      isReadOnly={readOnly}
+      clickAction={() => sendOn(idx, getType(type))}
+      icon={getLeftIcon(name)}
+      isActive={status === 'On'}
+    />}
+    rightButton={<SwitchBarInnerButton
+      isReadOnly={readOnly}
+      clickAction={() => sendOff(idx, getType(type))}
+      icon={getRightIcon(name)}
+      isActive={status === 'Off'}
+    />}
+  />);
 
-const getLabelAction = (hasChildren, cb) => hasChildren ? cb : false;
+const getLabelAction = (hasChildren, cbWithChildren, cbWithoutChildren) => hasChildren ? cbWithChildren : cbWithoutChildren;
 
-const SwitchBarList = ({ switches, expandedScenes, sendOn, sendOff, toggleExpandScene }) => {
+const SwitchBarList = ({switches, expandedScenes, sendOn, sendOff, toggleExpandScene, getSwitches}) => {
   const switchBars = switches
     .map((dSwitch) => {
       const hasChildren = dSwitch.children;
-      const labelAction = getLabelAction(hasChildren, () => { toggleExpandScene(dSwitch.idx) } );
+      const labelAction = getLabelAction(hasChildren, () => {
+        toggleExpandScene(dSwitch.idx);
+        getSwitches();
+      }, getSwitches);
       const showChildren = expandedScenes.includes(dSwitch.idx);
       return (<Fragment key={`frag-${dSwitch.idx}`}>
         {mapSwitchToSwitchBar(dSwitch, sendOn, sendOff, labelAction)}
