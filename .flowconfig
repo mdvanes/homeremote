@@ -1,4 +1,0 @@
-[include]
-.*/public/_js/
-[ignore]
-.*/node_modules
