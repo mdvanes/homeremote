@@ -1,0 +1,78 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "react-app",
+    "plugin:@typescript-eslint/recommended",
+//    "plugin:react/recommended",
+    "plugin:prettier/recommended",
+//    "airbnb",
+    "prettier",
+    "prettier/@typescript-eslint",
+    "prettier/react",
+    "plugin:jest/recommended"
+    // "plugin:import/typescript" // waiting for import fix, see "import workaround", see https://github.com/benmosher/eslint-plugin-import/issues/1285
+  ],
+  "plugins": [
+//    "import", // workaround for import
+    "@typescript-eslint",
+    "prettier",
+    "react",
+    "jest"
+  ],
+  "settings": {
+//    "import/extensions": [
+//      ".js",
+//      ".jsx",
+//      ".ts",
+//      ".tsx"
+//    ]
+    // workaround for import
+//    "import/parsers": {
+//      // workaround for import
+//      "@typescript-eslint/parser": [
+//        ".ts",
+//        ".tsx"
+//      ]
+//    },
+//    "import/resolver": {
+//      // workaround for import
+//      "node": {
+//        "extensions": [
+//          ".js",
+//          ".jsx",
+//          ".ts",
+//          ".tsx"
+//        ]
+//        // workaround for import
+//      }
+//    }
+  },
+  "env": {
+    "browser": true,
+    "jest/globals": true
+  },
+  "rules": {
+    // Only allow Prettier styles
+    "prettier/prettier": [
+      "error"
+    ]
+    // workaround for import
+//    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }]
+    // "import/no-extraneous-dependencies": ["error", { "devDependencies": ["**/*.test.tsx"] } ],
+    // Fix return type in function expression, see github.com/typescript-eslint/typescript-eslint/issues/149
+    // "@typescript-eslint/explicit-function-return-type": ["error", {
+    //"allowedTypedFunctionExpressions": true
+    //}]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/*.tsx"
+      ],
+      "rules": {
+        // Fix proptype checking for FC in TypeScript
+        "react/prop-types": "off"
+      }
+    }
+  ]
+}
