@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 // Example of importing image
 // import logo from './logo.svg';
 // Example of importing CSS
-import './App.css';
+// import './App.css';
 import {
     AppBar,
     createMuiTheme,
