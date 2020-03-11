@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 /* eslint-env node */
 
-let express = require('express');
+// TODO remove this by setting env node or the like in .eslintrc in this dir
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+
+const express = require('express');
 let debug = false;
-let app = express();
+const app = express();
 const http = require('http');
 const path = require('path');
 const bunyan = require('bunyan');
@@ -32,7 +36,7 @@ const auth = require('../auth.json');
 app.use(bodyParser.json()); // for parsing application/json
 
 // Configuration
-let log = bunyan.createLogger({
+const log = bunyan.createLogger({
     name: 'HomeRemote',
     streams: [
         {
@@ -46,22 +50,25 @@ let log = bunyan.createLogger({
     ]
 });
 
-passport.use(new LocalStrategy(
-    function(requestedUsername, requestedPassword, done) {
+passport.use(
+    new LocalStrategy(function(requestedUsername, requestedPassword, done) {
         const retrievedUsers = auth.users.filter(user => {
             return user.name === requestedUsername;
         });
-        if(retrievedUsers &&
+        if (
+            retrievedUsers &&
             retrievedUsers.length === 1 &&
             retrievedUsers[0].name === requestedUsername &&
             retrievedUsers[0].password === requestedPassword
         ) {
             return done(null, retrievedUsers[0]);
         } else {
-            return done(null, false, { message: 'Incorrect username/password.' });
+            return done(null, false, {
+                message: 'Incorrect username/password.'
+            });
         }
-    }
-));
+    })
+);
 
 // Configure Passport authenticated session persistence.
 //
@@ -78,7 +85,8 @@ passport.deserializeUser(function(id, cb) {
     const retrievedUsers = auth.users.filter(user => {
         return user.id === id;
     });
-    if(retrievedUsers &&
+    if (
+        retrievedUsers &&
         retrievedUsers.length === 1 &&
         retrievedUsers[0].id === id
     ) {
@@ -91,15 +99,18 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
 // Read application arguments
-process.argv.forEach(function (val, index) {
+process.argv.forEach(function(val, index) {
     // Detect debug mode
-    if(index === 2 && val === '--debugremote') {
-        log.warn('Running in debug mode!');
+    if (index === 2 && val === '--debugremote') {
+        log.warn(
+            'Running in debug mode! Disabled authentication and running on port 3001'
+        );
         debug = true;
     }
 });
 
-const startsWithR = req => req.session && req.session.returnTo && req.session.returnTo.indexOf('/r');
+const startsWithR = req =>
+    req.session && req.session.returnTo && req.session.returnTo.indexOf('/r');
 
 const handlePostLogin = (req, res) => {
     if (req.body.remember) {
@@ -118,41 +129,61 @@ const handleGetLogout = (req, res) => {
     res.redirect('/login');
 };
 
-if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
+if (typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     // enableAuth: default is true
     //https://github.com/passport/express-4.x-local-example
     app.use(require('morgan')('combined'));
     app.use(require('cookie-parser')());
     app.use(bodyParser.urlencoded({ extended: true }));
     // https://github.com/expressjs/session
-    if(!auth.salt) {
+    if (!auth.salt) {
         throw new Error('set salt in auth.json');
     }
-    app.use(session({ secret: auth.salt, resave: false, saveUninitialized: false }));
 
-    app.use(passport.initialize());
-    app.use(passport.session());
+    if (!debug) {
+        app.use(
+            session({
+                secret: auth.salt,
+                resave: false,
+                saveUninitialized: false
+            })
+        );
 
-    app.get('/login', (req, res) => {
-        res.render('login');
-    });
-    app.post(
-        '/login',
-        passport.authenticate('local', { failureRedirect: '/login?failed' }),
-        handlePostLogin);
-    app.get('/logout', handleGetLogout);
-    app.get('/r/logout', handleGetLogout);
+        app.use(passport.initialize());
+        app.use(passport.session());
+
+        app.get('/login', (req, res) => {
+            res.render('login');
+        });
+        app.post(
+            '/login',
+            passport.authenticate('local', {
+                failureRedirect: '/login?failed'
+            }),
+            handlePostLogin
+        );
+        app.get('/logout', handleGetLogout);
+        app.get('/r/logout', handleGetLogout);
+        app.use(connectEnsureLogin(), express.static('public'));
+    } else {
+        log.warn(`WARNING: Authentication is disabled!`);
+    }
+
+    const ensuredLoggedIn = debug
+        ? () => {
+              // Dummy callback
+              return (req, res, next) => {
+                  next();
+              };
+          }
+        : connectEnsureLogin;
 
     app.get('/manifest.json', (req, res) => {
         res.sendFile(path.resolve(__dirname + '/../public/manifest.json'));
     });
 
-    app.use(
-        connectEnsureLogin(),
-        express.static('public'));
-
     // Set routes
-    if(!debug) {
+    if (!debug) {
         // Do not start motion in debugmode, because of sudo password requests.
         nowplaying.bind(app, log, debug);
     }
@@ -162,28 +193,33 @@ if(typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
     vmServicesToggle.bind(app, log);
 
     shellStatus.bind(app, 'shell', log);
-    switcher.bind(app, log);
+    switcher.bind(app, log, ensuredLoggedIn);
     gears.bind(app, log);
     filemanager.bind(app, expressWs, log);
     getMusic.bind(app, log);
     //broadcast.bind(app, log, debug);
 
+    // TODO remove /r/* subpath matching
     // Using the /r/ subpath for views, to easily match here and in webpack.config proxies
     app.get('/r/*', connectEnsureLogin(), (req, res) => {
-        if(!debug) {
+        if (!debug) {
             res.sendFile(path.resolve(__dirname + '/../public/index.html'));
         } else {
             // Better solution: https://forum-archive.vuejs.org/topic/836/webpack-hot-reloading-possible-with-express-server/6
             res.redirect('/');
         }
     });
-
 } else {
-    app.use(
-        express.static('public')
-    );
+    app.use(express.static('public'));
 }
 
-server.listen(3000, () => log.info('HomeRemote listening at http://localhost:3000') );
+const PORT = debug ? 3001 : 3000;
 
-log.info('Registered endpoints:\n', JSON.stringify(listEndpointsExpress(app), null, 2));
+server.listen(PORT, () =>
+    log.info(`HomeRemote listening at http://localhost:${PORT}`)
+);
+
+log.info(
+    'Registered endpoints:\n',
+    JSON.stringify(listEndpointsExpress(app), null, 2)
+);
