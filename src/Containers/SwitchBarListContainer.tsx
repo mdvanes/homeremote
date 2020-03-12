@@ -1,7 +1,10 @@
 import { connect } from 'react-redux';
 import { logInfo, logError, setSwitches, toggleExpandScene } from '../Actions';
 import SwitchBarList from '../Components/Molecules/SwitchBarList/SwitchBarList';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, Dispatch } from 'redux';
+
+// Fix dispatch types, see https://medium.com/@d.maklygin/redux-typescript-reuse-the-type-of-an-action-creators-return-value-91663a48858f
+// example with thunks: https://github.com/reduxjs/redux-thunk/blob/master/test/typescript.ts
 
 // Alternatively use process.env.NODE_ENV that is automatically set to development or production
 const getRootUrl = (): string =>
@@ -9,8 +12,12 @@ const getRootUrl = (): string =>
         ? 'http://localhost:3001'
         : '';
 
+// type State = {};
+// type SomeActions = { type: 'foo' };
+// type ThunkResult<R> = ThunkAction<R, State, undefined, SomeActions>;
+
 // This is a simple thunk
-const getSwitches = () => (dispatch: any) =>
+const getSwitches = () => (dispatch: Dispatch) =>
     fetch(`${getRootUrl()}/switches`, {
         credentials: 'same-origin',
         method: 'GET',
@@ -65,11 +72,11 @@ const sendState = (dispatch: any, state: any, id: any, type: any) => {
 //     sendState(dispatch, 'on', ...args);
 // };
 
-const sendOn = (id: any, type: any) => (dispatch: any) => {
+const sendOn = (id: any, type: any) => (dispatch: Dispatch) => {
     sendState(dispatch, 'on', id, type);
 };
 
-const sendOff = (id: any, type: any) => (dispatch: any) => {
+const sendOff = (id: any, type: any) => (dispatch: Dispatch) => {
     sendState(dispatch, 'off', id, type);
 };
 
@@ -80,7 +87,32 @@ const mapStateToProps = (state: any) => {
     };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
+// type SwitchBarListActions = SetSwitchesAction; // TODO see https://github.com/piotrwitek/react-redux-typescript-guide/issues/110#issuecomment-456564751
+//
+// const switchBarListActionCreators: ActionCreatorsMapObject<SwitchBarListActions> = {
+//     get,
+//     sendOn,
+//     sendOff,
+//     toggleExpandScene
+// };
+
+// type RemapActionCreators<T extends ActionCreatorsMapObject> = {
+//     [K in keyof T]: ReplaceReturnType<T[K], ActionCreatorResponse<T[K]>>
+// }
+// type RemappedDispatchProps = RemapActionCreators<SwitchBarListDispatchProps>;
+
+// const actions = bindActionCreators(
+//     {
+//         getSwitches
+//     },
+//     dispatch
+// );
+
+// interface ActionDispatchs {
+//     getSwitches: typeof getSwitches;
+// }
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
     return bindActionCreators(
         { getSwitches, sendOn, sendOff, toggleExpandScene },
         dispatch
