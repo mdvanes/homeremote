@@ -3,9 +3,15 @@ import { logInfo, logError, setSwitches, toggleExpandScene } from '../Actions';
 import SwitchBarList from '../Components/Molecules/SwitchBarList/SwitchBarList';
 import { bindActionCreators } from 'redux';
 
+// Alternatively use process.env.NODE_ENV that is automatically set to development or production
+const getRootUrl = (): string =>
+    process.env.REACT_APP_STAGE === 'development'
+        ? 'http://localhost:3001'
+        : '';
+
 // This is a simple thunk
 const getSwitches = () => (dispatch: any) =>
-    fetch('/switches', {
+    fetch(`${getRootUrl()}/switches`, {
         credentials: 'same-origin',
         method: 'GET',
         headers: {
@@ -27,7 +33,7 @@ const getSwitches = () => (dispatch: any) =>
         .catch(error => dispatch(logError(`error on /switches: ${error}`)));
 
 const sendState = (dispatch: any, state: any, id: any, type: any) => {
-    fetch(`/switch/${id}`, {
+    fetch(`${getRootUrl()}/switch/${id}`, {
         credentials: 'same-origin',
         method: 'POST',
         headers: {
