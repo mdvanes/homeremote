@@ -167,6 +167,16 @@ if (typeof settings.enableAuth === 'undefined' || settings.enableAuth) {
         app.use(connectEnsureLogin(), express.static('public'));
     } else {
         log.warn(`WARNING: Authentication is disabled!`);
+
+        app.use(function(req, res, next) {
+            res.header('Access-Control-Allow-Origin', '*');
+            res.header(
+                'Access-Control-Allow-Headers',
+                'Origin, X-Requested-With, Content-Type, Accept'
+            );
+            next();
+        });
+        log.warn(`WARNING: Disabled CORS protection!`);
     }
 
     const ensuredLoggedIn = debug

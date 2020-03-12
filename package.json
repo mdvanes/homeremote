@@ -42,7 +42,7 @@
     "youtube-dl": "^3.0.2"
   },
   "scripts": {
-    "start:dev": "concurrently --kill-others \"BROWSER=none react-scripts start\" \"npm run watch\"",
+    "start:dev": "concurrently --kill-others \"BROWSER=none REACT_APP_STAGE=development react-scripts start\" \"npm run watch\"",
     "start:devserver": "node server/app.js --debugremote | bunyan",
     "start": "node server/app.js | bunyan",
     "build": "react-scripts build",
