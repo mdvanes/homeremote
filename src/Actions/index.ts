@@ -9,7 +9,6 @@ export const SET_MOVE_PROGRESS = 'SET_MOVE_PROGRESS';
 export const SET_FILEMANAGER_SOCKET = 'SET_FILEMANAGER_SOCKET';
 export const SET_DIR_INDEX = 'SET_DIR_INDEX';
 export const LIST_DIR = 'LIST_DIR';
-export const TOGGLE_EXPAND_SCENE = 'TOGGLE_EXPAND_SCENE';
 
 /* util */
 
@@ -113,8 +112,4 @@ export const fileManagerListDir = (dirName: any) => {
 };
 
 export * from './switchesList';
-
-export const toggleExpandScene = (sceneIdx: any) => ({
-    type: TOGGLE_EXPAND_SCENE,
-    sceneIdx
-});
+export * from './toggleExpandScene';

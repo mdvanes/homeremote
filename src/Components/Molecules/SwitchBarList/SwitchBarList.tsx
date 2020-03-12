@@ -1,7 +1,13 @@
-// eslint-disable-next-line no-unused-vars
-import React, { Fragment, useEffect } from 'react';
+import React, { FC, Fragment, ReactElement, useEffect } from 'react';
 import SwitchBar from './SwitchBar';
 import SwitchBarInnerButton from './SwitchBarInnerButton';
+import {
+    GetSwitches,
+    SendSomeState
+} from '../../../Containers/SwitchBarListContainer';
+import { ActionCreator, Dispatch } from 'redux';
+import { ToggleExpandSceneAction } from '../../../Actions';
+import { DSwitch } from '../../../Reducers/switchesList';
 
 // TODO improve type
 const SELECTOR_STATES: Record<number, string> = {
@@ -11,8 +17,9 @@ const SELECTOR_STATES: Record<number, string> = {
     30: 'armed'
 };
 
+// TODO stronger typing, return type can be only certain strings
 // Type is switchscene or switchlight
-const getType = (type: any) => {
+const getType = (type: string): string => {
     switch (type) {
         case 'Group':
             return 'switchscene';
@@ -23,30 +30,35 @@ const getType = (type: any) => {
     }
 };
 
-const getLeftIcon = (label: string) =>
+const getLeftIcon = (label: string): string =>
     label === 'Blinds' ? 'arrow_drop_down' : 'radio_button_checked';
 
-const getRightIcon = (label: string) =>
+const getRightIcon = (label: string): string =>
     label === 'Blinds' ? 'arrow_drop_up' : 'radio_button_unchecked';
 
-const getNameAndChildren = (name: string, children: any) =>
-    children ? `${name} ⯆` : name;
+const getNameAndChildren = (
+    name: string,
+    children: DSwitch[] | false
+): string => (children ? `${name} ⯆` : name);
 
-const getLabel = (name: string, dimLevel: number, type: string) => {
+const getLabel = (name: string, dimLevel: number, type: string): string => {
     if (type === 'selector') {
         return `${name}: ${SELECTOR_STATES[dimLevel]}`;
     }
     return dimLevel !== null ? `${name} (${dimLevel}%)` : name;
 };
 
+type SendSomeStateDispatch = (dispatch: Dispatch) => void;
+
 const mapSwitchToSwitchBar = (
-    { idx, name, type, dimLevel, readOnly, status, children }: any,
-    sendOn: any,
-    sendOff: any,
-    labelAction: any
-) => (
+    { idx, name, type, dimLevel, readOnly, status, children }: DSwitch,
+    sendOn: SendSomeState,
+    sendOff: SendSomeState,
+    labelAction: (() => void) | false
+): ReactElement => (
     <SwitchBar
         key={`switch-${idx}`}
+        icon={false}
         label={getLabel(
             getNameAndChildren(name, children),
             dimLevel,
@@ -56,7 +68,9 @@ const mapSwitchToSwitchBar = (
         leftButton={
             <SwitchBarInnerButton
                 isReadOnly={readOnly}
-                clickAction={() => sendOn(idx, getType(type))}
+                clickAction={(): SendSomeStateDispatch =>
+                    sendOn(idx, getType(type))
+                }
                 icon={getLeftIcon(name)}
                 isActive={status === 'On'}
             />
@@ -64,7 +78,9 @@ const mapSwitchToSwitchBar = (
         rightButton={
             <SwitchBarInnerButton
                 isReadOnly={readOnly}
-                clickAction={() => sendOff(idx, getType(type))}
+                clickAction={(): SendSomeStateDispatch =>
+                    sendOff(idx, getType(type))
+                }
                 icon={getRightIcon(name)}
                 isActive={status === 'Off'}
             />
@@ -74,23 +90,33 @@ const mapSwitchToSwitchBar = (
 
 const getLabelAction = (
     hasChildren: boolean,
-    cbWithChildren: any,
-    cbWithoutChildren: any
-) => (hasChildren ? cbWithChildren : cbWithoutChildren);
+    cbWithChildren: () => void,
+    cbWithoutChildren: () => void
+): (() => void) => (hasChildren ? cbWithChildren : cbWithoutChildren);
 
-const SwitchBarList = ({
-    switches,
-    expandedScenes,
+// TODO this type should be in SwitchBarListContainer
+type OuterProps = {
+    getSwitches: GetSwitches;
+    sendOn: SendSomeState;
+    sendOff: SendSomeState;
+    toggleExpandScene: ActionCreator<ToggleExpandSceneAction>;
+    switches: DSwitch[];
+    expandedScenes: string[];
+};
+
+const SwitchBarList: FC<OuterProps> = ({
+    getSwitches,
     sendOn,
     sendOff,
     toggleExpandScene,
-    getSwitches
-}: any) => {
+    switches,
+    expandedScenes
+}) => {
     useEffect(() => {
         getSwitches();
     }, [getSwitches]);
-    const switchBars = switches.map((dSwitch: any) => {
-        const hasChildren = dSwitch.children;
+    const switchBars = switches.map((dSwitch: DSwitch) => {
+        const hasChildren = Boolean(dSwitch.children);
         const labelAction = getLabelAction(
             hasChildren,
             () => {
@@ -105,14 +131,15 @@ const SwitchBarList = ({
                 {mapSwitchToSwitchBar(dSwitch, sendOn, sendOff, labelAction)}
                 {hasChildren && showChildren ? (
                     <div style={{ padding: '0.5em' }}>
-                        {hasChildren.map((switchChild: any) =>
-                            mapSwitchToSwitchBar(
-                                switchChild,
-                                sendOn,
-                                sendOff,
-                                false
-                            )
-                        )}
+                        {dSwitch.children &&
+                            dSwitch.children.map((switchChild: DSwitch) =>
+                                mapSwitchToSwitchBar(
+                                    switchChild,
+                                    sendOn,
+                                    sendOff,
+                                    false
+                                )
+                            )}
                     </div>
                 ) : null}
             </Fragment>

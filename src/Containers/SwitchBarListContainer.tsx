@@ -16,8 +16,11 @@ const getRootUrl = (): string =>
 // type SomeActions = { type: 'foo' };
 // type ThunkResult<R> = ThunkAction<R, State, undefined, SomeActions>;
 
+// TODO why is return type void and not Promise<void>?
+export type GetSwitches = () => (dispatch: Dispatch) => void;
+
 // This is a simple thunk
-const getSwitches = () => (dispatch: Dispatch) =>
+const getSwitches: GetSwitches = () => dispatch =>
     fetch(`${getRootUrl()}/switches`, {
         credentials: 'same-origin',
         method: 'GET',
@@ -39,7 +42,9 @@ const getSwitches = () => (dispatch: Dispatch) =>
         })
         .catch(error => dispatch(logError(`error on /switches: ${error}`)));
 
-const sendState = (dispatch: any, state: any, id: any, type: any) => {
+// TODO setting dispatch to Dispatch causes error. Why is return type void and not Promise<void> ?
+type SendState = (dispatch: any, state: any, id: string, type: string) => void;
+const sendState: SendState = (dispatch, state, id, type) => {
     fetch(`${getRootUrl()}/switch/${id}`, {
         credentials: 'same-origin',
         method: 'POST',
@@ -72,11 +77,16 @@ const sendState = (dispatch: any, state: any, id: any, type: any) => {
 //     sendState(dispatch, 'on', ...args);
 // };
 
-const sendOn = (id: any, type: any) => (dispatch: Dispatch) => {
+export type SendSomeState = (
+    id: string,
+    type: string
+) => (dispatch: Dispatch) => void;
+
+const sendOn: SendSomeState = (id, type) => dispatch => {
     sendState(dispatch, 'on', id, type);
 };
 
-const sendOff = (id: any, type: any) => (dispatch: Dispatch) => {
+const sendOff: SendSomeState = (id, type) => dispatch => {
     sendState(dispatch, 'off', id, type);
 };
 

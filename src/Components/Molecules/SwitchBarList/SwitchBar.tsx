@@ -1,11 +1,8 @@
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
+import React, { FC, ReactElement } from 'react';
 import { Icon, Card, CardContent } from '@material-ui/core';
 import './SwitchBar.scss';
 
-// TODO needs TS
-
-const getIconElem = (icon: any) => {
+const getIconElem = (icon: string | false): ReactElement => {
     return icon ? (
         <Icon style={{ fontSize: '250%' }} className="material-icons">
             {icon}
@@ -13,6 +10,14 @@ const getIconElem = (icon: any) => {
     ) : (
         <i></i>
     );
+};
+
+type Props = {
+    leftButton: ReactElement;
+    rightButton: ReactElement;
+    icon: string | false;
+    label: string;
+    labelAction: (() => void) | false;
 };
 
 /**
@@ -24,13 +29,13 @@ const getIconElem = (icon: any) => {
  * @returns {*}
  * @constructor
  */
-const SwitchBar = ({
+const SwitchBar: FC<Props> = ({
     leftButton,
     rightButton,
     icon,
     label,
     labelAction
-}: any) => {
+}) => {
     return (
         <Card className="card">
             <CardContent className="button-group">
