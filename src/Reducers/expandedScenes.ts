@@ -1,15 +1,18 @@
-import { TOGGLE_EXPAND_SCENE } from '../Actions/index';
-
-type Action = {
-    type: string;
-    sceneIdx: string;
-};
+import { TOGGLE_EXPAND_SCENE, ToggleExpandSceneAction } from '../Actions';
 
 type State = {
-    expanded: any[];
+    expanded: string[];
 };
 
-const expandedScenes = (state: State = { expanded: [] }, action: Action) => {
+type ExpandedScenesReducer = (
+    state: State,
+    action: ToggleExpandSceneAction
+) => void;
+
+const expandedScenes: ExpandedScenesReducer = (
+    state = { expanded: [] },
+    action
+) => {
     if (action.type === TOGGLE_EXPAND_SCENE) {
         if (state.expanded.includes(action.sceneIdx)) {
             // Exists already, so toggle to "collapsed" and remove from the expanded array
