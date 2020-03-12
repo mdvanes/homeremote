@@ -17,6 +17,7 @@ import { deepPurple, orange } from '@material-ui/core/colors';
 import MenuIcon from '@material-ui/icons/Menu';
 import HomeAutomation from './Components/Pages/HomeAutomation/HomeAutomation';
 import { BrowserRouter, Route, Link } from 'react-router-dom';
+import Log from './Components/Pages/Log/Log';
 
 const theme = createMuiTheme({
     palette: {
@@ -79,7 +80,7 @@ const App: FC = () => {
                 <Route exact path="/music" component={HomeAutomation} />
                 <Route exact path="/files" component={HomeAutomation} />
                 <Route exact path="/gears" component={HomeAutomation} />
-                <Route exact path="/log" component={HomeAutomation} />
+                <Route exact path="/log" component={Log} />
                 <Route exact path="/dashboard" component={HomeAutomation} />
             </BrowserRouter>
             {/* TODO <GlobalSnackBar/>*/}
