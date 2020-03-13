@@ -21,11 +21,11 @@ interface LogAction extends Action<string> {
     showShortMessage: boolean;
 }
 
-interface LogInfoAction extends LogAction {
+export interface LogInfoAction extends LogAction {
     type: typeof LOG_INFO;
 }
 
-interface LogErrorAction extends LogAction {
+export interface LogErrorAction extends LogAction {
     type: typeof LOG_ERROR;
 }
 

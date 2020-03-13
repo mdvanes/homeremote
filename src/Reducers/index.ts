@@ -1,4 +1,4 @@
-// import loglines from './loglines';
+import loglines from './loglines';
 // import short from './short';
 // import moveParams from './moveParams';
 // import moveProgress from './moveProgress';
@@ -8,7 +8,7 @@ import expandedScenes from './expandedScenes';
 import { combineReducers } from 'redux';
 
 const homeRemoteReducers = combineReducers({
-    // loglines,
+    loglines,
     // short,
     // moveParams,
     // moveProgress,

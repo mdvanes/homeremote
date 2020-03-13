@@ -8,7 +8,7 @@ homeremote\.sublime-project
 homeremote\.sublime-workspace
 polymer\.sublime-project
 polymer\.sublime-workspace
-/gitinfo.json
+/src/gitinfo.json
 
 # dependencies
 /node_modules
