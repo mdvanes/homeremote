@@ -8,21 +8,30 @@ import packageJson from '../../../../package.json';
 
 import './Log.scss';
 
-const Log: FC = () => (
+type Logline = {
+    message: string;
+};
+
+type Props = {
+    loglines: Logline[];
+};
+
+const Log: FC<Props> = ({ loglines }) => (
     <Card className="log-card">
         <CardContent className="log-card-text version">
-            version: {gitinfo.hash}-{gitinfo.branch}-
+            version: {gitinfoJson.hash}-{gitinfoJson.branch}-
             {packageJson.version}
         </CardContent>
         <CardContent className="log-card-text">
-            {this.props.loglines.map((logline, index) => (
-                <div key={index}>{logline.message}</div>
-            ))}
+            {loglines &&
+                loglines.map((logline, index) => (
+                    <div key={index}>{logline.message}</div>
+                ))}
         </CardContent>
         <div className="log"></div>
         <CardActions className="log-card-actions">
-            <ClearLogButton />
-            <RadioInfoButton />
+            {/*<ClearLogButton />
+            <RadioInfoButton />*/}
         </CardActions>
     </Card>
 );

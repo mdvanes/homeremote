@@ -15,11 +15,12 @@ type State = {
     switches: DSwitch[];
 };
 
-// TODO return type should not be void but state?
-type SwitchesListReducer = (state: State, action: SetSwitchesAction) => void;
+const emptyList: DSwitch[] = [];
+
+type SwitchesListReducer = (state: State, action: SetSwitchesAction) => State;
 
 const switchesList: SwitchesListReducer = (
-    state = { switches: [] },
+    state = { switches: emptyList },
     action
 ) => {
     if (action.type === SET_SWITCHES) {
