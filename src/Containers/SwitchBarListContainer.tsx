@@ -1,5 +1,11 @@
 import { connect } from 'react-redux';
-import { logInfo, logError, setSwitches, toggleExpandScene } from '../Actions';
+import {
+    logInfo,
+    logError,
+    setSwitches,
+    toggleExpandScene,
+    LogErrorAction
+} from '../Actions';
 import SwitchBarList from '../Components/Molecules/SwitchBarList/SwitchBarList';
 import { bindActionCreators, Dispatch } from 'redux';
 
@@ -12,12 +18,15 @@ const getRootUrl = (): string =>
         ? 'http://localhost:3001'
         : '';
 
+// TODO remove any types, pick types like in LogContainer
+
 // type State = {};
 // type SomeActions = { type: 'foo' };
 // type ThunkResult<R> = ThunkAction<R, State, undefined, SomeActions>;
 
-// TODO why is return type void and not Promise<void>?
-export type GetSwitches = () => (dispatch: Dispatch) => void;
+export type GetSwitches = () => (
+    dispatch: Dispatch
+) => Promise<void | LogErrorAction>;
 
 // This is a simple thunk
 const getSwitches: GetSwitches = () => dispatch =>
@@ -42,9 +51,13 @@ const getSwitches: GetSwitches = () => dispatch =>
         })
         .catch(error => dispatch(logError(`error on /switches: ${error}`)));
 
-// TODO setting dispatch to Dispatch causes error. Why is return type void and not Promise<void> ?
-type SendState = (dispatch: any, state: any, id: string, type: string) => void;
-const sendState: SendState = (dispatch, state, id, type) => {
+type SendState = (
+    dispatch: any,
+    state: any,
+    id: string,
+    type: string
+) => Promise<void>;
+const sendState: SendState = (dispatch, state, id, type) =>
     fetch(`${getRootUrl()}/switch/${id}`, {
         credentials: 'same-origin',
         method: 'POST',
@@ -70,7 +83,6 @@ const sendState: SendState = (dispatch, state, id, type) => {
             }
         })
         .catch(error => dispatch(logError(`error on send-${state}: ${error}`)));
-};
 
 // TypeScript does not like passing ...args, at least not when typed with :any
 // const sendOn = (...args: any) => (dispatch: any) => {
@@ -80,15 +92,13 @@ const sendState: SendState = (dispatch, state, id, type) => {
 export type SendSomeState = (
     id: string,
     type: string
-) => (dispatch: Dispatch) => void;
+) => (dispatch: Dispatch) => Promise<void>;
 
-const sendOn: SendSomeState = (id, type) => dispatch => {
+const sendOn: SendSomeState = (id, type) => dispatch =>
     sendState(dispatch, 'on', id, type);
-};
 
-const sendOff: SendSomeState = (id, type) => dispatch => {
+const sendOff: SendSomeState = (id, type) => dispatch =>
     sendState(dispatch, 'off', id, type);
-};
 
 const mapStateToProps = (state: any) => {
     return {
