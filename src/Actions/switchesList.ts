@@ -4,7 +4,7 @@ import { DSwitch } from '../Reducers/switchesList';
 export const SET_SWITCHES = 'SET_SWITCHES';
 
 export interface SetSwitchesAction extends Action<string> {
-    type: 'SET_SWITCHES';
+    type: typeof SET_SWITCHES;
     switches: DSwitch[];
 }
 
