@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import PropTypes from 'prop-types';
 import { Card, CardContent, CardActions } from '@material-ui/core';
 import ClearLogButton from '../containers/ClearLogButton';
 import RadioInfoButton from '../containers/RadioInfoButton';
@@ -12,7 +11,7 @@ type Logline = {
     message: string;
 };
 
-type Props = {
+export type Props = {
     loglines: Logline[];
 };
 
@@ -35,13 +34,5 @@ const Log: FC<Props> = ({ loglines }) => (
         </CardActions>
     </Card>
 );
-
-Log.propTypes = {
-    loglines: PropTypes.arrayOf(
-        PropTypes.shape({
-            message: PropTypes.string.isRequired
-        }).isRequired
-    ).isRequired
-};
 
 export default Log;
