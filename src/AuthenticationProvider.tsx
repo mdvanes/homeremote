@@ -1,5 +1,5 @@
 import React, { FC, FormEvent, useState } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 
 const AuthenticationProvider: FC = ({ children }) => {
     const [isSignedIn, setIsSignedIn] = useState(
@@ -33,27 +33,34 @@ const AuthenticationProvider: FC = ({ children }) => {
     };
     if (!isSignedIn) {
         return (
-            <form id="form" onSubmit={onSubmit}>
-                <input
-                    type="text"
-                    name="username"
-                    id="username"
+            <form id="form" onSubmit={onSubmit} style={{ margin: 8 }}>
+                <TextField
+                    label="Username"
+                    variant="outlined"
                     onChange={(ev): void => setUsername(ev.target.value)}
+                    fullWidth
+                    style={{ marginBottom: 8 }}
                 />
-                <input
+                <TextField
+                    label="Password"
+                    variant="outlined"
                     type="password"
-                    name="password"
-                    id="password"
                     onChange={(ev): void => setPassword(ev.target.value)}
+                    fullWidth
+                    style={{ marginBottom: 8 }}
                 />
-                <input type="submit" />
+                <Button type="submit" variant="contained" color="primary">
+                    Log in
+                </Button>
             </form>
         );
     } else {
         return (
             <>
                 {children}
-                <Button onClick={logOut}>log out (temp)</Button>
+                <Button variant="contained" color="secondary" onClick={logOut}>
+                    log out (temp)
+                </Button>
             </>
         );
     }
