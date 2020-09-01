@@ -9,27 +9,25 @@ const getRootUrl = (): string =>
 export const getSwitches = createAsyncThunk(
     `switchesList/getSwitches`,
     async (_, { rejectWithValue }) => {
-        try {
-            const response = await fetch(`${getRootUrl()}/api/switches`, {
-                credentials: "same-origin",
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-            });
-            const json = await response.json();
-            // TODO clean up
-            if (json.error) {
-                throw new Error(json.error);
-            }
-            console.log(json);
-            return json;
-        } catch (err) {
-            console.error(err);
-            return rejectWithValue([]);
+        // try {
+        const response = await fetch(`${getRootUrl()}/api/switches`, {
+            credentials: "same-origin",
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+        });
+        const json = await response.json();
+        // TODO clean up
+        if (json.error) {
+            throw new Error(`getSwitches ${json.error}`);
         }
+        return json;
+        // } catch (err) {
+        //     return rejectWithValue("blaat");
+        // }
     }
 );
 
@@ -58,13 +56,11 @@ const switchBarListSlice = createSlice({
         [getSwitches.pending.toString()]: (state, { payload }): void => {
             state.error = false;
             state.isLoading = true;
-            console.log("pending");
         },
         [getSwitches.rejected.toString()]: (state, { error }): void => {
             state.isLoading = false;
             state.switches = [];
-            console.log("error", error); // TODO dispatch to logger slice via component, see SwitchBarListContainer_
-            state.error = error;
+            state.error = error.message;
         },
     },
 });
