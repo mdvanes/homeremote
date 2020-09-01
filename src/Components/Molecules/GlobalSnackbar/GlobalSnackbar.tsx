@@ -9,6 +9,9 @@ const useStyles = makeStyles(() => ({
     root: {
         background: "red",
     },
+    message: {
+        width: "100%",
+    },
 }));
 
 /** Show a Snackbar for new error messages */
@@ -30,13 +33,13 @@ const GlobalSnackbar: FC = ({ children }) => {
     return (
         <Snackbar
             anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            autoHideDuration={300000}
+            autoHideDuration={3000}
             message={
-                <Grid container direction="row" alignItems="center" justify="space-around">
+                <Grid container direction="row" alignItems="center" spacing={1}>
                     <Grid item>
                         <Warning />
                     </Grid>
-                    <Grid item style={{ marginLeft: "1rem" }} xs>
+                    <Grid item xs>
                         {message}
                     </Grid>
                     <Grid item>
@@ -51,6 +54,7 @@ const GlobalSnackbar: FC = ({ children }) => {
             ContentProps={{
                 classes: {
                     root: classes.root,
+                    message: classes.message,
                 },
             }}
         />
