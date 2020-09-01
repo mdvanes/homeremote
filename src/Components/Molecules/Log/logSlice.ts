@@ -34,8 +34,8 @@ const logSlice = createSlice({
                 state.urgentMessage = message;
             }
         },
-        clearLog: (state): void => {
-            state = initialState;
+        clearLog: (): LogState => {
+            return initialState;
         },
     },
 });
