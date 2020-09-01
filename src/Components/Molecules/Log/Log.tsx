@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
-import { Card, CardContent, CardActions } from '@material-ui/core';
-import ClearLogButton from '../containers/ClearLogButton';
-import RadioInfoButton from '../containers/RadioInfoButton';
-import gitinfo from '../../../../gitinfo.json';
+import { Card, CardContent, CardActions, Typography } from '@material-ui/core';
+// TODO
+// import ClearLogButton from '../containers/ClearLogButton';
+// import RadioInfoButton from '../containers/RadioInfoButton';
+import gitinfoJson from '../../../gitinfo.json';
 import packageJson from '../../../../package.json';
 
 import './Log.scss';
@@ -18,8 +19,10 @@ export type Props = {
 const Log: FC<Props> = ({ loglines }) => (
     <Card className="log-card">
         <CardContent className="log-card-text version">
-            version: {gitinfoJson.hash}-{gitinfoJson.branch}-
-            {packageJson.version}
+            <Typography>
+                version: {gitinfoJson.hash}-{gitinfoJson.branch}-
+                {packageJson.version}
+            </Typography>
         </CardContent>
         <CardContent className="log-card-text">
             {loglines &&
