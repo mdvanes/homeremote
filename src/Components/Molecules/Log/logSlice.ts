@@ -25,10 +25,10 @@ const logSlice = createSlice({
     initialState,
     reducers: {
         logInfo: (state, { payload }): void => {
-            state.lines.push({ message: writeLog("INFO: ", payload.messages) });
+            state.lines.push({ message: writeLog("INFO: ", payload) });
         },
         logError: (state, { payload }): void => {
-            const message = writeLog("ERROR:", payload.messages);
+            const message = writeLog("ERROR:", payload);
             state.lines.push({ message });
             state.urgentMessage = message;
         },
