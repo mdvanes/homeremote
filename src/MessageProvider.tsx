@@ -1,41 +1,44 @@
-import React, { FC, useState, useEffect } from 'react';
-import { Snackbar, makeStyles, Typography, Grid } from '@material-ui/core';
-import { Warning } from '@material-ui/icons';
-import { useSelector } from 'react-redux';
-import { RootState } from './Reducers';
-import { SwitchBarListState } from './Components/Molecules/SwitchBarList/switchBarListSlice';
+import React, { FC, useState, useEffect } from "react";
+import { Snackbar, makeStyles, Typography, Grid } from "@material-ui/core";
+import { Warning } from "@material-ui/icons";
+import { useSelector } from "react-redux";
+import { RootState } from "./Reducers";
+import { SwitchBarListState } from "./Components/Molecules/SwitchBarList/switchBarListSlice";
+import { LogState } from "./Components/Molecules/Log/logSlice";
 
 const useStyles = makeStyles(() => ({
     root: {
-        background: 'red'
-    }
+        background: "red",
+    },
 }));
 
 /** Show a Snackbar for new error messages */
 const MessageProvider: FC = ({ children }) => {
     const classes = useStyles();
     const [isOpen, setIsOpen] = useState(true);
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState("");
     const handleClose = (): void => setIsOpen(false);
-    const isLoading = useSelector<RootState, SwitchBarListState['isLoading']>(
-        (state: RootState) => state.switchesListNew.isLoading
+    const urgentMessage = useSelector<RootState, LogState["urgentMessage"]>(
+        (state: RootState) => state.loglinesNew.urgentMessage
     );
     useEffect(() => {
-        setMessage('is aan het laden...');
+        if (urgentMessage) {
+            setMessage(urgentMessage);
+        }
         setIsOpen(true);
-    }, [isLoading]);
+    }, [urgentMessage]);
     return (
         <>
             {children}
             <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                 autoHideDuration={3000}
                 message={
                     <Grid container direction="row" alignItems="center">
                         <Grid item>
                             <Warning />
                         </Grid>
-                        <Grid item style={{ marginLeft: '1rem' }}>
+                        <Grid item style={{ marginLeft: "1rem" }}>
                             {message} <span onClick={handleClose}>close</span>
                         </Grid>
                     </Grid>
@@ -44,8 +47,8 @@ const MessageProvider: FC = ({ children }) => {
                 onClose={handleClose}
                 ContentProps={{
                     classes: {
-                        root: classes.root
-                    }
+                        root: classes.root,
+                    },
                 }}
             />
         </>
