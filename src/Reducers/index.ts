@@ -5,16 +5,20 @@ import loglines from './loglines';
 // import fileManager from './fileManager';
 import switchesList from './switchesList';
 import expandedScenes from './expandedScenes';
+import switchesListNew from '../Components/Molecules/SwitchBarList/switchBarListSlice';
 import { combineReducers } from 'redux';
 
-const homeRemoteReducers = combineReducers({
+const rootReducer = combineReducers({
     loglines,
     // short,
     // moveParams,
     // moveProgress,
     // fileManager,
     switchesList,
-    expandedScenes
+    expandedScenes,
+    switchesListNew
 });
 
-export default homeRemoteReducers;
+export type RootState = ReturnType<typeof rootReducer>;
+
+export default rootReducer;
