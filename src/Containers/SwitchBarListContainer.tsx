@@ -35,7 +35,8 @@ const getSwitches: GetSwitches = () => dispatch =>
         method: 'GET',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         }
     })
         .then(data => data.json())
@@ -63,7 +64,8 @@ const sendState: SendState = (dispatch, state, id, type) =>
         method: 'POST',
         headers: {
             Accept: 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
             state,
