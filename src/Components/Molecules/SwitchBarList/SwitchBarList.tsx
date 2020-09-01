@@ -8,6 +8,9 @@ import {
 import { ActionCreator, Dispatch } from 'redux';
 import { ToggleExpandSceneAction } from '../../../Actions';
 import { DSwitch } from '../../../Reducers/switchesList';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSwitches, SwitchBarListState } from './switchBarListSlice';
+import { RootState } from '../../../Reducers';
 
 // TODO improve type
 const SELECTOR_STATES: Record<number, string> = {
@@ -105,16 +108,22 @@ type OuterProps = {
 };
 
 const SwitchBarList: FC<OuterProps> = ({
-    getSwitches,
     sendOn,
     sendOff,
     toggleExpandScene,
-    switches,
     expandedScenes
 }) => {
+    const dispatch = useDispatch();
+    const switches = useSelector<RootState, SwitchBarListState['switches']>(
+        (state: RootState) => state.switchesListNew.switches
+    );
+    const isLoading = useSelector<RootState, SwitchBarListState['isLoading']>(
+        (state: RootState) => state.switchesListNew.isLoading
+    );
     useEffect(() => {
-        getSwitches();
-    }, [getSwitches]);
+        dispatch(getSwitches());
+        // getSwitches();
+    }, [dispatch]);
     const switchBars = switches.map((dSwitch: DSwitch) => {
         const hasChildren = Boolean(dSwitch.children);
         const labelAction = getLabelAction(
@@ -145,7 +154,12 @@ const SwitchBarList: FC<OuterProps> = ({
             </Fragment>
         );
     });
-    return <Fragment>{switchBars}</Fragment>;
+    return (
+        <Fragment>
+            {isLoading && 'loading...'}
+            {switchBars}
+        </Fragment>
+    );
 };
 
 export default SwitchBarList;
