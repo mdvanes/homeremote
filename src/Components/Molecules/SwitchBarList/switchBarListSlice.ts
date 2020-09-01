@@ -8,19 +8,28 @@ const getRootUrl = (): string =>
 
 export const getSwitches = createAsyncThunk(
     `switchesList/getSwitches`,
-    async () => {
-        const response = await fetch(`${getRootUrl()}/api/switches`, {
-            credentials: 'same-origin',
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${getRootUrl()}/api/switches`, {
+                credentials: 'same-origin',
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            const json = await response.json();
+            // TODO clean up
+            if (json.error) {
+                throw new Error(json.error);
             }
-        });
-        const json = await response.json();
-        console.log(json);
-        return json;
+            console.log(json);
+            return json;
+        } catch (err) {
+            console.error(err);
+            return rejectWithValue([]);
+        }
     }
 );
 
