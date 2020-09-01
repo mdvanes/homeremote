@@ -73,6 +73,10 @@
       "last 1 safari version"
     ]
   },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 4
+  },
   "devDependencies": {
     "@types/jest": "^25.1.4",
     "@typescript-eslint/eslint-plugin": "^2.21.0",

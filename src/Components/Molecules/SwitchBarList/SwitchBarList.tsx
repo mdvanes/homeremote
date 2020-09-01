@@ -1,43 +1,44 @@
-import React, { FC, Fragment, ReactElement, useEffect } from 'react';
-import SwitchBar from './SwitchBar';
-import SwitchBarInnerButton from './SwitchBarInnerButton';
+import React, { FC, Fragment, ReactElement, useEffect } from "react";
+import SwitchBar from "./SwitchBar";
+import SwitchBarInnerButton from "./SwitchBarInnerButton";
 import {
     GetSwitches,
-    SendSomeState
-} from '../../../Containers/SwitchBarListContainer';
-import { ActionCreator, Dispatch } from 'redux';
-import { ToggleExpandSceneAction } from '../../../Actions';
-import { DSwitch } from '../../../Reducers/switchesList';
-import { useDispatch, useSelector } from 'react-redux';
-import { getSwitches, SwitchBarListState } from './switchBarListSlice';
-import { RootState } from '../../../Reducers';
+    SendSomeState,
+} from "../../../Containers/SwitchBarListContainer";
+import { ActionCreator, Dispatch } from "redux";
+import { ToggleExpandSceneAction } from "../../../Actions";
+import { DSwitch } from "../../../Reducers/switchesList";
+import { useDispatch, useSelector } from "react-redux";
+import { getSwitches, SwitchBarListState } from "./switchBarListSlice";
+import { RootState } from "../../../Reducers";
+import { logError } from "../Log/logSlice";
 
 // TODO improve type
 const SELECTOR_STATES: Record<number, string> = {
-    0: 'disconnected',
-    10: 'disarmed',
-    20: 'partarmed',
-    30: 'armed'
+    0: "disconnected",
+    10: "disarmed",
+    20: "partarmed",
+    30: "armed",
 };
 
 // TODO stronger typing, return type can be only certain strings
 // Type is switchscene or switchlight
 const getType = (type: string): string => {
     switch (type) {
-        case 'Group':
-            return 'switchscene';
-        case 'Selector':
-            return 'selector';
+        case "Group":
+            return "switchscene";
+        case "Selector":
+            return "selector";
         default:
-            return 'switchlight';
+            return "switchlight";
     }
 };
 
 const getLeftIcon = (label: string): string =>
-    label === 'Blinds' ? 'arrow_drop_down' : 'radio_button_checked';
+    label === "Blinds" ? "arrow_drop_down" : "radio_button_checked";
 
 const getRightIcon = (label: string): string =>
-    label === 'Blinds' ? 'arrow_drop_up' : 'radio_button_unchecked';
+    label === "Blinds" ? "arrow_drop_up" : "radio_button_unchecked";
 
 const getNameAndChildren = (
     name: string,
@@ -45,7 +46,7 @@ const getNameAndChildren = (
 ): string => (children ? `${name} ⯆` : name);
 
 const getLabel = (name: string, dimLevel: number, type: string): string => {
-    if (type === 'selector') {
+    if (type === "selector") {
         return `${name}: ${SELECTOR_STATES[dimLevel]}`;
     }
     return dimLevel !== null ? `${name} (${dimLevel}%)` : name;
@@ -75,7 +76,7 @@ const mapSwitchToSwitchBar = (
                     sendOn(idx, getType(type))
                 }
                 icon={getLeftIcon(name)}
-                isActive={status === 'On'}
+                isActive={status === "On"}
             />
         }
         rightButton={
@@ -85,7 +86,7 @@ const mapSwitchToSwitchBar = (
                     sendOff(idx, getType(type))
                 }
                 icon={getRightIcon(name)}
-                isActive={status === 'Off'}
+                isActive={status === "Off"}
             />
         }
     />
@@ -111,19 +112,27 @@ const SwitchBarList: FC<OuterProps> = ({
     sendOn,
     sendOff,
     toggleExpandScene,
-    expandedScenes
+    expandedScenes,
 }) => {
     const dispatch = useDispatch();
-    const switches = useSelector<RootState, SwitchBarListState['switches']>(
+    const switches = useSelector<RootState, SwitchBarListState["switches"]>(
         (state: RootState) => state.switchesListNew.switches
     );
-    const isLoading = useSelector<RootState, SwitchBarListState['isLoading']>(
+    const isLoading = useSelector<RootState, SwitchBarListState["isLoading"]>(
         (state: RootState) => state.switchesListNew.isLoading
+    );
+    const errorMessage = useSelector<RootState, SwitchBarListState["error"]>(
+        (state: RootState) => state.switchesListNew.error
     );
     useEffect(() => {
         dispatch(getSwitches());
+        // dispatch(logError(`Switch FOOBAR`));
         // getSwitches();
     }, [dispatch]);
+    useEffect(() => {
+        dispatch(logError(errorMessage));
+        // getSwitches();
+    }, [errorMessage, dispatch]);
     const switchBars = switches.map((dSwitch: DSwitch) => {
         const hasChildren = Boolean(dSwitch.children);
         const labelAction = getLabelAction(
@@ -139,7 +148,7 @@ const SwitchBarList: FC<OuterProps> = ({
             <Fragment key={`frag-${dSwitch.idx}`}>
                 {mapSwitchToSwitchBar(dSwitch, sendOn, sendOff, labelAction)}
                 {hasChildren && showChildren ? (
-                    <div style={{ padding: '0.5em' }}>
+                    <div style={{ padding: "0.5em" }}>
                         {dSwitch.children &&
                             dSwitch.children.map((switchChild: DSwitch) =>
                                 mapSwitchToSwitchBar(
@@ -156,7 +165,7 @@ const SwitchBarList: FC<OuterProps> = ({
     });
     return (
         <Fragment>
-            {isLoading && 'loading...'}
+            {isLoading && "loading..."}
             {switchBars}
         </Fragment>
     );
