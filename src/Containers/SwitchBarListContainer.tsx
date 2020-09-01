@@ -30,7 +30,7 @@ export type GetSwitches = () => (
 
 // This is a simple thunk
 const getSwitches: GetSwitches = () => dispatch =>
-    fetch(`${getRootUrl()}/switches`, {
+    fetch(`${getRootUrl()}/api/switches`, {
         credentials: 'same-origin',
         method: 'GET',
         headers: {
@@ -58,7 +58,7 @@ type SendState = (
     type: string
 ) => Promise<void>;
 const sendState: SendState = (dispatch, state, id, type) =>
-    fetch(`${getRootUrl()}/switch/${id}`, {
+    fetch(`${getRootUrl()}/api/switches/${id}`, {
         credentials: 'same-origin',
         method: 'POST',
         headers: {
