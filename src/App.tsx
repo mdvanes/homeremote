@@ -19,7 +19,7 @@ import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 import Log from "./Components/Pages/Log/Log";
 import AuthenticationProvider from "./AuthenticationProvider";
-import MessageProvider from "./MessageProvider";
+import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar";
 
 const theme = createMuiTheme({
     palette: {
@@ -40,81 +40,60 @@ const App: FC = () => {
     const closeDrawer = (): void => setIsDrawerOpen(false);
     return (
         <AuthenticationProvider>
-            <MessageProvider>
-                <MuiThemeProvider theme={theme}>
-                    <AppBar>
-                        <Toolbar>
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="menu"
-                                onClick={toggleDrawer}
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                            <Typography variant="h6">HomeRemote</Typography>
-                        </Toolbar>
-                    </AppBar>
-                    <BrowserRouter>
-                        <Drawer open={isDrawerOpen} onClose={closeDrawer}>
-                            <Link onClick={closeDrawer} to="/">
-                                <MenuItem>Home Automation</MenuItem>
-                            </Link>
-                            <Link onClick={closeDrawer} to="/music">
-                                <MenuItem>Music</MenuItem>
-                            </Link>
-                            <Link onClick={closeDrawer} to="/files">
-                                <MenuItem>Files</MenuItem>
-                            </Link>
-                            <Link onClick={closeDrawer} to="/gears">
-                                <MenuItem>Gears</MenuItem>
-                            </Link>
-                            <Link onClick={closeDrawer} to="/log">
-                                <MenuItem>Log</MenuItem>
-                            </Link>
-                            <Link onClick={closeDrawer} to="/dashboard">
-                                <MenuItem>Dashboard</MenuItem>
-                            </Link>
-                            <a
-                                onClick={(): void => {
-                                    localStorage.removeItem("hr-remember-me");
-                                }}
-                                href="/logout"
-                            >
-                                <MenuItem>Log out</MenuItem>
-                            </a>
-                        </Drawer>
-                        {/* TODO what is this? <StatusBar/>*/}
-                        <Route exact path="/" component={HomeAutomation} />
-                        <Route exact path="/music" component={HomeAutomation} />
-                        <Route exact path="/files" component={HomeAutomation} />
-                        <Route exact path="/gears" component={HomeAutomation} />
-                        <Route exact path="/log" component={Log} />
-                        <Route
-                            exact
-                            path="/dashboard"
-                            component={HomeAutomation}
-                        />
-                    </BrowserRouter>
-                    {/* TODO <GlobalSnackBar/>*/}
-                </MuiThemeProvider>
-            </MessageProvider>
+            <MuiThemeProvider theme={theme}>
+                <AppBar>
+                    <Toolbar>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            onClick={toggleDrawer}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant="h6">HomeRemote</Typography>
+                    </Toolbar>
+                </AppBar>
+                <BrowserRouter>
+                    <Drawer open={isDrawerOpen} onClose={closeDrawer}>
+                        <Link onClick={closeDrawer} to="/">
+                            <MenuItem>Home Automation</MenuItem>
+                        </Link>
+                        <Link onClick={closeDrawer} to="/music">
+                            <MenuItem>Music</MenuItem>
+                        </Link>
+                        <Link onClick={closeDrawer} to="/files">
+                            <MenuItem>Files</MenuItem>
+                        </Link>
+                        <Link onClick={closeDrawer} to="/gears">
+                            <MenuItem>Gears</MenuItem>
+                        </Link>
+                        <Link onClick={closeDrawer} to="/log">
+                            <MenuItem>Log</MenuItem>
+                        </Link>
+                        <Link onClick={closeDrawer} to="/dashboard">
+                            <MenuItem>Dashboard</MenuItem>
+                        </Link>
+                        <a
+                            onClick={(): void => {
+                                localStorage.removeItem("hr-remember-me");
+                            }}
+                            href="/logout"
+                        >
+                            <MenuItem>Log out</MenuItem>
+                        </a>
+                    </Drawer>
+                    {/* TODO what is this? <StatusBar/>*/}
+                    <Route exact path="/" component={HomeAutomation} />
+                    <Route exact path="/music" component={HomeAutomation} />
+                    <Route exact path="/files" component={HomeAutomation} />
+                    <Route exact path="/gears" component={HomeAutomation} />
+                    <Route exact path="/log" component={Log} />
+                    <Route exact path="/dashboard" component={HomeAutomation} />
+                </BrowserRouter>
+                <GlobalSnackbar />
+            </MuiThemeProvider>
         </AuthenticationProvider>
-        /*    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>*/
     );
 };
 
