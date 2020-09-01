@@ -1,22 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import thunk from 'redux-thunk';
+// import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { createStore, applyMiddleware, compose } from 'redux';
-import homeRemoteReducers from './Reducers';
+// import { createStore, applyMiddleware, compose } from 'redux';
+import rootReducer from './Reducers';
 
-declare global {
-    interface Window {
-        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+// declare global {
+//     interface Window {
+//         __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+//     }
+// }
+
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = configureStore(
+    {
+        reducer: rootReducer
     }
-}
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(
-    homeRemoteReducers,
-    composeEnhancers(applyMiddleware(thunk))
+    // composeEnhancers(applyMiddleware(thunk))
 );
 
 ReactDOM.render(
