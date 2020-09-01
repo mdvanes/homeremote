@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState } from "react";
 // Example of importing image
 // import logo from './logo.svg';
 // Example of importing CSS
@@ -11,27 +11,27 @@ import {
     MuiThemeProvider,
     Toolbar,
     Typography,
-    MenuItem
-} from '@material-ui/core';
-import { deepPurple, orange, indigo } from '@material-ui/core/colors';
-import MenuIcon from '@material-ui/icons/Menu';
-import HomeAutomation from './Components/Pages/HomeAutomation/HomeAutomation';
-import { BrowserRouter, Route, Link } from 'react-router-dom';
-import Log from './Components/Pages/Log/Log';
-import AuthenticationProvider from './AuthenticationProvider';
-import MessageProvider from './MessageProvider';
+    MenuItem,
+} from "@material-ui/core";
+import { deepPurple, orange, indigo } from "@material-ui/core/colors";
+import MenuIcon from "@material-ui/icons/Menu";
+import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
+import { BrowserRouter, Route, Link } from "react-router-dom";
+import Log from "./Components/Pages/Log/Log";
+import AuthenticationProvider from "./AuthenticationProvider";
+import MessageProvider from "./MessageProvider";
 
 const theme = createMuiTheme({
     palette: {
         // Can't use deepPurple[900] directly, see https://material-ui.com/customization/color/#official-color-tool
         // primary: deepPurple,
         primary: {
-            main: indigo[900]
+            main: indigo[900],
         },
         secondary: {
-            main: orange[100]
-        }
-    }
+            main: orange[100],
+        },
+    },
 });
 
 const App: FC = () => {
@@ -77,7 +77,7 @@ const App: FC = () => {
                             </Link>
                             <a
                                 onClick={(): void => {
-                                    localStorage.removeItem('hr-remember-me');
+                                    localStorage.removeItem("hr-remember-me");
                                 }}
                                 href="/logout"
                             >
