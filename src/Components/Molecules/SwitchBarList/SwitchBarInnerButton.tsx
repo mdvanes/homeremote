@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
-import { Icon } from '@material-ui/core';
-import { deepPurple } from '@material-ui/core/colors';
+import React, { FC } from "react";
+import { Icon } from "@material-ui/core";
+import { deepPurple, indigo } from "@material-ui/core/colors";
+import useStyles from "./SwitchBarInnerButton.styles";
 
 // TODO replace by WithStyles -> palette.color.primary instead of using deepPurple directly
 const getActiveStyle = (isActive: boolean): React.CSSProperties => ({
-    backgroundColor: isActive ? deepPurple[500] : 'transparent'
+    backgroundColor: isActive ? indigo[500] : "transparent",
 });
 
 type Props = {
@@ -20,12 +21,14 @@ const SwitchBarInnerButton: FC<Props> = ({
     isReadOnly,
     clickAction,
     icon,
-    isActive
+    isActive,
 }) => {
+    const classes = useStyles(isActive);
     return (
         <button
             onClick={isReadOnly ? undefined : clickAction}
-            style={getActiveStyle(isActive)}
+            // style={getActiveStyle(isActive)}
+            className={classes.root}
         >
             {isReadOnly ? (
                 <div className="dummy"></div>
