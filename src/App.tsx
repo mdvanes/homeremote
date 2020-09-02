@@ -5,7 +5,6 @@ import React, { FC, useState } from "react";
 // import './App.css';
 import {
     AppBar,
-    createMuiTheme,
     Drawer,
     IconButton,
     MuiThemeProvider,
@@ -13,26 +12,13 @@ import {
     Typography,
     MenuItem,
 } from "@material-ui/core";
-import { deepPurple, orange, indigo } from "@material-ui/core/colors";
 import MenuIcon from "@material-ui/icons/Menu";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 import Log from "./Components/Pages/Log/Log";
 import AuthenticationProvider from "./AuthenticationProvider";
 import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar";
-
-const theme = createMuiTheme({
-    palette: {
-        // Can't use deepPurple[900] directly, see https://material-ui.com/customization/color/#official-color-tool
-        // primary: deepPurple,
-        primary: {
-            main: indigo[900],
-        },
-        secondary: {
-            main: orange[100],
-        },
-    },
-});
+import theme from "./theme";
 
 const App: FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
