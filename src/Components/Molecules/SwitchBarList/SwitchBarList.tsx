@@ -1,13 +1,13 @@
 import React, { FC, Fragment, ReactElement, useEffect } from "react";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
-import { DSwitch } from "../../../Reducers/switchesList";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getSwitches,
     sendSwitchState,
     SwitchBarListState,
     toggleExpandScene,
+    DSwitch,
 } from "./switchBarListSlice";
 import { RootState } from "../../../Reducers";
 import { logError } from "../Log/logSlice";
