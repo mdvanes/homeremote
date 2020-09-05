@@ -2,14 +2,18 @@ import React, { FC, Fragment, ReactElement, useEffect } from "react";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
 import {
-    GetSwitches,
-    SendSomeState,
+    // GetSwitches,
+    // SendSomeState,
 } from "../../../Containers/SwitchBarListContainer";
 import { ActionCreator, Dispatch } from "redux";
 import { ToggleExpandSceneAction } from "../../../Actions";
 import { DSwitch } from "../../../Reducers/switchesList";
 import { useDispatch, useSelector } from "react-redux";
-import { getSwitches, SwitchBarListState } from "./switchBarListSlice";
+import {
+    getSwitches,
+    sendSwitchState,
+    SwitchBarListState,
+} from "./switchBarListSlice";
 import { RootState } from "../../../Reducers";
 import { logError } from "../Log/logSlice";
 
@@ -52,7 +56,7 @@ const getLabel = (name: string, dimLevel: number, type: string): string => {
     return dimLevel !== null ? `${name} (${dimLevel}%)` : name;
 };
 
-type SendSomeStateDispatch = (dispatch: Dispatch) => void;
+type SendSomeState = (id: string, type: string) => void;
 
 const mapSwitchToSwitchBar = (
     { idx, name, type, dimLevel, readOnly, status, children }: DSwitch,
@@ -72,9 +76,7 @@ const mapSwitchToSwitchBar = (
         leftButton={
             <SwitchBarInnerButton
                 isReadOnly={readOnly}
-                clickAction={(): SendSomeStateDispatch =>
-                    sendOn(idx, getType(type))
-                }
+                clickAction={(): void => sendOn(idx, getType(type))}
                 icon={getLeftIcon(name)}
                 isActive={status === "On"}
             />
@@ -82,9 +84,7 @@ const mapSwitchToSwitchBar = (
         rightButton={
             <SwitchBarInnerButton
                 isReadOnly={readOnly}
-                clickAction={(): SendSomeStateDispatch =>
-                    sendOff(idx, getType(type))
-                }
+                clickAction={(): void => sendOff(idx, getType(type))}
                 icon={getRightIcon(name)}
                 isActive={status === "Off"}
             />
@@ -98,19 +98,17 @@ const getLabelAction = (
     cbWithoutChildren: () => void
 ): (() => void) => (hasChildren ? cbWithChildren : cbWithoutChildren);
 
-// TODO this type should be in SwitchBarListContainer
 type OuterProps = {
-    getSwitches: GetSwitches;
-    sendOn: SendSomeState;
-    sendOff: SendSomeState;
+    // sendOn: SendSomeState;
+    // sendOff: SendSomeState;
     toggleExpandScene: ActionCreator<ToggleExpandSceneAction>;
     switches: DSwitch[];
     expandedScenes: string[];
 };
 
 const SwitchBarList: FC<OuterProps> = ({
-    sendOn,
-    sendOff,
+    // sendOn,
+    // sendOff,
     toggleExpandScene,
     expandedScenes,
 }) => {
@@ -124,14 +122,20 @@ const SwitchBarList: FC<OuterProps> = ({
     const errorMessage = useSelector<RootState, SwitchBarListState["error"]>(
         (state: RootState) => state.switchesListNew.error
     );
+
+    const sendOn = (id: string, type: string): void => {
+        dispatch(sendSwitchState({ id, type, state: "on" }));
+    };
+
+    const sendOff = (id: string, type: string): void => {
+        dispatch(sendSwitchState({ id, type, state: "off" }));
+    };
+
     useEffect(() => {
         dispatch(getSwitches());
-        // dispatch(logError(`Switch FOOBAR`));
-        // getSwitches();
     }, [dispatch]);
     useEffect(() => {
         dispatch(logError(errorMessage));
-        // getSwitches();
     }, [errorMessage, dispatch]);
     const switchBars = switches.map((dSwitch: DSwitch) => {
         const hasChildren = Boolean(dSwitch.children);

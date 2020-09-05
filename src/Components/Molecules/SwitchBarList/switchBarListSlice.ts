@@ -1,15 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-// Alternatively use process.env.NODE_ENV that is automatically set to development or production
-// const getRootUrl = (): string =>
-//     process.env.REACT_APP_STAGE === "development"
-//         ? "http://localhost:3001"
-//         : "";
+import { logInfo } from "../Log/logSlice";
 
 export const getSwitches = createAsyncThunk(
     `switchesList/getSwitches`,
-    async (_, { rejectWithValue, dispatch }) => {
-        // try {
+    async (_, { rejectWithValue }) => {
         const response = await fetch(
             `${process.env.REACT_APP_BASE_URL}/api/switches`,
             {
@@ -23,14 +17,43 @@ export const getSwitches = createAsyncThunk(
             }
         );
         const json = await response.json();
-        // TODO clean up
+
         if (json.error) {
             throw new Error(`getSwitches ${json.error}`);
         }
         return json;
-        // } catch (err) {
-        //     return rejectWithValue("blaat");
-        // }
+    }
+);
+
+export const sendSwitchState = createAsyncThunk<
+    void,
+    { id: string; state: "on" | "off"; type: string }
+>(
+    `switchesList/sendSwitchState`,
+    async ({ id, state, type }, { rejectWithValue, dispatch }) => {
+        const response = await fetch(
+            `${process.env.REACT_APP_BASE_URL}/api/switches/${id}`,
+            {
+                credentials: "same-origin",
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify({
+                    state,
+                    type,
+                }),
+            }
+        );
+        const json = await response.json();
+        if (json.status !== "received") {
+            throw new Error(`Can't set ${state}: ${json.status}`);
+        } else {
+            dispatch(logInfo(`Switch ${id} ${state}`));
+        }
+        dispatch(getSwitches());
     }
 );
 
@@ -52,7 +75,6 @@ const switchBarListSlice = createSlice({
     reducers: {},
     extraReducers: {
         [getSwitches.fulfilled.toString()]: (state, { payload }): void => {
-            console.log(payload);
             state.isLoading = false;
             state.switches = payload.switches;
         },
@@ -65,9 +87,18 @@ const switchBarListSlice = createSlice({
             state.switches = [];
             state.error = error.message;
         },
+        [sendSwitchState.fulfilled.toString()]: (state): void => {
+            state.isLoading = false;
+        },
+        [sendSwitchState.pending.toString()]: (state): void => {
+            state.error = false;
+            state.isLoading = true;
+        },
+        [sendSwitchState.rejected.toString()]: (state, { error }): void => {
+            state.isLoading = false;
+            state.error = error.message;
+        },
     },
 });
-
-// export const { } = switchBarListSlice.actions;
 
 export default switchBarListSlice.reducer;
