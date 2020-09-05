@@ -45,7 +45,7 @@
     "start:dev": "concurrently --kill-others \"BROWSER=none react-scripts start\" \"npm run watch\"",
     "start:devserver": "node server/app.js --debugremote | bunyan",
     "start": "node server/app.js | bunyan",
-    "build": "react-scripts build",
+    "build": "node writeGitInfo.js && react-scripts build",
     "test": "react-scripts test",
     "test:ci": "CI=true react-scripts test --coverage --colors",
     "eject": "react-scripts eject",
