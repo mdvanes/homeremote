@@ -1,10 +1,10 @@
-import React, { FC, ReactElement } from 'react';
-import { Icon, Card, CardContent } from '@material-ui/core';
-import './SwitchBar.scss';
+import React, { FC, ReactElement } from "react";
+import { Icon, Card, CardContent } from "@material-ui/core";
+import useStyles from "./SwitchBar.styles";
 
 const getIconElem = (icon: string | false): ReactElement => {
     return icon ? (
-        <Icon style={{ fontSize: '250%' }} className="material-icons">
+        <Icon style={{ fontSize: "250%" }} className="material-icons">
             {icon}
         </Icon>
     ) : (
@@ -34,13 +34,14 @@ const SwitchBar: FC<Props> = ({
     rightButton,
     icon,
     label,
-    labelAction
+    labelAction,
 }) => {
+    const classes = useStyles();
     return (
-        <Card className="card">
-            <CardContent className="button-group">
+        <Card className={classes.card}>
+            <CardContent className={classes.buttonGroup}>
                 {leftButton}
-                <span className="label">
+                <span className={classes.label}>
                     {getIconElem(icon)}
                     {labelAction ? (
                         <button onClick={labelAction}>{label}</button>
