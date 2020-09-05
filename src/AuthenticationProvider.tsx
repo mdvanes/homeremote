@@ -11,8 +11,7 @@ const AuthenticationProvider: FC = ({ children }) => {
     const [password, setPassword] = useState("");
     const onSubmit = (ev: FormEvent): void => {
         ev.preventDefault();
-        // TODO get url from centralized store_
-        fetch("http://localhost:3001/auth/login", {
+        fetch(`${process.env.REACT_APP_BASE_URL}/auth/login`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
