@@ -1,28 +1,30 @@
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 import {
     logInfo,
     logError,
     setSwitches,
     toggleExpandScene,
-    LogErrorAction
-} from '../Actions';
-import SwitchBarList from '../Components/Molecules/SwitchBarList/SwitchBarList';
-import { bindActionCreators, Dispatch } from 'redux';
+    LogErrorAction,
+} from "../Actions";
+import SwitchBarList from "../Components/Molecules/SwitchBarList/SwitchBarList";
+import { bindActionCreators, Dispatch } from "redux";
 
 // Fix dispatch types, see https://medium.com/@d.maklygin/redux-typescript-reuse-the-type-of-an-action-creators-return-value-91663a48858f
 // example with thunks: https://github.com/reduxjs/redux-thunk/blob/master/test/typescript.ts
 
 // Alternatively use process.env.NODE_ENV that is automatically set to development or production
 const getRootUrl = (): string =>
-    process.env.REACT_APP_STAGE === 'development'
-        ? 'http://localhost:3001'
-        : '';
+    process.env.REACT_APP_STAGE === "development"
+        ? "http://localhost:3001"
+        : "";
 
 // TODO remove any types, pick types like in LogContainer
 
 // type State = {};
 // type SomeActions = { type: 'foo' };
 // type ThunkResult<R> = ThunkAction<R, State, undefined, SomeActions>;
+
+// TODO migrate to RTK
 
 export type GetSwitches = () => (
     dispatch: Dispatch
@@ -31,13 +33,13 @@ export type GetSwitches = () => (
 // This is a simple thunk
 const getSwitches: GetSwitches = () => dispatch =>
     fetch(`${getRootUrl()}/api/switches`, {
-        credentials: 'same-origin',
-        method: 'GET',
+        credentials: "same-origin",
+        method: "GET",
         headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
     })
         .then(data => data.json())
         .then(data => {
@@ -45,7 +47,7 @@ const getSwitches: GetSwitches = () => dispatch =>
                 logInfo(
                     `Got switches: ${data.switches
                         .map((aSwitch: any) => aSwitch.name)
-                        .join(', ')}`
+                        .join(", ")}`
                 )
             );
             dispatch(setSwitches(data.switches));
@@ -60,24 +62,24 @@ type SendState = (
 ) => Promise<void>;
 const sendState: SendState = (dispatch, state, id, type) =>
     fetch(`${getRootUrl()}/api/switches/${id}`, {
-        credentials: 'same-origin',
-        method: 'POST',
+        credentials: "same-origin",
+        method: "POST",
         headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
             state,
-            type
-        })
+            type,
+        }),
     })
         .then(data => {
             return data.json();
         })
         .then(data => {
-            dispatch(logInfo('some effect'));
-            if (data.status !== 'received') {
+            dispatch(logInfo("some effect"));
+            if (data.status !== "received") {
                 dispatch(logError(`error on send-${state}: ${data.status}`));
             } else {
                 dispatch(logInfo(`Switch ${id} ${state}`));
@@ -97,15 +99,15 @@ export type SendSomeState = (
 ) => (dispatch: Dispatch) => Promise<void>;
 
 const sendOn: SendSomeState = (id, type) => dispatch =>
-    sendState(dispatch, 'on', id, type);
+    sendState(dispatch, "on", id, type);
 
 const sendOff: SendSomeState = (id, type) => dispatch =>
-    sendState(dispatch, 'off', id, type);
+    sendState(dispatch, "off", id, type);
 
 const mapStateToProps = (state: any) => {
     return {
         switches: state.switchesList.switches,
-        expandedScenes: state.expandedScenes.expanded
+        expandedScenes: state.expandedScenes.expanded,
     };
 };
 
