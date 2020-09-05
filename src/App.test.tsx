@@ -1,9 +1,9 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
+import React from "react";
+import { render } from "@testing-library/react";
+import App from "./App";
 
-test('renders learn react link', () => {
-    const { getByText } = render(<App />);
-    const linkElement = getByText(/learn react/i);
-    expect(linkElement).toBeInTheDocument();
+it("shows the username field of the login screen", () => {
+    const { getAllByText } = render(<App />);
+    const userNameLabel = getAllByText(/Username/i);
+    expect(userNameLabel.length).toBe(2);
 });
