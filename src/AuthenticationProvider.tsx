@@ -1,34 +1,37 @@
-import React, { FC, FormEvent, useState } from 'react';
-import { Button, TextField } from '@material-ui/core';
+import React, { FC, FormEvent, useState } from "react";
+import { Button, TextField } from "@material-ui/core";
 
 const AuthenticationProvider: FC = ({ children }) => {
+    // Store token in localstorage: good, because it will be a long store (longer than http sessions) and not persistent over back-end restarts.
+    // TODO Add PGP signature?
     const [isSignedIn, setIsSignedIn] = useState(
-        Boolean(localStorage.getItem('token'))
+        Boolean(localStorage.getItem("token"))
     );
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const onSubmit = (ev: FormEvent): void => {
         ev.preventDefault();
-        fetch('http://localhost:3001/auth/login', {
-            method: 'POST',
+        // TODO get url from centralized store_
+        fetch("http://localhost:3001/auth/login", {
+            method: "POST",
             headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
+                Accept: "application/json",
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 username,
-                password
-            })
+                password,
+            }),
         })
             .then(data => data.json())
             .then(data => {
                 console.log(data);
-                localStorage.setItem('token', data.access_token);
+                localStorage.setItem("token", data.access_token);
                 setIsSignedIn(true);
             });
     };
     const logOut = (): void => {
-        localStorage.removeItem('token');
+        localStorage.removeItem("token");
         setIsSignedIn(false);
     };
     if (!isSignedIn) {
