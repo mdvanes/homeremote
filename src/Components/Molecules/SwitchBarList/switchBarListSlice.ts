@@ -1,24 +1,27 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // Alternatively use process.env.NODE_ENV that is automatically set to development or production
-const getRootUrl = (): string =>
-    process.env.REACT_APP_STAGE === "development"
-        ? "http://localhost:3001"
-        : "";
+// const getRootUrl = (): string =>
+//     process.env.REACT_APP_STAGE === "development"
+//         ? "http://localhost:3001"
+//         : "";
 
 export const getSwitches = createAsyncThunk(
     `switchesList/getSwitches`,
-    async (_, { rejectWithValue }) => {
+    async (_, { rejectWithValue, dispatch }) => {
         // try {
-        const response = await fetch(`${getRootUrl()}/api/switches`, {
-            credentials: "same-origin",
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-        });
+        const response = await fetch(
+            `${process.env.REACT_APP_BASE_URL}/api/switches`,
+            {
+                credentials: "same-origin",
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        );
         const json = await response.json();
         // TODO clean up
         if (json.error) {
