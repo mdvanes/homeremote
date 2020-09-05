@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { logInfo } from "../Log/logSlice";
-import { DSwitch } from "../../../Reducers/switchesList";
 
 export const getSwitches = createAsyncThunk(
     `switchesList/getSwitches`,
@@ -57,6 +56,17 @@ export const sendSwitchState = createAsyncThunk<
         dispatch(getSwitches());
     }
 );
+
+// Domoticz Device Switch
+export type DSwitch = {
+    idx: string;
+    name: string;
+    type: string;
+    status: string;
+    dimLevel: number;
+    readOnly: boolean;
+    children: DSwitch[] | false;
+};
 
 export interface SwitchBarListState {
     switches: DSwitch[];
