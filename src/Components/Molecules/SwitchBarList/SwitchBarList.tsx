@@ -1,8 +1,6 @@
 import React, { FC, Fragment, ReactElement, useEffect } from "react";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
-// import { ActionCreator } from "redux";
-// import { ToggleExpandSceneAction, toggleExpandScene } from "../../../Actions";
 import { DSwitch } from "../../../Reducers/switchesList";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -95,37 +93,21 @@ const getLabelAction = (
     cbWithoutChildren: () => void
 ): (() => void) => (hasChildren ? cbWithChildren : cbWithoutChildren);
 
-type OuterProps = {
-    // sendOn: SendSomeState;
-    // sendOff: SendSomeState;
-    // toggleExpandScene: ActionCreator<ToggleExpandSceneAction>;
-    // switches: DSwitch[];
-    // expandedScenes: string[];
-};
-
-const SwitchBarList: FC<OuterProps> = (
-    {
-        // sendOn,
-        // sendOff,
-        // toggleExpandScene,
-        // expandedScenes,
-    }
-) => {
+const SwitchBarList: FC = () => {
     const dispatch = useDispatch();
     const switches = useSelector<RootState, SwitchBarListState["switches"]>(
-        // TODO remove the word "New" in the rootreducer
-        (state: RootState) => state.switchesListNew.switches
+        (state: RootState) => state.switchesList.switches
     );
     const isLoading = useSelector<RootState, SwitchBarListState["isLoading"]>(
-        (state: RootState) => state.switchesListNew.isLoading
+        (state: RootState) => state.switchesList.isLoading
     );
     const errorMessage = useSelector<RootState, SwitchBarListState["error"]>(
-        (state: RootState) => state.switchesListNew.error
+        (state: RootState) => state.switchesList.error
     );
     const expandedScenes = useSelector<
         RootState,
         SwitchBarListState["expanded"]
-    >((state: RootState) => state.switchesListNew.expanded);
+    >((state: RootState) => state.switchesList.expanded);
 
     const sendOn = (id: string, type: string): void => {
         dispatch(sendSwitchState({ id, type, state: "on" }));
@@ -146,9 +128,8 @@ const SwitchBarList: FC<OuterProps> = (
         const labelAction = getLabelAction(
             hasChildren,
             () => {
-                // toggleExpandScene(dSwitch.idx);
                 dispatch(toggleExpandScene({ sceneIdx: dSwitch.idx }));
-                getSwitches();
+                dispatch(getSwitches());
             },
             getSwitches
         );
@@ -174,8 +155,8 @@ const SwitchBarList: FC<OuterProps> = (
     });
     return (
         <Fragment>
-            {isLoading && "loading..."}
             {switchBars}
+            {isLoading && "loading..."}
         </Fragment>
     );
 };
