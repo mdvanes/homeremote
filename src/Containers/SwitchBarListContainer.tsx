@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import {
     logInfo,
     logError,
-    setSwitches,
+    // setSwitches,
     toggleExpandScene,
     LogErrorAction,
 } from "../Actions";
@@ -31,28 +31,28 @@ export type GetSwitches = () => (
 ) => Promise<void | LogErrorAction>;
 
 // This is a simple thunk
-const getSwitches: GetSwitches = () => dispatch =>
-    fetch(`${getRootUrl()}/api/switches`, {
-        credentials: "same-origin",
-        method: "GET",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-    })
-        .then(data => data.json())
-        .then(data => {
-            dispatch(
-                logInfo(
-                    `Got switches: ${data.switches
-                        .map((aSwitch: any) => aSwitch.name)
-                        .join(", ")}`
-                )
-            );
-            dispatch(setSwitches(data.switches));
-        })
-        .catch(error => dispatch(logError(`error on /switches: ${error}`)));
+// const getSwitches: GetSwitches = () => dispatch =>
+//     fetch(`${getRootUrl()}/api/switches`, {
+//         credentials: "same-origin",
+//         method: "GET",
+//         headers: {
+//             Accept: "application/json",
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//         },
+//     })
+//         .then(data => data.json())
+//         .then(data => {
+//             dispatch(
+//                 logInfo(
+//                     `Got switches: ${data.switches
+//                         .map((aSwitch: any) => aSwitch.name)
+//                         .join(", ")}`
+//                 )
+//             );
+//             dispatch(setSwitches(data.switches));
+//         })
+//         .catch(error => dispatch(logError(`error on /switches: ${error}`)));
 
 type SendState = (
     dispatch: any,
@@ -83,7 +83,7 @@ const sendState: SendState = (dispatch, state, id, type) =>
                 dispatch(logError(`error on send-${state}: ${data.status}`));
             } else {
                 dispatch(logInfo(`Switch ${id} ${state}`));
-                dispatch(getSwitches());
+                // TODO this is important! dispatch(getSwitches());
             }
         })
         .catch(error => dispatch(logError(`error on send-${state}: ${error}`)));
@@ -93,16 +93,13 @@ const sendState: SendState = (dispatch, state, id, type) =>
 //     sendState(dispatch, 'on', ...args);
 // };
 
-export type SendSomeState = (
-    id: string,
-    type: string
-) => (dispatch: Dispatch) => Promise<void>;
+// export type SendSomeState = (id: string, type: string) => void; // (dispatch: Dispatch) => Promise<void>;
 
-const sendOn: SendSomeState = (id, type) => dispatch =>
-    sendState(dispatch, "on", id, type);
+// const sendOn: SendSomeState = (id, type) => dispatch =>
+//     sendState(dispatch, "on", id, type);
 
-const sendOff: SendSomeState = (id, type) => dispatch =>
-    sendState(dispatch, "off", id, type);
+// const sendOff: SendSomeState = (id, type) => dispatch =>
+//     sendState(dispatch, "off", id, type);
 
 const mapStateToProps = (state: any) => {
     return {
@@ -137,10 +134,7 @@ const mapStateToProps = (state: any) => {
 // }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
-    return bindActionCreators(
-        { getSwitches, sendOn, sendOff, toggleExpandScene },
-        dispatch
-    );
+    return bindActionCreators({ toggleExpandScene }, dispatch);
     // bindActionCreators is shorthand for:
     // return {
     //   getSwitches: () => dispatch(getSwitches()),
