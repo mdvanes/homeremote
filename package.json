@@ -47,6 +47,7 @@
     "start": "node server/app.js | bunyan",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:ci": "CI=true react-scripts test --coverage --colors",
     "eject": "react-scripts eject",
     "watch": "npm-watch",
     "lint": "eslint src/**/*.{ts,tsx}"
@@ -75,6 +76,21 @@
   "prettier": {
     "trailingComma": "es5",
     "tabWidth": 4
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 10,
+        "functions": 10,
+        "lines": 10,
+        "statements": 10
+      }
+    },
+    "coverageReporters": ["text", "text-summary", "lcov"]
   },
   "devDependencies": {
     "@testing-library/react": "^9.5.0",
