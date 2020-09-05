@@ -13,10 +13,10 @@ import { bindActionCreators, Dispatch } from "redux";
 // example with thunks: https://github.com/reduxjs/redux-thunk/blob/master/test/typescript.ts
 
 // Alternatively use process.env.NODE_ENV that is automatically set to development or production
-const getRootUrl = (): string =>
-    process.env.REACT_APP_STAGE === "development"
-        ? "http://localhost:3001"
-        : "";
+// const getRootUrl = (): string =>
+//     process.env.REACT_APP_STAGE === "development"
+//         ? "http://localhost:3001"
+//         : "";
 
 // TODO remove any types, pick types like in LogContainer
 
@@ -54,39 +54,39 @@ export type GetSwitches = () => (
 //         })
 //         .catch(error => dispatch(logError(`error on /switches: ${error}`)));
 
-type SendState = (
-    dispatch: any,
-    state: any,
-    id: string,
-    type: string
-) => Promise<void>;
-const sendState: SendState = (dispatch, state, id, type) =>
-    fetch(`${getRootUrl()}/api/switches/${id}`, {
-        credentials: "same-origin",
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-            state,
-            type,
-        }),
-    })
-        .then(data => {
-            return data.json();
-        })
-        .then(data => {
-            dispatch(logInfo("some effect"));
-            if (data.status !== "received") {
-                dispatch(logError(`error on send-${state}: ${data.status}`));
-            } else {
-                dispatch(logInfo(`Switch ${id} ${state}`));
-                // TODO this is important! dispatch(getSwitches());
-            }
-        })
-        .catch(error => dispatch(logError(`error on send-${state}: ${error}`)));
+// type SendState = (
+//     dispatch: any,
+//     state: any,
+//     id: string,
+//     type: string
+// ) => Promise<void>;
+// const sendState: SendState = (dispatch, state, id, type) =>
+//     fetch(`${getRootUrl()}/api/switches/${id}`, {
+//         credentials: "same-origin",
+//         method: "POST",
+//         headers: {
+//             Accept: "application/json",
+//             "Content-Type": "application/json",
+//             Authorization: `Bearer ${localStorage.getItem("token")}`,
+//         },
+//         body: JSON.stringify({
+//             state,
+//             type,
+//         }),
+//     })
+//         .then(data => {
+//             return data.json();
+//         })
+//         .then(data => {
+//             dispatch(logInfo("some effect"));
+//             if (data.status !== "received") {
+//                 dispatch(logError(`error on send-${state}: ${data.status}`));
+//             } else {
+//                 dispatch(logInfo(`Switch ${id} ${state}`));
+//                 dispatch(getSwitches());
+//             }
+//         })
+//         .catch(error => dispatch(logError(`error on send-${state}: ${error}`)));
 
 // TypeScript does not like passing ...args, at least not when typed with :any
 // const sendOn = (...args: any) => (dispatch: any) => {
@@ -134,7 +134,7 @@ const mapStateToProps = (state: any) => {
 // }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
-    return bindActionCreators({ toggleExpandScene }, dispatch);
+    return bindActionCreators({  }, dispatch);
     // bindActionCreators is shorthand for:
     // return {
     //   getSwitches: () => dispatch(getSwitches()),

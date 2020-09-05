@@ -1,18 +1,15 @@
 import React, { FC, Fragment, ReactElement, useEffect } from "react";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
-import {
-    // GetSwitches,
-    // SendSomeState,
-} from "../../../Containers/SwitchBarListContainer";
-import { ActionCreator, Dispatch } from "redux";
-import { ToggleExpandSceneAction } from "../../../Actions";
+// import { ActionCreator } from "redux";
+// import { ToggleExpandSceneAction, toggleExpandScene } from "../../../Actions";
 import { DSwitch } from "../../../Reducers/switchesList";
 import { useDispatch, useSelector } from "react-redux";
 import {
     getSwitches,
     sendSwitchState,
     SwitchBarListState,
+    toggleExpandScene,
 } from "./switchBarListSlice";
 import { RootState } from "../../../Reducers";
 import { logError } from "../Log/logSlice";
@@ -101,19 +98,22 @@ const getLabelAction = (
 type OuterProps = {
     // sendOn: SendSomeState;
     // sendOff: SendSomeState;
-    toggleExpandScene: ActionCreator<ToggleExpandSceneAction>;
-    switches: DSwitch[];
-    expandedScenes: string[];
+    // toggleExpandScene: ActionCreator<ToggleExpandSceneAction>;
+    // switches: DSwitch[];
+    // expandedScenes: string[];
 };
 
-const SwitchBarList: FC<OuterProps> = ({
-    // sendOn,
-    // sendOff,
-    toggleExpandScene,
-    expandedScenes,
-}) => {
+const SwitchBarList: FC<OuterProps> = (
+    {
+        // sendOn,
+        // sendOff,
+        // toggleExpandScene,
+        // expandedScenes,
+    }
+) => {
     const dispatch = useDispatch();
     const switches = useSelector<RootState, SwitchBarListState["switches"]>(
+        // TODO remove the word "New" in the rootreducer
         (state: RootState) => state.switchesListNew.switches
     );
     const isLoading = useSelector<RootState, SwitchBarListState["isLoading"]>(
@@ -122,6 +122,10 @@ const SwitchBarList: FC<OuterProps> = ({
     const errorMessage = useSelector<RootState, SwitchBarListState["error"]>(
         (state: RootState) => state.switchesListNew.error
     );
+    const expandedScenes = useSelector<
+        RootState,
+        SwitchBarListState["expanded"]
+    >((state: RootState) => state.switchesListNew.expanded);
 
     const sendOn = (id: string, type: string): void => {
         dispatch(sendSwitchState({ id, type, state: "on" }));
@@ -142,7 +146,8 @@ const SwitchBarList: FC<OuterProps> = ({
         const labelAction = getLabelAction(
             hasChildren,
             () => {
-                toggleExpandScene(dSwitch.idx);
+                // toggleExpandScene(dSwitch.idx);
+                dispatch(toggleExpandScene({ sceneIdx: dSwitch.idx }));
                 getSwitches();
             },
             getSwitches
