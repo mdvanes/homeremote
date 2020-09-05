@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { logInfo } from "../Log/logSlice";
+import { DSwitch } from "../../../Reducers/switchesList";
 
 export const getSwitches = createAsyncThunk(
     `switchesList/getSwitches`,
@@ -58,21 +59,34 @@ export const sendSwitchState = createAsyncThunk<
 );
 
 export interface SwitchBarListState {
-    switches: any[];
+    switches: DSwitch[];
     isLoading: boolean;
     error: string | false;
+    expanded: string[];
 }
 
 const initialState: SwitchBarListState = {
     switches: [],
     isLoading: false,
     error: false,
+    expanded: [],
 };
 
 const switchBarListSlice = createSlice({
     name: "switchesList",
     initialState,
-    reducers: {},
+    reducers: {
+        toggleExpandScene: (state, { payload: { sceneIdx } }): void => {
+            console.log("toggle expand", sceneIdx);
+            if (state.expanded.includes(sceneIdx)) {
+                // Exists already, so toggle to "collapsed" and remove from the expanded array
+                state.expanded = state.expanded.filter(id => id !== sceneIdx);
+            } else {
+                // Does not exist yet, so toggle to "expanded" and add to the expanded array
+                state.expanded.push(sceneIdx);
+            }
+        },
+    },
     extraReducers: {
         [getSwitches.fulfilled.toString()]: (state, { payload }): void => {
             state.isLoading = false;
@@ -100,5 +114,7 @@ const switchBarListSlice = createSlice({
         },
     },
 });
+
+export const { toggleExpandScene } = switchBarListSlice.actions;
 
 export default switchBarListSlice.reducer;
