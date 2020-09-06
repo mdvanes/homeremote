@@ -44,8 +44,12 @@ const getNameAndChildren = (
     children: DSwitch[] | false
 ): string => (children ? `${name} ⯆` : name);
 
-const getLabel = (name: string, dimLevel: number, type: string): string => {
-    if (type === "selector") {
+const getLabel = (
+    name: string,
+    dimLevel: number | null,
+    type: string
+): string => {
+    if (type === "selector" && dimLevel !== null) {
         return `${name}: ${SELECTOR_STATES[dimLevel]}`;
     }
     return dimLevel !== null ? `${name} (${dimLevel}%)` : name;
