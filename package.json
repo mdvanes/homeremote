@@ -90,7 +90,11 @@
         "statements": 10
       }
     },
-    "coverageReporters": ["text", "text-summary", "lcov"]
+    "coverageReporters": [
+      "text",
+      "text-summary",
+      "lcov"
+    ]
   },
   "devDependencies": {
     "@testing-library/react": "^9.5.0",
@@ -100,6 +104,7 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-jest": "^23.8.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "git-rev-sync": "^3.0.1",
     "node-sass": "^4.13.1",
     "npm-watch": "^0.6.0",
     "prettier": "^1.19.1",
