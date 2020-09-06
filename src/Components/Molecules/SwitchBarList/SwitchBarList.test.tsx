@@ -3,87 +3,71 @@ import * as ReactRedux from "react-redux";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import SwitchBarList from "./SwitchBarList";
 import { RootState } from "../../../Reducers";
+import * as Slice from "./switchBarListSlice";
+
+const mockUseSelectorWith = ({ isLoading = false }): void => {
+    jest.spyOn(ReactRedux, "useSelector").mockReset();
+    jest.spyOn(ReactRedux, "useSelector").mockImplementation(fn => {
+        const mockRootState: Pick<RootState, "switchesList"> = {
+            switchesList: {
+                isLoading: isLoading,
+                error: false,
+                switches: [
+                    {
+                        idx: "3",
+                        type: "Light/Switch",
+                        name: "My Normal Light Switch",
+                        status: "On",
+                        dimLevel: null,
+                        readOnly: false,
+                        children: false,
+                    },
+                ],
+                expanded: [],
+            },
+        };
+        return fn(mockRootState);
+    });
+};
 
 describe("SwitchBarList", () => {
     const mockDispatch = jest.fn();
-    it("shows a normal light switch", () => {
-        jest.spyOn(ReactRedux, "useSelector").mockReset();
-        jest.spyOn(ReactRedux, "useSelector").mockImplementation(fn => {
-            const mockRootState: RootState = {
-                switchesList: {
-                    isLoading: false,
-                    error: false,
-                    switches: [
-                        {
-                            idx: "3",
-                            type: "Light/Switch",
-                            name: "My Normal Light Switch",
-                            status: "On",
-                            dimLevel: null,
-                            readOnly: false,
-                            children: false,
-                        },
-                    ],
-                    expanded: [],
-                },
-            };
-            return fn(mockRootState);
-        });
+
+    beforeEach(() => {
         jest.spyOn(ReactRedux, "useDispatch").mockReturnValue(mockDispatch);
+    });
+
+    it("shows a normal light switch", () => {
+        mockUseSelectorWith({});
         const { getByText } = render(<SwitchBarList />);
         expect(getByText("My Normal Light Switch")).toBeInTheDocument();
     });
 
-    // TODO fix
-    // it("?", () => {
-    //     jest.spyOn(ReactRedux, "useSelector").mockReset();
-    //     jest.spyOn(ReactRedux, "useSelector").mockImplementation(fn => {
-    //         const mockRootState: RootState = {
-    //             switchesList: {
-    //                 isLoading: false,
-    //                 error: false,
-    //                 switches: [
-    //                     {
-    //                         idx: "3",
-    //                         type: "Light/Switch",
-    //                         name: "My Normal Light Switch",
-    //                         status: "On",
-    //                         dimLevel: null,
-    //                         readOnly: false,
-    //                         children: false,
-    //                     },
-    //                 ],
-    //                 expanded: [],
-    //             },
-    //         };
-    //         return fn(mockRootState);
-    //     });
-    //     jest.spyOn(ReactRedux, "useDispatch").mockReturnValue(mockDispatch);
-    //     const { getByText, debug, baseElement } = render(<SwitchBarList />);
-    //     // debug(baseElement)
-    //     // TODO fix MUI class ids (codestar repo?)
-    //     const but = baseElement.querySelector("button.makeStyles-root-78");
-    //     mockDispatch.mockReset();
-    //     fireEvent.click(but);
-    //     debug(baseElement);
-    //     expect(getByText("My Normal Light Switch")).toBeInTheDocument();
-    //     expect(mockDispatch).toHaveBeenCalledWith({});
-    // });
+    it("sends a switch state on clicking the 'off' button", () => {
+        jest.spyOn(Slice, "sendSwitchState").mockReset();
+
+        mockUseSelectorWith({});
+        const { getByText, debug, baseElement } = render(<SwitchBarList />);
+        // debug(baseElement)
+        // TODO fix MUI class ids (codestar repo?)
+        const offButton = baseElement.querySelector(
+            "button.makeStyles-root-78"
+        );
+        mockDispatch.mockReset();
+        if (offButton) {
+            fireEvent.click(offButton);
+        }
+        // debug(baseElement);
+        expect(getByText("My Normal Light Switch")).toBeInTheDocument();
+        expect(Slice.sendSwitchState).toHaveBeenCalledWith({
+            id: "3",
+            state: "off",
+            type: "switchlight",
+        });
+    });
 
     it("shows the loading state", () => {
-        jest.spyOn(ReactRedux, "useSelector").mockReset();
-        jest.spyOn(ReactRedux, "useSelector").mockImplementation(fn => {
-            const mockRootState: RootState = {
-                switchesList: {
-                    isLoading: true,
-                    error: false,
-                    switches: [],
-                    expanded: [],
-                },
-            };
-            return fn(mockRootState);
-        });
-        jest.spyOn(ReactRedux, "useDispatch").mockReturnValue(mockDispatch);
+        mockUseSelectorWith({ isLoading: true });
         const { getByText } = render(<SwitchBarList />);
         expect(getByText("loading...")).toBeInTheDocument();
     });
