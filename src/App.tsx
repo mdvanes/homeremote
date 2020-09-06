@@ -19,6 +19,7 @@ import Log from "./Components/Pages/Log/Log";
 import AuthenticationProvider from "./AuthenticationProvider";
 import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar";
 import theme from "./theme";
+import Dashboard from "./Components/Pages/Dashboard/Dashboard";
 
 const App: FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
@@ -62,7 +63,8 @@ const App: FC = () => {
                         </Link>
                         <a
                             onClick={(): void => {
-                                localStorage.removeItem("hr-remember-me");
+                                // localStorage.removeItem("hr-remember-me");
+                                localStorage.removeItem("token");
                             }}
                             href="/logout"
                         >
@@ -75,7 +77,7 @@ const App: FC = () => {
                     <Route exact path="/files" component={HomeAutomation} />
                     <Route exact path="/gears" component={HomeAutomation} />
                     <Route exact path="/log" component={Log} />
-                    <Route exact path="/dashboard" component={HomeAutomation} />
+                    <Route exact path="/dashboard" component={Dashboard} />
                 </BrowserRouter>
                 <GlobalSnackbar />
             </MuiThemeProvider>

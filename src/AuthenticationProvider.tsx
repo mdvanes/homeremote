@@ -29,10 +29,10 @@ const AuthenticationProvider: FC = ({ children }) => {
                 setIsSignedIn(true);
             });
     };
-    const logOut = (): void => {
-        localStorage.removeItem("token");
-        setIsSignedIn(false);
-    };
+    // const logOut = (): void => {
+    //     localStorage.removeItem("token");
+    //     setIsSignedIn(false);
+    // };
     if (!isSignedIn) {
         return (
             <form id="form" onSubmit={onSubmit} style={{ margin: 8 }}>
@@ -60,9 +60,9 @@ const AuthenticationProvider: FC = ({ children }) => {
         return (
             <>
                 {children}
-                <Button variant="contained" color="secondary" onClick={logOut}>
+                {/* TODO this (including setIsSignedIn(false) should be done in App.tsx menu <Button variant="contained" color="secondary" onClick={logOut}>
                     log out (temp)
-                </Button>
+                </Button> */}
             </>
         );
     }
