@@ -1,10 +1,10 @@
 /* action types */
 
-export const SET_MOVE_PARAMS = 'SET_MOVE_PARAMS';
-export const SET_MOVE_PROGRESS = 'SET_MOVE_PROGRESS';
-export const SET_FILEMANAGER_SOCKET = 'SET_FILEMANAGER_SOCKET';
-export const SET_DIR_INDEX = 'SET_DIR_INDEX';
-export const LIST_DIR = 'LIST_DIR';
+export const SET_MOVE_PARAMS = "SET_MOVE_PARAMS";
+export const SET_MOVE_PROGRESS = "SET_MOVE_PROGRESS";
+export const SET_FILEMANAGER_SOCKET = "SET_FILEMANAGER_SOCKET";
+export const SET_DIR_INDEX = "SET_DIR_INDEX";
+export const LIST_DIR = "LIST_DIR";
 
 /* action creators */
 
@@ -17,7 +17,7 @@ export const setMoveParams = (
         type: SET_MOVE_PARAMS,
         targetLocations,
         filePath,
-        fileName
+        fileName,
     };
 };
 
@@ -39,14 +39,14 @@ export const setMoveProgress = (
         type: SET_MOVE_PROGRESS,
         percentage,
         filePath,
-        fileName
+        fileName,
     };
 };
 
 export const setFileManagerSocket = (socket: any) => {
     return {
         type: SET_FILEMANAGER_SOCKET,
-        socket
+        socket,
     };
 };
 
@@ -54,17 +54,17 @@ export const setFileManagerDirIndex = (dirName: any, dirIndex: any) => {
     return {
         type: SET_DIR_INDEX,
         dirName,
-        dirIndex
+        dirIndex,
     };
 };
 
 export const fileManagerListDir = (dirName: any) => {
     return {
         type: LIST_DIR,
-        dirName
+        dirName,
     };
 };
 
-export * from './loglines';
+export * from "./loglines";
 // export * from './switchesList';
 // export * from './toggleExpandScene';
