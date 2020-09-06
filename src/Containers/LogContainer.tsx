@@ -1,6 +1,6 @@
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 // import { logInfo, logError } from '../Actions';
-import Log, { Props } from '../Components/Molecules/Log/Log';
+import Log, { Props } from "../Components/Molecules/Log/Log";
 // import { Dispatch } from 'redux';
 
 // type Logline = {
@@ -14,11 +14,11 @@ import Log, { Props } from '../Components/Molecules/Log/Log';
 // // And use this in ../Components/Molecules/Log/Log
 // type StateProps = State;
 
-type State = Pick<Props, 'loglines'>;
+type State = Pick<Props, "loglines">;
 
 const mapStateToProps = (state: State): State => {
     return {
-        loglines: state.loglines
+        loglines: state.loglines,
     };
 };
 
