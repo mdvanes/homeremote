@@ -63,7 +63,7 @@ export type DSwitch = {
     name: string;
     type: string;
     status: string;
-    dimLevel: number;
+    dimLevel: number | null;
     readOnly: boolean;
     children: DSwitch[] | false;
 };
