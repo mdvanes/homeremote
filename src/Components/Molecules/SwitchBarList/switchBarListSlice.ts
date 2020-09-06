@@ -75,7 +75,7 @@ export interface SwitchBarListState {
     expanded: string[];
 }
 
-const initialState: SwitchBarListState = {
+export const initialState: SwitchBarListState = {
     switches: [],
     isLoading: false,
     error: false,
@@ -87,7 +87,6 @@ const switchBarListSlice = createSlice({
     initialState,
     reducers: {
         toggleExpandScene: (state, { payload: { sceneIdx } }): void => {
-            console.log("toggle expand", sceneIdx);
             if (state.expanded.includes(sceneIdx)) {
                 // Exists already, so toggle to "collapsed" and remove from the expanded array
                 state.expanded = state.expanded.filter(id => id !== sceneIdx);
