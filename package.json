@@ -42,15 +42,17 @@
     "youtube-dl": "^3.0.2"
   },
   "scripts": {
-    "start:dev": "concurrently --kill-others \"BROWSER=none react-scripts start\" \"npm run watch\"",
-    "start:devserver": "node server/app.js --debugremote | bunyan",
-    "start": "node server/app.js | bunyan",
-    "build": "node writeGitInfo.js && react-scripts build",
+    "start:olddev": "concurrently --kill-others \"BROWSER=none react-scripts start\" \"npm run watch\"",
+    "start:olddevserver": "node server/app.js --debugremote | bunyan",
+    "start:old": "node server/app.js | bunyan",
+    "start:dev": "node writeGitInfo.js dev && BROWSER=none react-scripts start",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "prebuild": "node writeGitInfo.js && npm run lint && npm run test:ci",
+    "build": "npm run prebuild && react-scripts build",
     "test": "react-scripts test",
     "test:ci": "CI=true react-scripts test --coverage --colors",
     "eject": "react-scripts eject",
-    "watch": "npm-watch",
-    "lint": "eslint src/**/*.{ts,tsx}"
+    "watch": "npm-watch"
   },
   "watch": {
     "start:devserver": [
