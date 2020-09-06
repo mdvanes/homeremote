@@ -45,19 +45,14 @@ describe("SwitchBarList", () => {
 
     it("sends a switch state on clicking the 'off' button", () => {
         jest.spyOn(Slice, "sendSwitchState").mockReset();
-
         mockUseSelectorWith({});
-        const { getByText, debug, baseElement } = render(<SwitchBarList />);
-        // debug(baseElement)
-        // TODO fix MUI class ids (codestar repo?)
-        const offButton = baseElement.querySelector(
-            "button.makeStyles-root-78"
-        );
+        const { getByText, baseElement } = render(<SwitchBarList />);
+        const offButton = baseElement.querySelector("button.makeStyles-root");
+        expect(offButton).toBeInTheDocument();
         mockDispatch.mockReset();
         if (offButton) {
             fireEvent.click(offButton);
         }
-        // debug(baseElement);
         expect(getByText("My Normal Light Switch")).toBeInTheDocument();
         expect(Slice.sendSwitchState).toHaveBeenCalledWith({
             id: "3",
