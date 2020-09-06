@@ -3,8 +3,8 @@ import {
     LOG_ERROR,
     CLEAR_LOG,
     LogInfoAction,
-    LogErrorAction
-} from '../Actions';
+    LogErrorAction,
+} from "../Actions";
 
 type Logline = {
     message: string;
@@ -12,6 +12,7 @@ type Logline = {
 
 type State = Logline[];
 
+// TODO this should be the union of all possible Actions in the application
 type Actions = LogInfoAction | LogErrorAction;
 
 // TODO use type State from LogContainer
@@ -22,13 +23,13 @@ const loglines: LoglinesReducer = (state = [], action) => {
     const newLogState: State = [
         ...state,
         {
-            message: action.message
-        }
+            message: action.message,
+        },
     ];
     const actionTypeMap: Record<string, State> = {
         [LOG_ERROR]: newLogState,
         [LOG_INFO]: newLogState,
-        [CLEAR_LOG]: []
+        [CLEAR_LOG]: [],
     };
     if (actionTypeMap.hasOwnProperty(action.type)) {
         return actionTypeMap[action.type];
