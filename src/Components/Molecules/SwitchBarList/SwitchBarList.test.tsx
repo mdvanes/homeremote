@@ -4,6 +4,7 @@ import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import SwitchBarList from "./SwitchBarList";
 import { RootState } from "../../../Reducers";
 import * as Slice from "./switchBarListSlice";
+import SwitchBar from "./SwitchBar";
 
 const mockUseSelectorWith = ({ isLoading = false }): void => {
     jest.spyOn(ReactRedux, "useSelector").mockReset();
@@ -65,5 +66,58 @@ describe("SwitchBarList", () => {
         mockUseSelectorWith({ isLoading: true });
         const { getByText } = render(<SwitchBarList />);
         expect(getByText("loading...")).toBeInTheDocument();
+    });
+});
+
+describe("SwitchBar", () => {
+    it("can show an icon", () => {
+        const { baseElement } = render(
+            <SwitchBar
+                icon="foo"
+                leftButton={<button>left</button>}
+                rightButton={<button>right</button>}
+                label="my bar"
+                labelAction={false}
+            />
+        );
+        expect(baseElement.querySelector(".MuiIcon-root")?.textContent).toBe(
+            "foo"
+        );
+    });
+
+    it("can have a text label", () => {
+        const { baseElement } = render(
+            <SwitchBar
+                icon={false}
+                leftButton={<button>left</button>}
+                rightButton={<button>right</button>}
+                label="my bar"
+                labelAction={false}
+            />
+        );
+        expect(
+            baseElement.querySelector(".makeStyles-label")
+        ).toHaveTextContent("my bar");
+        expect(
+            baseElement.querySelector(".makeStyles-label > button")
+        ).not.toBeInTheDocument();
+    });
+
+    it("can have a button label", () => {
+        const { baseElement } = render(
+            <SwitchBar
+                icon={false}
+                leftButton={<button>left</button>}
+                rightButton={<button>right</button>}
+                label="my bar"
+                labelAction={jest.fn()}
+            />
+        );
+        expect(
+            baseElement.querySelector(".makeStyles-label")
+        ).toHaveTextContent("my bar");
+        expect(
+            baseElement.querySelector(".makeStyles-label > button")
+        ).toBeInTheDocument();
     });
 });
