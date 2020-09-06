@@ -6,7 +6,7 @@ import loglinesNew from "../Components/Molecules/Log/logSlice";
 // import fileManager from './fileManager';
 // import switchesList from "./switchesList";
 // import expandedScenes from "./expandedScenes";
-import switchesList from "../Components/Molecules/SwitchBarList/switchBarListSlice";
+import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBarListSlice";
 import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
@@ -15,7 +15,7 @@ const rootReducer = combineReducers({
     // moveParams,
     // moveProgress,
     // fileManager,
-    switchesList,
+    switchesList: switchBarListReducer,
     // expandedScenes,
     loglinesNew,
 });
