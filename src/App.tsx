@@ -72,7 +72,7 @@ const App: FC = () => {
                         </a>
                     </Drawer>
                     {/* TODO what is this? <StatusBar/>*/}
-                    <Route exact path="/" component={HomeAutomation} />
+                    <Route exact path="/" component={Dashboard} />
                     <Route exact path="/music" component={HomeAutomation} />
                     <Route exact path="/files" component={HomeAutomation} />
                     <Route exact path="/gears" component={HomeAutomation} />
