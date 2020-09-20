@@ -21,6 +21,7 @@ import AuthenticationProvider from "./AuthenticationProvider";
 import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar";
 import theme from "./theme";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
+import Streams from "./Components/Pages/Streams/Streams";
 
 const App: FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
@@ -47,6 +48,9 @@ const App: FC = () => {
                         <Link onClick={closeDrawer} to="/">
                             <MenuItem>Home Automation</MenuItem>
                         </Link>
+                        <Link onClick={closeDrawer} to="/dashboard">
+                            <MenuItem>Dashboard</MenuItem>
+                        </Link>
                         <Link onClick={closeDrawer} to="/music">
                             <MenuItem>Music</MenuItem>
                         </Link>
@@ -57,29 +61,30 @@ const App: FC = () => {
                             <MenuItem>Gears</MenuItem>
                         </Link>
                         <Link onClick={closeDrawer} to="/log">
-                            <MenuItem>Log</MenuItem>
+                            <MenuItem>Logging</MenuItem>
                         </Link>
-                        <Link onClick={closeDrawer} to="/dashboard">
-                            <MenuItem>Dashboard</MenuItem>
+                        <Link onClick={closeDrawer} to="/streams">
+                            <MenuItem>Streams</MenuItem>
                         </Link>
                         <a
                             onClick={(): void => {
                                 // localStorage.removeItem("hr-remember-me");
                                 localStorage.removeItem("token");
                             }}
-                            href="/logout"
+                            href="/"
                         >
                             <MenuItem>Log out</MenuItem>
                         </a>
                     </Drawer>
                     {/* TODO what is this? <StatusBar/>*/}
-                    <Container>
-                        <Route exact path="/" component={Dashboard} />
+                    <Container maxWidth="xl">
+                        <Route exact path="/" component={HomeAutomation} />
                         <Route exact path="/music" component={HomeAutomation} />
                         <Route exact path="/files" component={HomeAutomation} />
                         <Route exact path="/gears" component={HomeAutomation} />
                         <Route exact path="/log" component={Log} />
                         <Route exact path="/dashboard" component={Dashboard} />
+                        <Route exact path="/streams" component={Streams} />
                     </Container>
                 </BrowserRouter>
                 <GlobalSnackbar />
