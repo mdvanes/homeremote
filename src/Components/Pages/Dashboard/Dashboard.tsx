@@ -7,7 +7,9 @@ const Dashboard: FC = () => {
     return (
         <div style={{ marginTop: "100px" }}>
             <SwitchBarList />
-            <HomeremoteStreamPlayer url="http://localhost:3200" />
+            <HomeremoteStreamPlayer
+                url={process.env.REACT_APP_BASE_URL || ""}
+            />
             <LogContainer />
         </div>
     );
