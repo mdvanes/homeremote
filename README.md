@@ -63,7 +63,7 @@ To run API tests, first build and run the server:
 * `cd /opt/homeremote`
 * update `git pull origin master`
 * update dependencies `npm i`
-* install patched express-ws (if needed): `chmod +x buildPatchExpressWs.sh` and `./buildPatchExpressWs.sh`
+// the patch was merged in express-ws@4.x // * install patched express-ws (if needed): `chmod +x buildPatchExpressWs.sh` and `./buildPatchExpressWs.sh`
 * build for production: `npm run build` to create updated JS and source map
 * test run `node server/app.js | bunyan`
 * start `sudo service homeremote start`
