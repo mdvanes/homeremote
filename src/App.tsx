@@ -11,6 +11,7 @@ import {
     Toolbar,
     Typography,
     MenuItem,
+    Container,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
@@ -28,7 +29,7 @@ const App: FC = () => {
     return (
         <AuthenticationProvider>
             <MuiThemeProvider theme={theme}>
-                <AppBar>
+                <AppBar position="static" style={{ marginBottom: "0.5rem" }}>
                     <Toolbar>
                         <IconButton
                             edge="start"
@@ -72,12 +73,14 @@ const App: FC = () => {
                         </a>
                     </Drawer>
                     {/* TODO what is this? <StatusBar/>*/}
-                    <Route exact path="/" component={Dashboard} />
-                    <Route exact path="/music" component={HomeAutomation} />
-                    <Route exact path="/files" component={HomeAutomation} />
-                    <Route exact path="/gears" component={HomeAutomation} />
-                    <Route exact path="/log" component={Log} />
-                    <Route exact path="/dashboard" component={Dashboard} />
+                    <Container>
+                        <Route exact path="/" component={Dashboard} />
+                        <Route exact path="/music" component={HomeAutomation} />
+                        <Route exact path="/files" component={HomeAutomation} />
+                        <Route exact path="/gears" component={HomeAutomation} />
+                        <Route exact path="/log" component={Log} />
+                        <Route exact path="/dashboard" component={Dashboard} />
+                    </Container>
                 </BrowserRouter>
                 <GlobalSnackbar />
             </MuiThemeProvider>

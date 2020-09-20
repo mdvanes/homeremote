@@ -1,17 +1,24 @@
 import React, { FC } from "react";
 import HomeremoteStreamPlayer from "@mdworld/homeremote-stream-player";
+import { Grid } from "@material-ui/core";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 import LogContainer from "../../../Containers/LogContainer";
 
 const Dashboard: FC = () => {
     return (
-        <div style={{ marginTop: "100px" }}>
-            <SwitchBarList />
-            <HomeremoteStreamPlayer
-                url={process.env.REACT_APP_BASE_URL || ""}
-            />
-            <LogContainer />
-        </div>
+        <Grid container spacing={2}>
+            <Grid item xs={12} md={3}>
+                <SwitchBarList />
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <HomeremoteStreamPlayer
+                    url={process.env.REACT_APP_BASE_URL || ""}
+                />
+            </Grid>
+            <Grid item xs={12} md={3}>
+                <LogContainer />
+            </Grid>
+        </Grid>
     );
 };
 
