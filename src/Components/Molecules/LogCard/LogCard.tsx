@@ -6,25 +6,18 @@ import {
     Typography,
     Button,
 } from "@material-ui/core";
-// TODO
-// import ClearLogButton from '../containers/ClearLogButton';
-// import RadioInfoButton from '../containers/RadioInfoButton';
 import gitinfoJson from "../../../gitinfo.json";
 import packageJson from "../../../../package.json";
 
-import "./Log.scss";
+import "./LogCard.scss";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../Reducers";
-import { LogState, Logline, clearLog } from "./logSlice";
+import { LogState, clearLog } from "./logSlice";
 
-export type Props = {
-    loglines: Logline[];
-};
-
-const Log: FC<Props> = () => {
+const Log: FC = () => {
     const dispatch = useDispatch();
     const loglines = useSelector<RootState, LogState["lines"]>(
-        (state: RootState) => state.loglinesNew.lines
+        (state: RootState) => state.loglines.lines
     );
     const handleClearLog = (): void => {
         dispatch(clearLog());
@@ -45,8 +38,6 @@ const Log: FC<Props> = () => {
             </CardContent>
             <CardActions className="log-card-actions">
                 <Button onClick={handleClearLog}>clear</Button>
-                {/*<ClearLogButton />
-                <RadioInfoButton />*/}
             </CardActions>
         </Card>
     );

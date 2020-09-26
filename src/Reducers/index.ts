@@ -1,23 +1,18 @@
-import loglines from "./loglines";
-import loglinesNew from "../Components/Molecules/Log/logSlice";
+import loglinesReducer from "../Components/Molecules/LogCard/logSlice";
 // import short from './short';
 // import moveParams from './moveParams';
 // import moveProgress from './moveProgress';
 // import fileManager from './fileManager';
-// import switchesList from "./switchesList";
-// import expandedScenes from "./expandedScenes";
 import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBarListSlice";
 import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
-    loglines,
+    loglines: loglinesReducer,
+    switchesList: switchBarListReducer,
     // short,
     // moveParams,
     // moveProgress,
     // fileManager,
-    switchesList: switchBarListReducer,
-    // expandedScenes,
-    loglinesNew,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

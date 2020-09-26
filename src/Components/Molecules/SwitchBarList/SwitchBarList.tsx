@@ -10,7 +10,7 @@ import {
     DSwitch,
 } from "./switchBarListSlice";
 import { RootState } from "../../../Reducers";
-import { logError } from "../Log/logSlice";
+import { logError } from "../LogCard/logSlice";
 
 // TODO improve type
 const SELECTOR_STATES: Record<number, string> = {

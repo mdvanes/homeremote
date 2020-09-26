@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import HomeremoteStreamPlayer from "@mdworld/homeremote-stream-player";
 import { Grid } from "@material-ui/core";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
-import LogContainer from "../../../Containers/LogContainer";
+import LogCard from "../../Molecules/LogCard/LogCard";
 
 const Dashboard: FC = () => (
     <Grid container spacing={2}>
@@ -15,7 +15,7 @@ const Dashboard: FC = () => (
             />
         </Grid>
         <Grid item xs={12} md={3}>
-            <LogContainer />
+            <LogCard />
         </Grid>
     </Grid>
 );

@@ -1,10 +1,6 @@
 import React, { FC } from "react";
-import LogContainer from "../../../Containers/LogContainer";
+import LogCard from "../../Molecules/LogCard/LogCard";
 
-const Log: FC = () => (
-    <div className="col-xs-12 col-md-3 margin-top">
-        <LogContainer />
-    </div>
-);
+const Log: FC = () => <LogCard />;
 
 export default Log;
