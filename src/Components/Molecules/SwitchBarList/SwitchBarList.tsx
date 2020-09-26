@@ -2,6 +2,7 @@ import React, { FC, Fragment, ReactElement, useEffect } from "react";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
 import { useDispatch, useSelector } from "react-redux";
+import { LinearProgress } from "@material-ui/core";
 import {
     getSwitches,
     sendSwitchState,
@@ -160,7 +161,7 @@ const SwitchBarList: FC = () => {
     return (
         <Fragment>
             {switchBars}
-            {isLoading && "loading..."}
+            {isLoading && <LinearProgress />}
         </Fragment>
     );
 };
