@@ -1,7 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export enum Severity {
+    INFO,
+    ERROR,
+}
+
 export interface Logline {
     message: string;
+    severity: Severity;
 }
 
 export interface LogState {
@@ -25,12 +31,15 @@ const logSlice = createSlice({
     initialState,
     reducers: {
         logInfo: (state, { payload }): void => {
-            state.lines.push({ message: writeLog("INFO: ", payload) });
+            state.lines.push({
+                message: writeLog("INFO: ", payload),
+                severity: Severity.INFO,
+            });
         },
         logError: (state, { payload }): void => {
             if (payload) {
                 const message = writeLog("ERROR:", payload);
-                state.lines.push({ message });
+                state.lines.push({ message, severity: Severity.ERROR });
                 state.urgentMessage = message;
             }
         },
