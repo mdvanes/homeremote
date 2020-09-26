@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { logInfo } from "../Log/logSlice";
+import { logInfo } from "../LogCard/logSlice";
 
 export const getSwitches = createAsyncThunk(
     `switchesList/getSwitches`,

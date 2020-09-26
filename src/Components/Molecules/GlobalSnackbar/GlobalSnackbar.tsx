@@ -3,7 +3,7 @@ import { Snackbar, makeStyles, Grid, IconButton } from "@material-ui/core";
 import { Warning, Close } from "@material-ui/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
-import { LogState } from "../Log/logSlice";
+import { LogState } from "../LogCard/logSlice";
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -23,7 +23,7 @@ const GlobalSnackbar: FC = ({ children }) => {
     const urgentMessage: LogState["urgentMessage"] = useSelector<
         RootState,
         LogState["urgentMessage"]
-    >((state: RootState) => state.loglinesNew.urgentMessage);
+    >((state: RootState) => state.loglines.urgentMessage);
     useEffect(() => {
         if (urgentMessage) {
             setMessage(urgentMessage);
