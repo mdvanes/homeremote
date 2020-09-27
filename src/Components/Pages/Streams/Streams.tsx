@@ -1,8 +1,10 @@
 import React, { FC } from "react";
 import HomeremoteStreamPlayer from "@mdworld/homeremote-stream-player";
 
-const Dashboard: FC = () => (
-    <HomeremoteStreamPlayer url={process.env.REACT_APP_BASE_URL || ""} />
+const Streams: FC = () => (
+    <div style={{ fontFamily: "Roboto" }}>
+        <HomeremoteStreamPlayer url={process.env.REACT_APP_BASE_URL || ""} />
+    </div>
 );
 
-export default Dashboard;
+export default Streams;
