@@ -28,9 +28,7 @@ describe("LogCard", () => {
     it("shows the application version", () => {
         mockUseSelectorWith({});
         const { getByText } = render(<LogCard />);
-        expect(getByText(/version:/).textContent).toContain(
-            "version: development"
-        );
+        expect(getByText(/version:/).textContent).toContain("version: ");
     });
 
     it("shows info logline with icon", () => {
