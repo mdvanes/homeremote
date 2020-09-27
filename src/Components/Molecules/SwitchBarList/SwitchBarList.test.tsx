@@ -64,8 +64,10 @@ describe("SwitchBarList", () => {
 
     it("shows the loading state", () => {
         mockUseSelectorWith({ isLoading: true });
-        const { getByText } = render(<SwitchBarList />);
-        expect(getByText("loading...")).toBeInTheDocument();
+        const { baseElement } = render(<SwitchBarList />);
+        expect(
+            baseElement.querySelector(".MuiLinearProgress-root")
+        ).toBeInTheDocument();
     });
 });
 
