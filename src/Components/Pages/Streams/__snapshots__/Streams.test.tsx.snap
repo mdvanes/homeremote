@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Streams page contains the stream player 1`] = `
+<body>
+  <div>
+    <div
+      style="font-family: Roboto; max-width: 800px;"
+    >
+      <mock-stream-player
+        url=""
+      />
+    </div>
+  </div>
+</body>
+`;
