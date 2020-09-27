@@ -2,13 +2,13 @@
 
 exports[`LogCard shows error logline with icon 1`] = `
 <p
-  class="MuiTypography-root MuiTypography-body2"
+  class="MuiTypography-root makeStyles-message MuiTypography-body2"
 >
   <svg
     aria-hidden="true"
     class="MuiSvgIcon-root"
     focusable="false"
-    style="fill: red; transform: translateY(3px); margin-right: 0.2rem; height: 14px; width: 14px;"
+    style="fill: red;"
     viewBox="0 0 24 24"
   >
     <path
@@ -21,13 +21,13 @@ exports[`LogCard shows error logline with icon 1`] = `
 
 exports[`LogCard shows info logline with icon 1`] = `
 <p
-  class="MuiTypography-root MuiTypography-body2"
+  class="MuiTypography-root makeStyles-message MuiTypography-body2"
 >
   <svg
     aria-hidden="true"
     class="MuiSvgIcon-root"
     focusable="false"
-    style="fill: grey; transform: translateY(3px); margin-right: 0.2rem; height: 14px; width: 14px;"
+    style="fill: grey;"
     viewBox="0 0 24 24"
   >
     <path

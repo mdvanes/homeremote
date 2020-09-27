@@ -15,7 +15,7 @@ export interface LogState {
     urgentMessage: string | false;
 }
 
-const initialState: LogState = {
+export const initialState: LogState = {
     lines: [],
     urgentMessage: false,
 };
