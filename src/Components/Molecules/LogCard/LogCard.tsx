@@ -19,8 +19,10 @@ const SeverityIcons = {
         <InfoOutlined
             style={{
                 fill: "grey",
-                transform: "translateY(6px)",
-                marginRight: "0.5rem",
+                transform: "translateY(3px)",
+                marginRight: "0.2rem",
+                height: "14px",
+                width: "14px",
             }}
         />
     ),
@@ -28,8 +30,10 @@ const SeverityIcons = {
         <Warning
             style={{
                 fill: "red",
-                transform: "translateY(6px)",
-                marginRight: "0.5rem",
+                transform: "translateY(3px)",
+                marginRight: "0.2rem",
+                height: "14px",
+                width: "14px",
             }}
         />
     ),
@@ -45,21 +49,14 @@ const Log: FC = () => {
         dispatch(clearLog());
     };
     return (
-        <Card
-            style={{
-                height: "100%",
-                maxHeight: "100%",
-                display: "flex",
-                flexDirection: "column",
-            }}
-        >
+        <Card classes={{ root: classes.root }}>
             <CardContent className={classes.version}>
                 <Typography variant="body2">
                     version: {gitinfoJson.hash}-{gitinfoJson.branch}-
                     {packageJson.version}
                 </Typography>
             </CardContent>
-            <CardContent style={{ flex: 1 }}>
+            <CardContent classes={{ root: classes.content }}>
                 {loglines &&
                     loglines.map((logline, index) => (
                         <Typography key={index} variant="body2">
