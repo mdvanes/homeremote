@@ -19,10 +19,6 @@ const SeverityIcons = {
         <InfoOutlined
             style={{
                 fill: "grey",
-                transform: "translateY(3px)",
-                marginRight: "0.2rem",
-                height: "14px",
-                width: "14px",
             }}
         />
     ),
@@ -30,10 +26,6 @@ const SeverityIcons = {
         <Warning
             style={{
                 fill: "red",
-                transform: "translateY(3px)",
-                marginRight: "0.2rem",
-                height: "14px",
-                width: "14px",
             }}
         />
     ),
@@ -59,7 +51,11 @@ const Log: FC = () => {
             <CardContent classes={{ root: classes.content }}>
                 {loglines &&
                     loglines.map((logline, index) => (
-                        <Typography key={index} variant="body2">
+                        <Typography
+                            key={index}
+                            variant="body2"
+                            classes={{ root: classes.message }}
+                        >
                             {SeverityIcons[logline.severity]}
                             {logline.message}
                         </Typography>

@@ -16,6 +16,14 @@ const useStyles = makeStyles(
                     fontSize: typography.fontSize * 0.8,
                 },
             },
+            message: {
+                "& svg": {
+                    transform: "translateY(3px)",
+                    marginRight: "0.2rem",
+                    height: "14px",
+                    width: "14px",
+                },
+            },
             version: {
                 paddingBottom: 0,
                 "& p": {
