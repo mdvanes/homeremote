@@ -1,6 +1,6 @@
 import React from "react";
 import * as ReactRedux from "react-redux";
-import { render, fireEvent, waitFor, screen } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import SwitchBarList from "./SwitchBarList";
 import { RootState } from "../../../Reducers";
 import * as Slice from "./switchBarListSlice";
