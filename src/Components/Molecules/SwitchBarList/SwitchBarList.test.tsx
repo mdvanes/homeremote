@@ -52,7 +52,7 @@ const mockRootState: Pick<RootState, "switchesList"> = {
                 name: "My Selector Switch",
                 status: "FOO",
                 dimLevel: 30,
-                readOnly: false,
+                readOnly: true,
                 children: false,
             },
             {
@@ -128,8 +128,12 @@ describe("SwitchBarList", () => {
 
     it("shows a selector switch", () => {
         mockUseSelectorWith({});
-        const { getByText } = render(<SwitchBarList />);
+        const { getByText, getByTestId } = render(<SwitchBarList />);
         expect(getByText(/My Selector Switch: armed/)).toBeInTheDocument();
+        // Test read only state
+        expect(
+            getByTestId("switchbar-My Selector Switch: armed")
+        ).toMatchSnapshot();
     });
 
     it("shows a dimmer", () => {
