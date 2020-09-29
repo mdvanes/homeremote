@@ -71,3 +71,33 @@ exports[`SwitchBarList shows a normal light switch 1`] = `
   </button>
 </div>
 `;
+
+exports[`SwitchBarList shows a selector switch 1`] = `
+<div
+  class="MuiCardContent-root makeStyles-buttonGroup"
+  data-testid="switchbar-My Selector Switch: armed"
+>
+  <button
+    class="makeStyles-root"
+  >
+    <div
+      class="dummy"
+    />
+  </button>
+  <span
+    class="makeStyles-label"
+  >
+    <i />
+    <button>
+      My Selector Switch: armed
+    </button>
+  </span>
+  <button
+    class="makeStyles-root"
+  >
+    <div
+      class="dummy"
+    />
+  </button>
+</div>
+`;
