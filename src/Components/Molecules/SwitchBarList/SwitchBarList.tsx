@@ -4,12 +4,12 @@ import SwitchBarInnerButton from "./SwitchBarInnerButton";
 import { useDispatch, useSelector } from "react-redux";
 import { LinearProgress } from "@material-ui/core";
 import {
-    getSwitches,
     sendSwitchState,
     SwitchBarListState,
     toggleExpandScene,
     DSwitch,
 } from "./switchBarListSlice";
+import { getSwitches } from "./getSwitchesThunk";
 import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
 
