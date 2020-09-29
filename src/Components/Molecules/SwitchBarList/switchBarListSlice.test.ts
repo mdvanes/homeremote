@@ -1,9 +1,8 @@
 import switchBarListReducer, {
     getSwitches,
     initialState,
-    sendSwitchState,
+    toggleExpandScene,
 } from "./switchBarListSlice";
-import * as SwitchBarListSlice from "./switchBarListSlice";
 
 describe("switchBarListSlice", () => {
     describe("sendSwitchState", () => {
@@ -190,7 +189,6 @@ describe("switchBarListSlice", () => {
             await getSwitchesThunk(mockDispatch, mockGetState, {});
             expect(mockDispatch).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    // payload: [],
                     type: "switchesList/getSwitches/pending",
                 })
             );
@@ -198,6 +196,58 @@ describe("switchBarListSlice", () => {
                 expect.objectContaining({
                     payload: [],
                     type: "switchesList/getSwitches/fulfilled",
+                })
+            );
+        });
+
+        it("sets dispatches pending and fulfilled on resolved fetch x", async () => {
+            jest.spyOn(window, "fetch");
+            (window.fetch as jest.Mock).mockResolvedValue({
+                json: () => Promise.resolve({ error: "some error" }),
+            });
+            const getSwitchesThunk = getSwitches();
+            const mockDispatch = jest.fn();
+            const mockGetState = jest.fn();
+            await getSwitchesThunk(mockDispatch, mockGetState, {});
+            expect(mockDispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: "switchesList/getSwitches/pending",
+                })
+            );
+            expect(mockDispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    error: expect.objectContaining({
+                        message: "getSwitches some error",
+                    }),
+                    type: "switchesList/getSwitches/rejected",
+                })
+            );
+        });
+    });
+
+    describe("toggleExpandScene", () => {
+        it("adds a scene that has not been expanded yet", () => {
+            const state = initialState;
+            const result = switchBarListReducer(state, {
+                payload: { sceneIdx: "1" },
+                type: toggleExpandScene.type,
+            });
+            expect(result).toEqual(
+                expect.objectContaining({
+                    expanded: ["1"],
+                })
+            );
+        });
+
+        it("removes a scene that has been expanded", () => {
+            const state = { ...initialState, expanded: ["1"] };
+            const result = switchBarListReducer(state, {
+                payload: { sceneIdx: "1" },
+                type: toggleExpandScene.type,
+            });
+            expect(result).toEqual(
+                expect.objectContaining({
+                    expanded: [],
                 })
             );
         });
