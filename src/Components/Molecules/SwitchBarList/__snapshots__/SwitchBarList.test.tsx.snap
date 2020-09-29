@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SwitchBarList shows a blinds switch 1`] = `
+<div
+  class="MuiCardContent-root makeStyles-buttonGroup"
+  data-testid="switchbar-Blinds"
+>
+  <button
+    class="makeStyles-root"
+  >
+    <span
+      aria-hidden="true"
+      class="material-icons MuiIcon-root material-icons"
+    >
+      arrow_drop_down
+    </span>
+  </button>
+  <span
+    class="makeStyles-label"
+  >
+    <i />
+    <button>
+      Blinds
+    </button>
+  </span>
+  <button
+    class="makeStyles-root"
+  >
+    <span
+      aria-hidden="true"
+      class="material-icons MuiIcon-root material-icons"
+    >
+      arrow_drop_up
+    </span>
+  </button>
+</div>
+`;
+
+exports[`SwitchBarList shows a normal light switch 1`] = `
+<div
+  class="MuiCardContent-root makeStyles-buttonGroup"
+  data-testid="switchbar-My Normal Light Switch"
+>
+  <button
+    class="makeStyles-active"
+  >
+    <span
+      aria-hidden="true"
+      class="material-icons MuiIcon-root material-icons"
+    >
+      radio_button_checked
+    </span>
+  </button>
+  <span
+    class="makeStyles-label"
+  >
+    <i />
+    <button>
+      My Normal Light Switch
+    </button>
+  </span>
+  <button
+    class="makeStyles-root"
+  >
+    <span
+      aria-hidden="true"
+      class="material-icons MuiIcon-root material-icons"
+    >
+      radio_button_unchecked
+    </span>
+  </button>
+</div>
+`;

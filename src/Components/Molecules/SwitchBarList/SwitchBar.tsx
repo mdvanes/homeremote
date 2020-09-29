@@ -39,7 +39,10 @@ const SwitchBar: FC<Props> = ({
     const classes = useStyles();
     return (
         <Card className={classes.card}>
-            <CardContent className={classes.buttonGroup}>
+            <CardContent
+                className={classes.buttonGroup}
+                data-testid={`switchbar-${label}`}
+            >
                 {leftButton}
                 <span className={classes.label}>
                     {getIconElem(icon)}
