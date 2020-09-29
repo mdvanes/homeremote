@@ -1,11 +1,29 @@
 import switchBarListReducer, {
-    getSwitches,
     initialState,
     toggleExpandScene,
+    sendSwitchState,
 } from "./switchBarListSlice";
+import * as SwitchBarListSlice from "./getSwitchesThunk"; // TODO rename
 
 describe("switchBarListSlice", () => {
     describe("sendSwitchState", () => {
+        let getSwitchesSpy: jest.Mock;
+
+        beforeEach(() => {
+            getSwitchesSpy = jest.spyOn(
+                SwitchBarListSlice,
+                "getSwitches"
+            ) as jest.Mock;
+            getSwitchesSpy.mockReturnValue({
+                payload: "mock_getSwitches_payload",
+                type: "mock_getSwitches",
+            });
+        });
+
+        afterEach(() => {
+            getSwitchesSpy.mockRestore();
+        });
+
         it("updates fields on fulfilled", () => {
             const state = {
                 ...initialState,
@@ -70,43 +88,88 @@ describe("switchBarListSlice", () => {
             });
         });
 
-        // TODO fix
-        // it("sets dispatches pending and fulfilled on resolved fetch", async () => {
-        //     jest.spyOn(window, "fetch");
-        //     const mockResponseJson = jest.fn();
-        //     (window.fetch as jest.Mock).mockResolvedValue({
-        //         json: mockResponseJson,
-        //     });
-        //     mockResponseJson
-        //         .mockResolvedValueOnce({ status: "received" })
-        //         .mockResolvedValueOnce([]);
-        //     jest.spyOn(SwitchBarListSlice, "getSwitches").mockResolvedValue({
-        //         json: jest.fn(),
-        //     });
-        //     const sendSwitchStateThunk = sendSwitchState({
-        //         id: "id1",
-        //         state: "on",
-        //         type: "switch",
-        //     });
-        //     const mockDispatch = jest.fn();
-        //     const mockGetState = jest.fn();
-        //     await sendSwitchStateThunk(mockDispatch, mockGetState, {});
-        //     // TODO why not called?
-        //     // expect(mockDispatch).toHaveBeenCalledWith(
-        //     //     expect.objectContaining({
-        //     //         type: "switchesList/sendSwitchState/pending",
-        //     //     })
-        //     // );
-        //     expect(mockDispatch).toHaveBeenCalledWith(
-        //         expect.objectContaining({
-        //             payload: [],
-        //             type: "switchesList/sendSwitchState/fulfilled",
-        //         })
-        //     );
+        it("sets dispatches pending and fulfilled on resolved fetch", async () => {
+            jest.spyOn(window, "fetch");
+            (window.fetch as jest.Mock).mockResolvedValue({
+                json: () =>
+                    Promise.resolve({
+                        status: "received",
+                    }),
+            });
+            const sendSwitchStateThunk = sendSwitchState({
+                id: "id1",
+                state: "on",
+                type: "switch",
+            });
+            const mockDispatch = jest.fn();
+            const mockGetState = jest.fn();
+            await sendSwitchStateThunk(mockDispatch, mockGetState, {});
+            expect(mockDispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: "switchesList/sendSwitchState/pending",
+                })
+            );
+            expect(mockDispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: "switchesList/sendSwitchState/fulfilled",
+                })
+            );
+            expect(mockDispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    payload: "Switch id1 on",
+                    type: "loglines/logInfo",
+                })
+            );
+            expect(mockDispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    payload: "mock_getSwitches_payload",
+                    type: "mock_getSwitches",
+                })
+            );
+        });
 
-        //     // TODO
-        //     // it("calls getSwitches after setState")
-        // });
+        it("sets dispatches pending and rejected on failed fetch", async () => {
+            jest.spyOn(window, "fetch");
+            (window.fetch as jest.Mock).mockResolvedValue({
+                json: () =>
+                    Promise.resolve({
+                        status: "some error",
+                    }),
+            });
+            const sendSwitchStateThunk = sendSwitchState({
+                id: "id1",
+                state: "on",
+                type: "switch",
+            });
+            const mockDispatch = jest.fn();
+            const mockGetState = jest.fn();
+            await sendSwitchStateThunk(mockDispatch, mockGetState, {});
+            expect(mockDispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: "switchesList/sendSwitchState/pending",
+                })
+            );
+            expect(mockDispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    error: expect.objectContaining({
+                        message: "Can't set on: some error",
+                    }),
+                    type: "switchesList/sendSwitchState/rejected",
+                })
+            );
+            expect(mockDispatch).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    payload: "Switch id1 on",
+                    type: "loglines/logInfo",
+                })
+            );
+            expect(mockDispatch).not.toHaveBeenCalledWith(
+                expect.objectContaining({
+                    payload: "mock_getSwitches_payload",
+                    type: "mock_getSwitches",
+                })
+            );
+        });
     });
 
     describe("getSwitches", () => {
@@ -183,7 +246,7 @@ describe("switchBarListSlice", () => {
             (window.fetch as jest.Mock).mockResolvedValue({
                 json: () => Promise.resolve([]),
             });
-            const getSwitchesThunk = getSwitches();
+            const getSwitchesThunk = SwitchBarListSlice.getSwitches();
             const mockDispatch = jest.fn();
             const mockGetState = jest.fn();
             await getSwitchesThunk(mockDispatch, mockGetState, {});
@@ -200,12 +263,12 @@ describe("switchBarListSlice", () => {
             );
         });
 
-        it("sets dispatches pending and fulfilled on resolved fetch x", async () => {
+        it("sets dispatches pending and rejected on error in fetch", async () => {
             jest.spyOn(window, "fetch");
             (window.fetch as jest.Mock).mockResolvedValue({
                 json: () => Promise.resolve({ error: "some error" }),
             });
-            const getSwitchesThunk = getSwitches();
+            const getSwitchesThunk = SwitchBarListSlice.getSwitches();
             const mockDispatch = jest.fn();
             const mockGetState = jest.fn();
             await getSwitchesThunk(mockDispatch, mockGetState, {});
