@@ -3,7 +3,7 @@ import switchBarListReducer, {
     toggleExpandScene,
     sendSwitchState,
 } from "./switchBarListSlice";
-import * as SwitchBarListSlice from "./getSwitchesThunk"; // TODO rename
+import * as GetSwitchesThunk from "./getSwitchesThunk";
 
 describe("switchBarListSlice", () => {
     describe("sendSwitchState", () => {
@@ -11,7 +11,7 @@ describe("switchBarListSlice", () => {
 
         beforeEach(() => {
             getSwitchesSpy = jest.spyOn(
-                SwitchBarListSlice,
+                GetSwitchesThunk,
                 "getSwitches"
             ) as jest.Mock;
             getSwitchesSpy.mockReturnValue({
@@ -246,7 +246,7 @@ describe("switchBarListSlice", () => {
             (window.fetch as jest.Mock).mockResolvedValue({
                 json: () => Promise.resolve([]),
             });
-            const getSwitchesThunk = SwitchBarListSlice.getSwitches();
+            const getSwitchesThunk = GetSwitchesThunk.getSwitches();
             const mockDispatch = jest.fn();
             const mockGetState = jest.fn();
             await getSwitchesThunk(mockDispatch, mockGetState, {});
@@ -268,7 +268,7 @@ describe("switchBarListSlice", () => {
             (window.fetch as jest.Mock).mockResolvedValue({
                 json: () => Promise.resolve({ error: "some error" }),
             });
-            const getSwitchesThunk = SwitchBarListSlice.getSwitches();
+            const getSwitchesThunk = GetSwitchesThunk.getSwitches();
             const mockDispatch = jest.fn();
             const mockGetState = jest.fn();
             await getSwitchesThunk(mockDispatch, mockGetState, {});
