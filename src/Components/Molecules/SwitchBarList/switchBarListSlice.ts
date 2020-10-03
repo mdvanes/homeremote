@@ -66,7 +66,7 @@ const switchBarListSlice = createSlice({
         toggleExpandScene: (state, { payload: { sceneIdx } }): void => {
             if (state.expanded.includes(sceneIdx)) {
                 // Exists already, so toggle to "collapsed" and remove from the expanded array
-                state.expanded = state.expanded.filter(id => id !== sceneIdx);
+                state.expanded = state.expanded.filter((id) => id !== sceneIdx);
             } else {
                 // Does not exist yet, so toggle to "expanded" and add to the expanded array
                 state.expanded.push(sceneIdx);

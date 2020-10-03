@@ -8,7 +8,7 @@ const mockUseSelector = jest.spyOn(ReactRedux, "useSelector");
 describe("GlobalSnackbar", () => {
     it("adds a Snackbar to the page", () => {
         mockUseSelector.mockReset();
-        mockUseSelector.mockImplementation(fn => {
+        mockUseSelector.mockImplementation((fn) => {
             return fn({
                 loglines: {
                     urgentMessage: "some string",
@@ -21,7 +21,7 @@ describe("GlobalSnackbar", () => {
 
     it("closes Snackbar on close button", async () => {
         mockUseSelector.mockReset();
-        mockUseSelector.mockImplementation(fn => {
+        mockUseSelector.mockImplementation((fn) => {
             return fn({
                 loglines: {
                     urgentMessage: "some string",
@@ -45,7 +45,7 @@ describe("GlobalSnackbar", () => {
 
     it("does not show Snackbar if there is no urgentMessage", () => {
         mockUseSelector.mockReset();
-        mockUseSelector.mockImplementation(fn => {
+        mockUseSelector.mockImplementation((fn) => {
             return fn({
                 loglines: {},
             });

@@ -22,8 +22,8 @@ const AuthenticationProvider: FC = ({ children }) => {
                 password,
             }),
         })
-            .then(data => data.json())
-            .then(data => {
+            .then((data) => data.json())
+            .then((data) => {
                 console.log(data);
                 localStorage.setItem("token", data.access_token);
                 setIsSignedIn(true);

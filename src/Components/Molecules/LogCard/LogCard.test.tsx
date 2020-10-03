@@ -7,7 +7,7 @@ import { Logline, Severity } from "./logSlice";
 
 const mockUseSelectorWith = ({ lines = [] }: { lines?: Logline[] }): void => {
     jest.spyOn(ReactRedux, "useSelector").mockReset();
-    jest.spyOn(ReactRedux, "useSelector").mockImplementation(fn => {
+    jest.spyOn(ReactRedux, "useSelector").mockImplementation((fn) => {
         const mockRootState: Pick<RootState, "loglines"> = {
             loglines: {
                 lines,
