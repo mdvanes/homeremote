@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, ReactNode } from "react";
+import React, { FC, ReactElement } from "react";
 import * as ReactRedux from "react-redux";
 import {
     render,
@@ -11,9 +11,11 @@ import { RootState } from "../../../Reducers";
 import * as Slice from "./switchBarListSlice";
 import SwitchBar from "./SwitchBar";
 import { Provider } from "react-redux";
-import { createStore, PreloadedState, Store } from "@reduxjs/toolkit";
+import { combineReducers, configureStore, Store } from "@reduxjs/toolkit";
 
-const mockRootState: Pick<RootState, "switchesList"> = {
+type MockRootState1 = Pick<RootState, "switchesList">;
+
+const mockRootState: MockRootState1 = {
     switchesList: {
         isLoading: false,
         error: false,
@@ -88,20 +90,26 @@ const mockUseSelectorWith = ({ isLoading = false }): void => {
     });
 };
 
-interface Foo extends RenderOptions {
-    initialState: any; // PreloadedState<RootState>; TODO
+interface RenderWithProvidersOptions extends RenderOptions {
+    initialState: Partial<RootState>;
     store?: Store;
 }
 
-type RenderWithProviders = (ui: ReactElement, options: Foo) => RenderResult;
+type RenderWithProviders = (
+    ui: ReactElement,
+    options: RenderWithProvidersOptions
+) => RenderResult;
 
 const renderWithProviders: RenderWithProviders = (
     ui,
     {
         initialState,
-        store = createStore(Slice.default, initialState),
+        store = configureStore({
+            reducer: combineReducers({ switchesList: Slice.default }),
+            preloadedState: initialState,
+        }),
         ...renderOptions
-    } //  = {} TODO
+    }
 ) => {
     const Wrapper: FC = ({ children }) => {
         return <Provider store={store}>{children}</Provider>;
@@ -214,7 +222,7 @@ describe("SwitchBarList with mock Provider", () => {
         expect(queryByText(/My Nested Light Switch/)).not.toBeInTheDocument();
     });
 
-    it("toggles on scene label click", () => {
+    it("toggles on scene label click", async () => {
         jest.spyOn(ReactRedux, "useSelector").mockRestore();
         const { getByText, queryByText } = renderWithProviders(
             <SwitchBarList />,
