@@ -8,8 +8,17 @@ import * as GetSwitchesThunk from "./getSwitchesThunk";
 describe("switchBarListSlice", () => {
     describe("sendSwitchState", () => {
         let getSwitchesSpy: jest.Mock;
+        const fetchSpy = jest.spyOn(window, "fetch");
 
         beforeEach(() => {
+            const mockResponse: Partial<Response> = {
+                json: () =>
+                    Promise.resolve({
+                        status: "received",
+                    }),
+            };
+            fetchSpy.mockResolvedValue(mockResponse as Response);
+
             getSwitchesSpy = jest.spyOn(
                 GetSwitchesThunk,
                 "getSwitches"
@@ -89,13 +98,6 @@ describe("switchBarListSlice", () => {
         });
 
         it("sets dispatches pending and fulfilled on resolved fetch", async () => {
-            jest.spyOn(window, "fetch");
-            (window.fetch as jest.Mock).mockResolvedValue({
-                json: () =>
-                    Promise.resolve({
-                        status: "received",
-                    }),
-            });
             const sendSwitchStateThunk = sendSwitchState({
                 id: "id1",
                 state: "on",
@@ -129,13 +131,13 @@ describe("switchBarListSlice", () => {
         });
 
         it("sets dispatches pending and rejected on failed fetch", async () => {
-            jest.spyOn(window, "fetch");
-            (window.fetch as jest.Mock).mockResolvedValue({
+            const mockResponse: Partial<Response> = {
                 json: () =>
                     Promise.resolve({
                         status: "some error",
                     }),
-            });
+            };
+            fetchSpy.mockResolvedValueOnce(mockResponse as Response);
             const sendSwitchStateThunk = sendSwitchState({
                 id: "id1",
                 state: "on",
@@ -173,6 +175,8 @@ describe("switchBarListSlice", () => {
     });
 
     describe("getSwitches", () => {
+        const fetchSpy = jest.spyOn(window, "fetch");
+
         it("updates fields on fulfilled", () => {
             const state = {
                 ...initialState,
@@ -242,10 +246,10 @@ describe("switchBarListSlice", () => {
         });
 
         it("sets dispatches pending and fulfilled on resolved fetch", async () => {
-            jest.spyOn(window, "fetch");
-            (window.fetch as jest.Mock).mockResolvedValue({
+            const mockResponse: Partial<Response> = {
                 json: () => Promise.resolve([]),
-            });
+            };
+            fetchSpy.mockResolvedValueOnce(mockResponse as Response);
             const getSwitchesThunk = GetSwitchesThunk.getSwitches();
             const mockDispatch = jest.fn();
             const mockGetState = jest.fn();
@@ -264,10 +268,10 @@ describe("switchBarListSlice", () => {
         });
 
         it("sets dispatches pending and rejected on error in fetch", async () => {
-            jest.spyOn(window, "fetch");
-            (window.fetch as jest.Mock).mockResolvedValue({
+            const mockResponse: Partial<Response> = {
                 json: () => Promise.resolve({ error: "some error" }),
-            });
+            };
+            fetchSpy.mockResolvedValueOnce(mockResponse as Response);
             const getSwitchesThunk = GetSwitchesThunk.getSwitches();
             const mockDispatch = jest.fn();
             const mockGetState = jest.fn();
