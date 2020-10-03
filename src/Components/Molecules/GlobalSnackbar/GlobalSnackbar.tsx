@@ -32,6 +32,7 @@ const GlobalSnackbar: FC = ({ children }) => {
     }, [urgentMessage]);
     return (
         <Snackbar
+            data-testid="global-snackbar"
             anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
             autoHideDuration={3000}
             message={
