@@ -1,6 +1,6 @@
 import React from "react";
 import * as ReactRedux from "react-redux";
-import { fireEvent, render, wait } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import GlobalSnackbar from "./GlobalSnackbar";
 
 const mockUseSelector = jest.spyOn(ReactRedux, "useSelector");
@@ -33,7 +33,7 @@ describe("GlobalSnackbar", () => {
         if (closeButton) {
             fireEvent.click(closeButton);
         }
-        await wait(
+        await waitFor(
             () => {
                 expect(
                     queryByTestId("global-snackbar")
