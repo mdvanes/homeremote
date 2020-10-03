@@ -80,7 +80,7 @@ const mockRootState: Pick<RootState, "switchesList"> = {
 
 const mockUseSelectorWith = ({ isLoading = false }): void => {
     jest.spyOn(ReactRedux, "useSelector").mockReset();
-    jest.spyOn(ReactRedux, "useSelector").mockImplementation(fn => {
+    jest.spyOn(ReactRedux, "useSelector").mockImplementation((fn) => {
         return fn({
             ...mockRootState,
             switchesList: { ...mockRootState.switchesList, isLoading },
