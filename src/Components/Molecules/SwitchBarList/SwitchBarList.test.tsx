@@ -1,21 +1,15 @@
 import React, { FC, ReactElement } from "react";
 import * as ReactRedux from "react-redux";
-import {
-    render,
-    fireEvent,
-    RenderResult,
-    RenderOptions,
-} from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import SwitchBarList from "./SwitchBarList";
 import { RootState } from "../../../Reducers";
 import * as Slice from "./switchBarListSlice";
 import SwitchBar from "./SwitchBar";
-import { Provider } from "react-redux";
-import { combineReducers, configureStore, Store } from "@reduxjs/toolkit";
+import { renderWithProviders } from "../../../testHelpers";
 
-type MockRootState1 = Pick<RootState, "switchesList">;
+type MockRootState = Pick<RootState, "switchesList">;
 
-const mockRootState: MockRootState1 = {
+const mockRootState: MockRootState = {
     switchesList: {
         isLoading: false,
         error: false,
@@ -90,32 +84,11 @@ const mockUseSelectorWith = ({ isLoading = false }): void => {
     });
 };
 
-interface RenderWithProvidersOptions extends RenderOptions {
-    initialState: Partial<RootState>;
-    store?: Store;
-}
-
-type RenderWithProviders = (
-    ui: ReactElement,
-    options: RenderWithProvidersOptions
-) => RenderResult;
-
-const renderWithProviders: RenderWithProviders = (
-    ui,
-    {
+const renderSwitchBarList = (initialState: MockRootState) =>
+    renderWithProviders(<SwitchBarList />, {
         initialState,
-        store = configureStore({
-            reducer: combineReducers({ switchesList: Slice.default }),
-            preloadedState: initialState,
-        }),
-        ...renderOptions
-    }
-) => {
-    const Wrapper: FC = ({ children }) => {
-        return <Provider store={store}>{children}</Provider>;
-    };
-    return render(ui, { wrapper: Wrapper, ...renderOptions });
-};
+        reducers: { switchesList: Slice.default },
+    });
 
 describe("SwitchBarList", () => {
     const mockDispatch = jest.fn();
@@ -212,12 +185,7 @@ describe("SwitchBarList with mock Provider", () => {
 
     it("shows a scene switch", () => {
         jest.spyOn(ReactRedux, "useSelector").mockRestore();
-        const { getByText, queryByText } = renderWithProviders(
-            <SwitchBarList />,
-            {
-                initialState: mockRootState,
-            }
-        );
+        const { getByText, queryByText } = renderSwitchBarList(mockRootState);
         expect(getByText(/My Scene/)).toBeInTheDocument();
         expect(queryByText(/My Nested Light Switch/)).not.toBeInTheDocument();
     });
@@ -228,6 +196,7 @@ describe("SwitchBarList with mock Provider", () => {
             <SwitchBarList />,
             {
                 initialState: mockRootState,
+                reducers: { switchesList: Slice.default },
             }
         );
         expect(getByText(/My Scene/)).toBeInTheDocument();
@@ -243,18 +212,13 @@ describe("SwitchBarList with mock Provider", () => {
 
     it("shows child of expanded scene switch", () => {
         jest.spyOn(ReactRedux, "useSelector").mockRestore();
-        const { getByText, queryByText } = renderWithProviders(
-            <SwitchBarList />,
-            {
-                initialState: {
-                    ...mockRootState,
-                    switchesList: {
-                        ...mockRootState.switchesList,
-                        expanded: ["4"],
-                    },
-                },
-            }
-        );
+        const { getByText, queryByText } = renderSwitchBarList({
+            ...mockRootState,
+            switchesList: {
+                ...mockRootState.switchesList,
+                expanded: ["4"],
+            },
+        });
         expect(getByText(/My Scene/)).toBeInTheDocument();
         expect(queryByText(/My Nested Light Switch/)).toBeInTheDocument();
     });
