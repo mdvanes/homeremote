@@ -74,6 +74,7 @@ const mockRootState: MockRootState = {
     },
 };
 
+// TODO ... refactor to replace all uses of this by renderSwitchBarList. Also remove all `jest.spyOn(ReactRedux, "useDispatch")`
 const mockUseSelectorWith = ({ isLoading = false }): void => {
     jest.spyOn(ReactRedux, "useSelector").mockReset();
     jest.spyOn(ReactRedux, "useSelector").mockImplementation((fn) => {
@@ -177,49 +178,22 @@ describe("SwitchBarList", () => {
 });
 
 describe("SwitchBarList with mock Provider", () => {
-    const mockDispatch = jest.fn();
-
-    beforeEach(() => {
-        jest.spyOn(ReactRedux, "useDispatch").mockReturnValue(mockDispatch);
+    beforeAll(() => {
+        jest.spyOn(ReactRedux, "useDispatch").mockRestore();
+        jest.spyOn(ReactRedux, "useSelector").mockRestore();
     });
 
     it("shows a scene switch", () => {
-        jest.spyOn(ReactRedux, "useSelector").mockRestore();
         const { getByText, queryByText } = renderSwitchBarList(mockRootState);
         expect(getByText(/My Scene/)).toBeInTheDocument();
         expect(queryByText(/My Nested Light Switch/)).not.toBeInTheDocument();
     });
 
     it("toggles on scene label click", async () => {
-        jest.spyOn(ReactRedux, "useSelector").mockRestore();
-        const { getByText, queryByText } = renderWithProviders(
-            <SwitchBarList />,
-            {
-                initialState: mockRootState,
-                reducers: { switchesList: Slice.default },
-            }
-        );
+        const { getByText, queryByText } = renderSwitchBarList(mockRootState);
         expect(getByText(/My Scene/)).toBeInTheDocument();
         expect(queryByText(/My Nested Light Switch/)).not.toBeInTheDocument();
         fireEvent.click(getByText(/My Scene/));
-        expect(mockDispatch).toHaveBeenCalledWith(
-            expect.objectContaining({
-                payload: { sceneIdx: "4" },
-                type: Slice.toggleExpandScene.type,
-            })
-        );
-    });
-
-    it("shows child of expanded scene switch", () => {
-        jest.spyOn(ReactRedux, "useSelector").mockRestore();
-        const { getByText, queryByText } = renderSwitchBarList({
-            ...mockRootState,
-            switchesList: {
-                ...mockRootState.switchesList,
-                expanded: ["4"],
-            },
-        });
-        expect(getByText(/My Scene/)).toBeInTheDocument();
         expect(queryByText(/My Nested Light Switch/)).toBeInTheDocument();
     });
 });
