@@ -12,7 +12,7 @@ exports[`Dashboard page contains all the control components 1`] = `
         <mock-switch-bar-list />
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-6"
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-true"
       >
         <div
           style="font-family: Roboto; max-width: 800px;"
@@ -23,7 +23,7 @@ exports[`Dashboard page contains all the control components 1`] = `
         </div>
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-true"
       >
         <mock-log-card />
       </div>

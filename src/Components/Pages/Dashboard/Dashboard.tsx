@@ -9,10 +9,10 @@ const Dashboard: FC = () => (
         <Grid item xs={12} md={3}>
             <SwitchBarList />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md>
             <Streams />
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md>
             <LogCard />
         </Grid>
     </Grid>
