@@ -5,7 +5,7 @@ const useStyles = makeStyles(
         createStyles({
             root: {
                 height: "100vh",
-                maxHeight: "385px",
+                maxHeight: "335px",
                 display: "flex",
                 flexDirection: "column",
             },
