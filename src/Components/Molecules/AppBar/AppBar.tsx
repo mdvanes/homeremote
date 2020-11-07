@@ -1,0 +1,54 @@
+import React, { FC } from "react";
+import {
+    AppBar as MuiAppBar,
+    IconButton,
+    makeStyles,
+    Toolbar,
+    Typography,
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import AppStatusButton from "../AppStatusButton/AppStatusButton";
+
+interface Props {
+    toggleDrawer: () => void;
+}
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+        marginBottom: theme.spacing(1)
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+    },
+    title: {
+        flexGrow: 1,
+    },
+}));
+
+
+const AppBar: FC<Props> = ({ toggleDrawer }) => {
+    const classes = useStyles();
+
+    return (
+        <div className={classes.root}>
+            <MuiAppBar position="static">
+                <Toolbar>
+                    <IconButton
+                        edge="start"
+                        className={classes.menuButton}
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={toggleDrawer}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography variant="h6" className={classes.title}>HomeRemote</Typography>
+                    <AppStatusButton />
+                </Toolbar>
+            </MuiAppBar>
+        </div>
+    );
+};
+
+export default AppBar;
