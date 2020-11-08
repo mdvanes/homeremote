@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-interface ApiBaseState { 
+interface ApiBaseState {
     isLoading: boolean;
     error: string | false;
 }
 
 export interface AppStatusState extends ApiBaseState {
-    status: string,
+    status: string;
 }
 
 export const initialState: AppStatusState = {
@@ -26,18 +26,21 @@ export const getAppStatus = createAsyncThunk(
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    Authorization: `Bearer ${localStorage.getItem(
+                        "token"
+                    )}`,
                 },
             }
         );
+
+        if(!response.ok) {
+            throw new Error(`getAppStatus ${response.statusText}`);
+        }
         const json = await response.json();
 
-        // if (json.status !== "received") { 
-        //     throw new Error(`Can't set ???`);
-        // }
-        if (json.error) {
-            throw new Error(`getSwitches ${json.error}`);
-        }        
+        if(json.error) {
+            throw new Error(`getAppStatus ${json.error}`);
+        }
         return json;
     }
 );
@@ -45,24 +48,22 @@ export const getAppStatus = createAsyncThunk(
 const appStatusSlice = createSlice({
     name: "appStatus",
     initialState,
-    reducers: {
-        [getAppStatus.fulfilled.toString()]: (state, { payload }): void => {
-            state.isLoading = false;
-            state.status = payload;
-        },
+    reducers: {},
+    extraReducers: {
         [getAppStatus.pending.toString()]: (state, { payload }): void => {
             state.error = false;
             state.isLoading = true;
         },
-        [getAppStatus.rejected.toString()]: (state, /* { error } */ data): void => {
-            console.log(data)
+        [getAppStatus.fulfilled.toString()]: (state, { payload }): void => {
+            state.isLoading = false;
+            state.status = payload.status;
+        },
+        [getAppStatus.rejected.toString()]: (state, { error }): void => {
             state.isLoading = false;
             state.status = "";
-            // state.error = error.message;
+            state.error = error.message;
         },
     },
 });
-
-export const { logInfo, logError, clearLog } = appStatusSlice.actions;
 
 export default appStatusSlice.reducer;
