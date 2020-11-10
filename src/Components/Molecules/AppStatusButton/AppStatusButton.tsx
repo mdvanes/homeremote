@@ -26,9 +26,6 @@ const AppStatusButton: FC = () => {
     const status = useSelector<RootState, AppStatusState["status"]>(
         (state: RootState) => state.appStatus.status
     );
-    const isLoading = useSelector<RootState, AppStatusState["isLoading"]>(
-        (state: RootState) => state.appStatus.isLoading
-    );
     const errorMessage = useSelector<RootState, AppStatusState["error"]>(
         (state: RootState) => state.appStatus.error
     );

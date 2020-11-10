@@ -1,9 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-interface ApiBaseState {
-    isLoading: boolean;
-    error: string | false;
-}
+import ApiBaseState from "../../../Reducers/state.types";
 
 export interface AppStatusState extends ApiBaseState {
     status: string;
