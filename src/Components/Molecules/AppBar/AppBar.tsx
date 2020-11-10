@@ -2,29 +2,16 @@ import React, { FC } from "react";
 import {
     AppBar as MuiAppBar,
     IconButton,
-    makeStyles,
     Toolbar,
     Typography,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import AppStatusButton from "../AppStatusButton/AppStatusButton";
+import useStyles from "./AppBar.styles";
 
 interface Props {
     toggleDrawer: () => void;
 }
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-        marginBottom: theme.spacing(1)
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
-    title: {
-        flexGrow: 1,
-    },
-}));
 
 
 const AppBar: FC<Props> = ({ toggleDrawer }) => {
