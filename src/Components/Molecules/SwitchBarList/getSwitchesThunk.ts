@@ -16,6 +16,10 @@ export const getSwitches = createAsyncThunk(
                 },
             }
         );
+
+        if (!response.ok) {
+            throw new Error(`getAppStatus ${response.statusText}`);
+        }
         const json = await response.json();
 
         if (json.error) {

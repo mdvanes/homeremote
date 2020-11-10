@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import ApiBaseState from "../../../Reducers/state.types";
 import { logInfo } from "../LogCard/logSlice";
 import { getSwitches } from "./getSwitchesThunk";
 
@@ -45,10 +46,8 @@ export type DSwitch = {
     children: DSwitch[] | false;
 };
 
-export interface SwitchBarListState {
+export interface SwitchBarListState extends ApiBaseState {
     switches: DSwitch[];
-    isLoading: boolean;
-    error: string | false;
     expanded: string[];
 }
 
