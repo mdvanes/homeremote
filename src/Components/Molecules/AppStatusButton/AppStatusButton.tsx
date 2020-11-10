@@ -1,23 +1,10 @@
-import { Button, makeStyles } from "@material-ui/core";
 import React, { FC, useEffect } from "react";
+import { Button } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
+import useStyles from "./AppStatusButton.styles";
 import { AppStatusState, getAppStatus } from "./appStatusSlice";
-
-const useStyles = makeStyles(({ palette }) => ({
-    root: {
-        backgroundColor: palette.primary.dark,
-        maxWidth: "120px",
-        maxHeight: "2.5rem",
-        "&:hover": {
-            backgroundColor: palette.primary.light,
-        },
-    },
-    label: {
-        fontSize: "80%",
-    },
-}));
 
 const AppStatusButton: FC = () => {
     const classes = useStyles();
