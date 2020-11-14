@@ -1,3 +1,5 @@
 describe("AppStatusButton", () => {
-    it("???", () => {});
+    it("???", () => {
+        /* TODO add tests */
+    });
 });
