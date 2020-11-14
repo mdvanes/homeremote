@@ -1,3 +1,5 @@
 describe("AppBar", () => {
-    it("???", () => {});
+    it("???", () => {
+        /* TODO add tests */
+    });
 });

@@ -22,19 +22,17 @@ export const getAppStatus = createAsyncThunk(
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem(
-                        "token"
-                    )}`,
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             }
         );
 
-        if(!response.ok) {
+        if (!response.ok) {
             throw new Error(`getAppStatus ${response.statusText}`);
         }
         const json = await response.json();
 
-        if(json.error) {
+        if (json.error) {
             throw new Error(`getAppStatus ${json.error}`);
         }
         return json;
