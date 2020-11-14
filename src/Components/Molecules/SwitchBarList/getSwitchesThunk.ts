@@ -18,7 +18,7 @@ export const getSwitches = createAsyncThunk(
         );
 
         if (!response.ok) {
-            throw new Error(`getAppStatus ${response.statusText}`);
+            throw new Error(`getSwitches ${response.statusText}`);
         }
         const json = await response.json();
 

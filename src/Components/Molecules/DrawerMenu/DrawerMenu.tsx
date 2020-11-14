@@ -1,9 +1,5 @@
 import React, { FC } from "react";
-import {
-    List,
-    ListItem,
-    ListItemText,
-} from "@material-ui/core";
+import { List, ListItem, ListItemText } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
 
 interface Props {

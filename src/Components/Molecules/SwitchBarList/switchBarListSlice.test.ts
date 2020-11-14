@@ -12,6 +12,7 @@ describe("switchBarListSlice", () => {
 
         beforeEach(() => {
             const mockResponse: Partial<Response> = {
+                ok: true,
                 json: () =>
                     Promise.resolve({
                         status: "received",
@@ -132,6 +133,7 @@ describe("switchBarListSlice", () => {
 
         it("sets dispatches pending and rejected on failed fetch", async () => {
             const mockResponse: Partial<Response> = {
+                ok: true,
                 json: () =>
                     Promise.resolve({
                         status: "some error",
@@ -247,6 +249,7 @@ describe("switchBarListSlice", () => {
 
         it("sets dispatches pending and fulfilled on resolved fetch", async () => {
             const mockResponse: Partial<Response> = {
+                ok: true,
                 json: () => Promise.resolve([]),
             };
             fetchSpy.mockResolvedValueOnce(mockResponse as Response);
@@ -269,6 +272,7 @@ describe("switchBarListSlice", () => {
 
         it("sets dispatches pending and rejected on error in fetch", async () => {
             const mockResponse: Partial<Response> = {
+                ok: true,
                 json: () => Promise.resolve({ error: "some error" }),
             };
             fetchSpy.mockResolvedValueOnce(mockResponse as Response);
