@@ -7,7 +7,7 @@ import { Drawer, MuiThemeProvider, Container } from "@material-ui/core";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import { BrowserRouter, Route } from "react-router-dom";
 import Log from "./Components/Pages/Log/Log";
-import AuthenticationProvider from "./AuthenticationProvider";
+import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
 import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar";
 import theme from "./theme";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";

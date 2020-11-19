@@ -1,7 +1,10 @@
 import React, { FC } from "react";
 import { List, ListItem, ListItemText } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
-import { fetchAuth, FetchAuthType } from "../../../authenticationSlice";
+import {
+    fetchAuth,
+    FetchAuthType,
+} from "../../Providers/Authentication/authenticationSlice";
 import { useDispatch } from "react-redux";
 
 interface Props {
@@ -37,7 +40,7 @@ const DrawerMenu: FC<Props> = ({ closeDrawer }) => {
                     button
                     onClick={(): void => {
                         dispatch(fetchAuth({ type: FetchAuthType.Logout }));
-                        window.location.href = "/";
+                        // window.location.href = "/";
                     }}
                 >
                     <ListItemText primary="Log out" />
@@ -45,6 +48,6 @@ const DrawerMenu: FC<Props> = ({ closeDrawer }) => {
             </List>
         </div>
     );
-}
+};
 
 export default DrawerMenu;

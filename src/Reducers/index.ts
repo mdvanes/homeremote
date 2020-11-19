@@ -1,7 +1,7 @@
 import loglinesReducer from "../Components/Molecules/LogCard/logSlice";
 import appStatusReducer from "../Components/Molecules/AppStatusButton/appStatusSlice";
 import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBarListSlice";
-import authenticationReducer from "../authenticationSlice";
+import authenticationReducer from "../Components/Providers/Authentication/authenticationSlice";
 
 import { combineReducers } from "redux";
 
