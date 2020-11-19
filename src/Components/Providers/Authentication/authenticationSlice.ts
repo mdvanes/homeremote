@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import ApiBaseState from "./Reducers/state.types";
+import ApiBaseState from "../../../Reducers/state.types";
 
 export interface AuthenticationState extends ApiBaseState {
     id: number;
@@ -30,7 +30,7 @@ const authEndpoint: Record<FetchAuthType, string> = {
 
 export const fetchAuth = createAsyncThunk<
     { userId: number; username: string },
-    { type: FetchAuthType, options?: any }
+    { type: FetchAuthType; options?: any }
 >(`authentication/fetchAuth`, async ({ type, options }) => {
     console.log(type, authEndpoint[type]);
 

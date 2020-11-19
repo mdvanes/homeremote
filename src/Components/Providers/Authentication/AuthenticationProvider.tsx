@@ -6,7 +6,7 @@ import {
     fetchAuth,
     FetchAuthType,
 } from "./authenticationSlice";
-import { RootState } from "./Reducers";
+import { RootState } from "../../../Reducers";
 
 const AuthenticationProvider: FC = ({ children }) => {
     const dispatch = useDispatch();
