@@ -1,39 +1,42 @@
-import React, { FC, FormEvent, useState } from "react";
+import React, { FC, FormEvent, useEffect, useState } from "react";
 import { Button, TextField } from "@material-ui/core";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    AuthenticationState,
+    fetchAuth,
+    FetchAuthType,
+} from "./authenticationSlice";
+import { RootState } from "./Reducers";
 
 const AuthenticationProvider: FC = ({ children }) => {
-    // Store token in localstorage: good, because it will be a long store (longer than http sessions) and not persistent over back-end restarts.
-    // TODO Add PGP signature?
-    const [isSignedIn, setIsSignedIn] = useState(
-        Boolean(localStorage.getItem("token"))
-    );
+    const dispatch = useDispatch();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const onSubmit = (ev: FormEvent): void => {
         ev.preventDefault();
-        fetch(`${process.env.REACT_APP_BASE_URL}/auth/login`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username,
-                password,
-            }),
-        })
-            .then((data) => data.json())
-            .then((data) => {
-                console.log(data);
-                localStorage.setItem("token", data.access_token);
-                setIsSignedIn(true);
-            });
+        dispatch(
+            fetchAuth({
+                type: FetchAuthType.Login,
+                options: {
+                    method: "POST",
+                    body: JSON.stringify({
+                        username,
+                        password,
+                    }),
+                },
+            })
+        );
     };
-    // const logOut = (): void => {
-    //     localStorage.removeItem("token");
-    //     setIsSignedIn(false);
-    // };
-    if (!isSignedIn) {
+
+    const currentUser = useSelector<RootState, AuthenticationState["name"]>(
+        (state: RootState) => state.authentication.name
+    );
+
+    useEffect(() => {
+        dispatch(fetchAuth({ type: FetchAuthType.Current }));
+    }, [dispatch]);
+
+    if (currentUser === "") {
         return (
             <form id="form" onSubmit={onSubmit} style={{ margin: 8 }}>
                 <TextField
@@ -60,9 +63,7 @@ const AuthenticationProvider: FC = ({ children }) => {
         return (
             <>
                 {children}
-                {/* TODO this (including setIsSignedIn(false) should be done in App.tsx menu <Button variant="contained" color="secondary" onClick={logOut}>
-                    log out (temp)
-                </Button> */}
+                <div>{currentUser}</div>
             </>
         );
     }
