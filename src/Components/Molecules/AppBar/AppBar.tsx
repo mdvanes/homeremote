@@ -20,7 +20,7 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
     const classes = useStyles();
     const greeting = useSelector<RootState, AuthenticationState["name"]>(
         (state: RootState) =>
-            state.authentication.name ? `Hi, ${state.authentication.name}` : ""
+            state.authentication.name ? `Hi, ${state.authentication.name}!` : ""
     );
     return (
         <div className={classes.root}>
@@ -38,7 +38,7 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                     <Typography variant="h6" className={classes.title}>
                         HomeRemote
                     </Typography>
-                    <Typography variant="body1" className={classes.currentUser}>
+                    <Typography variant="body2" className={classes.currentUser}>
                         {greeting}
                     </Typography>
                     <AppStatusButton />
