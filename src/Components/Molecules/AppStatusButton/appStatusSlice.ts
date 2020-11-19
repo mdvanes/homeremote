@@ -17,12 +17,10 @@ export const getAppStatus = createAsyncThunk(
         const response = await fetch(
             `${process.env.REACT_APP_BASE_URL}/api/status`,
             {
-                credentials: "same-origin",
                 method: "GET",
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             }
         );

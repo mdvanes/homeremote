@@ -12,12 +12,10 @@ export const sendSwitchState = createAsyncThunk<
         const response = await fetch(
             `${process.env.REACT_APP_BASE_URL}/api/switches/${id}`,
             {
-                credentials: "same-origin",
                 method: "POST",
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
                 body: JSON.stringify({
                     state,

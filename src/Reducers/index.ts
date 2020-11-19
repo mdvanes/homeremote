@@ -1,9 +1,4 @@
 import loglinesReducer from "../Components/Molecules/LogCard/logSlice";
-// TODO clean up
-// import short from './short';
-// import moveParams from './moveParams';
-// import moveProgress from './moveProgress';
-// import fileManager from './fileManager';
 import appStatusReducer from "../Components/Molecules/AppStatusButton/appStatusSlice";
 import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBarListSlice";
 import authenticationReducer from "../authenticationSlice";
@@ -15,10 +10,6 @@ const rootReducer = combineReducers({
     appStatus: appStatusReducer,
     switchesList: switchBarListReducer,
     authentication: authenticationReducer,
-    // short,
-    // moveParams,
-    // moveProgress,
-    // fileManager,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
