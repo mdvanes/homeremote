@@ -8,6 +8,9 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import AppStatusButton from "../AppStatusButton/AppStatusButton";
 import useStyles from "./AppBar.styles";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Reducers";
+import { AuthenticationState } from "../../Providers/Authentication/authenticationSlice";
 
 interface Props {
     toggleDrawer: () => void;
@@ -15,7 +18,10 @@ interface Props {
 
 const AppBar: FC<Props> = ({ toggleDrawer }) => {
     const classes = useStyles();
-
+    const greeting = useSelector<RootState, AuthenticationState["name"]>(
+        (state: RootState) =>
+            state.authentication.name ? `Hi, ${state.authentication.name}` : ""
+    );
     return (
         <div className={classes.root}>
             <MuiAppBar position="static">
@@ -31,6 +37,9 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
                         HomeRemote
+                    </Typography>
+                    <Typography variant="body1" className={classes.currentUser}>
+                        {greeting}
                     </Typography>
                     <AppStatusButton />
                 </Toolbar>

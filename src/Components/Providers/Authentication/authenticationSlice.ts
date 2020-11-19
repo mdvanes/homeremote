@@ -25,11 +25,11 @@ const authEndpoint: Record<FetchAuthType, string> = {
     [FetchAuthType.Current]: "/api/profile/current",
 };
 
-// TODO merge FetchAuthType and authEndpoint
+// TODO merge FetchAuthType and authEndpoint___ fix any in this file
 // type FetchAuthType = keyof authEndpoint;
 
 export const fetchAuth = createAsyncThunk<
-    { userId: number; username: string },
+    { id: number; name: string },
     { type: FetchAuthType; options?: any }
 >(`authentication/fetchAuth`, async ({ type, options }) => {
     console.log(type, authEndpoint[type]);
@@ -69,8 +69,8 @@ const authenticationSlice = createSlice({
         });
         builder.addCase(fetchAuth.fulfilled, (state, { payload }): void => {
             state.isLoading = initialState.isLoading;
-            state.id = payload.userId;
-            state.name = payload.username;
+            state.id = payload.id;
+            state.name = payload.name;
         });
         builder.addCase(fetchAuth.rejected, (state, { error }): void => {
             state.isLoading = initialState.isLoading;
