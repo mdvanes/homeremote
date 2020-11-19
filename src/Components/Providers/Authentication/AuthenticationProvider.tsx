@@ -60,12 +60,7 @@ const AuthenticationProvider: FC = ({ children }) => {
             </form>
         );
     } else {
-        return (
-            <>
-                {children}
-                <div>{currentUser}</div>
-            </>
-        );
+        return <>{children}</>;
     }
 };
 

@@ -40,7 +40,6 @@ const DrawerMenu: FC<Props> = ({ closeDrawer }) => {
                     button
                     onClick={(): void => {
                         dispatch(fetchAuth({ type: FetchAuthType.Logout }));
-                        // window.location.href = "/";
                     }}
                 >
                     <ListItemText primary="Log out" />
