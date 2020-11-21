@@ -7,9 +7,8 @@ import {
     sendSwitchState,
     SwitchBarListState,
     toggleExpandScene,
-    DSwitch,
 } from "./switchBarListSlice";
-import { getSwitches } from "./getSwitchesThunk";
+import { DSwitch, getSwitches } from "./getSwitchesThunk";
 import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
 

@@ -1,7 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import fetchToJson from "../../../fetchToJson";
 import ApiBaseState from "../../../Reducers/state.types";
 import { logInfo } from "../LogCard/logSlice";
 import { DSwitch, getSwitches } from "./getSwitchesThunk";
+
+interface FetchReturned {
+    status: string;
+}
 
 export const sendSwitchState = createAsyncThunk<
     void,
@@ -9,21 +14,13 @@ export const sendSwitchState = createAsyncThunk<
 >(
     `switchesList/sendSwitchState`,
     async ({ id, state, type }, { rejectWithValue, dispatch }) => {
-        const response = await fetch(
-            `${process.env.REACT_APP_BASE_URL}/api/switches/${id}`,
-            {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    state,
-                    type,
-                }),
-            }
-        );
-        const json = await response.json();
+        const json = await fetchToJson<FetchReturned>(`/api/switches/${id}`, {
+            method: "POST",
+            body: JSON.stringify({
+                state,
+                type,
+            }),
+        });
         if (json.status !== "received") {
             throw new Error(`Can't set ${state}: ${json.status}`);
         } else {
@@ -63,19 +60,6 @@ const switchBarListSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        // [getSwitches.pending.toString()]: (state, { payload }): void => {
-        //     state.error = false;
-        //     state.isLoading = true;
-        // },
-        // [getSwitches.fulfilled.toString()]: (state, { payload }): void => {
-        //     state.isLoading = false;
-        //     state.switches = payload.switches;
-        // },
-        // [getSwitches.rejected.toString()]: (state, { error }): void => {
-        //     state.isLoading = false;
-        //     state.switches = [];
-        //     state.error = error.message;
-        // },
         builder.addCase(getSwitches.pending, (draft, { payload }): void => {
             draft.error = initialState.error;
             draft.isLoading = true;
@@ -89,17 +73,20 @@ const switchBarListSlice = createSlice({
             draft.switches = [];
             draft.error = error.message || "An error occurred";
         });
-        // [sendSwitchState.fulfilled.toString()]: (state): void => {
-        //     state.isLoading = false;
-        // },
-        // [sendSwitchState.pending.toString()]: (state): void => {
-        //     state.error = false;
-        //     state.isLoading = true;
-        // },
-        // [sendSwitchState.rejected.toString()]: (state, { error }): void => {
-        //     state.isLoading = false;
-        //     state.error = error.message;
-        // },
+        builder.addCase(sendSwitchState.pending, (draft, { payload }): void => {
+            draft.error = initialState.error;
+            draft.isLoading = true;
+        });
+        builder.addCase(
+            sendSwitchState.fulfilled,
+            (draft, { payload }): void => {
+                draft.isLoading = initialState.isLoading;
+            }
+        );
+        builder.addCase(sendSwitchState.rejected, (draft, { error }): void => {
+            draft.isLoading = initialState.isLoading;
+            draft.error = error.message || "An error occurred";
+        });
     },
 });
 
