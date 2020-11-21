@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import fetchToJson from "../../../fetchToJson";
 import ApiBaseState from "../../../Reducers/state.types";
 
 export interface AuthenticationState extends ApiBaseState {
@@ -32,35 +33,13 @@ interface FetchAuthReturned {
 
 interface FetchAuthArgs {
     type: FetchAuthType;
-    options?: RequestInit;
+    init?: RequestInit;
 }
 
 export const fetchAuth = createAsyncThunk<FetchAuthReturned, FetchAuthArgs>(
     `authentication/fetchAuth`,
-    async ({ type, options }) => {
-        const response = await fetch(
-            `${process.env.REACT_APP_BASE_URL}${authEndpoint[type]}`,
-            {
-                credentials: "same-origin",
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                ...options,
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error(`fetchAuth ${response.statusText}`);
-        }
-        const json = await response.json();
-
-        if (json.error) {
-            throw new Error(`fetchAuth ${json.error}`);
-        }
-        return json;
-    }
+    async ({ type, init }) =>
+        fetchToJson<FetchAuthReturned>(authEndpoint[type], init)
 );
 
 const authenticationSlice = createSlice({
