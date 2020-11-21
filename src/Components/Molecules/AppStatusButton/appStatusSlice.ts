@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import fetchToJson from "../../../fetchToJson";
 import ApiBaseState from "../../../Reducers/state.types";
 
 export interface AppStatusState extends ApiBaseState {
@@ -11,50 +12,33 @@ export const initialState: AppStatusState = {
     error: false,
 };
 
-export const getAppStatus = createAsyncThunk(
+interface FetchReturned {
+    status: string;
+}
+
+export const getAppStatus = createAsyncThunk<FetchReturned>(
     `appStatus/getAppStatus`,
-    async () => {
-        const response = await fetch(
-            `${process.env.REACT_APP_BASE_URL}/api/status`,
-            {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-
-        if (!response.ok) {
-            throw new Error(`getAppStatus ${response.statusText}`);
-        }
-        const json = await response.json();
-
-        if (json.error) {
-            throw new Error(`getAppStatus ${json.error}`);
-        }
-        return json;
-    }
+    async () => fetchToJson<FetchReturned>("/api/status")
 );
 
 const appStatusSlice = createSlice({
     name: "appStatus",
     initialState,
     reducers: {},
-    extraReducers: {
-        [getAppStatus.pending.toString()]: (state, { payload }): void => {
-            state.error = false;
-            state.isLoading = true;
-        },
-        [getAppStatus.fulfilled.toString()]: (state, { payload }): void => {
-            state.isLoading = false;
-            state.status = payload.status;
-        },
-        [getAppStatus.rejected.toString()]: (state, { error }): void => {
-            state.isLoading = false;
-            state.status = "";
-            state.error = error.message;
-        },
+    extraReducers: (builder) => {
+        builder.addCase(getAppStatus.pending, (draft, { payload }): void => {
+            draft.error = initialState.error;
+            draft.isLoading = true;
+        });
+        builder.addCase(getAppStatus.fulfilled, (draft, { payload }): void => {
+            draft.isLoading = initialState.isLoading;
+            draft.status = payload.status;
+        });
+        builder.addCase(getAppStatus.rejected, (draft, { error }): void => {
+            draft.isLoading = initialState.isLoading;
+            draft.status = "";
+            draft.error = error.message || "An error occurred";
+        });
     },
 });
 

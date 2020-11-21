@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import ApiBaseState from "../../../Reducers/state.types";
 import { logInfo } from "../LogCard/logSlice";
-import { getSwitches } from "./getSwitchesThunk";
+import { DSwitch, getSwitches } from "./getSwitchesThunk";
 
 export const sendSwitchState = createAsyncThunk<
     void,
@@ -33,17 +33,6 @@ export const sendSwitchState = createAsyncThunk<
     }
 );
 
-// Domoticz Device Switch
-export type DSwitch = {
-    idx: string;
-    name: string;
-    type: string;
-    status: string;
-    dimLevel: number | null;
-    readOnly: boolean;
-    children: DSwitch[] | false;
-};
-
 export interface SwitchBarListState extends ApiBaseState {
     switches: DSwitch[];
     expanded: string[];
@@ -73,31 +62,44 @@ const switchBarListSlice = createSlice({
             }
         },
     },
-    extraReducers: {
-        [getSwitches.fulfilled.toString()]: (state, { payload }): void => {
-            state.isLoading = false;
-            state.switches = payload.switches;
-        },
-        [getSwitches.pending.toString()]: (state, { payload }): void => {
-            state.error = false;
-            state.isLoading = true;
-        },
-        [getSwitches.rejected.toString()]: (state, { error }): void => {
-            state.isLoading = false;
-            state.switches = [];
-            state.error = error.message;
-        },
-        [sendSwitchState.fulfilled.toString()]: (state): void => {
-            state.isLoading = false;
-        },
-        [sendSwitchState.pending.toString()]: (state): void => {
-            state.error = false;
-            state.isLoading = true;
-        },
-        [sendSwitchState.rejected.toString()]: (state, { error }): void => {
-            state.isLoading = false;
-            state.error = error.message;
-        },
+    extraReducers: (builder) => {
+        // [getSwitches.pending.toString()]: (state, { payload }): void => {
+        //     state.error = false;
+        //     state.isLoading = true;
+        // },
+        // [getSwitches.fulfilled.toString()]: (state, { payload }): void => {
+        //     state.isLoading = false;
+        //     state.switches = payload.switches;
+        // },
+        // [getSwitches.rejected.toString()]: (state, { error }): void => {
+        //     state.isLoading = false;
+        //     state.switches = [];
+        //     state.error = error.message;
+        // },
+        builder.addCase(getSwitches.pending, (draft, { payload }): void => {
+            draft.error = initialState.error;
+            draft.isLoading = true;
+        });
+        builder.addCase(getSwitches.fulfilled, (draft, { payload }): void => {
+            draft.isLoading = initialState.isLoading;
+            draft.switches = payload.switches;
+        });
+        builder.addCase(getSwitches.rejected, (draft, { error }): void => {
+            draft.isLoading = initialState.isLoading;
+            draft.switches = [];
+            draft.error = error.message || "An error occurred";
+        });
+        // [sendSwitchState.fulfilled.toString()]: (state): void => {
+        //     state.isLoading = false;
+        // },
+        // [sendSwitchState.pending.toString()]: (state): void => {
+        //     state.error = false;
+        //     state.isLoading = true;
+        // },
+        // [sendSwitchState.rejected.toString()]: (state, { error }): void => {
+        //     state.isLoading = false;
+        //     state.error = error.message;
+        // },
     },
 });
 
