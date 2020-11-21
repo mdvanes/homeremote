@@ -17,7 +17,7 @@ const AuthenticationProvider: FC = ({ children }) => {
         dispatch(
             fetchAuth({
                 type: FetchAuthType.Login,
-                options: {
+                init: {
                     method: "POST",
                     body: JSON.stringify({
                         username,

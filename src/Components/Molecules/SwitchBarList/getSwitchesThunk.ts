@@ -1,8 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import fetchToJson from "../../../fetchToJson";
 
-// TODO deduplicate this fetch to util from appStatusSlice, switchBarListSlice, authenticationSlice
-
 // Domoticz Device Switch
 export type DSwitch = {
     idx: string;
