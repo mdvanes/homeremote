@@ -25,58 +25,63 @@ const authEndpoint: Record<FetchAuthType, string> = {
     [FetchAuthType.Current]: "/api/profile/current",
 };
 
-// TODO merge FetchAuthType and authEndpoint___ fix any in this file
-// type FetchAuthType = keyof authEndpoint;
+interface FetchAuthReturned {
+    id: number;
+    name: string;
+}
 
-export const fetchAuth = createAsyncThunk<
-    { id: number; name: string },
-    { type: FetchAuthType; options?: any }
->(`authentication/fetchAuth`, async ({ type, options }) => {
-    console.log(type, authEndpoint[type]);
+interface FetchAuthArgs {
+    type: FetchAuthType;
+    options?: RequestInit;
+}
 
-    const response = await fetch(
-        `${process.env.REACT_APP_BASE_URL}${authEndpoint[type]}`,
-        {
-            credentials: "same-origin",
-            method: "GET",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            ...options,
+export const fetchAuth = createAsyncThunk<FetchAuthReturned, FetchAuthArgs>(
+    `authentication/fetchAuth`,
+    async ({ type, options }) => {
+        const response = await fetch(
+            `${process.env.REACT_APP_BASE_URL}${authEndpoint[type]}`,
+            {
+                credentials: "same-origin",
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                ...options,
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`fetchAuth ${response.statusText}`);
         }
-    );
+        const json = await response.json();
 
-    if (!response.ok) {
-        throw new Error(`fetchAuth ${response.statusText}`);
+        if (json.error) {
+            throw new Error(`fetchAuth ${json.error}`);
+        }
+        return json;
     }
-    const json = await response.json();
-
-    if (json.error) {
-        throw new Error(`fetchAuth ${json.error}`);
-    }
-    return json;
-});
+);
 
 const authenticationSlice = createSlice({
     name: "authentication",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
-        builder.addCase(fetchAuth.pending, (state, { payload }): void => {
-            state.error = initialState.error;
-            state.isLoading = true;
+        builder.addCase(fetchAuth.pending, (draft, { payload }): void => {
+            draft.error = initialState.error;
+            draft.isLoading = true;
         });
-        builder.addCase(fetchAuth.fulfilled, (state, { payload }): void => {
-            state.isLoading = initialState.isLoading;
-            state.id = payload.id;
-            state.name = payload.name;
+        builder.addCase(fetchAuth.fulfilled, (draft, { payload }): void => {
+            draft.isLoading = initialState.isLoading;
+            draft.id = payload.id;
+            draft.name = payload.name;
         });
-        builder.addCase(fetchAuth.rejected, (state, { error }): void => {
-            state.isLoading = initialState.isLoading;
-            state.id = initialState.id;
-            state.name = initialState.name;
-            state.error = error.message || "An error occurred";
+        builder.addCase(fetchAuth.rejected, (draft, { error }): void => {
+            draft.isLoading = initialState.isLoading;
+            draft.id = initialState.id;
+            draft.name = initialState.name;
+            draft.error = error.message || "An error occurred";
         });
     },
 });
