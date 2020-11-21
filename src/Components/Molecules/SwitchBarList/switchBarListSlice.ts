@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import ApiBaseState from "../../../Reducers/state.types";
 import { logInfo } from "../LogCard/logSlice";
 import { getSwitches } from "./getSwitchesThunk";
@@ -60,7 +60,10 @@ const switchBarListSlice = createSlice({
     name: "switchesList",
     initialState,
     reducers: {
-        toggleExpandScene: (state, { payload: { sceneIdx } }): void => {
+        toggleExpandScene: (
+            state,
+            { payload: { sceneIdx } }: PayloadAction<{ sceneIdx: string }>
+        ): void => {
             if (state.expanded.includes(sceneIdx)) {
                 // Exists already, so toggle to "collapsed" and remove from the expanded array
                 state.expanded = state.expanded.filter((id) => id !== sceneIdx);
