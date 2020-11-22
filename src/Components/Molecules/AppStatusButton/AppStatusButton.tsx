@@ -22,7 +22,9 @@ const AppStatusButton: FC = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        dispatch(logError(errorMessage));
+        if (errorMessage) {
+            dispatch(logError(errorMessage));
+        }
     }, [errorMessage, dispatch]);
 
     const handleClick = () => {

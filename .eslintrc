@@ -12,7 +12,7 @@
   "plugins": [
     "@typescript-eslint",
     "prettier",
-    "react",
+    // "react",
     "jest"
   ],
   "env": {
