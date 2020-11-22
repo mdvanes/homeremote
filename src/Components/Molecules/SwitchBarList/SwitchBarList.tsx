@@ -135,7 +135,9 @@ const SwitchBarList: FC = () => {
                 dispatch(toggleExpandScene({ sceneIdx: dSwitch.idx }));
                 dispatch(getSwitches());
             },
-            getSwitches
+            () => {
+                dispatch(getSwitches());
+            }
         );
         const showChildren = expandedScenes.includes(dSwitch.idx);
         return (
