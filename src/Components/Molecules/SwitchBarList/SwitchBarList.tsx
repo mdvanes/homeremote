@@ -42,7 +42,7 @@ const getRightIcon = (label: string): string =>
 const getNameAndChildren = (
     name: string,
     children: DSwitch[] | false
-): string => (children ? `${name} ⯆` : name);
+): string => (children ? `${name} \u25BE` : name);
 
 const getLabel = (
     name: string,
