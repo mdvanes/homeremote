@@ -288,7 +288,7 @@ describe("switchBarListSlice", () => {
             expect(mockDispatch).toHaveBeenCalledWith(
                 expect.objectContaining({
                     error: expect.objectContaining({
-                        message: "getSwitches some error",
+                        message: "/api/switches some error",
                     }),
                     type: "switchesList/getSwitches/rejected",
                 })
