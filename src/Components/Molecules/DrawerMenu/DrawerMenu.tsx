@@ -30,11 +30,11 @@ const DrawerMenu: FC<Props> = ({ closeDrawer }) => {
                 <ListItem button component={RouterLink} to="/gears">
                     <ListItemText primary="Gears" />
                 </ListItem>
-                <ListItem button component={RouterLink} to="/log">
-                    <ListItemText primary="Logging" />
-                </ListItem>
                 <ListItem button component={RouterLink} to="/streams">
                     <ListItemText primary="Streams" />
+                </ListItem>
+                <ListItem button component={RouterLink} to="/about">
+                    <ListItemText primary="About" />
                 </ListItem>
                 <ListItem
                     button
