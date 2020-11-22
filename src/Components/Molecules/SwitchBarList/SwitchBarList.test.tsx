@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from "react";
+import React from "react";
 import * as ReactRedux from "react-redux";
 import { render, fireEvent } from "@testing-library/react";
 import SwitchBarList from "./SwitchBarList";
@@ -74,7 +74,7 @@ const mockRootState: MockRootState = {
     },
 };
 
-// TODO ... refactor to replace all uses of this by renderSwitchBarList. Also remove all `jest.spyOn(ReactRedux, "useDispatch")`
+// TODO refactor to replace all uses of this by renderSwitchBarList. Also remove all `jest.spyOn(ReactRedux, "useDispatch")`
 const mockUseSelectorWith = ({ isLoading = false }): void => {
     jest.spyOn(ReactRedux, "useSelector").mockReset();
     jest.spyOn(ReactRedux, "useSelector").mockImplementation((fn) => {
