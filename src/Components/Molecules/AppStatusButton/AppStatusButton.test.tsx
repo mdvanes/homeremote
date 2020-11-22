@@ -98,7 +98,7 @@ describe("AppStatusButton", () => {
         });
 
         await waitFor(() => {
-            expect(logErrorSpy).toHaveBeenCalledWith("getAppStatus Some Error");
+            expect(logErrorSpy).toHaveBeenCalledWith("/api/status Some Error");
         });
 
         expect(fetchSpy).toHaveBeenCalledWith(
@@ -125,7 +125,7 @@ describe("AppStatusButton", () => {
         });
 
         await waitFor(() => {
-            expect(logErrorSpy).toHaveBeenCalledWith("getAppStatus 500");
+            expect(logErrorSpy).toHaveBeenCalledWith("/api/status 500");
         });
 
         expect(fetchSpy).toHaveBeenCalledWith(
