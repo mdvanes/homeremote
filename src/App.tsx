@@ -15,6 +15,8 @@ import Streams from "./Components/Pages/Streams/Streams";
 import AppBar from "./Components/Molecules/AppBar/AppBar";
 import DrawerMenu from "./Components/Molecules/DrawerMenu/DrawerMenu";
 
+// TODO typescript should be upgraded but causes problem: https://github.com/facebook/create-react-app/issues/10110#issuecomment-731109866
+
 const App: FC = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const toggleDrawer = (): void => setIsDrawerOpen(!isDrawerOpen);
@@ -27,15 +29,15 @@ const App: FC = () => {
                     <Drawer open={isDrawerOpen} onClose={closeDrawer}>
                         <DrawerMenu closeDrawer={closeDrawer} />
                     </Drawer>
-                    {/* TODO what is this? <StatusBar/>*/}
+                    {/* TODO this was for checking online/offline status for AppCache <StatusBar/>*/}
                     <Container maxWidth="xl">
                         <Route exact path="/" component={HomeAutomation} />
                         <Route exact path="/music" component={HomeAutomation} />
                         <Route exact path="/files" component={HomeAutomation} />
                         <Route exact path="/gears" component={HomeAutomation} />
-                        <Route exact path="/log" component={Log} />
                         <Route exact path="/dashboard" component={Dashboard} />
                         <Route exact path="/streams" component={Streams} />
+                        <Route exact path="/about" component={Log} />
                     </Container>
                 </BrowserRouter>
                 <GlobalSnackbar />
