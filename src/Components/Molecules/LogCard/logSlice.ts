@@ -30,17 +30,17 @@ const logSlice = createSlice({
     name: "loglines",
     initialState,
     reducers: {
-        logInfo: (state, { payload }): void => {
-            state.lines.push({
+        logInfo: (draft, { payload }): void => {
+            draft.lines.push({
                 message: writeLog("INFO: ", payload),
                 severity: Severity.INFO,
             });
         },
-        logError: (state, { payload }): void => {
+        logError: (draft, { payload }): void => {
             if (payload) {
                 const message = writeLog("ERROR:", payload);
-                state.lines.push({ message, severity: Severity.ERROR });
-                state.urgentMessage = message;
+                draft.lines.push({ message, severity: Severity.ERROR });
+                draft.urgentMessage = message;
             }
         },
         clearLog: (): LogState => {
