@@ -1,5 +1,6 @@
 import React, { FC, FormEvent, useEffect, useState } from "react";
 import { Button, TextField } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import {
     AuthenticationState,
@@ -7,6 +8,9 @@ import {
     FetchAuthType,
 } from "./authenticationSlice";
 import { RootState } from "../../../Reducers";
+
+// TODO use flap/1 to login
+// TODO show error when using wrong user/password
 
 const AuthenticationProvider: FC = ({ children }) => {
     const dispatch = useDispatch();
@@ -30,6 +34,10 @@ const AuthenticationProvider: FC = ({ children }) => {
 
     const currentUser = useSelector<RootState, AuthenticationState["name"]>(
         (state: RootState) => state.authentication.name
+    );
+
+    const errorMessage = useSelector<RootState, AuthenticationState["error"]>(
+        (state: RootState) => state.authentication.error
     );
 
     useEffect(() => {
@@ -57,6 +65,9 @@ const AuthenticationProvider: FC = ({ children }) => {
                 <Button type="submit" variant="contained" color="primary">
                     Log in
                 </Button>
+                {errorMessage.toString().indexOf("login") > -1 && (
+                    <Alert severity="error">{errorMessage}</Alert>
+                )}
             </form>
         );
     } else {
