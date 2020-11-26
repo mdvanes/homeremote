@@ -9,6 +9,8 @@ jest.mock(
 
 jest.mock("../../Molecules/LogCard/LogCard", () => "mock-log-card");
 
+jest.mock("../../Molecules/UrlToMusic/UrlToMusic", () => "mock-url-to-music");
+
 jest.mock("@mdworld/homeremote-stream-player", () => "mock-stream-player");
 
 describe("Dashboard page", () => {
