@@ -9,8 +9,8 @@ import {
 } from "./authenticationSlice";
 import { RootState } from "../../../Reducers";
 
-// TODO use flap/1 to login
-// TODO show error when using wrong user/password
+const LOGIN_ENDPOINT = "/auth/login";
+const UNAUTHORIZED_MESSAGE = `${LOGIN_ENDPOINT} Unauthorized`;
 
 const AuthenticationProvider: FC = ({ children }) => {
     const dispatch = useDispatch();
@@ -36,13 +36,23 @@ const AuthenticationProvider: FC = ({ children }) => {
         (state: RootState) => state.authentication.name
     );
 
-    const errorMessage = useSelector<RootState, AuthenticationState["error"]>(
-        (state: RootState) => state.authentication.error
-    );
+    const authenticationError = useSelector<
+        RootState,
+        AuthenticationState["error"]
+    >((state: RootState) => state.authentication.error);
 
     useEffect(() => {
         dispatch(fetchAuth({ type: FetchAuthType.Current }));
     }, [dispatch]);
+
+    const errorMessageAlert = authenticationError &&
+        authenticationError.indexOf(LOGIN_ENDPOINT) > -1 && (
+            <Alert severity="error">
+                {authenticationError.indexOf(UNAUTHORIZED_MESSAGE) > -1
+                    ? "Invalid username/password"
+                    : authenticationError}
+            </Alert>
+        );
 
     if (currentUser === "") {
         return (
@@ -62,12 +72,15 @@ const AuthenticationProvider: FC = ({ children }) => {
                     fullWidth
                     style={{ marginBottom: 8 }}
                 />
-                <Button type="submit" variant="contained" color="primary">
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    style={{ marginBottom: 8 }}
+                >
                     Log in
                 </Button>
-                {errorMessage.toString().indexOf("login") > -1 && (
-                    <Alert severity="error">{errorMessage}</Alert>
-                )}
+                {errorMessageAlert}
             </form>
         );
     } else {

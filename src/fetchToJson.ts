@@ -9,7 +9,8 @@ const fetchToJson = async <T>(url: string, init?: RequestInit): Promise<T> => {
     });
 
     if (!response.ok) {
-        throw new Error(`${url} ${response.statusText}`);
+        const { message } = await response.json();
+        throw new Error(`${url} ${message || response.statusText}`);
     }
     const json = await response.json();
 
