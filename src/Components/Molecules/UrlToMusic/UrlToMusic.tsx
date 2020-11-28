@@ -15,78 +15,58 @@ import {
     getInfo,
     setFormField,
     setFormFieldError,
+    getMusic,
 } from "./urlToMusicSlice";
+
+const FILL_IN_THIS_FIELD = "Fill in this field";
 
 const UrlToMusic: FC = () => {
     const dispatch = useDispatch();
 
-    const {
-        title,
-        error: errorMessage,
-        urlError,
-        form,
-        isLoading,
-    } = useSelector<RootState, UrlToMusicState>(
-        (state: RootState) => state.urlToMusic
-    );
+    const { error: errorMessage, form, isLoading } = useSelector<
+        RootState,
+        UrlToMusicState
+    >((state: RootState) => state.urlToMusic);
 
     const validateGetInfo = (): boolean => {
         if (form.url.value === "") {
-            // TODO dispatch(setUrlError("Fill in this field"));
-            dispatch(setFormFieldError(["url", "Fill in this field"]));
+            dispatch(setFormFieldError(["url", FILL_IN_THIS_FIELD]));
             return false;
         }
         return true;
     };
 
-    // const title = useSelector<RootState, UrlToMusicState["title"]>(
-    //     (state: RootState) => state.urlToMusic.title
-    // );
-    // TODO also handle isLoading
-    // const errorMessage = useSelector<RootState, UrlToMusicState["error"]>(
-    //     (state: RootState) => state.urlToMusic.error
-    // );
-    // TODO migrate all state to redux
-    // const [url, setUrl] = React.useState("");
     const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // TODO dispatch(setUrlError(false));
-        console.log(event.target.name);
         dispatch(setFormField([event.target.name, event.target.value]));
     };
+
     const dispatchGetInfo = () => {
         const isValid = validateGetInfo();
         if (isValid) {
             dispatch(getInfo());
         }
     };
-    const year = new Date().getFullYear();
-    const [musicData, setMusicData] = React.useState({
-        title: { value: "", error: false },
-        artist: { value: "", error: false },
-        album: { value: `Songs from ${year}`, error: false },
-    });
+
     const handleMusicDataChange = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        setMusicData({
-            ...musicData,
-            [event.target.name]: {
-                value: event.target.value,
-                error: false,
-            },
-        });
+        dispatch(setFormField([event.target.name, event.target.value]));
     };
-    const getMusic = () => {
-        if (musicData.title.value === "") {
-            setMusicData({
-                ...musicData,
-                title: {
-                    value: musicData.title.value,
-                    error: true,
-                },
-            });
-        } else {
-            dispatch(logInfo("NYI1" + JSON.stringify(musicData)));
+
+    const validateGetMusic = (): boolean => {
+        const invalidFieldNames = Object.entries(form)
+            .filter(([, formField]) => formField.value === "")
+            .map(([fieldName]) => fieldName);
+        invalidFieldNames.forEach((fieldName) => {
+            dispatch(setFormFieldError([fieldName, FILL_IN_THIS_FIELD]));
+        });
+        return invalidFieldNames.length === 0;
+    };
+
+    const dispatchGetMusic = () => {
+        const isValid = validateGetMusic();
+        if (isValid) {
+            dispatch(getMusic());
         }
     };
     return (
@@ -99,53 +79,42 @@ const UrlToMusic: FC = () => {
                         fullWidth={true}
                         value={form.url.value}
                         error={Boolean(form.url.error)}
-                        helperText={
-                            Boolean(form.url.error) ? form.url.error : false
-                        }
+                        helperText={form.url.error}
                         onChange={handleUrlChange}
                     />
                     <Button color="primary" onClick={dispatchGetInfo}>
                         Get Info
                     </Button>
                 </form>
-                {/* TODO validate required */}
                 <form>
                     <TextField
                         label="Title"
                         name="title"
                         fullWidth={true}
-                        value={title}
-                        error={musicData.title.error}
-                        helperText={
-                            musicData.title.error ? "Fill in this field" : false
-                        }
+                        value={form.title.value}
+                        error={Boolean(form.title.error)}
+                        helperText={form.title.error}
                         onChange={handleMusicDataChange}
                     />
                     <TextField
                         label="Artist"
                         name="artist"
                         fullWidth={true}
-                        value={musicData.artist.value}
-                        error={musicData.artist.error}
-                        helperText={
-                            musicData.artist.error
-                                ? "Fill in this field"
-                                : false
-                        }
+                        value={form.artist.value}
+                        error={Boolean(form.artist.error)}
+                        helperText={form.artist.error}
                         onChange={handleMusicDataChange}
                     />
                     <TextField
                         label="Album"
                         name="album"
                         fullWidth={true}
-                        value={musicData.album.value}
-                        error={musicData.album.error}
-                        helperText={
-                            musicData.album.error ? "Fill in this field" : false
-                        }
+                        value={form.album.value}
+                        error={Boolean(form.album.error)}
+                        helperText={form.album.error}
                         onChange={handleMusicDataChange}
                     />
-                    <Button color="primary" onClick={getMusic}>
+                    <Button color="primary" onClick={dispatchGetMusic}>
                         Get Music
                     </Button>
                 </form>
