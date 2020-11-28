@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import fetchToJson from "../../../fetchToJson";
 import { RootState } from "../../../Reducers";
 import ApiBaseState from "../../../Reducers/state.types";
+import { logInfo } from "../LogCard/logSlice";
 
 interface FormField {
     value: string;
@@ -9,21 +10,29 @@ interface FormField {
 }
 
 export interface UrlToMusicState extends ApiBaseState {
-    url: string;
-    urlError: string | false;
-    title: string;
     form: Record<string, FormField>;
 }
 
+const year = new Date().getFullYear();
+
 export const initialState: UrlToMusicState = {
-    url: "",
-    urlError: false,
-    title: "",
     isLoading: false,
     error: false,
     form: {
         url: {
             value: "",
+            error: false,
+        },
+        title: {
+            value: "",
+            error: false,
+        },
+        artist: {
+            value: "",
+            error: false,
+        },
+        album: {
+            value: `Songs from ${year}`,
             error: false,
         },
     },
@@ -41,6 +50,29 @@ export const getInfo = createAsyncThunk<FetchInfoReturned>(
         return fetchToJson<FetchInfoReturned>("/api/urltomusic/getinfo", {
             method: "POST",
             body: JSON.stringify({ url }),
+        });
+    }
+);
+
+export const getMusic = createAsyncThunk<FetchInfoReturned>(
+    `urlToMusic/getMusic`,
+    async (_, { getState, dispatch }) => {
+        const form = (getState() as RootState).urlToMusic.form;
+        const fieldEntries = Object.entries(form).map(([fieldName, field]) => [
+            fieldName,
+            field.value,
+        ]);
+        const body = JSON.stringify(Object.fromEntries(fieldEntries));
+        dispatch(
+            logInfo(
+                `Started getMusic: ${fieldEntries
+                    .map(([fieldName, value]) => `${fieldName}=${value}`)
+                    .join("; ")}`
+            )
+        );
+        return fetchToJson<FetchInfoReturned>("/api/urltomusic/getmusic", {
+            method: "POST",
+            body,
         });
     }
 );
@@ -74,11 +106,23 @@ const urlToMusicSlice = createSlice({
         });
         builder.addCase(getInfo.fulfilled, (draft, { payload }): void => {
             draft.isLoading = initialState.isLoading;
-            draft.title = payload.title;
+            draft.form.title.value = payload.title; // TODO set all
         });
         builder.addCase(getInfo.rejected, (draft, { error }): void => {
             draft.isLoading = initialState.isLoading;
-            draft.title = "";
+            draft.form.title.value = ""; // TODO clear all except url?
+            draft.error = error.message || "An error occurred";
+        });
+        builder.addCase(getMusic.pending, (draft, { payload }): void => {
+            draft.error = initialState.error;
+            draft.isLoading = true;
+        });
+        builder.addCase(getMusic.fulfilled, (draft, { payload }): void => {
+            draft.isLoading = initialState.isLoading;
+            draft.form.title.value = payload.title;
+        });
+        builder.addCase(getMusic.rejected, (draft, { error }): void => {
+            draft.isLoading = initialState.isLoading;
             draft.error = error.message || "An error occurred";
         });
     },
