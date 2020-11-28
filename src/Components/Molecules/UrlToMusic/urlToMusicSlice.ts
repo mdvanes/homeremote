@@ -3,16 +3,30 @@ import fetchToJson from "../../../fetchToJson";
 import { RootState } from "../../../Reducers";
 import ApiBaseState from "../../../Reducers/state.types";
 
+interface FormField {
+    value: string;
+    error: string | false;
+}
+
 export interface UrlToMusicState extends ApiBaseState {
     url: string;
+    urlError: string | false;
     title: string;
+    form: Record<string, FormField>;
 }
 
 export const initialState: UrlToMusicState = {
     url: "",
+    urlError: false,
     title: "",
     isLoading: false,
     error: false,
+    form: {
+        url: {
+            value: "",
+            error: false,
+        },
+    },
 };
 
 interface FetchInfoReturned {
@@ -20,31 +34,37 @@ interface FetchInfoReturned {
     title: string;
 }
 
-// TODO take the url param
 export const getInfo = createAsyncThunk<FetchInfoReturned>(
     `urlToMusic/getInfo`,
-    async (someName, { getState }) => {
-        const bladiebla = (getState() as RootState).urlToMusic.url;
-        console.log(
-            "fo",
-            (getState() as RootState).urlToMusic.url,
-            // (getState() as any).url,
-            someName
-        );
+    async (_, { getState, dispatch }) => {
+        const url = (getState() as RootState).urlToMusic.form.url.value;
         return fetchToJson<FetchInfoReturned>("/api/urltomusic/getinfo", {
             method: "POST",
-            // body: JSON.stringify({ url: "foo1" + (getState() as any).url }),
-            body: JSON.stringify({ url: bladiebla }),
+            body: JSON.stringify({ url }),
         });
     }
 );
+
+type NameAndValue = [string, string];
 
 const urlToMusicSlice = createSlice({
     name: "urlToMusic",
     initialState,
     reducers: {
-        setUrl: (draft, { payload }: PayloadAction<string>): void => {
-            draft.url = payload;
+        setFormField: (
+            draft,
+            { payload }: PayloadAction<NameAndValue>
+        ): void => {
+            const [name, value] = payload;
+            draft.form[name].value = value;
+            draft.form[name].error = "";
+        },
+        setFormFieldError: (
+            draft,
+            { payload }: PayloadAction<NameAndValue>
+        ): void => {
+            const [name, error] = payload;
+            draft.form[name].error = error;
         },
     },
     extraReducers: (builder) => {
@@ -64,6 +84,6 @@ const urlToMusicSlice = createSlice({
     },
 });
 
-export const { setUrl } = urlToMusicSlice.actions;
+export const { setFormField, setFormFieldError } = urlToMusicSlice.actions;
 
 export default urlToMusicSlice.reducer;

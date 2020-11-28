@@ -1,17 +1,44 @@
-import { Button, Card, CardContent, TextField } from "@material-ui/core";
 import React, { FC } from "react";
+import {
+    Button,
+    Card,
+    CardContent,
+    TextField,
+    LinearProgress,
+} from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { logInfo } from "../LogCard/logSlice";
-import { UrlToMusicState, getInfo, setUrl } from "./urlToMusicSlice";
+import {
+    UrlToMusicState,
+    getInfo,
+    setFormField,
+    setFormFieldError,
+} from "./urlToMusicSlice";
 
 const UrlToMusic: FC = () => {
     const dispatch = useDispatch();
 
-    const { url, title, error: errorMessage } = useSelector<
-        RootState,
-        UrlToMusicState
-    >((state: RootState) => state.urlToMusic);
+    const {
+        title,
+        error: errorMessage,
+        urlError,
+        form,
+        isLoading,
+    } = useSelector<RootState, UrlToMusicState>(
+        (state: RootState) => state.urlToMusic
+    );
+
+    const validateGetInfo = (): boolean => {
+        if (form.url.value === "") {
+            // TODO dispatch(setUrlError("Fill in this field"));
+            dispatch(setFormFieldError(["url", "Fill in this field"]));
+            return false;
+        }
+        return true;
+    };
+
     // const title = useSelector<RootState, UrlToMusicState["title"]>(
     //     (state: RootState) => state.urlToMusic.title
     // );
@@ -22,10 +49,15 @@ const UrlToMusic: FC = () => {
     // TODO migrate all state to redux
     // const [url, setUrl] = React.useState("");
     const handleUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        dispatch(setUrl(event.target.value));
+        // TODO dispatch(setUrlError(false));
+        console.log(event.target.name);
+        dispatch(setFormField([event.target.name, event.target.value]));
     };
     const dispatchGetInfo = () => {
-        dispatch(getInfo());
+        const isValid = validateGetInfo();
+        if (isValid) {
+            dispatch(getInfo());
+        }
     };
     const year = new Date().getFullYear();
     const [musicData, setMusicData] = React.useState({
@@ -65,10 +97,10 @@ const UrlToMusic: FC = () => {
                         label="URL"
                         name="url"
                         fullWidth={true}
-                        value={url}
-                        error={Boolean(errorMessage)}
+                        value={form.url.value}
+                        error={Boolean(form.url.error)}
                         helperText={
-                            Boolean(errorMessage) ? errorMessage : false
+                            Boolean(form.url.error) ? form.url.error : false
                         }
                         onChange={handleUrlChange}
                     />
@@ -84,7 +116,9 @@ const UrlToMusic: FC = () => {
                         fullWidth={true}
                         value={title}
                         error={musicData.title.error}
-                        helperText={musicData.title.error ? "required" : false}
+                        helperText={
+                            musicData.title.error ? "Fill in this field" : false
+                        }
                         onChange={handleMusicDataChange}
                     />
                     <TextField
@@ -93,7 +127,11 @@ const UrlToMusic: FC = () => {
                         fullWidth={true}
                         value={musicData.artist.value}
                         error={musicData.artist.error}
-                        helperText={musicData.artist.error ? "required" : false}
+                        helperText={
+                            musicData.artist.error
+                                ? "Fill in this field"
+                                : false
+                        }
                         onChange={handleMusicDataChange}
                     />
                     <TextField
@@ -102,13 +140,17 @@ const UrlToMusic: FC = () => {
                         fullWidth={true}
                         value={musicData.album.value}
                         error={musicData.album.error}
-                        helperText={musicData.album.error ? "required" : false}
+                        helperText={
+                            musicData.album.error ? "Fill in this field" : false
+                        }
                         onChange={handleMusicDataChange}
                     />
                     <Button color="primary" onClick={getMusic}>
                         Get Music
                     </Button>
                 </form>
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                {isLoading && <LinearProgress />}
             </CardContent>
         </Card>
     );
