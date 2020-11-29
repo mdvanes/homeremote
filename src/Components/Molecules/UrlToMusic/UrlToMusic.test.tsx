@@ -1,6 +1,6 @@
 import React from "react";
 import UrlToMusic from "./UrlToMusic";
-import urlToMusicReducer from "./urlToMusicSlice";
+import urlToMusicReducer, { initialState } from "./urlToMusicSlice";
 import { RootState } from "../../../Reducers";
 import { renderWithProviders } from "../../../testHelpers";
 import { fireEvent, waitFor } from "@testing-library/dom";
@@ -10,29 +10,7 @@ const fetchSpy = jest.spyOn(window, "fetch");
 type MockRootState = Pick<RootState, "urlToMusic">;
 
 const mockRootState: MockRootState = {
-    urlToMusic: {
-        error: false,
-        isLoading: false,
-        form: {
-            url: {
-                value: "",
-                error: false,
-            },
-            title: {
-                value: "",
-                error: false,
-            },
-            artist: {
-                value: "",
-                error: false,
-            },
-            album: {
-                value: "",
-                error: false,
-            },
-        },
-        result: false,
-    },
+    urlToMusic: initialState,
 };
 
 const renderUrlToMusic = (initialState: MockRootState) =>
@@ -74,7 +52,7 @@ describe("UrlToMusic", () => {
         );
         const urlInput = getByTestId("url").querySelector("input");
         if (urlInput) {
-            fireEvent.change(urlInput, { target: { value: "blargh" } });
+            fireEvent.change(urlInput, { target: { value: "Some URL" } });
         }
         const getInfoButton = getByTestId("get-info");
         fireEvent.click(getInfoButton);
@@ -87,5 +65,39 @@ describe("UrlToMusic", () => {
         expect(getByTestId("artist").querySelector("input")).toHaveDisplayValue(
             "Some Artist"
         );
+        expect(fetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("can submit the getmusic form", async () => {
+        const mockResponse: Partial<Response> = {
+            ok: true,
+            json: () =>
+                Promise.resolve({
+                    path: "Some Path",
+                    fileName: "Some FileName",
+                }),
+        };
+        fetchSpy.mockReset().mockResolvedValueOnce(mockResponse as Response);
+
+        const { getByTestId, getByText } = renderUrlToMusic(mockRootState);
+
+        const urlInput = getByTestId("url").querySelector("input");
+        if (urlInput) {
+            fireEvent.change(urlInput, { target: { value: "Some URL" } });
+        }
+        const titleInput = getByTestId("title").querySelector("input");
+        if (titleInput) {
+            fireEvent.change(titleInput, { target: { value: "Some Title" } });
+        }
+        const artistInput = getByTestId("artist").querySelector("input");
+        if (artistInput) {
+            fireEvent.change(artistInput, { target: { value: "Some Artist" } });
+        }
+        const getMusicButton = getByTestId("get-music");
+        fireEvent.click(getMusicButton);
+        await waitFor(() =>
+            expect(getByText(/Result in Some Path/)).toBeInTheDocument()
+        );
+        expect(fetchSpy).toHaveBeenCalledTimes(1);
     });
 });

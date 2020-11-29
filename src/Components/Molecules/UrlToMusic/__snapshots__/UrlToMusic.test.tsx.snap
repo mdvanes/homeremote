@@ -96,8 +96,8 @@ exports[`UrlToMusic looks like a form 1`] = `
           class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
         >
           <label
-            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated"
-            data-shrink="false"
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiFormLabel-filled"
+            data-shrink="true"
           >
             Album
           </label>
@@ -109,12 +109,13 @@ exports[`UrlToMusic looks like a form 1`] = `
               class="MuiInputBase-input MuiInput-input"
               name="album"
               type="text"
-              value=""
+              value="Songs from 2020"
             />
           </div>
         </div>
         <button
           class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary"
+          data-testid="get-music"
           tabindex="0"
           type="button"
         >

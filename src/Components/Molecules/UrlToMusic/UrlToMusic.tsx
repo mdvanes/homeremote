@@ -121,7 +121,11 @@ const UrlToMusic: FC = () => {
                         helperText={form.album.error}
                         onChange={handleMusicDataChange}
                     />
-                    <Button color="primary" onClick={dispatchGetMusic}>
+                    <Button
+                        data-testid="get-music"
+                        color="primary"
+                        onClick={dispatchGetMusic}
+                    >
                         Get Music
                     </Button>
                 </form>
