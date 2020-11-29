@@ -11,6 +11,7 @@ interface FormField {
 
 export interface UrlToMusicState extends ApiBaseState {
     form: Record<string, FormField>;
+    result: string | false;
 }
 
 const year = new Date().getFullYear();
@@ -36,11 +37,17 @@ export const initialState: UrlToMusicState = {
             error: false,
         },
     },
+    result: false,
 };
 
 interface FetchInfoReturned {
-    // url: string;
     title: string;
+    artist: string;
+}
+
+interface FetchMusicReturned {
+    path: string;
+    fileName: string;
 }
 
 export const getInfo = createAsyncThunk<FetchInfoReturned>(
@@ -54,7 +61,7 @@ export const getInfo = createAsyncThunk<FetchInfoReturned>(
     }
 );
 
-export const getMusic = createAsyncThunk<FetchInfoReturned>(
+export const getMusic = createAsyncThunk<FetchMusicReturned>(
     `urlToMusic/getMusic`,
     async (_, { getState, dispatch }) => {
         const form = (getState() as RootState).urlToMusic.form;
@@ -70,10 +77,15 @@ export const getMusic = createAsyncThunk<FetchInfoReturned>(
                     .join("; ")}`
             )
         );
-        return fetchToJson<FetchInfoReturned>("/api/urltomusic/getmusic", {
-            method: "POST",
-            body,
-        });
+        const result = await fetchToJson<FetchMusicReturned>(
+            "/api/urltomusic/getmusic",
+            {
+                method: "POST",
+                body,
+            }
+        );
+        dispatch(logInfo(`Finished getMusic: ${result.path}`));
+        return result;
     }
 );
 
@@ -103,23 +115,25 @@ const urlToMusicSlice = createSlice({
         builder.addCase(getInfo.pending, (draft, { payload }): void => {
             draft.error = initialState.error;
             draft.isLoading = true;
+            draft.result = initialState.result;
         });
         builder.addCase(getInfo.fulfilled, (draft, { payload }): void => {
             draft.isLoading = initialState.isLoading;
-            draft.form.title.value = payload.title; // TODO set all
+            draft.form.title.value = payload.title;
+            draft.form.artist.value = payload.artist;
         });
         builder.addCase(getInfo.rejected, (draft, { error }): void => {
             draft.isLoading = initialState.isLoading;
-            draft.form.title.value = ""; // TODO clear all except url?
             draft.error = error.message || "An error occurred";
         });
         builder.addCase(getMusic.pending, (draft, { payload }): void => {
             draft.error = initialState.error;
             draft.isLoading = true;
+            draft.result = initialState.result;
         });
         builder.addCase(getMusic.fulfilled, (draft, { payload }): void => {
             draft.isLoading = initialState.isLoading;
-            draft.form.title.value = payload.title;
+            draft.result = payload.path;
         });
         builder.addCase(getMusic.rejected, (draft, { error }): void => {
             draft.isLoading = initialState.isLoading;
