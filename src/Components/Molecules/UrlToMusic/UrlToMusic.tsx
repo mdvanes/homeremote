@@ -74,6 +74,7 @@ const UrlToMusic: FC = () => {
             <CardContent>
                 <form>
                     <TextField
+                        data-testid="url"
                         label="URL"
                         name="url"
                         fullWidth={true}
@@ -82,12 +83,17 @@ const UrlToMusic: FC = () => {
                         helperText={form.url.error}
                         onChange={handleUrlChange}
                     />
-                    <Button color="primary" onClick={dispatchGetInfo}>
+                    <Button
+                        data-testid="get-info"
+                        color="primary"
+                        onClick={dispatchGetInfo}
+                    >
                         Get Info
                     </Button>
                 </form>
                 <form>
                     <TextField
+                        data-testid="title"
                         label="Title"
                         name="title"
                         fullWidth={true}
@@ -97,6 +103,7 @@ const UrlToMusic: FC = () => {
                         onChange={handleMusicDataChange}
                     />
                     <TextField
+                        data-testid="artist"
                         label="Artist"
                         name="artist"
                         fullWidth={true}
