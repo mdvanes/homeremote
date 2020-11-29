@@ -9,7 +9,6 @@ import {
 import Alert from "@material-ui/lab/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
-import { logInfo } from "../LogCard/logSlice";
 import {
     UrlToMusicState,
     getInfo,
@@ -23,7 +22,7 @@ const FILL_IN_THIS_FIELD = "Fill in this field";
 const UrlToMusic: FC = () => {
     const dispatch = useDispatch();
 
-    const { error: errorMessage, form, isLoading } = useSelector<
+    const { error: errorMessage, form, isLoading, result } = useSelector<
         RootState,
         UrlToMusicState
     >((state: RootState) => state.urlToMusic);
@@ -69,6 +68,7 @@ const UrlToMusic: FC = () => {
             dispatch(getMusic());
         }
     };
+
     return (
         <Card className="card-dashboard-height">
             <CardContent>
@@ -119,6 +119,7 @@ const UrlToMusic: FC = () => {
                     </Button>
                 </form>
                 {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                {result && <Alert severity="success">Result in {result}</Alert>}
                 {isLoading && <LinearProgress />}
             </CardContent>
         </Card>
