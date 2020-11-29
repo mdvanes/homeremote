@@ -1,6 +1,6 @@
 import React, { FC, FormEvent, useEffect, useState } from "react";
 import { Button, TextField } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
+import { Alert } from "@material-ui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import {
     AuthenticationState,
@@ -8,6 +8,7 @@ import {
     FetchAuthType,
 } from "./authenticationSlice";
 import { RootState } from "../../../Reducers";
+import AppSkeleton from "../../Molecules/AppSkeleton/AppSkeleton";
 
 const LOGIN_ENDPOINT = "/auth/login";
 const UNAUTHORIZED_MESSAGE = `${LOGIN_ENDPOINT} Unauthorized`;
@@ -41,6 +42,10 @@ const AuthenticationProvider: FC = ({ children }) => {
         AuthenticationState["error"]
     >((state: RootState) => state.authentication.error);
 
+    const isLoading = useSelector<RootState, AuthenticationState["isLoading"]>(
+        (state: RootState) => state.authentication.isLoading
+    );
+
     useEffect(() => {
         dispatch(fetchAuth({ type: FetchAuthType.Current }));
     }, [dispatch]);
@@ -54,7 +59,9 @@ const AuthenticationProvider: FC = ({ children }) => {
             </Alert>
         );
 
-    if (currentUser === "") {
+    if (currentUser === "" && isLoading) {
+        return <AppSkeleton />;
+    } else if (currentUser === "") {
         return (
             <form id="form" onSubmit={onSubmit} style={{ margin: 8 }}>
                 <TextField
