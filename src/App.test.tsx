@@ -4,6 +4,7 @@ import App from "./App";
 import { RootState } from "./Reducers";
 import authenticationReducer from "./Components/Providers/Authentication/authenticationSlice";
 import appStatusReducer from "./Components/Molecules/AppStatusButton/appStatusSlice";
+import { waitFor } from "@testing-library/dom";
 
 type MockRootState = Pick<RootState, "authentication" | "appStatus">;
 
@@ -40,8 +41,12 @@ jest.mock(
     () => "mock-home-automation"
 );
 describe("App with Authentication", () => {
-    it("shows the username field of the login screen before logging in", () => {
+    it("shows the username field of the login screen before logging in", async () => {
         const { getAllByText } = renderApp(mockRootState);
+        // Wait for AppSkeleton to be removed
+        await waitFor(() => {
+            getAllByText(/Username/);
+        });
         const userNameLabel = getAllByText(/Username/i);
         expect(userNameLabel.length).toBe(2);
     });
