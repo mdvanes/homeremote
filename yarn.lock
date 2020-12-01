@@ -1492,9 +1492,9 @@
     react-is "^16.8.0"
 
 "@mdworld/homeremote-stream-player@^1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@mdworld/homeremote-stream-player/-/homeremote-stream-player-1.6.2.tgz#010396ebdd6c283cc051fe8442a4b1a861d51723"
-  integrity sha512-uP51E8MjCIbk0NJT5XIcp8BRqPrFMmvxBFUWkfQGU9bUxFwr2CAcRHJLykeR31RIUV81HxQfIQ3XxuFzPsjZnw==
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@mdworld/homeremote-stream-player/-/homeremote-stream-player-1.6.3.tgz#b73a1ec4bbb843228083fea22544bfd280e648a9"
+  integrity sha512-lz+KfIG27FT0W/HvKb6JjYT0yEUCecS1wtcy0SkvQMGwl/58dam08ZLtUnQgwPFUrE2x9QF9fjiPtZcsh3s1nw==
 
 "@nodelib/fs.scandir@2.1.3":
   version "2.1.3"
