@@ -1491,7 +1491,7 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
-"@mdworld/homeremote-stream-player@^1.6.2":
+"@mdworld/homeremote-stream-player@^1.6.3":
   version "1.6.3"
   resolved "https://registry.yarnpkg.com/@mdworld/homeremote-stream-player/-/homeremote-stream-player-1.6.3.tgz#b73a1ec4bbb843228083fea22544bfd280e648a9"
   integrity sha512-lz+KfIG27FT0W/HvKb6JjYT0yEUCecS1wtcy0SkvQMGwl/58dam08ZLtUnQgwPFUrE2x9QF9fjiPtZcsh3s1nw==
