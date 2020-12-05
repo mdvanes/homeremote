@@ -6,6 +6,7 @@ import React, { FC, useState } from "react";
 import { Drawer, MuiThemeProvider, Container } from "@material-ui/core";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import { BrowserRouter, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import Log from "./Components/Pages/Log/Log";
 import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
 import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar";
@@ -14,13 +15,24 @@ import Dashboard from "./Components/Pages/Dashboard/Dashboard";
 import Streams from "./Components/Pages/Streams/Streams";
 import AppBar from "./Components/Molecules/AppBar/AppBar";
 import DrawerMenu from "./Components/Molecules/DrawerMenu/DrawerMenu";
+import { logError } from "./Components/Molecules/LogCard/logSlice";
 
 // TODO typescript should be upgraded but causes problem: https://github.com/facebook/create-react-app/issues/10110#issuecomment-731109866
 
-const App: FC = () => {
+export interface AppProps {
+    swCallbacks: {
+        logSuccess: null | ((m: string) => void);
+        logUpdate: null | ((m: string) => void);
+    };
+}
+
+const App: FC<AppProps> = ({ swCallbacks }) => {
+    const dispatch = useDispatch();
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const toggleDrawer = (): void => setIsDrawerOpen(!isDrawerOpen);
     const closeDrawer = (): void => setIsDrawerOpen(false);
+    swCallbacks.logSuccess = (message: string) => dispatch(logError(message));
+    swCallbacks.logUpdate = (message: string) => dispatch(logError(message));
     return (
         <AuthenticationProvider>
             <MuiThemeProvider theme={theme}>
