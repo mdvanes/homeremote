@@ -21,7 +21,12 @@ const isLocalhost = Boolean(
         )
 );
 
-export function register(config) {
+interface SwConfig {
+    onUpdate: (message: string) => void;
+    onSuccess: (message: string) => void;
+}
+
+export function register(config: SwConfig) {
     if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
         // The URL constructor is available in all browsers that support SW.
         const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
@@ -55,7 +60,7 @@ export function register(config) {
     }
 }
 
-function registerValidSW(swUrl, config) {
+function registerValidSW(swUrl: string, config: SwConfig) {
     navigator.serviceWorker
         .register(swUrl)
         .then((registration) => {
@@ -77,7 +82,9 @@ function registerValidSW(swUrl, config) {
 
                             // Execute callback
                             if (config && config.onUpdate) {
-                                config.onUpdate(registration);
+                                // config.onUpdate(registration);
+                                config.onUpdate(`New content is available and will be used when all 
+                                tabs for this page are closed. See https://bit.ly/CRA-PWA.`);
                             }
                         } else {
                             // At this point, everything has been precached.
@@ -87,7 +94,10 @@ function registerValidSW(swUrl, config) {
 
                             // Execute callback
                             if (config && config.onSuccess) {
-                                config.onSuccess(registration);
+                                // config.onSuccess(registration);
+                                config.onSuccess(
+                                    "Content is cached for offline use."
+                                );
                             }
                         }
                     }
@@ -99,7 +109,7 @@ function registerValidSW(swUrl, config) {
         });
 }
 
-function checkValidServiceWorker(swUrl, config) {
+function checkValidServiceWorker(swUrl: string, config: SwConfig) {
     // Check if the service worker can be found. If it can't reload the page.
     fetch(swUrl, {
         headers: { "Service-Worker": "script" },
