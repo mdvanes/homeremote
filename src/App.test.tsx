@@ -1,6 +1,6 @@
 import React from "react";
 import { renderWithProviders } from "./testHelpers";
-import App from "./App";
+import App, { AppProps } from "./App";
 import { RootState } from "./Reducers";
 import authenticationReducer from "./Components/Providers/Authentication/authenticationSlice";
 import appStatusReducer from "./Components/Molecules/AppStatusButton/appStatusSlice";
@@ -22,8 +22,13 @@ const mockRootState: MockRootState = {
     },
 };
 
+const swCallbacks: AppProps["swCallbacks"] = {
+    logSuccess: null,
+    logUpdate: null,
+};
+
 const renderApp = (initialState: MockRootState) =>
-    renderWithProviders(<App />, {
+    renderWithProviders(<App swCallbacks={swCallbacks} />, {
         initialState,
         reducers: {
             authentication: authenticationReducer,
