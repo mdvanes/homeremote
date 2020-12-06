@@ -1,9 +1,9 @@
 import React from "react";
+import { fireEvent, waitFor } from "@testing-library/react";
 import UrlToMusic from "./UrlToMusic";
 import urlToMusicReducer, { initialState } from "./urlToMusicSlice";
 import { RootState } from "../../../Reducers";
 import { renderWithProviders } from "../../../testHelpers";
-import { fireEvent, waitFor } from "@testing-library/dom";
 
 const fetchSpy = jest.spyOn(window, "fetch");
 

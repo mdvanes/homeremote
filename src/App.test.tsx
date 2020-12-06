@@ -1,10 +1,10 @@
 import React from "react";
+import { waitFor } from "@testing-library/react";
 import { renderWithProviders } from "./testHelpers";
 import App, { AppProps } from "./App";
 import { RootState } from "./Reducers";
 import authenticationReducer from "./Components/Providers/Authentication/authenticationSlice";
 import appStatusReducer from "./Components/Molecules/AppStatusButton/appStatusSlice";
-import { waitFor } from "@testing-library/dom";
 
 type MockRootState = Pick<RootState, "authentication" | "appStatus">;
 
