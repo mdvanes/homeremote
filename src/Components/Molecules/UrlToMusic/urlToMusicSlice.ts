@@ -43,6 +43,7 @@ export const initialState: UrlToMusicState = {
 interface FetchInfoReturned {
     title: string;
     artist: string;
+    versionInfo: string;
 }
 
 interface FetchMusicReturned {
@@ -54,10 +55,19 @@ export const getInfo = createAsyncThunk<FetchInfoReturned>(
     `urlToMusic/getInfo`,
     async (_, { getState, dispatch }) => {
         const url = (getState() as RootState).urlToMusic.form.url.value;
-        return fetchToJson<FetchInfoReturned>("/api/urltomusic/getinfo", {
-            method: "POST",
-            body: JSON.stringify({ url }),
-        });
+        const result = await fetchToJson<FetchInfoReturned>(
+            "/api/urltomusic/getinfo",
+            {
+                method: "POST",
+                body: JSON.stringify({ url }),
+            }
+        );
+        dispatch(
+            logInfo(
+                `Finished getInfo with bin version info: ${result.versionInfo}`
+            )
+        );
+        return result;
     }
 );
 
