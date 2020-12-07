@@ -16,6 +16,7 @@ import Streams from "./Components/Pages/Streams/Streams";
 import AppBar from "./Components/Molecules/AppBar/AppBar";
 import DrawerMenu from "./Components/Molecules/DrawerMenu/DrawerMenu";
 import { logError } from "./Components/Molecules/LogCard/logSlice";
+import UrlToMusic from "./Components/Molecules/UrlToMusic/UrlToMusic";
 
 // TODO typescript should be upgraded but causes problem: https://github.com/facebook/create-react-app/issues/10110#issuecomment-731109866
 
@@ -44,8 +45,7 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                     {/* TODO this was for checking online/offline status for AppCache <StatusBar/>*/}
                     <Container maxWidth="xl">
                         <Route exact path="/" component={HomeAutomation} />
-                        <Route exact path="/music" component={HomeAutomation} />
-                        <Route exact path="/files" component={HomeAutomation} />
+                        <Route exact path="/music" component={UrlToMusic} />
                         <Route exact path="/gears" component={HomeAutomation} />
                         <Route exact path="/dashboard" component={Dashboard} />
                         <Route exact path="/streams" component={Streams} />
