@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import {
     AppBar as MuiAppBar,
+    Hidden,
     IconButton,
     Toolbar,
     Typography,
@@ -35,9 +36,16 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" className={classes.title}>
-                        HomeRemote
-                    </Typography>
+                    <Hidden smUp>
+                        <Typography variant="h6" className={classes.title}>
+                            HR
+                        </Typography>
+                    </Hidden>
+                    <Hidden xsDown>
+                        <Typography variant="h6" className={classes.title}>
+                            HomeRemote
+                        </Typography>
+                    </Hidden>
                     <Typography variant="body2" className={classes.currentUser}>
                         {greeting}
                     </Typography>

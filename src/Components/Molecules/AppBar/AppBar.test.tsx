@@ -1,5 +1,6 @@
 import React from "react";
 import { fireEvent } from "@testing-library/react";
+import mediaQuery from "css-mediaquery";
 import AppBar from "./AppBar";
 import { RootState } from "../../../Reducers";
 import { renderWithProviders } from "../../../testHelpers";
@@ -10,6 +11,18 @@ jest.mock("../AppStatusButton/AppStatusButton", () => "mock-app-status-button");
 const mockToggleDrawer = jest.fn();
 
 type MockRootState = Pick<RootState, "authentication">;
+
+function createMatchMedia(width: number): unknown {
+    return (query: string) => ({
+        matches: mediaQuery.match(query, { width }),
+        addListener: () => {
+            /* no-op */
+        },
+        removeListener: () => {
+            /* no-op */
+        },
+    });
+}
 
 const mockRootState: MockRootState = {
     authentication: {
@@ -29,6 +42,12 @@ const renderAppBar = (initialState: MockRootState) =>
     });
 
 describe("AppBar", () => {
+    beforeAll(() => {
+        window.matchMedia = createMatchMedia(window.innerWidth) as (
+            query: string
+        ) => MediaQueryList;
+    });
+
     it("has the application title", () => {
         const { getByText } = renderAppBar(mockRootState);
         expect(getByText("HomeRemote")).toBeInTheDocument();
