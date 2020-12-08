@@ -10,7 +10,7 @@ type MockRootState = Pick<RootState, "authentication">;
 const mockRootState: MockRootState = {
     authentication: {
         id: 0,
-        name: "",
+        displayName: "",
         error: false,
         isLoading: false,
     },

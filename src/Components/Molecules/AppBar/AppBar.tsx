@@ -19,9 +19,11 @@ interface Props {
 
 const AppBar: FC<Props> = ({ toggleDrawer }) => {
     const classes = useStyles();
-    const greeting = useSelector<RootState, AuthenticationState["name"]>(
+    const greeting = useSelector<RootState, AuthenticationState["displayName"]>(
         (state: RootState) =>
-            state.authentication.name ? `Hi, ${state.authentication.name}!` : ""
+            state.authentication.displayName
+                ? `Hi, ${state.authentication.displayName}!`
+                : ""
     );
     return (
         <div className={classes.root}>

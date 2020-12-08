@@ -33,9 +33,10 @@ const AuthenticationProvider: FC = ({ children }) => {
         );
     };
 
-    const currentUser = useSelector<RootState, AuthenticationState["name"]>(
-        (state: RootState) => state.authentication.name
-    );
+    const currentUser = useSelector<
+        RootState,
+        AuthenticationState["displayName"]
+    >((state: RootState) => state.authentication.displayName);
 
     const authenticationError = useSelector<
         RootState,
@@ -50,6 +51,7 @@ const AuthenticationProvider: FC = ({ children }) => {
         dispatch(fetchAuth({ type: FetchAuthType.Current }));
     }, [dispatch]);
 
+    // TODO Refactor to move logic to slice, when the "offline" status must be added
     const errorMessageAlert = authenticationError &&
         authenticationError.indexOf(LOGIN_ENDPOINT) > -1 && (
             <Alert severity="error">
