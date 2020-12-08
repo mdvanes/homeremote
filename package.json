@@ -1,6 +1,6 @@
 {
   "name": "homeremote",
-  "version": "2.0.2",
+  "version": "2.0.3-alpha.0",
   "private": true,
   "repository": "https://github.com/mdvanes/homeremote",
   "author": "M.D. van Es",
@@ -9,12 +9,12 @@
   "scripts": {
     "start:dev": "node writeGitInfo.js dev && BROWSER=none react-scripts start",
     "lint": "eslint src/**/*.{ts,tsx}",
-    "validate": "node writeGitInfo.js && npm run lint && npm run test:ci",
-    "prebuild": "npm run validate",
-    "build": "npm run prebuild && react-scripts build",
+    "typecheck": "tsc --noEmit",
     "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
     "test:ci": "CI=true npm run test -- --coverage --colors",
-    "eject": "react-scripts eject",
+    "validate": "node writeGitInfo.js && npm run lint && npm run typecheck && npm run test:ci",
+    "prebuild": "npm run validate",
+    "build": "npm run prebuild && react-scripts build",
     "deploy": "cp -r build/* ../homeremote-server/client"
   },
   "dependencies": {
@@ -86,7 +86,9 @@
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
-      "!<rootDir>/node_modules/"
+      "!<rootDir>/node_modules/",
+      "!<rootDir>/src/index.tsx",
+      "!<rootDir>/src/Reducers/index.ts"
     ],
     "coverageThreshold": {
       "global": {
