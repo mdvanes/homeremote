@@ -27,7 +27,7 @@ function createMatchMedia(width: number): unknown {
 const mockRootState: MockRootState = {
     authentication: {
         id: 1,
-        name: "John",
+        displayName: "John",
         error: false,
         isLoading: false,
     },

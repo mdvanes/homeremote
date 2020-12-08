@@ -4,12 +4,12 @@ import ApiBaseState from "../../../Reducers/state.types";
 
 export interface AuthenticationState extends ApiBaseState {
     id: number;
-    name: string;
+    displayName: string;
 }
 
 export const initialState: AuthenticationState = {
     id: 0,
-    name: "",
+    displayName: "",
     isLoading: false,
     error: false,
 };
@@ -28,7 +28,7 @@ const authEndpoint: Record<FetchAuthType, string> = {
 
 interface FetchAuthReturned {
     id: number;
-    name: string;
+    displayName: string;
 }
 
 interface FetchAuthArgs {
@@ -54,12 +54,12 @@ const authenticationSlice = createSlice({
         builder.addCase(fetchAuth.fulfilled, (draft, { payload }): void => {
             draft.isLoading = initialState.isLoading;
             draft.id = payload.id;
-            draft.name = payload.name;
+            draft.displayName = payload.displayName;
         });
         builder.addCase(fetchAuth.rejected, (draft, { error }): void => {
             draft.isLoading = initialState.isLoading;
             draft.id = initialState.id;
-            draft.name = initialState.name;
+            draft.displayName = initialState.displayName;
             draft.error = error.message || "An error occurred";
         });
     },

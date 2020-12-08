@@ -11,7 +11,7 @@ type MockRootState = Pick<RootState, "authentication" | "appStatus">;
 const mockRootState: MockRootState = {
     authentication: {
         id: 0,
-        name: "",
+        displayName: "",
         error: false,
         isLoading: false,
     },
@@ -61,7 +61,7 @@ describe("App with Authentication", () => {
             appStatus: { ...mockRootState.appStatus, status: "SomeStatus" },
             authentication: {
                 ...mockRootState.authentication,
-                name: "SomeUser",
+                displayName: "SomeUser",
             },
         });
         expect(getByText("SomeStatus")).toBeInTheDocument();
