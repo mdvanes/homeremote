@@ -94,8 +94,4 @@ const profileCurrentHandler = async (params: RouteHandlerCallbackOptions) => {
     }
 };
 
-registerRoute(
-    new RegExp("/api/profile/current"),
-    profileCurrentHandler,
-    "POST"
-);
+registerRoute(new RegExp("/api/profile/current"), profileCurrentHandler, "GET");
