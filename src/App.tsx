@@ -15,7 +15,7 @@ import Dashboard from "./Components/Pages/Dashboard/Dashboard";
 import Streams from "./Components/Pages/Streams/Streams";
 import AppBar from "./Components/Molecules/AppBar/AppBar";
 import DrawerMenu from "./Components/Molecules/DrawerMenu/DrawerMenu";
-import { logError } from "./Components/Molecules/LogCard/logSlice";
+import { logUrgentInfo } from "./Components/Molecules/LogCard/logSlice";
 import UrlToMusic from "./Components/Molecules/UrlToMusic/UrlToMusic";
 
 // TODO typescript should be upgraded but causes problem: https://github.com/facebook/create-react-app/issues/10110#issuecomment-731109866
@@ -32,8 +32,12 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const toggleDrawer = (): void => setIsDrawerOpen(!isDrawerOpen);
     const closeDrawer = (): void => setIsDrawerOpen(false);
-    swCallbacks.logSuccess = (message: string) => dispatch(logError(message));
-    swCallbacks.logUpdate = (message: string) => dispatch(logError(message));
+
+    swCallbacks.logSuccess = (message: string) =>
+        dispatch(logUrgentInfo(message));
+    swCallbacks.logUpdate = (message: string) =>
+        dispatch(logUrgentInfo(message));
+
     return (
         <AuthenticationProvider>
             <MuiThemeProvider theme={theme}>

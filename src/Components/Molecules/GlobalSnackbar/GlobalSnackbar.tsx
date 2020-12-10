@@ -1,35 +1,51 @@
 import React, { FC, useState, useEffect } from "react";
-import { Snackbar, makeStyles, Grid, IconButton } from "@material-ui/core";
+import {
+    Snackbar,
+    makeStyles,
+    Grid,
+    IconButton,
+    createStyles,
+    StyleRules,
+    Theme,
+} from "@material-ui/core";
 import { Warning, Close } from "@material-ui/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
-import { LogState } from "../LogCard/logSlice";
+import { LogState, Severity } from "../LogCard/logSlice";
 
-const useStyles = makeStyles(() => ({
-    root: {
-        background: "red",
-    },
-    message: {
-        width: "100%",
-    },
-}));
+const useStyles = makeStyles(
+    (theme: Theme): StyleRules =>
+        createStyles({
+            error: {
+                background: theme.palette.error.dark,
+            },
+            info: {
+                background: theme.palette.info.dark,
+            },
+            message: {
+                width: "100%",
+            },
+        })
+);
 
 /** Show a Snackbar for new error messages */
 const GlobalSnackbar: FC = ({ children }) => {
     const classes = useStyles();
     const [isOpen, setIsOpen] = useState(false);
-    const [message, setMessage] = useState("");
+    const [line, setLine] = useState<LogState["urgentMessage"]>(false);
     const handleClose = (): void => setIsOpen(false);
     const urgentMessage: LogState["urgentMessage"] = useSelector<
         RootState,
         LogState["urgentMessage"]
     >((state: RootState) => state.loglines.urgentMessage);
+
     useEffect(() => {
         if (urgentMessage) {
-            setMessage(urgentMessage);
+            setLine(urgentMessage);
             setIsOpen(true);
         }
     }, [urgentMessage]);
+
     return (
         <Snackbar
             data-testid="global-snackbar"
@@ -41,7 +57,7 @@ const GlobalSnackbar: FC = ({ children }) => {
                         <Warning />
                     </Grid>
                     <Grid item xs>
-                        {message}
+                        {line && line.message}
                     </Grid>
                     <Grid item>
                         <IconButton onClick={handleClose} color="inherit">
@@ -54,7 +70,10 @@ const GlobalSnackbar: FC = ({ children }) => {
             onClose={handleClose}
             ContentProps={{
                 classes: {
-                    root: classes.root,
+                    root:
+                        line && line.severity === Severity.ERROR
+                            ? classes.error
+                            : classes.info,
                     message: classes.message,
                 },
             }}
