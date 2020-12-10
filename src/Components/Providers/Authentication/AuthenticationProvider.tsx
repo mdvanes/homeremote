@@ -1,6 +1,6 @@
 import React, { FC, FormEvent, useEffect, useState } from "react";
-import { Button, TextField } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Button, Container, TextField } from "@material-ui/core";
+import { Alert, AlertTitle } from "@material-ui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import {
     AuthenticationState,
@@ -33,25 +33,19 @@ const AuthenticationProvider: FC = ({ children }) => {
         );
     };
 
-    const currentUser = useSelector<
-        RootState,
-        AuthenticationState["displayName"]
-    >((state: RootState) => state.authentication.displayName);
-
-    const authenticationError = useSelector<
-        RootState,
-        AuthenticationState["error"]
-    >((state: RootState) => state.authentication.error);
-
-    const isLoading = useSelector<RootState, AuthenticationState["isLoading"]>(
-        (state: RootState) => state.authentication.isLoading
+    const {
+        error: authenticationError,
+        isLoading,
+        isOffline,
+        isSignedIn,
+    } = useSelector<RootState, AuthenticationState>(
+        (state: RootState) => state.authentication
     );
 
     useEffect(() => {
         dispatch(fetchAuth({ type: FetchAuthType.Current }));
     }, [dispatch]);
 
-    // TODO Refactor to move logic to slice, when the "offline" status must be added
     const errorMessageAlert = authenticationError &&
         authenticationError.indexOf(LOGIN_ENDPOINT) > -1 && (
             <Alert severity="error">
@@ -61,9 +55,9 @@ const AuthenticationProvider: FC = ({ children }) => {
             </Alert>
         );
 
-    if (currentUser === "" && isLoading) {
+    if (!isSignedIn && isLoading) {
         return <AppSkeleton />;
-    } else if (currentUser === "") {
+    } else if (!isSignedIn) {
         return (
             <form id="form" onSubmit={onSubmit} style={{ margin: 8 }}>
                 <TextField
@@ -91,6 +85,15 @@ const AuthenticationProvider: FC = ({ children }) => {
                 </Button>
                 {errorMessageAlert}
             </form>
+        );
+    } else if (isOffline) {
+        return (
+            <Container style={{ marginTop: 8 }}>
+                <Alert severity="warning">
+                    <AlertTitle>You are offline.</AlertTitle>
+                    The application can't continue until you are online.
+                </Alert>
+            </Container>
         );
     } else {
         return <>{children}</>;

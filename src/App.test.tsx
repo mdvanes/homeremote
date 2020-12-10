@@ -14,6 +14,8 @@ const mockRootState: MockRootState = {
         displayName: "",
         error: false,
         isLoading: false,
+        isOffline: false,
+        isSignedIn: false,
     },
     appStatus: {
         status: "",
@@ -62,6 +64,7 @@ describe("App with Authentication", () => {
             authentication: {
                 ...mockRootState.authentication,
                 displayName: "SomeUser",
+                isSignedIn: true,
             },
         });
         expect(getByText("SomeStatus")).toBeInTheDocument();

@@ -5,12 +5,16 @@ import ApiBaseState from "../../../Reducers/state.types";
 export interface AuthenticationState extends ApiBaseState {
     id: number;
     displayName: string;
+    isOffline: boolean;
+    isSignedIn: boolean;
 }
 
 export const initialState: AuthenticationState = {
     id: 0,
     displayName: "",
     isLoading: false,
+    isOffline: false,
+    isSignedIn: false,
     error: false,
 };
 
@@ -55,11 +59,15 @@ const authenticationSlice = createSlice({
             draft.isLoading = initialState.isLoading;
             draft.id = payload.id;
             draft.displayName = payload.displayName;
+            draft.isOffline = payload.displayName === "OFFLINE";
+            draft.isSignedIn = payload.displayName !== "";
         });
         builder.addCase(fetchAuth.rejected, (draft, { error }): void => {
             draft.isLoading = initialState.isLoading;
             draft.id = initialState.id;
             draft.displayName = initialState.displayName;
+            draft.isOffline = initialState.isOffline;
+            draft.isSignedIn = initialState.isSignedIn;
             draft.error = error.message || "An error occurred";
         });
     },
