@@ -30,6 +30,8 @@ const mockRootState: MockRootState = {
         displayName: "John",
         error: false,
         isLoading: false,
+        isOffline: false,
+        isSignedIn: false,
     },
 };
 
