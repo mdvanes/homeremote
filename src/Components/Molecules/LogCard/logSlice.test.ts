@@ -1,6 +1,7 @@
 import logSliceReducer, {
     initialState,
     logInfo,
+    logUrgentInfo,
     logError,
     Severity,
     clearLog,
@@ -24,6 +25,26 @@ describe("logSlice", () => {
         });
     });
 
+    it("adds an info line on logInfoUrgent", () => {
+        const state = initialState;
+        const result = logSliceReducer(state, {
+            payload: "my info message",
+            type: logUrgentInfo.type,
+        });
+        expect(result).toEqual({
+            lines: [
+                {
+                    message: expect.stringContaining("my info message"),
+                    severity: Severity.INFO,
+                },
+            ],
+            urgentMessage: {
+                message: expect.stringContaining("my info message"),
+                severity: Severity.INFO,
+            },
+        });
+    });
+
     it("adds an error line on logError", () => {
         const state = initialState;
         const result = logSliceReducer(state, {
@@ -37,7 +58,10 @@ describe("logSlice", () => {
                     severity: Severity.ERROR,
                 },
             ],
-            urgentMessage: expect.stringContaining("my error message"),
+            urgentMessage: {
+                message: expect.stringContaining("my error message"),
+                severity: Severity.ERROR,
+            },
         });
     });
 

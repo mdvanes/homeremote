@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export enum Severity {
     INFO,
@@ -12,7 +12,7 @@ export interface Logline {
 
 export interface LogState {
     lines: Logline[];
-    urgentMessage: string | false;
+    urgentMessage: Logline | false;
 }
 
 export const initialState: LogState = {
@@ -30,17 +30,26 @@ const logSlice = createSlice({
     name: "loglines",
     initialState,
     reducers: {
-        logInfo: (draft, { payload }): void => {
+        logInfo: (draft, { payload }: PayloadAction<string>): void => {
             draft.lines.push({
                 message: writeLog("INFO: ", payload),
                 severity: Severity.INFO,
             });
         },
+        logUrgentInfo: (draft, { payload }: PayloadAction<string>): void => {
+            if (payload) {
+                const message = writeLog("INFO:", payload);
+                const logline = { message, severity: Severity.INFO };
+                draft.lines.push(logline);
+                draft.urgentMessage = logline;
+            }
+        },
         logError: (draft, { payload }): void => {
             if (payload) {
                 const message = writeLog("ERROR:", payload);
-                draft.lines.push({ message, severity: Severity.ERROR });
-                draft.urgentMessage = message;
+                const logline = { message, severity: Severity.ERROR };
+                draft.lines.push(logline);
+                draft.urgentMessage = logline;
             }
         },
         clearLog: (): LogState => {
@@ -49,6 +58,6 @@ const logSlice = createSlice({
     },
 });
 
-export const { logInfo, logError, clearLog } = logSlice.actions;
+export const { logInfo, logUrgentInfo, logError, clearLog } = logSlice.actions;
 
 export default logSlice.reducer;
