@@ -8,11 +8,11 @@
 // You can also remove this file if you'd prefer not to use a
 // service worker, and the Workbox build step will be skipped.
 
-import { clientsClaim } from "workbox-core";
+import { clientsClaim, RouteHandlerCallbackOptions } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { StaleWhileRevalidate } from "workbox-strategies";
+import { StaleWhileRevalidate, NetworkOnly } from "workbox-strategies";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -79,3 +79,23 @@ self.addEventListener("message", (event) => {
 });
 
 // Any other custom service worker logic can go here.
+
+// Return a fixed response when for "get current profile" when offline
+const networkOnly = new NetworkOnly();
+const profileCurrentHandler = async (params: RouteHandlerCallbackOptions) => {
+    // https://developers.google.com/web/tools/workbox/guides/advanced-recipes#offline_page_only
+    try {
+        // Attempt a network request.
+        return await networkOnly.handle(params);
+    } catch (error) {
+        // If it fails, return the fallback.
+        const fallbackObject = { id: -2, name: "", displayName: "OFFLINE" };
+        return new Response(JSON.stringify(fallbackObject));
+    }
+};
+
+registerRoute(
+    new RegExp("/api/profile/current"),
+    profileCurrentHandler,
+    "POST"
+);
