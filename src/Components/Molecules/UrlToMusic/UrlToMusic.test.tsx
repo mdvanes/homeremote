@@ -23,6 +23,7 @@ const renderUrlToMusic = (initialState: MockRootState) =>
 
 describe("UrlToMusic", () => {
     beforeEach(() => {
+        // TODO jest.useFakeTimers should be used, but it gives: Cannot read property 'useFakeTimers' of undefined
         const mockResponse: Partial<Response> = {
             ok: true,
             json: () =>
