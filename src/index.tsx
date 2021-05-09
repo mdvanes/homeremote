@@ -1,15 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
 import App, { AppProps } from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 // import reportWebVitals from './reportWebVitals';
-import rootReducer from "./Reducers";
-
-const store = configureStore({
-    reducer: rootReducer,
-});
+import { store } from "./store";
 
 const swCallbacks: AppProps["swCallbacks"] = {
     logSuccess: null,
