@@ -20,9 +20,22 @@ type DownloadListResponse =
     | { status: "received"; downloads: DownloadItem[] }
     | { status: "error" };
 
+type DownloadToggleResponse =
+    | { status: "received"; message: string }
+    | { status: "error" };
+
 export const getDownloadList = createAsyncThunk<DownloadListResponse>(
     `downloadList/getDownloadList`,
     async () => fetchToJson<DownloadListResponse>("/api/downloadlist")
+);
+
+export const pauseDownload = createAsyncThunk<DownloadToggleResponse, number>(
+    `downloadList/pauseDownload`,
+    async (id) =>
+        fetchToJson<DownloadToggleResponse>(
+            `/api/downloadlist/pauseDownload/${id}`
+        )
+    // TODO after sending id, also get the new getDownloadList
 );
 
 const initialState: DownloadListState = {

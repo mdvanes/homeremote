@@ -10,7 +10,11 @@ import {
     Typography,
 } from "@material-ui/core";
 import { PauseCircleFilled, PlayCircleFilled } from "@material-ui/icons";
-import { DownloadListState, getDownloadList } from "./downloadListSlice";
+import {
+    DownloadListState,
+    getDownloadList,
+    pauseDownload,
+} from "./downloadListSlice";
 import { useAppDispatch } from "../../../store";
 import { RootState } from "../../../Reducers";
 import { useSelector } from "react-redux";
@@ -34,15 +38,30 @@ const DownloadList: FC = () => {
         })();
     }, [dispatch]);
 
+    const handleClick = (id: number) => () => {
+        dispatch(pauseDownload(id));
+        // TODO handle response
+    };
+
     const listItems = downloads.map(
         ({ id, name, status, size, percentage }) => (
             <>
                 <ListItem key={`data-${id}`} divider>
-                    <Typography>
-                        {name} / {percentage}% / {status} / {size}
-                    </Typography>
-                    <IconButton color="secondary">
-                        <PauseCircleFilled />
+                    <div>
+                        <Typography variant="h6">{name}</Typography>
+                        <Typography>
+                            {id} down/up ▼0 kB/s ▲0 kB/s or "status" {status}
+                        </Typography>
+                        <Typography>
+                            {size} ({percentage}%) - ETA
+                        </Typography>
+                    </div>
+                    <IconButton color="secondary" onClick={handleClick(id)}>
+                        {status === "Downloading" ? (
+                            <PauseCircleFilled />
+                        ) : (
+                            <PlayCircleFilled />
+                        )}
                     </IconButton>
                 </ListItem>
                 <LinearProgress
@@ -58,22 +77,12 @@ const DownloadList: FC = () => {
     return (
         <List component={Paper}>
             {isLoading ? <LinearProgress /> : listItems}
-            <ListItem>
+            {/* <ListItem>
                 <Typography>file 1</Typography>
                 <IconButton color="primary">
                     <PlayCircleFilled />
                 </IconButton>
-                {/* <IconButton color="secondary">
-                    <PauseCircleFilled />
-                </IconButton> */}
-                {/* <LinearProgress
-                    color="primary"
-                    variant="determinate"
-                    value={50}
-                    style={{
-                        width: "100px",
-                    }}
-                /> */}
+                
             </ListItem>
             <Divider />
             <LinearProgress color="primary" variant="determinate" value={50} />
@@ -84,20 +93,13 @@ const DownloadList: FC = () => {
                 <IconButton color="secondary">
                     <PauseCircleFilled />
                 </IconButton>
-                {/* <LinearProgress
-                    color="secondary"
-                    variant="determinate"
-                    value={100}
-                    style={{
-                        width: "100px",
-                    }}
-                /> */}
+               
             </ListItem>
             <LinearProgress
                 color="secondary"
                 variant="determinate"
                 value={100}
-            />
+            /> */}
         </List>
     );
 };
