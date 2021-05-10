@@ -7,7 +7,7 @@
   "license": "MIT",
   "engine": "node >= 15.0.0",
   "scripts": {
-    "start:dev": "node writeGitInfo.js dev && BROWSER=none react-scripts start",
+    "start:dev": "node writeGitInfo.js dev && ESLINT_NO_DEV_ERRORS=true BROWSER=none react-scripts start",
     "lint": "eslint src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
     "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
