@@ -1,15 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { DownloadItem } from "../../../ApiTypes/downloadlist.types";
 import fetchToJson from "../../../fetchToJson";
 
-type DownloadStatus = "Stopped" | "Downloading";
+// type DownloadStatus = "Stopped" | "Downloading";
 
-interface DownloadItem {
-    id: number;
-    name: string;
-    percentage: number;
-    status: DownloadStatus;
-    size: string;
-}
+// interface DownloadItem {
+//     id: number;
+//     name: string;
+//     percentage: number;
+//     status: DownloadStatus;
+//     size: string;
+// }
 
 export interface DownloadListState {
     isLoading: boolean;
@@ -29,14 +30,29 @@ export const getDownloadList = createAsyncThunk<DownloadListResponse>(
     async () => fetchToJson<DownloadListResponse>("/api/downloadlist")
 );
 
-export const pauseDownload = createAsyncThunk<DownloadToggleResponse, number>(
+// TODO how to check for updates manually? long polling for now?
+
+export const pauseDownload = createAsyncThunk<void, number>(
     `downloadList/pauseDownload`,
-    async (id) =>
-        fetchToJson<DownloadToggleResponse>(
+    async (id, { dispatch }) => {
+        const json = await fetchToJson<DownloadToggleResponse>(
             `/api/downloadlist/pauseDownload/${id}`
-        )
-    // TODO after sending id, also get the new getDownloadList
+        );
+        if (json.status !== "received") {
+            console.log("not received", json);
+            // TODO throw new Error(`Can't set ${state}: ${json.status}`);
+        } else {
+            console.log("received", json);
+            // TODO dispatch(logInfo(`Switch ${id} ${state}`));
+        }
+        // TODO this is too fast
+        setTimeout(() => {
+            dispatch(getDownloadList());
+        }, 1000);
+    }
 );
+
+// TODO resumeDownload
 
 const initialState: DownloadListState = {
     isLoading: false,
