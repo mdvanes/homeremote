@@ -52,7 +52,26 @@ export const pauseDownload = createAsyncThunk<void, number>(
     }
 );
 
-// TODO resumeDownload
+export const resumeDownload = createAsyncThunk<void, number>(
+    `downloadList/resumeDownload`,
+    async (id, { dispatch }) => {
+        // alert("resume");
+        const json = await fetchToJson<DownloadToggleResponse>(
+            `/api/downloadlist/resumeDownload/${id}`
+        );
+        if (json.status !== "received") {
+            console.log("not received", json);
+            // TODO throw new Error(`Can't set ${state}: ${json.status}`);
+        } else {
+            console.log("received", json);
+            // TODO dispatch(logInfo(`Switch ${id} ${state}`));
+        }
+        // TODO fetch to resumeDownload is finished too fast
+        setTimeout(() => {
+            dispatch(getDownloadList());
+        }, 1000);
+    }
+);
 
 const initialState: DownloadListState = {
     isLoading: false,
