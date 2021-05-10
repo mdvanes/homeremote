@@ -1,49 +1,16 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import {
-    CircularProgress,
-    Divider,
-    IconButton,
     LinearProgress,
     List,
     ListItem,
     Paper,
     Typography,
 } from "@material-ui/core";
-import { PauseCircleFilled, PlayCircleFilled } from "@material-ui/icons";
-import {
-    DownloadListState,
-    getDownloadList,
-    pauseDownload,
-} from "./downloadListSlice";
+import { DownloadListState, getDownloadList } from "./downloadListSlice";
 import { useAppDispatch } from "../../../store";
 import { RootState } from "../../../Reducers";
 import { useSelector } from "react-redux";
-
-interface Props {
-    id: number;
-    isResumed: boolean;
-}
-
-const PauseToggle: FC<Props> = ({ isResumed, id }) => {
-    const dispatch = useAppDispatch();
-
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleClick = (id: number) => () => {
-        setIsLoading(true);
-        // TODO set loading icon on the button while waiting
-        dispatch(pauseDownload(id));
-        // TODO handle response
-    };
-
-    const button = (
-        <IconButton color="secondary" onClick={handleClick(id)}>
-            {isResumed ? <PauseCircleFilled /> : <PlayCircleFilled />}
-        </IconButton>
-    );
-
-    return isLoading ? <CircularProgress /> : button;
-};
+import PauseToggle from "./PauseToggle";
 
 const DownloadList: FC = () => {
     const dispatch = useAppDispatch();
@@ -80,7 +47,7 @@ const DownloadList: FC = () => {
             downloadSpeed,
             eta,
         }) => (
-            <>
+            <div key={id}>
                 <ListItem key={`data-${id}`} divider>
                     <div>
                         <Typography
@@ -118,7 +85,7 @@ const DownloadList: FC = () => {
                     variant="determinate"
                     value={percentage}
                 />
-            </>
+            </div>
         )
     );
 
