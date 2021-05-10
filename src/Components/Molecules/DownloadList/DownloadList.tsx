@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import {
     CircularProgress,
     Divider,
@@ -19,12 +19,37 @@ import { useAppDispatch } from "../../../store";
 import { RootState } from "../../../Reducers";
 import { useSelector } from "react-redux";
 
+interface Props {
+    id: number;
+    isResumed: boolean;
+}
+
+const PauseToggle: FC<Props> = ({ isResumed, id }) => {
+    const dispatch = useAppDispatch();
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleClick = (id: number) => () => {
+        setIsLoading(true);
+        // TODO set loading icon on the button while waiting
+        dispatch(pauseDownload(id));
+        // TODO handle response
+    };
+
+    const button = (
+        <IconButton color="secondary" onClick={handleClick(id)}>
+            {isResumed ? <PauseCircleFilled /> : <PlayCircleFilled />}
+        </IconButton>
+    );
+
+    return isLoading ? <CircularProgress /> : button;
+};
+
 const DownloadList: FC = () => {
     const dispatch = useAppDispatch();
     const { isLoading, downloads } = useSelector<RootState, DownloadListState>(
         (state: RootState) => state.downloadList
     );
-
     useEffect(() => {
         (async () => {
             const resultAction = await dispatch(getDownloadList());
@@ -38,31 +63,54 @@ const DownloadList: FC = () => {
         })();
     }, [dispatch]);
 
-    const handleClick = (id: number) => () => {
-        dispatch(pauseDownload(id));
-        // TODO handle response
-    };
+    // const handleClick = (id: number) => () => {
+    //     // TODO set loading icon on the button while waiting
+    //     dispatch(pauseDownload(id));
+    //     // TODO handle response
+    // };
 
     const listItems = downloads.map(
-        ({ id, name, status, size, percentage }) => (
+        ({
+            id,
+            name,
+            status,
+            size,
+            percentage,
+            uploadSpeed,
+            downloadSpeed,
+            eta,
+        }) => (
             <>
                 <ListItem key={`data-${id}`} divider>
                     <div>
-                        <Typography variant="h6">{name}</Typography>
-                        <Typography>
-                            {id} down/up ▼0 kB/s ▲0 kB/s or "status" {status}
+                        <Typography
+                            style={{
+                                fontWeight: "bold",
+                                wordBreak: "break-word",
+                            }}
+                        >
+                            [{id}] {name}
                         </Typography>
                         <Typography>
-                            {size} ({percentage}%) - ETA
+                            {status === "Downloading"
+                                ? `down/up ▼${downloadSpeed} kB/s ▲${uploadSpeed} kB/s`
+                                : status}
+                        </Typography>
+                        <Typography>
+                            {size} ({percentage}%)
+                            {status === "Downloading"
+                                ? ` | ${eta} remaining`
+                                : ""}
                         </Typography>
                     </div>
-                    <IconButton color="secondary" onClick={handleClick(id)}>
+                    {/* <IconButton color="secondary" onClick={handleClick(id)}>
                         {status === "Downloading" ? (
                             <PauseCircleFilled />
                         ) : (
                             <PlayCircleFilled />
                         )}
-                    </IconButton>
+                    </IconButton> */}
+                    <PauseToggle id={id} isResumed={status === "Downloading"} />
                 </ListItem>
                 <LinearProgress
                     key={`progress-${id}`}
