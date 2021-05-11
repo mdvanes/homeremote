@@ -2,16 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { DownloadItem } from "../../../ApiTypes/downloadlist.types";
 import fetchToJson from "../../../fetchToJson";
 
-// type DownloadStatus = "Stopped" | "Downloading";
-
-// interface DownloadItem {
-//     id: number;
-//     name: string;
-//     percentage: number;
-//     status: DownloadStatus;
-//     size: string;
-// }
-
 export interface DownloadListState {
     isLoading: boolean;
     downloads: DownloadItem[];
