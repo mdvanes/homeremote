@@ -1,16 +1,10 @@
 import { FC, useEffect } from "react";
-import {
-    LinearProgress,
-    List,
-    ListItem,
-    Paper,
-    Typography,
-} from "@material-ui/core";
+import { LinearProgress, List, Paper } from "@material-ui/core";
 import { DownloadListState, getDownloadList } from "./downloadListSlice";
 import { useAppDispatch } from "../../../store";
 import { RootState } from "../../../Reducers";
 import { useSelector } from "react-redux";
-import PauseToggle from "./PauseToggle";
+import DownloadListItem from "./DownloadListItem";
 
 const DownloadList: FC = () => {
     const dispatch = useAppDispatch();
@@ -30,91 +24,13 @@ const DownloadList: FC = () => {
         })();
     }, [dispatch]);
 
-    // const handleClick = (id: number) => () => {
-    //     // TODO set loading icon on the button while waiting
-    //     dispatch(pauseDownload(id));
-    //     // TODO handle response
-    // };
-
-    const listItems = downloads.map(
-        ({
-            id,
-            name,
-            status,
-            size,
-            percentage,
-            uploadSpeed,
-            downloadSpeed,
-            eta,
-        }) => (
-            <div key={id}>
-                <ListItem key={`data-${id}`} divider>
-                    <div>
-                        <Typography
-                            style={{
-                                fontWeight: "bold",
-                                wordBreak: "break-word",
-                            }}
-                        >
-                            [{id}] {name}
-                        </Typography>
-                        <Typography>
-                            {status === "Downloading"
-                                ? `down/up ▼${downloadSpeed} kB/s ▲${uploadSpeed} kB/s`
-                                : status}
-                        </Typography>
-                        <Typography>
-                            {size} ({percentage}%)
-                            {status === "Downloading"
-                                ? ` | ${eta} remaining`
-                                : ""}
-                        </Typography>
-                    </div>
-                    {/* <IconButton color="secondary" onClick={handleClick(id)}>
-                        {status === "Downloading" ? (
-                            <PauseCircleFilled />
-                        ) : (
-                            <PlayCircleFilled />
-                        )}
-                    </IconButton> */}
-                    <PauseToggle id={id} isResumed={status === "Downloading"} />
-                </ListItem>
-                <LinearProgress
-                    key={`progress-${id}`}
-                    color={percentage === 100 ? "secondary" : "primary"}
-                    variant="determinate"
-                    value={percentage}
-                />
-            </div>
-        )
-    );
+    const listItems = downloads.map<JSX.Element>((item) => (
+        <DownloadListItem key={item.id} item={item} />
+    ));
 
     return (
         <List component={Paper}>
             {isLoading ? <LinearProgress /> : listItems}
-            {/* <ListItem>
-                <Typography>file 1</Typography>
-                <IconButton color="primary">
-                    <PlayCircleFilled />
-                </IconButton>
-                
-            </ListItem>
-            <Divider />
-            <LinearProgress color="primary" variant="determinate" value={50} />
-            <ListItem divider>
-                <Typography>
-                    file 2 name / percentage / status / type / bytes
-                </Typography>
-                <IconButton color="secondary">
-                    <PauseCircleFilled />
-                </IconButton>
-               
-            </ListItem>
-            <LinearProgress
-                color="secondary"
-                variant="determinate"
-                value={100}
-            /> */}
         </List>
     );
 };
