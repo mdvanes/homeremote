@@ -23,7 +23,6 @@ const renderUrlToMusic = (initialState: MockRootState) =>
 
 describe("UrlToMusic", () => {
     beforeEach(() => {
-        // TODO jest.useFakeTimers should be used, but it gives: Cannot read property 'useFakeTimers' of undefined
         const mockResponse: Partial<Response> = {
             ok: true,
             json: () =>
@@ -40,7 +39,19 @@ describe("UrlToMusic", () => {
     });
 
     it("looks like a form", () => {
-        const { asFragment } = renderUrlToMusic(mockRootState);
+        const { asFragment } = renderUrlToMusic({
+            ...mockRootState,
+            urlToMusic: {
+                ...initialState,
+                form: {
+                    ...initialState.form,
+                    album: {
+                        ...initialState.form.album,
+                        value: "Mock Initial Album Name",
+                    },
+                },
+            },
+        });
 
         expect(asFragment()).toMatchSnapshot();
     });
