@@ -26,14 +26,14 @@ const Dashboard: FC = () => {
             <Grid item xs={12} md>
                 <Streams />
             </Grid>
+            <Grid item xs={12} md={3}>
+                <DownloadList />
+            </Grid>
             <Grid item xs={12} md={2}>
                 <UrlToMusic />
-            </Grid>
-            <Grid item xs={12} md={2}>
+                {/* TODO more space for Divider? */}
+                <div style={{ height: 8 }}></div>
                 <LogCard />
-            </Grid>
-            <Grid item xs={12} md={2}>
-                <DownloadList />
             </Grid>
         </Grid>
     );
