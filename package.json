@@ -10,7 +10,7 @@
     "start:dev": "node writeGitInfo.js dev && ESLINT_NO_DEV_ERRORS=true BROWSER=none react-scripts start",
     "lint": "eslint src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
-    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
+    "test": "react-scripts test",
     "test:ci": "CI=true npm run test -- --coverage --colors",
     "validate": "node writeGitInfo.js && npm run lint && npm run typecheck && npm run test:ci",
     "prebuild": "npm run validate",
