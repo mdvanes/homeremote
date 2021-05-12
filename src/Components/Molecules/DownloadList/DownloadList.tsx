@@ -5,6 +5,7 @@ import { useAppDispatch } from "../../../store";
 import { RootState } from "../../../Reducers";
 import { useSelector } from "react-redux";
 import DownloadListItem from "./DownloadListItem";
+import { logError } from "../LogCard/logSlice";
 
 const UPDATE_INTERVAL_MS = 30000;
 
@@ -16,12 +17,8 @@ const DownloadList: FC = () => {
 
     const getNewState = useCallback(async () => {
         const resultAction = await dispatch(getDownloadList());
-        if (getDownloadList.fulfilled.match(resultAction)) {
-            // TODO simplify
-            console.log("alles klar herr commissar");
-        } else {
-            // TODO snackbar
-            console.error("something kaput");
+        if (!getDownloadList.fulfilled.match(resultAction)) {
+            dispatch(logError("GetDownloadList failed"));
         }
     }, [dispatch]);
 
