@@ -28,8 +28,13 @@ const renderDrawerMenu = (initialState: MockRootState) =>
         },
     });
 
+// https://codeburst.io/module-mocking-in-jest-ff174397e5ff
 jest.mock("react-router-dom", () => ({
+    // Needed to overwite default in this syntax
+    __esModule: true,
+    default: "mock-default",
     Link: "mock-link",
+    // This just returns the string mock-link instead of an <mock-link> element:  Link: () => "mock-link",
 }));
 
 const fetchSpy = jest.spyOn(window, "fetch");

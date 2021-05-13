@@ -11,6 +11,11 @@ jest.mock("../../Molecules/LogCard/LogCard", () => "mock-log-card");
 
 jest.mock("../../Molecules/UrlToMusic/UrlToMusic", () => "mock-url-to-music");
 
+jest.mock(
+    "../../Molecules/DownloadList/DownloadList",
+    () => "mock-download-list"
+);
+
 jest.mock("@mdworld/homeremote-stream-player", () => "mock-stream-player");
 
 describe("Dashboard page", () => {

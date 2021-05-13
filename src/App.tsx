@@ -17,6 +17,7 @@ import AppBar from "./Components/Molecules/AppBar/AppBar";
 import DrawerMenu from "./Components/Molecules/DrawerMenu/DrawerMenu";
 import { logUrgentInfo } from "./Components/Molecules/LogCard/logSlice";
 import UrlToMusic from "./Components/Molecules/UrlToMusic/UrlToMusic";
+import DownloadList from "./Components/Molecules/DownloadList/DownloadList";
 
 // TODO typescript should be upgraded but causes problem: https://github.com/facebook/create-react-app/issues/10110#issuecomment-731109866
 
@@ -50,7 +51,7 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                     <Container maxWidth="xl">
                         <Route exact path="/" component={HomeAutomation} />
                         <Route exact path="/music" component={UrlToMusic} />
-                        <Route exact path="/gears" component={HomeAutomation} />
+                        <Route exact path="/gears" component={DownloadList} />
                         <Route exact path="/dashboard" component={Dashboard} />
                         <Route exact path="/streams" component={Streams} />
                         <Route exact path="/about" component={Log} />

@@ -39,7 +39,19 @@ describe("UrlToMusic", () => {
     });
 
     it("looks like a form", () => {
-        const { asFragment } = renderUrlToMusic(mockRootState);
+        const { asFragment } = renderUrlToMusic({
+            ...mockRootState,
+            urlToMusic: {
+                ...initialState,
+                form: {
+                    ...initialState.form,
+                    album: {
+                        ...initialState.form.album,
+                        value: "Mock Initial Album Name",
+                    },
+                },
+            },
+        });
 
         expect(asFragment()).toMatchSnapshot();
     });
