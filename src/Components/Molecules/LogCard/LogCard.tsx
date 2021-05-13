@@ -50,16 +50,19 @@ const Log: FC = () => {
             </CardContent>
             <CardContent classes={{ root: classes.content }}>
                 {loglines &&
-                    loglines.map((logline, index) => (
-                        <Typography
-                            key={index}
-                            variant="body2"
-                            classes={{ root: classes.message }}
-                        >
-                            {SeverityIcons[logline.severity]}
-                            {logline.message}
-                        </Typography>
-                    ))}
+                    loglines
+                        .slice()
+                        .reverse()
+                        .map((logline, index) => (
+                            <Typography
+                                key={index}
+                                variant="body2"
+                                classes={{ root: classes.message }}
+                            >
+                                {SeverityIcons[logline.severity]}
+                                {logline.message}
+                            </Typography>
+                        ))}
             </CardContent>
             <CardActions>
                 <Button onClick={handleClearLog}>clear</Button>
