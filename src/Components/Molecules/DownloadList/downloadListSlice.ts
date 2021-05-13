@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { DownloadItem } from "../../../ApiTypes/downloadlist.types";
 import fetchToJson from "../../../fetchToJson";
+import { logError, logInfo } from "../LogCard/logSlice";
 
 export interface DownloadListState {
     isLoading: boolean;
@@ -20,48 +21,29 @@ export const getDownloadList = createAsyncThunk<DownloadListResponse>(
     async () => fetchToJson<DownloadListResponse>("/api/downloadlist")
 );
 
-// TODO how to check for updates manually? long polling for now?
-
-export const pauseDownload = createAsyncThunk<void, number>(
-    `downloadList/pauseDownload`,
-    async (id, { dispatch }) => {
-        const json = await fetchToJson<DownloadToggleResponse>(
-            `/api/downloadlist/pauseDownload/${id}`
-        );
-        if (json.status !== "received") {
-            console.log("not received", json);
-            // TODO throw new Error(`Can't set ${state}: ${json.status}`);
-        } else {
-            console.log("received", json);
-            // TODO dispatch(logInfo(`Switch ${id} ${state}`));
+const toggleDownload = (endpoint: "resumeDownload" | "pauseDownload") =>
+    createAsyncThunk<void, number>(
+        `downloadList/${endpoint}`,
+        async (id, { dispatch }) => {
+            const json = await fetchToJson<DownloadToggleResponse>(
+                `/api/downloadlist/${endpoint}/${id}`
+            );
+            if (json.status !== "received") {
+                dispatch(
+                    logError(`Can't toggle download ${id}: ${json.status}`)
+                );
+            } else {
+                dispatch(logInfo(`Toggle download ${id}`));
+            }
+            // NOTE: fetch to resumeDownload is finished before getDownloadList can give a new result
+            setTimeout(() => {
+                dispatch(getDownloadList());
+            }, 1000);
         }
-        // TODO this is too fast
-        setTimeout(() => {
-            dispatch(getDownloadList());
-        }, 1000);
-    }
-);
+    );
 
-export const resumeDownload = createAsyncThunk<void, number>(
-    `downloadList/resumeDownload`,
-    async (id, { dispatch }) => {
-        // alert("resume");
-        const json = await fetchToJson<DownloadToggleResponse>(
-            `/api/downloadlist/resumeDownload/${id}`
-        );
-        if (json.status !== "received") {
-            console.log("not received", json);
-            // TODO throw new Error(`Can't set ${state}: ${json.status}`);
-        } else {
-            console.log("received", json);
-            // TODO dispatch(logInfo(`Switch ${id} ${state}`));
-        }
-        // TODO fetch to resumeDownload is finished too fast
-        setTimeout(() => {
-            dispatch(getDownloadList());
-        }, 1000);
-    }
-);
+export const pauseDownload = toggleDownload("pauseDownload");
+export const resumeDownload = toggleDownload("resumeDownload");
 
 const initialState: DownloadListState = {
     isLoading: false,
@@ -74,7 +56,6 @@ const downloadListSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getDownloadList.pending, (draft, { payload }): void => {
-            // draft.error = initialState.error;
             draft.isLoading = true;
         });
         builder.addCase(
@@ -90,11 +71,8 @@ const downloadListSlice = createSlice({
         builder.addCase(getDownloadList.rejected, (draft, { error }): void => {
             draft.isLoading = initialState.isLoading;
             draft.downloads = [];
-            // draft.error = error.message || "An error occurred";
         });
     },
 });
-
-// export const {} = downloadListSlice.actions;
 
 export default downloadListSlice.reducer;
