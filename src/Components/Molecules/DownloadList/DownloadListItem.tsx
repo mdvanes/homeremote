@@ -2,7 +2,7 @@ import { FC } from "react";
 import { LinearProgress, ListItem, Typography } from "@material-ui/core";
 import PauseToggle from "./PauseToggle";
 import { DownloadItem } from "../../../ApiTypes/downloadlist.types";
-import useStyles from "./DownloadListItem.styles";
+import useStyles, { useListItemStyles } from "./DownloadListItem.styles";
 
 interface Props {
     item: DownloadItem;
@@ -21,11 +21,12 @@ const DownloadListItem: FC<Props> = ({
         eta,
     },
 }) => {
+    const listItemClasses = useListItemStyles();
     const classes = useStyles();
     const isDownloading = simpleState === "downloading";
     return (
         <>
-            <ListItem divider classes={classes}>
+            <ListItem divider classes={listItemClasses}>
                 <div className={classes.main}>
                     <Typography className={classes.name}>{name}</Typography>
                     <Typography variant="body2">
