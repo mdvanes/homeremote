@@ -45,7 +45,7 @@ const toggleDownload = (endpoint: "resumeDownload" | "pauseDownload") =>
 export const pauseDownload = toggleDownload("pauseDownload");
 export const resumeDownload = toggleDownload("resumeDownload");
 
-const initialState: DownloadListState = {
+export const initialState: DownloadListState = {
     isLoading: false,
     downloads: [],
 };
