@@ -1,11 +1,35 @@
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import React from "react";
+import { DownloadItem } from "../../../ApiTypes/downloadlist.types";
 import { RootState } from "../../../Reducers";
 import { renderWithProviders } from "../../../testHelpers";
 import DownloadList from "./DownloadList";
 import downloadListReducer, { initialState } from "./downloadListSlice";
 
 const fetchSpy = jest.spyOn(window, "fetch");
+
+const mockDownload: DownloadItem = {
+    id: 14,
+    name: "SomeName",
+    state: "SomeState",
+    simpleState: "downloading",
+    uploadSpeed: "100 kB",
+    downloadSpeed: "200 kB",
+    eta: "100H",
+    percentage: 50,
+    size: "4GB",
+};
+
+const createMockResponse = (mockDownload: DownloadItem): Partial<Response> => {
+    return {
+        ok: true,
+        json: () =>
+            Promise.resolve({
+                status: "received",
+                downloads: [mockDownload],
+            }),
+    };
+};
 
 describe("DownloadList", () => {
     type MockRootState = Pick<RootState, "downloadList">;
@@ -17,26 +41,7 @@ describe("DownloadList", () => {
         });
 
     beforeEach(() => {
-        const mockResponse: Partial<Response> = {
-            ok: true,
-            json: () =>
-                Promise.resolve({
-                    status: "received",
-                    downloads: [
-                        {
-                            id: 14,
-                            name: "SomeName",
-                            state: "SomeState",
-                            simpleState: "downloading",
-                            uploadSpeed: "100 kB",
-                            downloadSpeed: "200 kB",
-                            eta: "100H",
-                            percentage: 50,
-                            size: "4GB",
-                        },
-                    ],
-                }),
-        };
+        const mockResponse = createMockResponse(mockDownload);
         fetchSpy.mockResolvedValue(mockResponse as Response);
         jest.useFakeTimers();
     });
@@ -72,28 +77,13 @@ describe("DownloadList", () => {
 
         const toggleButton = screen.getByRole("button");
 
-        const mockResponse: Partial<Response> = {
-            ok: true,
-            json: () =>
-                Promise.resolve({
-                    status: "received",
-                    downloads: [
-                        {
-                            id: 14,
-                            name: "SomeName",
-                            state: "SomePausedState",
-                            simpleState: "paused",
-                            uploadSpeed: "100 kB",
-                            downloadSpeed: "200 kB",
-                            eta: "100H",
-                            percentage: 50,
-                            size: "4GB",
-                        },
-                    ],
-                }),
-        };
+        const mockResponse = createMockResponse({
+            ...mockDownload,
+            state: "SomePausedState",
+            simpleState: "paused",
+        });
         fetchSpy.mockReset();
-        // Fetch for pauseDownload and getDownloads (on interval)
+        // Fetch for pauseDownload and getDownloadList (on interval)
         fetchSpy.mockResolvedValue(mockResponse as Response);
 
         expect(fetchSpy).not.toBeCalled();
