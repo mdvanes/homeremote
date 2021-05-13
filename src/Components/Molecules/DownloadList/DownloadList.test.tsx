@@ -1,4 +1,4 @@
-import { screen, waitFor } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import React from "react";
 import { RootState } from "../../../Reducers";
 import { renderWithProviders } from "../../../testHelpers";
@@ -38,6 +38,7 @@ describe("DownloadList", () => {
                 }),
         };
         fetchSpy.mockResolvedValue(mockResponse as Response);
+        jest.useFakeTimers();
     });
 
     it("renders download info", async () => {
@@ -57,5 +58,56 @@ describe("DownloadList", () => {
         expect(screen.getByText(/4GB/)).toBeInTheDocument();
         expect(screen.getByText(/50%/)).toBeInTheDocument();
         expect(screen.getByText(/100H remaining/)).toBeInTheDocument();
+    });
+
+    it("can toggle download", async () => {
+        renderDownloadList({
+            downloadList: initialState,
+        });
+
+        await waitFor(() => {
+            expect(screen.getByText("SomeName")).toBeInTheDocument();
+        });
+        expect(screen.queryByText("SomePausedState")).not.toBeInTheDocument();
+
+        const toggleButton = screen.getByRole("button");
+
+        const mockResponse: Partial<Response> = {
+            ok: true,
+            json: () =>
+                Promise.resolve({
+                    status: "received",
+                    downloads: [
+                        {
+                            id: 14,
+                            name: "SomeName",
+                            state: "SomePausedState",
+                            simpleState: "paused",
+                            uploadSpeed: "100 kB",
+                            downloadSpeed: "200 kB",
+                            eta: "100H",
+                            percentage: 50,
+                            size: "4GB",
+                        },
+                    ],
+                }),
+        };
+        fetchSpy.mockReset();
+        // Fetch for pauseDownload and getDownloads (on interval)
+        fetchSpy.mockResolvedValue(mockResponse as Response);
+
+        expect(fetchSpy).not.toBeCalled();
+        fireEvent.click(toggleButton);
+
+        await waitFor(() => {
+            expect(screen.getByText("SomePausedState")).toBeInTheDocument();
+        });
+        expect(screen.queryByText("SomeState")).not.toBeInTheDocument();
+
+        expect(fetchSpy).toBeCalledTimes(2);
+        expect(fetchSpy).toBeCalledWith(
+            "/api/downloadlist/pauseDownload/14",
+            expect.objectContaining({})
+        );
     });
 });
