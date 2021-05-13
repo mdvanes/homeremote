@@ -23,13 +23,17 @@ exports[`Dashboard page contains all the control components 1`] = `
         </div>
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-2"
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
       >
-        <mock-url-to-music />
+        <mock-download-list />
       </div>
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-2"
       >
+        <mock-url-to-music />
+        <div
+          class="MuiBox-root MuiBox-root"
+        />
         <mock-log-card />
       </div>
     </div>
