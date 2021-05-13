@@ -25,8 +25,8 @@ const DownloadListItem: FC<Props> = ({
     const isDownloading = simpleState === "downloading";
     return (
         <>
-            <ListItem divider>
-                <div>
+            <ListItem divider classes={classes}>
+                <div className={classes.main}>
                     <Typography className={classes.name}>{name}</Typography>
                     <Typography variant="body2">
                         {isDownloading
