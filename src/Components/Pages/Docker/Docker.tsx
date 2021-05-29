@@ -15,7 +15,7 @@ const Docker: FC = () => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
     return (
-        <div style={{ fontFamily: "Roboto", maxWidth: "800px" }}>
+        <div style={{ fontFamily: "Roboto" }}>
             <DockerList
                 url={process.env.REACT_APP_BASE_URL || ""}
                 onError={(err: string) =>
