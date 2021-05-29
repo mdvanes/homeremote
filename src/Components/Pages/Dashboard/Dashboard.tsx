@@ -3,6 +3,7 @@ import { Box, Grid } from "@material-ui/core";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 import LogCard from "../../Molecules/LogCard/LogCard";
 import Streams from "../Streams/Streams";
+import Docker from "../Docker/Docker";
 import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 
 import { makeStyles } from "@material-ui/core";
@@ -25,6 +26,8 @@ const Dashboard: FC = () => {
             </Grid>
             <Grid item xs={12} md>
                 <Streams />
+                <Box marginTop={2} />
+                <Docker />
             </Grid>
             <Grid item xs={12} md={3}>
                 <DownloadList />
