@@ -1,29 +1,32 @@
-import React, { FC } from "react";
-import { DockerListMod } from "@mdworld/homeremote-dockerlist";
+import { FC } from "react";
+import { DockerListMod, reactDomStyleT } from "@mdworld/homeremote-dockerlist";
 import { useDispatch } from "react-redux";
 import { logError } from "../../Molecules/LogCard/logSlice";
 import theme from "../../../theme";
+import { Card } from "@material-ui/core";
 
 const DockerList = DockerListMod.make;
 
 const Docker: FC = () => {
     const dispatch = useDispatch();
-    const style = {
+    const confirmButtonStyle: React.CSSProperties = {
         backgroundColor: theme.palette.primary.light,
         color: "white",
-        // Workaround for Rescript opaque type
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
+    };
+
     return (
-        <div style={{ fontFamily: "Roboto" }}>
+        <Card>
             <DockerList
                 url={process.env.REACT_APP_BASE_URL || ""}
                 onError={(err: string) =>
                     dispatch(logError(`Dockerlist failure: ${err.toString()}`))
                 }
-                confirmButtonStyle={style}
+                confirmButtonStyle={
+                    // Workaround for Rescript opaque type
+                    (confirmButtonStyle as unknown) as reactDomStyleT
+                }
             />
-        </div>
+        </Card>
     );
 };
 
