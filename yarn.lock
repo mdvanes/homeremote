@@ -2211,10 +2211,10 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
-"@mdworld/homeremote-dockerlist@^1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@mdworld/homeremote-dockerlist/-/homeremote-dockerlist-1.7.2.tgz#d64e414543843a29d658ea400e0df186adc1f2a8"
-  integrity sha512-vRrZiat04PMvtxhF2GvQ5VJiersuoARCDoqmimTBuzkyGJTN3JEHVJ3v0JWH9e/Jwnvi9rm1t0aIZyIQhzMFAg==
+"@mdworld/homeremote-dockerlist@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/@mdworld/homeremote-dockerlist/-/homeremote-dockerlist-1.7.3.tgz#3dc3408ee57365738ce2d0ca1f27cd619c0ecf67"
+  integrity sha512-dIDWY/Ziz4HZsHRP5c9bvj6k6j/Y+0FpSRPhqfpSYsvHgQ4+WaMY7tjFIHeYqs4Jdj6wxq297zMwoNbMjNWRCg==
   dependencies:
     "@rescript/react" "^0.10.3"
     bs-fetch "^0.6.2"
