@@ -18,6 +18,8 @@ jest.mock(
 
 jest.mock("@mdworld/homeremote-stream-player", () => "mock-stream-player");
 
+jest.mock("../../Pages/Docker/Docker", () => "mock-docker");
+
 describe("Dashboard page", () => {
     it("contains all the control components", () => {
         const { baseElement } = render(<Dashboard />);
