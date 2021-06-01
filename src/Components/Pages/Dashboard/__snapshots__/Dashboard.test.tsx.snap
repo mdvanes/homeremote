@@ -21,6 +21,10 @@ exports[`Dashboard page contains all the control components 1`] = `
             url=""
           />
         </div>
+        <div
+          class="MuiBox-root MuiBox-root"
+        />
+        <mock-docker />
       </div>
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
