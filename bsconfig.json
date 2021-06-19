@@ -1,0 +1,19 @@
+{
+    "name": "homeremote",    
+    "sources": [
+        {
+            "dir": "src",
+            "subdirs": false
+        }
+    ],
+    "package-specs": [
+        {
+            "module": "commonjs",
+            "in-source": false
+        }
+    ],
+    "suffix": ".bs.js",
+    "reason": { "react-jsx": 3 },
+    "bs-dependencies": ["@jsiebern/bs-material-ui"],
+    "namespace": true
+}

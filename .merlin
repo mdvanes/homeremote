@@ -1,0 +1,12 @@
+####{BSB GENERATED: NO EDIT
+B lib/bs
+FLG -open Homeremote
+FLG -ppx '/home/martin/ZNoBackup/repos/hr/homeremote-client/node_modules/rescript/linux/bsc.exe -as-ppx -bs-jsx 3'
+S /home/martin/ZNoBackup/repos/hr/homeremote-client/node_modules/rescript/lib/ocaml
+B /home/martin/ZNoBackup/repos/hr/homeremote-client/node_modules/rescript/lib/ocaml
+FLG -w +a-4-9-20-40-41-42-50-61-102
+S /home/martin/ZNoBackup/repos/hr/homeremote-client/node_modules/@jsiebern/bs-material-ui/lib/ocaml
+B /home/martin/ZNoBackup/repos/hr/homeremote-client/node_modules/@jsiebern/bs-material-ui/lib/ocaml
+S src
+B lib/bs/src
+####BSB GENERATED: NO EDIT}
