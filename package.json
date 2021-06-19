@@ -7,7 +7,7 @@
   "license": "MIT",
   "engine": "node >= 15.0.0",
   "scripts": {
-    "start:dev": "yarn rescript && node writeGitInfo.js dev && ESLINT_NO_DEV_ERRORS=true BROWSER=none react-scripts start",
+    "start:dev": "yarn rescript build -with-deps && node writeGitInfo.js dev && ESLINT_NO_DEV_ERRORS=true BROWSER=none react-scripts start",
     "lint": "eslint src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
     "test": "react-scripts test",
