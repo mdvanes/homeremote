@@ -12,6 +12,7 @@ polymer\.sublime-workspace
 
 # Rescript dummy files
 /lib/bs
+/src/Dummy.bs.js
 
 # dependencies
 /node_modules
