@@ -1,6 +1,6 @@
 {
   "name": "homeremote",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "private": true,
   "repository": "https://github.com/mdvanes/homeremote",
   "author": "M.D. van Es",
@@ -15,7 +15,8 @@
     "validate": "node writeGitInfo.js && npm run lint && npm run typecheck && npm run test:ci",
     "prebuild": "npm run validate",
     "build": "npm run prebuild && react-scripts build",
-    "deploy": "cp -r build/* ../homeremote-server/client"
+    "deploy": "cp -r build/* ../homeremote-server/client",
+    "postinstall": "yarn rescript build -with-deps"
   },
   "dependencies": {
     "@material-ui/core": "^4.9.5",
