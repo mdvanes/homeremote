@@ -7,12 +7,13 @@
   "license": "MIT",
   "engine": "node >= 15.0.0",
   "scripts": {
-    "start:dev": "yarn rescript build -with-deps && node writeGitInfo.js dev && ESLINT_NO_DEV_ERRORS=true BROWSER=none react-scripts start",
+    "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
+    "start:dev": "yarn rescript build -with-deps && yarn writeGitInfo dev && ESLINT_NO_DEV_ERRORS=true BROWSER=none react-scripts start",
     "lint": "eslint src/**/*.{ts,tsx}",
     "typecheck": "tsc --noEmit",
     "test": "react-scripts test",
     "test:ci": "CI=true npm run test -- --coverage --colors",
-    "validate": "node writeGitInfo.js && npm run lint && npm run typecheck && npm run test:ci",
+    "validate": "yarn writeGitInfo && npm run lint && npm run typecheck && npm run test:ci",
     "prebuild": "npm run validate",
     "build": "npm run prebuild && react-scripts build",
     "deploy": "cp -r build/* ../homeremote-server/client",
@@ -33,6 +34,7 @@
     "react-scripts": "^4.0.3",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "ts-node": "^10.0.0",
     "web-vitals": "^0.2.4"
   },
   "devDependencies": {
@@ -41,6 +43,7 @@
     "@testing-library/react": "^11.0.4",
     "@testing-library/user-event": "^12.1.7",
     "@types/css-mediaquery": "^0.1.0",
+    "@types/git-rev-sync": "^2.0.0",
     "@types/jest": "^26.0.14",
     "@types/react-dom": "^17.0.0",
     "@types/react-redux": "^7.1.7",

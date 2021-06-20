@@ -1,5 +1,5 @@
-const fs = require("fs");
-const git = require("git-rev-sync");
+import fs from "fs";
+import git from "git-rev-sync";
 
 const DEV = "DEV";
 const PROD = "PROD";
@@ -11,6 +11,11 @@ const json = JSON.stringify({
     branch: git.branch(),
 });
 
-console.log(`Setting gitinfo.json with ${json}`);
+const run = () => {
+    console.log(`Setting gitinfo.json with ${json}`);
+    fs.writeFile("src/gitinfo.json", json, "utf8", () => {
+        /* no-op */
+    });
+};
 
-fs.writeFile("src/gitinfo.json", json, "utf8", () => {});
+run();
