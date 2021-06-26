@@ -22,10 +22,14 @@ const FILL_IN_THIS_FIELD = "Fill in this field";
 const UrlToMusic: FC = () => {
     const dispatch = useDispatch();
 
-    const { error: errorMessage, form, isLoading, result } = useSelector<
-        RootState,
-        UrlToMusicState
-    >((state: RootState) => state.urlToMusic);
+    const {
+        error: errorMessage,
+        form,
+        isLoading,
+        result,
+    } = useSelector<RootState, UrlToMusicState>(
+        (state: RootState) => state.urlToMusic
+    );
 
     const validateGetInfo = (): boolean => {
         if (form.url.value === "") {
