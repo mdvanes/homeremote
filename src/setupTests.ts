@@ -14,15 +14,15 @@ interface StyleSheetOptionsWithName extends StyleSheetOptions {
 
 jest.mock(
     "@material-ui/styles/createGenerateClassName",
-    () => (): GenerateId => (rule, styleSheet): string => {
-        if (styleSheet) {
-            const { options } = styleSheet;
-            const {
-                name,
-                classNamePrefix,
-            } = options as StyleSheetOptionsWithName;
-            return `${name ?? classNamePrefix}-${rule.key}`;
+    () =>
+        (): GenerateId =>
+        (rule, styleSheet): string => {
+            if (styleSheet) {
+                const { options } = styleSheet;
+                const { name, classNamePrefix } =
+                    options as StyleSheetOptionsWithName;
+                return `${name ?? classNamePrefix}-${rule.key}`;
+            }
+            return rule.key;
         }
-        return rule.key;
-    }
 );
