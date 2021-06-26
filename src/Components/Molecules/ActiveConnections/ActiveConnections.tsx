@@ -43,7 +43,7 @@ const run = (curr: string[], fn: any) => {
     //     console.log("Disconnected");
     // });
 
-    const socket = new WebSocket("ws://localhost:3002/wsv1");
+    const socket = new WebSocket("ws://localhost:3002/hr-events");
     socket.onopen = function () {
         console.log("Connected");
         socket.send(
@@ -58,6 +58,10 @@ const run = (curr: string[], fn: any) => {
         };
     };
 };
+
+// TODO fix servername and portnumber
+// TODO fix fallback when connection to ws not available
+// TODO use RTK Query for Observable
 
 const ActiveConnections: FC = () => {
     const [messages, setMessages] = useState<string[]>([]);
