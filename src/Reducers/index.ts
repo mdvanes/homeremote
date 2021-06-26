@@ -4,7 +4,7 @@ import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBa
 import authenticationReducer from "../Components/Providers/Authentication/authenticationSlice";
 import urlToMusicReducer from "../Components/Molecules/UrlToMusic/urlToMusicSlice";
 import downloadListReducer from "../Components/Molecules/DownloadList/downloadListSlice";
-
+import { downloadListApi } from "../Services/downloadListApi";
 import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
@@ -14,6 +14,7 @@ const rootReducer = combineReducers({
     authentication: authenticationReducer,
     urlToMusic: urlToMusicReducer,
     downloadList: downloadListReducer,
+    [downloadListApi.reducerPath]: downloadListApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
