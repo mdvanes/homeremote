@@ -14,15 +14,21 @@ export const activeConnectionsApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: "/" }),
     endpoints: (builder) => ({
         getMessages: builder.query<Message[], Channel>({
-            query: (channel) => `messages/${channel}`,
+            query: (channel) => "", // "hr-events", // `messages/${channel}`,
             async onCacheEntryAdded(
                 arg,
-                { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+                {
+                    updateCachedData,
+                    cacheDataLoaded,
+                    cacheEntryRemoved,
+                    getCacheEntry,
+                }
             ) {
                 // create a websocket connection when the cache subscription starts
-                const ws = new WebSocket("ws://localhost:3002/hr-events"); // ws://localhost:3002/hr-events
+                const ws = new WebSocket("ws://localhost:3002/hr-events");
                 console.log("new ws in api", ws);
 
+                // TODO this should not be needed when cacheDataLoaded is passed. Can't find a working example
                 // ws.onopen = () => {
                 //     ws.send(
                 //         JSON.stringify({
@@ -34,9 +40,10 @@ export const activeConnectionsApi = createApi({
 
                 try {
                     console.log("before cacheDataLoaded");
+                    // await getCacheEntry();
                     // wait for the initial query to resolve before proceeding
                     await cacheDataLoaded;
-                    // TODO this is never reached
+                    // TODO this is never reached_
                     console.log("cacheDataLoaded");
 
                     // when data is received from the socket connection to the server,

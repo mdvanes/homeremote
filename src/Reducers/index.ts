@@ -5,6 +5,7 @@ import authenticationReducer from "../Components/Providers/Authentication/authen
 import urlToMusicReducer from "../Components/Molecules/UrlToMusic/urlToMusicSlice";
 import downloadListReducer from "../Components/Molecules/DownloadList/downloadListSlice";
 import { downloadListApi } from "../Services/downloadListApi";
+import { activeConnectionsApi } from "../Services/activeConnectionsApi";
 import { combineReducers } from "redux";
 
 const rootReducer = combineReducers({
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
     urlToMusic: urlToMusicReducer,
     downloadList: downloadListReducer,
     [downloadListApi.reducerPath]: downloadListApi.reducer,
+    [activeConnectionsApi.reducerPath]: activeConnectionsApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
