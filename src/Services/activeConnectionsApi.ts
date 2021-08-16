@@ -50,12 +50,32 @@ export const activeConnectionsApi = createApi({
                     // update our query result with the received message
                     const listener = (event: MessageEvent) => {
                         const data = JSON.parse(event.data);
-                        // TODO this is never reached
+                        // TODO this is not reached immediately, but only when another browser window triggers a message
                         console.log("activeConnectionsApi", data);
                         // if (!isMessage(data) || data.channel !== arg) return;
 
                         updateCachedData((draft) => {
-                            draft.push(data);
+                            console.log(draft);
+                            // TODO this does not work
+                            // draft = data;
+                            // TODO why draft.push not available?
+                            // if (draft.push) {
+                            //     draft.push(data);
+                            // }
+                            // draft.push(data);
+                            /*
+                            Uncaught TypeError: draft.push is not a function
+    at activeConnectionsApi.ts:65
+    at e.produce (immerClass.ts:94)
+    at e.produceWithPatches (immerClass.ts:131)
+    at rtk-query.esm.js:620
+    at index.js:8
+    at redux-toolkit.esm.js:314
+    at Object.dispatch (redux.js:659)
+    at __spreadProps.updateCachedData (rtk-query.esm.js:1302)
+    at WebSocket.listener (activeConnectionsApi.ts:57)
+
+                            */
                         });
                     };
 
