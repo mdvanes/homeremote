@@ -14,7 +14,7 @@ export const activeConnectionsApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: "/" }),
     endpoints: (builder) => ({
         getMessages: builder.query<Message[], Channel>({
-            query: (channel) => "", // "hr-events", // `messages/${channel}`,
+            query: (channel) => "/api/downloadlist", // `messages/${channel}`, // This is a normal http request to set initial state? If "" is used, it will reject the thunk
             async onCacheEntryAdded(
                 arg,
                 {
@@ -43,7 +43,6 @@ export const activeConnectionsApi = createApi({
                     // await getCacheEntry();
                     // wait for the initial query to resolve before proceeding
                     await cacheDataLoaded;
-                    // TODO this is never reached_
                     console.log("cacheDataLoaded");
 
                     // when data is received from the socket connection to the server,
@@ -51,6 +50,7 @@ export const activeConnectionsApi = createApi({
                     // update our query result with the received message
                     const listener = (event: MessageEvent) => {
                         const data = JSON.parse(event.data);
+                        // TODO this is never reached
                         console.log("activeConnectionsApi", data);
                         // if (!isMessage(data) || data.channel !== arg) return;
 
@@ -62,19 +62,20 @@ export const activeConnectionsApi = createApi({
                     ws.addEventListener("message", listener);
                     console.log("addEventListener");
 
-                    ws.send(
-                        JSON.stringify({
-                            event: "events",
-                            data: "test",
-                        })
-                    );
-                } catch {
+                    // ws.send(
+                    //     JSON.stringify({
+                    //         event: "events",
+                    //         data: "test",
+                    //     })
+                    // );
+                } catch (err) {
                     // no-op in case `cacheEntryRemoved` resolves before `cacheDataLoaded`,
                     // in which case `cacheDataLoaded` will throw
-                    console.log("catch");
+                    console.log("catch", err);
                 }
                 // cacheEntryRemoved will resolve when the cache subscription is no longer active
                 await cacheEntryRemoved;
+                console.log("cacheEntryRemoved");
                 // perform cleanup steps once the `cacheEntryRemoved` promise resolves
                 ws.close();
             },
