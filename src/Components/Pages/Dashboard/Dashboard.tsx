@@ -8,6 +8,7 @@ import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 
 import { makeStyles } from "@material-ui/core";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
+import ActiveConnections from "../../Molecules/ActiveConnections/ActiveConnections";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -23,6 +24,7 @@ const Dashboard: FC = () => {
         <Grid container spacing={2} className={classes.container}>
             <Grid item xs={12} md={3}>
                 <SwitchBarList />
+                <ActiveConnections />
             </Grid>
             <Grid item xs={12} md>
                 <Streams />

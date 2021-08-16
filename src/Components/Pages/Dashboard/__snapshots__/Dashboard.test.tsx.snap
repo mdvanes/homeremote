@@ -30,6 +30,34 @@ exports[`Dashboard page contains all the control components 1`] = `
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
       >
         <mock-download-list />
+        <div
+          class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded"
+          style="margin-top: 10px;"
+        >
+          <div
+            class="MuiCardHeader-root"
+          >
+            <div
+              class="MuiCardHeader-content"
+            >
+              <span
+                class="MuiTypography-root MuiCardHeader-title MuiTypography-h5 MuiTypography-displayBlock"
+              >
+                Active connections
+              </span>
+            </div>
+          </div>
+          <div
+            class="MuiCardContent-root"
+          >
+            <p
+              class="MuiTypography-root MuiTypography-body1"
+            >
+              Active connections (WIP)
+            </p>
+            <ul />
+          </div>
+        </div>
       </div>
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-2"

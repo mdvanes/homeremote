@@ -10,6 +10,7 @@
 
 import { Card, CardContent, CardHeader, Typography } from "@material-ui/core";
 import { FC, useEffect, useState } from "react";
+import { useGetMessagesQuery } from "../../../Services/activeConnectionsApi";
 // import { io } from "socket.io-client";
 
 // const run = (curr: string[], fn: (x: string[]) => void) => {
@@ -65,10 +66,16 @@ const run = (curr: string[], fn: any) => {
 
 const ActiveConnections: FC = () => {
     const [messages, setMessages] = useState<string[]>([]);
+    const { data } = useGetMessagesQuery("redux");
+    // x.
 
     useEffect(() => {
-        run(messages, setMessages);
+        // run(messages, setMessages);
     }, []);
+
+    useEffect(() => {
+        console.log("data:", data);
+    }, [data]);
 
     return (
         <Card style={{ marginTop: 10 }}>

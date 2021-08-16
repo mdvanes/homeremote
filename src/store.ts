@@ -3,11 +3,15 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import rootReducer from "./Reducers";
 import { downloadListApi } from "./Services/downloadListApi";
+import { activeConnectionsApi } from "./Services/activeConnectionsApi";
 
 export const store = configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(downloadListApi.middleware),
+        getDefaultMiddleware().concat(
+            downloadListApi.middleware,
+            activeConnectionsApi.middleware
+        ),
 });
 
 setupListeners(store.dispatch);
