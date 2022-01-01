@@ -4,6 +4,7 @@ import { useAppDispatch } from "../../../store";
 import DownloadListItem from "./DownloadListItem";
 import { logError } from "../LogCard/logSlice";
 import { useGetDownloadListQuery } from "../../../Services/downloadListApi";
+import { Alert } from "@material-ui/lab";
 
 const UPDATE_INTERVAL_MS = 30000;
 
@@ -46,6 +47,11 @@ const DownloadList: FC = () => {
     return (
         <List component={Paper}>
             {loadProgress}
+            {error && (
+                <Alert severity="error">
+                    There is an error, data may be stale
+                </Alert>
+            )}
             {listItems}
         </List>
     );
