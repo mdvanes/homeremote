@@ -1,8 +1,10 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { CircularProgress, IconButton } from "@material-ui/core";
 import { PauseCircleFilled, PlayCircleFilled } from "@material-ui/icons";
-import { pauseDownload, resumeDownload } from "./downloadListSlice";
-import { useAppDispatch } from "../../../store";
+import {
+    usePauseDownloadMutation,
+    useResumeDownloadMutation,
+} from "../../../Services/downloadListApi";
 
 interface Props {
     id: number;
@@ -10,18 +12,17 @@ interface Props {
 }
 
 const PauseToggle: FC<Props> = ({ isResumed, id }) => {
-    const dispatch = useAppDispatch();
-
-    const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        setIsLoading(false);
-    }, [isResumed]);
+    const [resumeDownload, { isLoading: isResuming }] =
+        useResumeDownloadMutation();
+    const [pauseDownload, { isLoading: isPausing }] =
+        usePauseDownloadMutation();
 
     const handleClick = (id: number) => () => {
-        setIsLoading(true);
-        const action = isResumed ? pauseDownload(id) : resumeDownload(id);
-        dispatch(action);
+        if (isResumed) {
+            pauseDownload({ id });
+        } else {
+            resumeDownload({ id });
+        }
     };
 
     const button = (
@@ -30,7 +31,7 @@ const PauseToggle: FC<Props> = ({ isResumed, id }) => {
         </IconButton>
     );
 
-    return isLoading ? <CircularProgress /> : button;
+    return isPausing || isResuming ? <CircularProgress /> : button;
 };
 
 export default PauseToggle;
