@@ -1,14 +1,14 @@
-import { Card, CardContent } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
 import { FC } from "react";
 import Map from "./Map";
+import useStyles from "./Map.styles";
 
 const DataLora: FC = () => {
+    const classes = useStyles();
     return (
-        <Card style={{ marginTop: 10 }}>
-            <CardContent>
-                <Map />
-            </CardContent>
-        </Card>
+        <Paper className={classes.card}>
+            <Map />
+        </Paper>
     );
 };
 
