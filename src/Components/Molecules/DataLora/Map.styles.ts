@@ -1,10 +1,24 @@
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
+    page: {
+        height: "calc(100vh - 80px)",
+        overflow: "clip",
+    },
+    card: {
+        height: 300,
+        overflow: "clip",
+        marginTop: 10,
+        // paddingTop: "50%",
+        // position: "relative",
+    },
     map: {
         position: "relative",
+        // position: "absolute",
+        // top: 0,
+        height: "100%",
         "& .leaflet-container": {
-            height: "400px",
+            height: "100%",
         },
         "& .custom-controls": {
             position: "absolute",

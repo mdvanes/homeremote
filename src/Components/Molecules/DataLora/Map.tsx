@@ -1,4 +1,3 @@
-// import Head from "next/head";
 import { FC } from "react";
 import { MapContainer } from "react-leaflet";
 import useStyles from "./Map.styles";
@@ -12,18 +11,7 @@ const Map: FC = () => {
 
     return (
         <div className={classes.map}>
-            {/* <Head>
-                <title>DataLora Map</title>
-                <link
-                    rel="icon"
-                    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛰️</text></svg>"
-                />
-            </Head> */}
-            <MapContainer
-                // center={DEFAULT_CENTER}
-                zoom={20}
-                //   scrollWheelZoom={false}
-            >
+            <MapContainer zoom={20}>
                 <MapContent coords={coords} />
             </MapContainer>
             <div className="custom-controls">
