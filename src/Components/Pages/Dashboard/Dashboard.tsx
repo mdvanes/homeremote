@@ -9,6 +9,7 @@ import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import { makeStyles } from "@material-ui/core";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import ActiveConnections from "../../Molecules/ActiveConnections/ActiveConnections";
+import DataLora from "../../Molecules/DataLora/DataLora";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -28,6 +29,7 @@ const Dashboard: FC = () => {
             </Grid>
             <Grid item xs={12} md>
                 <Streams />
+                <DataLora />
                 <Box marginTop={2} />
                 <Docker />
             </Grid>
