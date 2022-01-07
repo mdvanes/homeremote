@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import ActiveConnections from "../../Molecules/ActiveConnections/ActiveConnections";
 import DataLora from "../../Molecules/DataLora/DataLora";
+import VideoStream from "../../Molecules/VideoStream/VideoStream";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -34,6 +35,8 @@ const Dashboard: FC = () => {
                 <Docker />
             </Grid>
             <Grid item xs={12} md={3}>
+                <VideoStream />
+                <Box marginTop={2} />
                 <DownloadList />
             </Grid>
             <Grid item xs={12} md={2}>
