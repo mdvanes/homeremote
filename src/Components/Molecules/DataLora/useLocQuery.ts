@@ -4,15 +4,8 @@ import { Item, QueryType } from "./types";
 const UPDATE_INTERVAL = 1000 * 60 * 60; // 1000 ms / 60 seconds / 60 minutes = 1x per hour
 
 const getCoords = async (type: string) => {
-    // const result = await fetch(`/api/coords?type=${type}`);
-    // const json: { data: Item[] } = await result.json();
-    const json: { data: Item[] } = {
-        data: [
-            { loc: [52, 5.1], time: "1" },
-            { loc: [52.1, 5.2], time: "1" },
-        ],
-    };
-    //   console.log(json);
+    const result = await fetch(`/api/datalora?type=${type}`);
+    const json: { data: Item[] } = await result.json();
     return json.data;
 };
 
