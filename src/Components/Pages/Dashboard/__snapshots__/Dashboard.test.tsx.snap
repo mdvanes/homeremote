@@ -21,6 +21,7 @@ exports[`Dashboard page contains all the control components 1`] = `
             url=""
           />
         </div>
+        <mock-datalora />
         <div
           class="MuiBox-root MuiBox-root"
         />
@@ -29,6 +30,10 @@ exports[`Dashboard page contains all the control components 1`] = `
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
       >
+        <mock-video-stream />
+        <div
+          class="MuiBox-root MuiBox-root"
+        />
         <mock-download-list />
       </div>
       <div

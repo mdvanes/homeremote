@@ -19,6 +19,7 @@ import { logUrgentInfo } from "./Components/Molecules/LogCard/logSlice";
 import UrlToMusic from "./Components/Molecules/UrlToMusic/UrlToMusic";
 import DownloadList from "./Components/Molecules/DownloadList/DownloadList";
 import Docker from "./Components/Pages/Docker/Docker";
+import DataLora from "./Components/Pages/DataLora/DataLora";
 
 // TODO typescript should be upgraded but causes problem: https://github.com/facebook/create-react-app/issues/10110#issuecomment-731109866
 
@@ -56,6 +57,7 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                         <Route exact path="/dashboard" component={Dashboard} />
                         <Route exact path="/streams" component={Streams} />
                         <Route exact path="/docker" component={Docker} />
+                        <Route exact path="/datalora" component={DataLora} />
                         <Route exact path="/about" component={Log} />
                     </Container>
                 </BrowserRouter>
