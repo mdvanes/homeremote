@@ -10,6 +10,7 @@ exports[`Dashboard page contains all the control components 1`] = `
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
       >
         <mock-switch-bar-list />
+        <mock-active-connections />
       </div>
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-true"
@@ -21,6 +22,7 @@ exports[`Dashboard page contains all the control components 1`] = `
             url=""
           />
         </div>
+        <mock-datalora />
         <div
           class="MuiBox-root MuiBox-root"
         />
@@ -29,35 +31,11 @@ exports[`Dashboard page contains all the control components 1`] = `
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
       >
-        <mock-download-list />
+        <mock-video-stream />
         <div
-          class="MuiPaper-root MuiCard-root MuiPaper-elevation1 MuiPaper-rounded"
-          style="margin-top: 10px;"
-        >
-          <div
-            class="MuiCardHeader-root"
-          >
-            <div
-              class="MuiCardHeader-content"
-            >
-              <span
-                class="MuiTypography-root MuiCardHeader-title MuiTypography-h5 MuiTypography-displayBlock"
-              >
-                Active connections
-              </span>
-            </div>
-          </div>
-          <div
-            class="MuiCardContent-root"
-          >
-            <p
-              class="MuiTypography-root MuiTypography-body1"
-            >
-              Active connections (WIP)
-            </p>
-            <ul />
-          </div>
-        </div>
+          class="MuiBox-root MuiBox-root"
+        />
+        <mock-download-list />
       </div>
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-2"
