@@ -15,7 +15,7 @@ const Map: FC = () => {
                 <MapContent coords={coords} />
             </MapContainer>
             <div className="custom-controls">
-                <button onClick={() => update(queryType)} disabled={isLoading}>
+                <button onClick={() => update()} disabled={isLoading}>
                     update
                 </button>
                 <button onClick={toggleQueryType} disabled={isLoading}>

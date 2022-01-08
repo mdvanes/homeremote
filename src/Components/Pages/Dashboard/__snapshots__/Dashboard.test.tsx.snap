@@ -10,7 +10,6 @@ exports[`Dashboard page contains all the control components 1`] = `
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
       >
         <mock-switch-bar-list />
-        <mock-active-connections />
       </div>
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-true"
