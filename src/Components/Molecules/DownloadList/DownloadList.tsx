@@ -1,51 +1,77 @@
-import { FC, useCallback, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { LinearProgress, List, Paper } from "@material-ui/core";
-import { DownloadListState, getDownloadList } from "./downloadListSlice";
 import { useAppDispatch } from "../../../store";
-import { RootState } from "../../../Reducers";
-import { useSelector } from "react-redux";
 import DownloadListItem from "./DownloadListItem";
 import { logError } from "../LogCard/logSlice";
+import { useGetDownloadListQuery } from "../../../Services/downloadListApi";
+import { Alert } from "@material-ui/lab";
 
 const UPDATE_INTERVAL_MS = 30000;
+const SLOW_UDPATE_MS = 1000; // if the response takes longer than 1000ms, it is considered slow and the full progress bar is shown
 
 const DownloadList: FC = () => {
     const dispatch = useAppDispatch();
-    const { isLoading, downloads } = useSelector<RootState, DownloadListState>(
-        (state: RootState) => state.downloadList
-    );
 
-    const getNewState = useCallback(async () => {
-        const resultAction = await dispatch(getDownloadList());
-        if (!getDownloadList.fulfilled.match(resultAction)) {
-            dispatch(logError("GetDownloadList failed"));
+    const { data, error, isLoading, isFetching } = useGetDownloadListQuery(
+        undefined,
+        {
+            pollingInterval: UPDATE_INTERVAL_MS,
         }
-    }, [dispatch]);
+    );
+    const [listItems, setListItems] = useState<JSX.Element[]>([]);
+    const [isSlow, setIsSlow] = useState(false);
 
     useEffect(() => {
-        getNewState();
-        // Update with long-polling for now
-        const timer = setInterval(() => {
-            getNewState();
-        }, UPDATE_INTERVAL_MS);
+        if (error) {
+            dispatch(logError("GetDownloadList failed"));
+        }
+    }, [dispatch, error]);
+
+    useEffect(() => {
+        if (data && data.status === "received" && data.downloads) {
+            setListItems(
+                data.downloads.map<JSX.Element>((item) => (
+                    <DownloadListItem key={item.id} item={item} />
+                ))
+            );
+        } else if (data && data.status === "error") {
+            dispatch(logError("GetDownloadList failed"));
+        }
+    }, [dispatch, data]);
+
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout> | null = null;
+        if (isLoading || isFetching) {
+            setIsSlow(false);
+            timer = setTimeout(() => {
+                setIsSlow(true);
+            }, SLOW_UDPATE_MS);
+        }
         return () => {
-            clearInterval(timer);
+            if (timer) {
+                clearTimeout(timer);
+            }
         };
-    }, [getNewState]);
+    }, [isLoading, isFetching]);
 
-    const listItems = downloads.map<JSX.Element>((item) => (
-        <DownloadListItem key={item.id} item={item} />
-    ));
-
-    const loadProgress = isLoading ? (
-        <LinearProgress variant="indeterminate" />
-    ) : (
-        <div style={{ height: 4 }}></div>
-    );
+    const loadProgress =
+        isLoading || isFetching ? (
+            <LinearProgress
+                variant="indeterminate"
+                style={{ width: isSlow ? "auto" : 4 }}
+            />
+        ) : (
+            <div style={{ height: 4 }}></div>
+        );
 
     return (
         <List component={Paper}>
             {loadProgress}
+            {error && (
+                <Alert severity="error">
+                    There is an error, data may be stale
+                </Alert>
+            )}
             {listItems}
         </List>
     );
