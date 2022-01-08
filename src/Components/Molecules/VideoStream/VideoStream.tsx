@@ -5,21 +5,24 @@ const VideoStream: FC = () => {
     const [embedSrc, setEmbedSrc] = useState("");
     useEffect(() => {
         fetch("/api/nowplaying/radio2embed")
-            .then((x) => x.text())
-            .then((x: string) => setEmbedSrc(x));
+            .then((url) => url.text())
+            .then((url: string) => setEmbedSrc(url));
     }, []);
 
     return (
         <Paper style={{ aspectRatio: "16/9", overflow: "clip" }}>
             {/* TODO also see https://github.com/streamlink/streamlink/pull/1084 */}
             <iframe
+                id="videostream"
                 src={embedSrc}
                 allowFullScreen={true}
                 allow="encrypted-media; autoplay; fullscreen"
-                width="100%"
-                height="100%"
                 frameBorder="0"
-                title="some_title"
+                title="embedded_video_stream"
+                style={{
+                    width: "calc(100% + 16px)",
+                    height: "100%",
+                }}
             ></iframe>
         </Paper>
     );
