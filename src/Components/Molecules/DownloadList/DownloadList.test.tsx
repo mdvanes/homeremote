@@ -21,18 +21,27 @@ const mockDownload: DownloadItem = {
 };
 
 const createMockResponse = (mockDownload: DownloadItem): Partial<Response> => {
-    const responseBlob = new Blob(
-        [
-            JSON.stringify({
+    const data = {
+        status: "received",
+        downloads: [mockDownload],
+    };
+    const responseBlob = new Blob([JSON.stringify(data)], {
+        type: "application/json",
+    });
+    const cloneResponse = new Response(responseBlob, {
+        status: 200,
+    });
+    return {
+        bodyUsed: false,
+        status: 200,
+        json: () =>
+            Promise.resolve({
                 status: "received",
                 downloads: [mockDownload],
             }),
-        ],
-        { type: "application/json" }
-    );
-    return new Response(responseBlob, {
-        status: 200,
-    });
+        text: () => Promise.resolve(JSON.stringify(data)),
+        clone: () => cloneResponse,
+    };
 };
 
 const MockStoreProvider: FC = ({ children }) => {
@@ -95,19 +104,20 @@ describe("DownloadList", () => {
             state: "SomePausedState",
             simpleState: "paused",
         });
+
         fetchSpy.mockReset();
         // Fetch for pauseDownload and getDownloadList (on interval)
         fetchSpy.mockResolvedValue(mockResponse as Response);
         expect(fetchSpy).not.toBeCalled();
         fireEvent.click(toggleButton);
-        // await waitFor(() => {
-        //     expect(screen.getByText("SomePausedState")).toBeInTheDocument();
-        // });
-        // expect(screen.queryByText("SomeState")).not.toBeInTheDocument();
+        expect(screen.queryByText("SomeState")).not.toBeInTheDocument();
+        await screen.findByText("SomePausedState");
         expect(fetchSpy).toBeCalledTimes(2);
         expect(fetchSpy).toBeCalledWith(
-            "/api/downloadlist/pauseDownload/14",
-            expect.objectContaining({})
+            // "/api/downloadlist/pauseDownload/14",
+            expect.objectContaining({
+                url: "/api/downloadlist/pauseDownload/14",
+            })
         );
     });
 });
