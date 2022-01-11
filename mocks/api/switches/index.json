@@ -1,0 +1,39 @@
+{
+    "status": "received",
+    "switches": [
+        {
+            "idx": "3",
+            "type": "Group",
+            "name": "Bat",
+            "status": "Off",
+            "dimLevel": null,
+            "readOnly": false,
+            "children": [
+                {
+                    "idx": "11",
+                    "type": "Light/Switch",
+                    "name": "Foo",
+                    "status": "Off",
+                    "dimLevel": null,
+                    "readOnly": false
+                },
+                {
+                    "idx": "12",
+                    "type": "Light/Switch",
+                    "name": "Bar",
+                    "status": "Off",
+                    "dimLevel": null,
+                    "readOnly": false
+                },
+                {
+                    "idx": "13",
+                    "type": "Light/Switch",
+                    "name": "Baz",
+                    "status": "Off",
+                    "dimLevel": null,
+                    "readOnly": false
+                }
+            ]
+        }
+    ]
+}
