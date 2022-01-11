@@ -4,7 +4,7 @@ import { Paper } from "@material-ui/core";
 const VideoStream: FC = () => {
     const [embedSrc, setEmbedSrc] = useState("");
     useEffect(() => {
-        fetch("/api/nowplaying/radio2embed")
+        fetch(`${process.env.REACT_APP_BASE_URL}/api/nowplaying/radio2embed`)
             .then((url) => url.text())
             .then((url: string) => setEmbedSrc(url));
     }, []);
@@ -22,6 +22,7 @@ const VideoStream: FC = () => {
                 style={{
                     width: "calc(100% + 16px)",
                     height: "100%",
+                    marginBottom: "-5px",
                 }}
             ></iframe>
         </Paper>
