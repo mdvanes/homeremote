@@ -112,7 +112,7 @@ describe("DownloadList", () => {
 
         // fetchSpy.mockReset();
         fetchMock.mockReset();
-        fetchMock.mockResponses(mockToggleResponse, mockToggleResponse);
+        fetchMock.mockResponse(mockToggleResponse);
         // Fetch for pauseDownload and getDownloadList (on interval)
         // fetchSpy.mockResolvedValue(mockResponse as Response);
         // expect(fetchSpy).not.toBeCalled();
@@ -120,18 +120,11 @@ describe("DownloadList", () => {
         expect(screen.queryByText("SomeState")).not.toBeInTheDocument();
         expect(await screen.findByText("SomePausedState")).toBeVisible();
         expect(fetchMock).toBeCalledTimes(2);
-        expect(fetchMock).toBeCalledWith(
-            // "/api/downloadlist/pauseDownload/14",
-            // expect.objectContaining({
-            //     url: "/api/downloadlist/pauseDownload/14",
-            // })
-            expect.objectContaining({
-                [Symbol("Request internal")]: expect.objectContaining({
-                    parsedURL: expect.objectContaining({
-                        pathname: "/api/downloadlist/pauseDownload/145",
-                    }),
-                }),
-            })
+        expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
+            "http://localhost/api/downloadlist/pauseDownload/14"
         );
+        // expect(fetchMock).toBeCalledWith(
+        //     // "/api/downloadlist/pauseDownload/14",
+        // );
     });
 });
