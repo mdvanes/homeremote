@@ -7,7 +7,7 @@ exports[`Streams page contains the stream player 1`] = `
       style="font-family: Roboto; max-width: 800px;"
     >
       <mock-stream-player
-        url=""
+        url="http://localhost"
       />
     </div>
   </div>
