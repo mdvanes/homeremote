@@ -37,3 +37,25 @@ export const renderWithProviders: RenderWithProviders = (
     };
     return render(ui, { wrapper: Wrapper, ...renderOptions });
 };
+
+// For RTK Query
+type MockStoreProviderProps = {
+    api: any;
+};
+
+export const MockStoreProvider: FC<MockStoreProviderProps> = ({
+    api,
+    children,
+}) => {
+    const rootReducer = combineReducers({
+        [api.reducerPath]: api.reducer,
+    });
+
+    const store = configureStore({
+        reducer: rootReducer,
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware().concat(api.middleware),
+    });
+
+    return <Provider store={store}>{children}</Provider>;
+};
