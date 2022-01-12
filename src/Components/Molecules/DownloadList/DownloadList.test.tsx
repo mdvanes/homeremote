@@ -23,6 +23,7 @@ const mockDownload: DownloadItem = {
 
 // Also see: https://medium.com/@johnmcdowell0801/testing-rtk-query-with-jest-cdfa5aaf3dc1
 
+// Workaround to mock Fetch without jest-fetch-mock, but with clone
 // const createMockResponse = (mockDownload: DownloadItem): Partial<Response> => {
 //     const data = {
 //         status: "received",
@@ -69,16 +70,15 @@ describe("DownloadList", () => {
         // fetchSpy.mockResolvedValue(mockResponse as Response);
         jest.useFakeTimers();
         fetchMock.resetMocks();
-    });
-
-    it("renders download info", async () => {
         fetchMock.mockResponse(
             JSON.stringify({
                 status: "received",
                 downloads: [mockDownload],
             })
         );
+    });
 
+    it("renders download info", async () => {
         render(
             <MockStoreProvider>
                 <DownloadList />
@@ -86,24 +86,19 @@ describe("DownloadList", () => {
         );
 
         expect(screen.queryByText("SomeName")).not.toBeInTheDocument();
-        await waitFor(() => {
-            expect(screen.getByText("SomeName")).toBeInTheDocument();
-        });
+        expect(await screen.findByText("SomeName")).toBeVisible();
         // State, download speed, upload speed
         expect(
             screen.getByText("SomeState ▼200 kB/s ▲100 kB/s")
         ).toBeInTheDocument();
         // Size, percentage, ETA
-        expect(screen.getByText(/4GB/)).toBeInTheDocument();
-        expect(screen.getByText(/50%/)).toBeInTheDocument();
-        expect(screen.getByText(/100H remaining/)).toBeInTheDocument();
+        expect(screen.getByText(/4GB/)).toBeVisible();
+        expect(screen.getByText(/50%/)).toBeVisible();
+        expect(screen.getByText(/100H remaining/)).toBeVisible();
+        expect(fetchMock).toBeCalledTimes(1);
     });
 
     it("can toggle download", async () => {
-        const mockInitialResponse = JSON.stringify({
-            status: "received",
-            downloads: [mockDownload],
-        });
         const mockToggleResponse = JSON.stringify({
             status: "received",
             downloads: [
@@ -114,7 +109,6 @@ describe("DownloadList", () => {
                 },
             ],
         });
-        fetchMock.mockResponses(mockInitialResponse);
 
         render(
             <MockStoreProvider>
@@ -122,9 +116,7 @@ describe("DownloadList", () => {
             </MockStoreProvider>
         );
 
-        await waitFor(() => {
-            expect(screen.getByText("SomeName")).toBeInTheDocument();
-        });
+        expect(await screen.findByText("SomeName")).toBeVisible();
         expect(screen.queryByText("SomePausedState")).not.toBeInTheDocument();
         const toggleButton = screen.getByRole("button");
 
@@ -136,17 +128,13 @@ describe("DownloadList", () => {
 
         // fetchSpy.mockReset();
         fetchMock.mockReset();
-        fetchMock.mockResponses(
-            // mockInitialResponse,
-            mockToggleResponse,
-            mockToggleResponse
-        );
+        fetchMock.mockResponses(mockToggleResponse, mockToggleResponse);
         // Fetch for pauseDownload and getDownloadList (on interval)
         // fetchSpy.mockResolvedValue(mockResponse as Response);
         // expect(fetchSpy).not.toBeCalled();
         fireEvent.click(toggleButton);
         expect(screen.queryByText("SomeState")).not.toBeInTheDocument();
-        await screen.findByText("SomePausedState");
+        expect(await screen.findByText("SomePausedState")).toBeVisible();
         expect(fetchMock).toBeCalledTimes(2);
         expect(fetchMock).toBeCalledWith(
             // "/api/downloadlist/pauseDownload/14",
