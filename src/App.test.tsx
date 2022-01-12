@@ -5,6 +5,9 @@ import App, { AppProps } from "./App";
 import { RootState } from "./Reducers";
 import authenticationReducer from "./Components/Providers/Authentication/authenticationSlice";
 import appStatusReducer from "./Components/Molecules/AppStatusButton/appStatusSlice";
+import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
+
+enableFetchMocks();
 
 type MockRootState = Pick<RootState, "authentication" | "appStatus">;
 
@@ -48,6 +51,12 @@ jest.mock(
     () => "mock-home-automation"
 );
 describe("App with Authentication", () => {
+    beforeEach(() => {
+        fetchMock.resetMocks();
+        // AuthenticationProvider tries to retrieve the current profile, if that fails, it will show the login screen
+        fetchMock.mockReject(new Error("failed"));
+    });
+
     it("shows the username field of the login screen before logging in", async () => {
         const { getAllByText } = renderApp(mockRootState);
         // Wait for AppSkeleton to be removed
