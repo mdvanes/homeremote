@@ -1,11 +1,9 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { FC } from "react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { DownloadItem } from "../../../ApiTypes/downloadlist.types";
 import DownloadList from "./DownloadList";
 import { downloadListApi } from "../../../Services/downloadListApi";
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { Provider } from "react-redux";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
+import { MockStoreProvider } from "../../../testHelpers";
 
 // const fetchSpy = jest.spyOn(window, "fetch");
 
@@ -48,20 +46,6 @@ const mockDownload: DownloadItem = {
 //     };
 // };
 
-const MockStoreProvider: FC = ({ children }) => {
-    const rootReducer = combineReducers({
-        [downloadListApi.reducerPath]: downloadListApi.reducer,
-    });
-
-    const store = configureStore({
-        reducer: rootReducer,
-        middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(downloadListApi.middleware),
-    });
-
-    return <Provider store={store}>{children}</Provider>;
-};
-
 enableFetchMocks();
 
 describe("DownloadList", () => {
@@ -80,7 +64,7 @@ describe("DownloadList", () => {
 
     it("renders download info", async () => {
         render(
-            <MockStoreProvider>
+            <MockStoreProvider api={downloadListApi}>
                 <DownloadList />
             </MockStoreProvider>
         );
@@ -111,7 +95,7 @@ describe("DownloadList", () => {
         });
 
         render(
-            <MockStoreProvider>
+            <MockStoreProvider api={downloadListApi}>
                 <DownloadList />
             </MockStoreProvider>
         );
