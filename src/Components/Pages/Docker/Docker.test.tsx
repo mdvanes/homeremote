@@ -40,6 +40,6 @@ describe("Docker", () => {
         );
         expect(elem).toBeInTheDocument();
         expect(fetchSpy).toBeCalledTimes(1);
-        expect(fetchSpy).toBeCalledWith("/api/dockerlist");
+        expect(fetchSpy).toBeCalledWith("http://localhost/api/dockerlist");
     });
 });
