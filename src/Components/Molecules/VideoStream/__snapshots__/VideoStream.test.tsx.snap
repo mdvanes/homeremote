@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VideoStream renders with stream url 1`] = `
+<body>
+  <div>
+    <div
+      class="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded"
+      style="overflow: clip;"
+    >
+      <iframe
+        allow="encrypted-media; autoplay; fullscreen"
+        allowfullscreen=""
+        frameborder="0"
+        id="videostream"
+        src="http://someurl"
+        style="width: calc(100% + 16px); height: 100%; margin-bottom: -5px;"
+        title="embedded_video_stream"
+      />
+    </div>
+  </div>
+</body>
+`;

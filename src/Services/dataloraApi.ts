@@ -8,7 +8,9 @@ type GetCoordsArgs = {
 
 export const dataloraApi = createApi({
     reducerPath: "dataloraApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "/api/datalora" }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: `${process.env.REACT_APP_BASE_URL}/api/datalora`,
+    }),
     endpoints: (builder) => ({
         getCoords: builder.query<GetCoordsResponse, GetCoordsArgs>({
             query: (queryParams) => `?type=${queryParams.type}`,

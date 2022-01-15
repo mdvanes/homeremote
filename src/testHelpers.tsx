@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import {
     combineReducers,
     configureStore,
+    Middleware,
     Reducer,
     Store,
 } from "@reduxjs/toolkit";
@@ -36,4 +37,30 @@ export const renderWithProviders: RenderWithProviders = (
         return <Provider store={store}>{children}</Provider>;
     };
     return render(ui, { wrapper: Wrapper, ...renderOptions });
+};
+
+// For RTK Query
+interface MockStoreProviderProps {
+    api: {
+        reducerPath: string;
+        reducer: Reducer;
+        middleware: Middleware;
+    };
+}
+
+export const MockStoreProvider: FC<MockStoreProviderProps> = ({
+    api,
+    children,
+}) => {
+    const rootReducer = combineReducers({
+        [api.reducerPath]: api.reducer,
+    });
+
+    const store = configureStore({
+        reducer: rootReducer,
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware().concat(api.middleware),
+    });
+
+    return <Provider store={store}>{children}</Provider>;
 };

@@ -44,7 +44,7 @@ describe("AppStatusButton", () => {
         });
 
         expect(fetchSpy).toHaveBeenCalledWith(
-            "/api/status",
+            "http://localhost/api/status",
             expect.objectContaining({ method: "GET" })
         );
     });
@@ -76,7 +76,7 @@ describe("AppStatusButton", () => {
         });
 
         expect(fetchSpy).toHaveBeenCalledWith(
-            "/api/status",
+            "http://localhost/api/status",
             expect.objectContaining({ method: "GET" })
         );
     });
@@ -102,7 +102,7 @@ describe("AppStatusButton", () => {
         });
 
         expect(fetchSpy).toHaveBeenCalledWith(
-            "/api/status",
+            "http://localhost/api/status",
             expect.objectContaining({ method: "GET" })
         );
     });
@@ -129,7 +129,7 @@ describe("AppStatusButton", () => {
         });
 
         expect(fetchSpy).toHaveBeenCalledWith(
-            "/api/status",
+            "http://localhost/api/status",
             expect.objectContaining({ method: "GET" })
         );
     });
