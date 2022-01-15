@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DataLora page contains the Map component 1`] = `
+<body>
+  <div>
+    <div
+      class="MuiPaper-root makeStyles-page MuiPaper-elevation1 MuiPaper-rounded"
+    >
+      <mock-map />
+    </div>
+  </div>
+</body>
+`;

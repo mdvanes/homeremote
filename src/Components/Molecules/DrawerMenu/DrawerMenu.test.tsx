@@ -72,7 +72,7 @@ describe("DrawerMenu", () => {
         expect(mockCloseDrawer).toHaveBeenCalledTimes(1);
         // expect(window.location.href).toBe("/");
         expect(fetchSpy).toHaveBeenCalledWith(
-            "/auth/logout",
+            "http://localhost/auth/logout",
             expect.anything()
         );
     });
