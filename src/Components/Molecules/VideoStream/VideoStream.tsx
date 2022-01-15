@@ -1,10 +1,13 @@
 import React, { FC, useEffect, useState } from "react";
 import { Paper } from "@material-ui/core";
+import { willAddCredentials } from "../../../devUtils";
 
 const VideoStream: FC = () => {
     const [embedSrc, setEmbedSrc] = useState("");
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_BASE_URL}/api/nowplaying/radio2embed`)
+        fetch(`${process.env.REACT_APP_BASE_URL}/api/nowplaying/radio2embed`, {
+            credentials: willAddCredentials(),
+        })
             .then((url) => url.text())
             .then((url: string) => setEmbedSrc(url));
     }, []);
