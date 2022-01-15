@@ -1,3 +1,5 @@
+import { willAddCredentials } from "./devUtils";
+
 const fetchToJson = async <T>(url: string, init?: RequestInit): Promise<T> => {
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}${url}`, {
         method: "GET",
@@ -5,6 +7,7 @@ const fetchToJson = async <T>(url: string, init?: RequestInit): Promise<T> => {
             Accept: "application/json",
             "Content-Type": "application/json",
         },
+        credentials: willAddCredentials(),
         ...init,
     });
 
