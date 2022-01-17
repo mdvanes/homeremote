@@ -37,7 +37,7 @@ const DrawerMenu: FC<Props> = ({ closeDrawer }) => {
                     <ListItemText primary="Docker" />
                 </ListItem>
                 <ListItem button component={RouterLink} to="/datalora">
-                    <ListItemText primary="DataLora" />
+                    <ListItemText primary="Tracker" />
                 </ListItem>
                 <ListItem button component={RouterLink} to="/about">
                     <ListItemText primary="About" />
