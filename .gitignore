@@ -38,6 +38,10 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Server
+apps/server/.env
+apps/server/auth.json
+
 # Rescript dummy files
 lib/bs
 apps/client/src/Dummy.bs.js
