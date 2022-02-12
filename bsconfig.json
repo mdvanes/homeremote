@@ -2,7 +2,7 @@
     "name": "homeremote",    
     "sources": [
         {
-            "dir": "src",
+            "dir": "apps/client/src",
             "subdirs": false
         }
     ],
