@@ -38,4 +38,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Rescript dummy files
+lib/bs
+apps/client/src/Dummy.bs.js
+
 apps/client/src/gitinfo.json
