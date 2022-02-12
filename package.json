@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
-    "start": "yarn rescript build -with-deps && yarn writeGitInfo dev && nx serve",
+    "start": "yarn rescript build -with-deps && yarn writeGitInfo dev && yarn serve",
+    "serve": "yarn nx run-many --target=serve --projects=server,client --parallel",
     "build": "nx build",
     "test": "nx test",
     "postinstall": "yarn rescript build -with-deps"

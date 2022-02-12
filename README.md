@@ -4,7 +4,7 @@
 
 Development:
 
-- serve all: `yarn nx run-many --target=serve --projects=server,client --parallel`
+- serve all: `yarn start` or `yarn nx run-many --target=serve --projects=server,client --parallel`
 - serve client: `yarn nx serve` or `yarn nx serve client` or `yarn nx run client:serve`
 
 - Add an app (without e2e): `yarn nx g @nrwl/react:application --name=client --e2eTestRunner=none --dry-run` or `yarn nx g @nrwl/nest:application --name=server --frontendProject=client --dry-run`
@@ -15,8 +15,10 @@ Development:
 - Test with watch: `yarn nx test frontend --watch`
 
 Api proxying: server is running on 3333 and client on 4200, but a proxy.conf.json exists that forwards /api from 4200 to 3333. 
-- `yarn nx run-many --target=serve --projects=server,client --parallel`
+- `yarn start`
 - This URL works: http://localhost:4200/api/profile/current
+
+env files: https://nx.dev/guides/environment-variables
 
 ## Notes
 
