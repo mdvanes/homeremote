@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { Warning, InfoOutlined } from "@material-ui/icons";
 import gitinfoJson from "../../../gitinfo.json";
-import packageJson from "../../../../package.json";
+import packageJson from "../../../../../../package.json";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { LogState, clearLog, Severity } from "./logSlice";
