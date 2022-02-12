@@ -12,6 +12,7 @@ Development:
 - Move/rename an app: `yarn nx g mv --project homeremote client --dry-run`
 - To build storybook run: `yarn nx run demo:build-storybook`
 - Run lint on all projects: `yarn nx run-many --all --target=lint` (with `yarn nx lint` only the default project is linted)
+- Test with watch: `yarn nx test frontend --watch`
 
 ## Notes
 
