@@ -17,7 +17,7 @@ type DownloadListResponse =
 export const downloadListApi = createApi({
     reducerPath: "downloadListApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.REACT_APP_BASE_URL}/api/downloadlist`,
+        baseUrl: `${process.env.NX_BASE_URL}/api/downloadlist`,
         credentials: willAddCredentials(),
     }),
     tagTypes: ["DownloadItem"],

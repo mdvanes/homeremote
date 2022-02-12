@@ -13,12 +13,20 @@ Development:
 - To build storybook run: `yarn nx run demo:build-storybook`
 - Run lint on all projects: `yarn nx run-many --all --target=lint` (with `yarn nx lint` only the default project is linted)
 - Test with watch: `yarn nx test frontend --watch`
+- Add a controllor: `yarn nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
 
 Api proxying: server is running on 3333 and client on 4200, but a proxy.conf.json exists that forwards /api from 4200 to 3333. 
 - `yarn start`
 - This URL works: http://localhost:4200/api/profile/current
 
 env files: https://nx.dev/guides/environment-variables
+
+Migration todo:
+
+- Add BE endpoints
+- Add validate script
+- Fix lint with prettier
+- Run tests
 
 ## Notes
 

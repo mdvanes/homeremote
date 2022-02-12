@@ -12,7 +12,7 @@ const Docker: FC = () => {
     return (
         <Card>
             <DockerList
-                url={process.env.REACT_APP_BASE_URL || ""}
+                url={process.env.NX_BASE_URL || ""}
                 onError={(err: string) =>
                     dispatch(logError(`Dockerlist failure: ${err.toString()}`))
                 }
