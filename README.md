@@ -14,6 +14,10 @@ Development:
 - Run lint on all projects: `yarn nx run-many --all --target=lint` (with `yarn nx lint` only the default project is linted)
 - Test with watch: `yarn nx test frontend --watch`
 
+Api proxying: server is running on 3333 and client on 4200, but a proxy.conf.json exists that forwards /api from 4200 to 3333. 
+- `yarn nx run-many --target=serve --projects=server,client --parallel`
+- This URL works: http://localhost:4200/api/profile/current
+
 ## Notes
 
 -  "noPropertyAccessFromIndexSignature": was turned to false when migrating, also see https://www.typescriptlang.org/tsconfig#noPropertyAccessFromIndexSignature
