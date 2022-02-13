@@ -5,7 +5,7 @@
 Development:
 
 - serve all: `yarn start` or `yarn nx run-many --target=serve --projects=server,client --parallel`
-- serve client: `yarn nx serve` or `yarn nx serve client` or `yarn nx run client:serve`
+- serve client: `yarn nx serve:all` or `yarn nx serve client` or `yarn nx run client:serve`
 
 - Add an app (without e2e): `yarn nx g @nrwl/react:application --name=client --e2eTestRunner=none --dry-run` or `yarn nx g @nrwl/nest:application --name=server --frontendProject=client --dry-run`
 - Remove an app: `yarn nx g rm homeremote-server-e2e --dry-run` 
@@ -23,10 +23,14 @@ env files: https://nx.dev/guides/environment-variables
 
 Migration todo:
 
+- Fix BE auth
 - Add BE endpoints
 - Add validate script
 - Fix lint with prettier
 - Run tests
+- Nest hot reload
+- https://github.com/henrikjoreteg/fixpack
+- Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
 
 ## Notes
 

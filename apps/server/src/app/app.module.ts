@@ -8,6 +8,7 @@ import { SwitchesController } from "../switches/switches.controller";
 import { UsersModule } from "../users/users.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { StatusController } from "../status/status.controller";
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { AppService } from "./app.service";
         AppController,
         ProfileController,
         LoginController,
+        StatusController,
         SwitchesController,
         PwToHashController,
     ],
