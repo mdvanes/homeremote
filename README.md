@@ -23,7 +23,6 @@ env files: https://nx.dev/guides/environment-variables
 
 Migration todo:
 
-- Fix BE auth
 - Add BE endpoints
 - Add validate script
 - Fix lint with prettier
