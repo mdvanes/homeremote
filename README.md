@@ -27,8 +27,7 @@ Migration todo:
 - Add validate script
 - Fix lint with prettier
 - Run tests
-- Nest hot reload
-- https://github.com/henrikjoreteg/fixpack
+- https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
 
 ## Notes
