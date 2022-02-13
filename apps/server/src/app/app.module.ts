@@ -9,6 +9,10 @@ import { UsersModule } from "../users/users.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { StatusController } from "../status/status.controller";
+import { DataloraController } from "../datalora/datalora.controller";
+import { DockerlistController } from "../dockerlist/dockerlist.controller";
+import { DownloadlistController } from "../downloadlist/downloadlist.controller";
+import { UrltomusicController } from "../urltomusic/urltomusic.controller";
 
 @Module({
     imports: [
@@ -25,11 +29,15 @@ import { StatusController } from "../status/status.controller";
     ],
     controllers: [
         AppController,
-        ProfileController,
+        DataloraController,
+        DockerlistController,
+        DownloadlistController,
         LoginController,
+        ProfileController,
+        PwToHashController,
         StatusController,
         SwitchesController,
-        PwToHashController,
+        UrltomusicController,
     ],
     providers: [AppService],
 })
