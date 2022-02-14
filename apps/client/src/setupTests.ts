@@ -26,3 +26,6 @@ jest.mock(
             return rule.key;
         }
 );
+
+// Polyfill Fetch API in Node for Jest
+window.fetch = jest.fn();
