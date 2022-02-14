@@ -23,12 +23,13 @@ env files: https://nx.dev/guides/environment-variables
 
 Migration todo:
 
-- Add BE endpoints
-- Add validate script
-- Fix lint with prettier
 - Run tests
+- Fix build
+- Fix lint with prettier
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
+- Homeremote simple bookmarklist of services
+- add WHO to log: CEF, Common Event Format, When Where Who What, Is the log persisted? 
 
 ## Notes
 
