@@ -10,7 +10,7 @@
     "test": "nx run-many --target=test --projects=server,client --parallel",
     "test:ci": "nx run-many --target=test --projects=server,client --parallel --coverage",
     "test:client": "env-cmd -f apps/client/.env.test nx test --watchAll",
-    "test:client:ci": "nx test --coverage",
+    "test:client:ci": "env-cmd -f apps/client/.env.test nx test --coverage",
     "test:server": "nx run server:test --watchAll",
     "test:server:ci": "nx run server:test --coverage",
     "postinstall": "yarn rescript build -with-deps",
