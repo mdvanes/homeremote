@@ -1,5 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { AuthenticatedRequest } from "src/login/LoginRequest.types";
+import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { StoredUser, UsersService } from "../users/users.service";
 import { ProfileController } from "./profile.controller";
 
