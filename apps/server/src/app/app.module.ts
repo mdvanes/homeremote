@@ -13,6 +13,8 @@ import { DataloraController } from "../datalora/datalora.controller";
 import { DockerlistController } from "../dockerlist/dockerlist.controller";
 import { DownloadlistController } from "../downloadlist/downloadlist.controller";
 import { UrltomusicController } from "../urltomusic/urltomusic.controller";
+import { LogoutController } from "../logout/logout.controller";
+import { NowplayingController } from "../nowplaying/nowplaying.controller";
 
 @Module({
     imports: [
@@ -33,6 +35,8 @@ import { UrltomusicController } from "../urltomusic/urltomusic.controller";
         DockerlistController,
         DownloadlistController,
         LoginController,
+        LogoutController,
+        NowplayingController,
         ProfileController,
         PwToHashController,
         StatusController,
