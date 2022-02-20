@@ -5,7 +5,6 @@ import SwitchBarList from "./SwitchBarList";
 import { RootState } from "../../../Reducers";
 import * as Slice from "./switchBarListSlice";
 import SwitchBar from "./SwitchBar";
-import { renderWithProviders } from "../../../testHelpers";
 
 type MockRootState = Pick<RootState, "switchesList">;
 
@@ -74,7 +73,7 @@ const mockRootState: MockRootState = {
     },
 };
 
-// TODO refactor to replace all uses of this by renderSwitchBarList. Also remove all `jest.spyOn(ReactRedux, "useDispatch")`
+// TODO refactor to replace all uses of this by renderSwitchBarList (see SwitchBarList_renderWith.test.tsx). Also remove all `jest.spyOn(ReactRedux, "useDispatch")`
 const mockUseSelectorWith = ({ isLoading = false }): void => {
     jest.spyOn(ReactRedux, "useSelector").mockReset();
     jest.spyOn(ReactRedux, "useSelector").mockImplementation((fn) => {
@@ -84,12 +83,6 @@ const mockUseSelectorWith = ({ isLoading = false }): void => {
         });
     });
 };
-
-const renderSwitchBarList = (initialState: MockRootState) =>
-    renderWithProviders(<SwitchBarList />, {
-        initialState,
-        reducers: { switchesList: Slice.default },
-    });
 
 describe("SwitchBarList", () => {
     const mockDispatch = jest.fn();
@@ -174,27 +167,6 @@ describe("SwitchBarList", () => {
         expect(
             baseElement.querySelector(".MuiLinearProgress-root")
         ).toBeInTheDocument();
-    });
-});
-
-describe("SwitchBarList with mock Provider", () => {
-    beforeAll(() => {
-        jest.spyOn(ReactRedux, "useDispatch").mockRestore();
-        jest.spyOn(ReactRedux, "useSelector").mockRestore();
-    });
-
-    it("shows a scene switch", () => {
-        const { getByText, queryByText } = renderSwitchBarList(mockRootState);
-        expect(getByText(/My Scene/)).toBeInTheDocument();
-        expect(queryByText(/My Nested Light Switch/)).not.toBeInTheDocument();
-    });
-
-    it("toggles on scene label click", async () => {
-        const { getByText, queryByText } = renderSwitchBarList(mockRootState);
-        expect(getByText(/My Scene/)).toBeInTheDocument();
-        expect(queryByText(/My Nested Light Switch/)).not.toBeInTheDocument();
-        fireEvent.click(getByText(/My Scene/));
-        expect(queryByText(/My Nested Light Switch/)).toBeInTheDocument();
     });
 });
 

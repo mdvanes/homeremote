@@ -7,7 +7,6 @@ import * as GetSwitchesThunk from "./getSwitchesThunk";
 
 describe("switchBarListSlice", () => {
     describe("sendSwitchState", () => {
-        let getSwitchesSpy: jest.Mock;
         const fetchSpy = jest.spyOn(window, "fetch");
 
         beforeEach(() => {
@@ -19,19 +18,6 @@ describe("switchBarListSlice", () => {
                     }),
             };
             fetchSpy.mockResolvedValue(mockResponse as Response);
-
-            getSwitchesSpy = jest.spyOn(
-                GetSwitchesThunk,
-                "getSwitches"
-            ) as jest.Mock;
-            getSwitchesSpy.mockReturnValue({
-                payload: "mock_getSwitches_payload",
-                type: "mock_getSwitches",
-            });
-        });
-
-        afterEach(() => {
-            getSwitchesSpy.mockRestore();
         });
 
         it("updates fields on fulfilled", () => {
@@ -121,12 +107,6 @@ describe("switchBarListSlice", () => {
                 expect.objectContaining({
                     payload: "Switch id1 on",
                     type: "loglines/logInfo",
-                })
-            );
-            expect(mockDispatch).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    payload: "mock_getSwitches_payload",
-                    type: "mock_getSwitches",
                 })
             );
         });
