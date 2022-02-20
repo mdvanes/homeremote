@@ -6,7 +6,7 @@
     "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
     "serve:all": "nx run-many --target=serve --projects=server,client --parallel",
     "start": "yarn rescript build -with-deps && yarn writeGitInfo dev && yarn serve:all",
-    "build": "nx build",
+    "build": "nx run client:build && cp -r dist/apps/client/* apps/server/src/assets/ && nx run server:build",
     "test": "nx run-many --target=test --projects=server,client --parallel",
     "test:ci": "nx run-many --target=test --projects=server,client --parallel --coverage",
     "test:client": "env-cmd -f apps/client/.env.test nx test --watchAll",
