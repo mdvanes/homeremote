@@ -25,6 +25,7 @@ Migration todo:
 
 - Fixed: run tests
 - Fix build (copy client to server)
+- Test service workers
 - Fix lint with prettier
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.

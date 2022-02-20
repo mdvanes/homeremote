@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🔒 Authentication Testing Dashboard</title>
+    <style>
+      body {
+        background-color: dodgerblue;
+        font-family: sans-serif;
+        font-size: 1.5rem;
+        padding: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Authentication Testing Dashboard</h1>
+
+    <p>
+      When developing, the front-end runs on port 3000 and the back-end on port
+      3001. On production all is run on port 3200. CORS authentication is hard
+      [link to article] and overkill for developing. This means that
+      authentication will be turned off when developing
+    </p>
+
+    <!-- 
+      TODO add a util to register a new user/password
+
+      TODO add link to article above
+
+      TODO show a banner in the real front-end when auth is turned off. 
+      
+      TODO 2fa with certificates
+
+      TODO Document this: the old (and commonly used) solution: https://stackoverflow.com/questions/26340275/where-to-save-a-jwt-in-a-browser-based-application-and-how-to-use-it
+      Probably easiest to use
+      localStorage.setItem('token', 'asY-x34SfYPk'); // write
+      console.log(localStorage.getItem('token')); // read
+
+      TODO JWT is good for APIs, not sessions. Is it good for WebSocket/FTP update?
+    -->
+
+    <!-- is send to /auth/login -->
+    <login-form></login-form>
+
+    <h2>1Endpoints that require authentication</h2>
+    <endpoint-list endpoints="foo,status,switches"></endpoint-list>
+
+    <h2>Endpoints without authentication</h2>
+    <endpoint-list endpoints="profile,nowplaying/radio2"></endpoint-list>
+
+    <script type="module">
+      import "./EndpointItem.js";
+      import "./EndpointList.js";
+      import "./LoginForm.js";
+    </script>
+    <script>
+      const socket = new WebSocket('ws://localhost:8080/wsv1');
+      socket.onopen = function() {
+        console.log('Connected');
+        socket.send(
+          JSON.stringify({
+            event: 'events',
+            data: 'test',
+          }),
+        );
+        socket.onmessage = function(data) {
+          console.log(data);
+        };
+      };
+    </script>
+  </body>
+</html>
