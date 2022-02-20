@@ -24,7 +24,8 @@ env files: https://nx.dev/guides/environment-variables
 Migration todo:
 
 - Fixed: run tests
-- Fix build (copy client to server)
+- Fix build (copy client to server). Run with `yarn build` and then `node dist/apps/server/main.js` (needs to load the .env (docker-compose?) and auth.json (check blue lines in log!)) 
+- Add Docker/docker-compose to build
 - Test service workers
 - Fix lint with prettier
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
