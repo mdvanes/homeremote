@@ -23,18 +23,18 @@ import { NowplayingController } from "../nowplaying/nowplaying.controller";
         // TODO static serving should be guarded see https://docs.nestjs.com/techniques/mvc
         // Make sure no controller is bound to /, otherwise it will overwrite the static serving
         ServeStaticModule.forRoot({
-            rootPath: join(__dirname, "../../../apps/server", "public"),
+            rootPath: join(__dirname, "../../../apps/server", "assets"),
         }),
         AuthModule,
         UsersModule,
-        ConfigModule
-            .forRoot
-            // TODO ConfigModule can also use a yaml instead of a .env file
-            //     validationSchema: Joi.object({
-            //         STATUS_CMD: Joi.string().default("echo 'test status cmd'"),
-            //         SOME_VAR: Joi.string().required,
-            //     }),
-            (),
+        ConfigModule.forRoot(),
+        // TODO ConfigModule can also use a yaml instead of a .env file
+        // ConfigModule.forRoot({
+        //     validationSchema: Joi.object({
+        //         STATUS_CMD: Joi.string().default("echo 'test status cmd'"),
+        //         SOME_VAR: Joi.string().required,
+        //     }),
+        // }),
     ],
     controllers: [
         AppController,
