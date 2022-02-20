@@ -13,9 +13,10 @@
     "test:client:ci": "env-cmd -f apps/client/.env.test nx test --coverage",
     "test:server": "nx run server:test --watchAll",
     "test:server:ci": "nx run server:test --coverage",
+    "lint": "nx run-many --target=lint --projects=server,client --parallel",
     "postinstall": "yarn rescript build -with-deps",
     "typecheck": "tsc --noEmit --incremental false",
-    "validate": "yarn lint && yarn typecheck && yarn test:cov",
+    "validate": "yarn lint && yarn test:ci",
     "prebuild": "yarn validate"
   },
   "private": true,
