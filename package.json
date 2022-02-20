@@ -8,7 +8,7 @@
     "start": "yarn rescript build -with-deps && yarn writeGitInfo dev && yarn serve:all",
     "assets:copy": "mv apps/server/src/assets apps/server/src/assets_bu && mkdir apps/server/src/assets && cp -r dist/apps/client/* apps/server/src/assets/",
     "assets:restore": "rm -rf apps/server/src/assets/ && mv apps/server/src/assets_bu apps/server/src/assets",
-    "build": "nx run client:build && assets:copy && nx run server:build",
+    "build": "nx run client:build && yarn assets:copy && nx run server:build",
     "test": "nx run-many --target=test --projects=server,client --parallel",
     "test:ci": "nx run-many --target=test --projects=server,client --parallel --coverage",
     "test:client": "env-cmd -f apps/client/.env.test nx test --watchAll",
