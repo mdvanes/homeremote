@@ -1,5 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { join } from "path";
+import { ServeStaticModule } from "@nestjs/serve-static";
 import { AuthModule } from "../auth/auth.module";
 import { LoginController } from "../login/login.controller";
 import { ProfileController } from "../profile/profile.controller";
@@ -18,6 +20,11 @@ import { NowplayingController } from "../nowplaying/nowplaying.controller";
 
 @Module({
     imports: [
+        // TODO static serving should be guarded see https://docs.nestjs.com/techniques/mvc
+        // Make sure no controller is bound to /, otherwise it will overwrite the static serving
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, "../../../apps/server", "public"),
+        }),
         AuthModule,
         UsersModule,
         ConfigModule
