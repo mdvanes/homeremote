@@ -23,8 +23,8 @@ env files: https://nx.dev/guides/environment-variables
 
 Migration todo:
 
-- Run tests
-- Fix build
+- Fixed: run tests
+- Fix build (copy client to server)
 - Fix lint with prettier
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.

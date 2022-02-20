@@ -17,7 +17,7 @@
     "postinstall": "yarn rescript build -with-deps",
     "typecheck": "tsc --noEmit --incremental false",
     "validate": "yarn lint && yarn test:ci",
-    "prebuild": "yarn validate"
+    "prebuild": "yarn writeGitInfo && yarn validate"
   },
   "private": true,
   "repository": "https://github.com/mdvanes/homeremote",
