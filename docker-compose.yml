@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  # USAGE: see README.md
+  homeremote:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - ./apps/server/.env
+    ports:
+      # - "3001:3001"
+      - "3333:3333"
+    # container_name: homeremote-wrapper
+    volumes:
+      - ./apps/server/auth.json:/usr/src/dist/apps/server/auth.json
+      #  - ./homeremote-server:/usr/src/app/server
+      #  - /usr/src/app/server/node_modules
+      #  - ./homeremote:/usr/src/app/client
+      #  - /usr/src/app/client/node_modules
