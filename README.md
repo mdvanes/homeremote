@@ -24,21 +24,18 @@ env files: https://nx.dev/guides/environment-variables
 Building / Run in production:
 
 - Optional: test building with `yarn build`
-- Make sure apps/client/src/gitinfo.json exists (TODO fix this later)
 - Make sure apps/server/.env and apps/server/auth.json exist
-- `docker-compose up -d --build`. Build duration: ... Last step seen: nx run client... (yarn build)
+- `docker-compose up -d --build`. Build duration: ca. 4 minutes
+- Show logs: `docker-compose logs --follow`
 - Alternative, instead of docker compose (e.g. for debugging): 
   - `docker build -t homeremotenx .` and
-  - `docker run --rm --name homeremotenx homeremotenx ls -lah`
-- 12m until nx run build
-- separate nx run build takes: 30s
-- Show logs: `docker-compose logs --follow`
+  - `docker run --rm --name homeremotenx homeremotenx ls -lah app/apps/server/src/assets/`
 
 Migration todo:
 
 - Fixed: run tests
-- Fix build (copy client to server). Run with `yarn build` and then `node dist/apps/server/main.js` (needs to load the .env (docker-compose?) and auth.json (check blue lines in log!)) - add to CI: `docker-compose up -d --build` and `docker-compose logs --follow`
-- Add Docker/docker-compose to build
+- Fixed: Fix build (copy client to server). Run with `yarn build` and then `node dist/apps/server/main.js` (needs to load the .env (docker-compose?) and auth.json (check blue lines in log!))
+- Fix production serve index.html (/app/apps/server/src/assets/)
 - Test service workers
 - Fix lint with prettier
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`

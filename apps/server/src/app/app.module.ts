@@ -23,7 +23,8 @@ import { NowplayingController } from "../nowplaying/nowplaying.controller";
         // TODO static serving should be guarded see https://docs.nestjs.com/techniques/mvc
         // Make sure no controller is bound to /, otherwise it will overwrite the static serving
         ServeStaticModule.forRoot({
-            rootPath: join(__dirname, "../../../apps/server/src", "assets"),
+            // Dev: rootPath: join(__dirname, "../", "assets"),
+            rootPath: join(__dirname, "assets"),
         }),
         AuthModule,
         UsersModule,
