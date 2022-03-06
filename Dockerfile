@@ -44,11 +44,11 @@ WORKDIR /home/node/code
 
 # Copy the files needed before yarn install
 COPY package.json yarn.lock bsconfig.json ./
-# COPY * ./
+
 # Copy the rescript source for the postinstall script
 COPY ./apps/client/src/Dummy.res ./apps/client/src/
 
-RUN ls -lah
+# RUN ls -lah
 
 # Install npm dependencies and fail if lock file requires changes. Skip postinstall script that needs the source files
 #  --ignore-scripts # ignore scripts also breaks bcrypt dependency
@@ -87,8 +87,6 @@ RUN npm prune --production
 FROM node:16-alpine
 
 WORKDIR /app
-
-# TODO output very large, maybe move front-end deps to dev-deps
 
 # Install runtime dependencies
 # # RUN apk add --no-cache --virtual .gyp python3 make g++

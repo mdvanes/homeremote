@@ -10,7 +10,7 @@ services:
     ports:
       # - "3001:3001"
       - "3333:3333"
-    container_name: homeremote-wrapper
+    container_name: homeremote-stack
     volumes:
       - ./apps/server/auth.json:/usr/src/dist/apps/server/auth.json
       #  - ./homeremote-server:/usr/src/app/server
