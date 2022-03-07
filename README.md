@@ -1,12 +1,44 @@
+# HomeRemote
 
+Web GUI in ES6 React for a Node backend that calls scripts spread out over several debian/ubuntu servers. The scripts 
+are Upstart scripts to start/stop a radio playing service and direct shell calls to toggle a remote control for lightswitches.
 
-# Homeremote
+Material Design:
+
+* Material UI
+* Keep.google.com
+* https://codelabs.developers.google.com/codelabs/polymer-2-carousel/
+
+## Screenshot
+
+![Screenshot](screenshot.png)
+
+## Installation
+
+Requirements:
+
+- Nginx/Traefik reverse proxy with SSL
+- [Domoticz](https://www.domoticz.com/) server (optional)
+- [DataLora](https://github.com/mdvanes/datalora) (optional)
+
+- WIP
+
+## Adding a user
+
+- This endpoint is only enabled in development mode
+- Start dev server: `yarn start:dev-temp`
+- For password "test", call (e.g. in browser) `http://localhost:4200/api/pw-to-hash/?password=test`
+- Store the hash with the username in auth.json
+
+## Running
 
 Development:
 
 - serve all: `yarn start` or `yarn nx run-many --target=serve --projects=server,client --parallel`
-- serve client: `yarn nx serve:all` or `yarn nx serve client` or `yarn nx run client:serve`
 
+Other utils:
+
+- serve client: `yarn nx serve:all` or `yarn nx serve client` or `yarn nx run client:serve`
 - Add an app (without e2e): `yarn nx g @nrwl/react:application --name=client --e2eTestRunner=none --dry-run` or `yarn nx g @nrwl/nest:application --name=server --frontendProject=client --dry-run`
 - Remove an app: `yarn nx g rm homeremote-server-e2e --dry-run` 
 - Move/rename an app: `yarn nx g mv --project homeremote client --dry-run`
@@ -35,13 +67,16 @@ Migration todo:
 
 - Fixed: run tests
 - Fixed: Fix build (copy client to server). Run with `yarn build` and then `node dist/apps/server/main.js` (needs to load the .env (docker-compose?) and auth.json (check blue lines in log!))
-- Fix production serve index.html (/app/apps/server/src/assets/)
+- _Fix production serve index.html (/app/apps/server/src/assets/)
+- Fix PUBLIC_HTML in index.html
 - Test service workers
 - Fix lint with prettier
+- Remove OLD dir
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
-- Homeremote simple bookmarklist of services
+- Homeremote simple bookmarklist of services (in sidebar?)
 - add WHO to log: CEF, Common Event Format, When Where Who What, Is the log persisted? 
+- Reactive/observable for InfluxDB
 
 ## Notes
 
@@ -114,21 +149,3 @@ Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
 ## Understand your workspace
 
 Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev) to learn more.
-
-
-
-## ☁ Nx Cloud
-
-### Distributed Computation Caching & Distributed Task Execution
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
