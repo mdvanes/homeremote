@@ -57,21 +57,35 @@ Building / Run in production:
 
 - Optional: test building with `yarn build`
 - Make sure apps/server/.env and apps/server/auth.json exist
+- Set correct path for volumes in docker-compose.yml
+- When on Mac with Lima: disable docker.sock volume in docker-compose.yml (or try https://github.com/abiosoft/colima)
 - `docker-compose up -d --build`. Build duration: ca. 4 minutes
 - Show logs: `docker-compose logs --follow`
 - Alternative, instead of docker compose (e.g. for debugging): 
   - `docker build -t homeremotenx .` and
-  - `docker run --rm --name homeremotenx homeremotenx ls -lah app/apps/server/src/assets/`
+  - `docker run --rm --name homeremotenx homeremotenx ls -lah dist/apps/server/src/assets/`
+- If yarn install fails with timeouts on Mac with Lima compose (`lima nerdctl compose up`):
+  - Seems to be Lima issue: https://github.com/lima-vm/lima/issues/561
+  - https://github.com/yarnpkg/yarn/issues/5259
+  - Solved by setting `RUN yarn install --frozen-lockfile --network-timeout 1000000` in Dockerfile
+
+Publishing:
+
+- Tag with `git tag -a v3.0.0 -m "publish version 3.0.0"` and push
+- Wait for CI to finish, and all tests are OK
+- On the target server:
+  - `git clone` or `git pull`
+  - `docker-compose up -d`
 
 Migration todo:
 
 - Fixed: run tests
 - Fixed: Fix build (copy client to server). Run with `yarn build` and then `node dist/apps/server/main.js` (needs to load the .env (docker-compose?) and auth.json (check blue lines in log!))
-- _Fix production serve index.html (/app/apps/server/src/assets/)
-- Fix PUBLIC_HTML in index.html
+- Fixed: PUBLIC_HTML in index.html
+- Fixed: production serve index.html (/app/apps/server/src/assets/) in Docker. On Mac, on `docker compose up --build` fails with `244.0 error An unexpected error occurred: "https://registry.npmjs.org/rxjs/-/rxjs-7.5.4.tgz: ESOCKETTIMEDOUT".`
 - Test service workers
 - Fix lint with prettier
-- Remove OLD dir
+- Clean up and remove OLD dir
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
 - Homeremote simple bookmarklist of services (in sidebar?)
