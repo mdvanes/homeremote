@@ -1,0 +1,46 @@
+{
+    "root": "libs/service-worker",
+    "sourceRoot": "libs/service-worker/src",
+    "projectType": "library",
+    "targets": {
+        "build": {
+            "executor": "@nrwl/web:webpack",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "compiler": "babel",
+                "outputPath": "dist/libs/service-worker",
+                "index": "apps/client/src/index.html",
+                "tsConfig": "libs/service-worker/tsconfig.lib.json",
+                "packageJson": "libs/service-worker/package.json",
+                "main": "libs/service-worker/src/index.ts",
+                "generateIndexHtml": false
+            },
+            "configurations": {
+                "production": {
+                    "optimization": true,
+                    "outputHashing": "none",
+                    "sourceMap": false,
+                    "namedChunks": false,
+                    "extractLicenses": true,
+                    "vendorChunk": false
+                }
+            }
+        },
+        "lint": {
+            "executor": "@nrwl/linter:eslint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": ["libs/service-worker/**/*.ts"]
+            }
+        },
+        "test": {
+            "executor": "@nrwl/jest:jest",
+            "outputs": ["coverage/libs/service-worker"],
+            "options": {
+                "jestConfig": "libs/service-worker/jest.config.js",
+                "passWithNoTests": true
+            }
+        }
+    },
+    "tags": []
+}

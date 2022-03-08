@@ -1,0 +1,11 @@
+{
+    "presets": [
+        [
+            "@nrwl/react/babel",
+            {
+                "modules": false,
+                "targets": { "esmodules": true }
+            }
+        ]
+    ]
+}
