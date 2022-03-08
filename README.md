@@ -83,7 +83,7 @@ Migration todo:
 - Fixed: Fix build (copy client to server). Run with `yarn build` and then `node dist/apps/server/main.js` (needs to load the .env (docker-compose?) and auth.json (check blue lines in log!))
 - Fixed: PUBLIC_HTML in index.html
 - Fixed: production serve index.html (/app/apps/server/src/assets/) in Docker. On Mac, on `docker compose up --build` fails with `244.0 error An unexpected error occurred: "https://registry.npmjs.org/rxjs/-/rxjs-7.5.4.tgz: ESOCKETTIMEDOUT".`
-- Test service workers
+- Service workers do not seem to be registered
 - Fix lint with prettier
 - Clean up and remove OLD dir
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
