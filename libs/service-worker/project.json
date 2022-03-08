@@ -21,7 +21,7 @@
                     "outputHashing": "none",
                     "sourceMap": false,
                     "namedChunks": false,
-                    "extractLicenses": true,
+                    "extractLicenses": false,
                     "vendorChunk": false
                 }
             }
