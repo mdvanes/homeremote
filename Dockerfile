@@ -19,6 +19,9 @@ COPY .git/ ./.git/
 # Copy the source files to be able to cache Docker layers up to this point
 COPY . .
 
+# Prepare auth.json for unit test
+RUN cp apps/server/auth.json.example apps/server/auth.json
+
 # Note --ignore-scripts does not work on composite yarn build
 RUN yarn build
 
