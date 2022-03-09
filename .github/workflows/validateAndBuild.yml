@@ -19,8 +19,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install and Build components 🔧
+        # auth.json is needed for typecheck, but is mocked for unit test
         run: |
           yarn install --frozen-lockfile
+          cp apps/server/auth.json.example apps/server/auth.json
           yarn build --if-present
         env:
           CI: false # true -> fails on warning
