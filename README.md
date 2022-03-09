@@ -87,9 +87,12 @@ Migration todo:
 - Fixed: Fix build (copy client to server). Run with `yarn build` and then `node dist/apps/server/main.js` (needs to load the .env (docker-compose?) and auth.json (check blue lines in log!))
 - Fixed: PUBLIC_HTML in index.html
 - Fixed: production serve index.html (/app/apps/server/src/assets/) in Docker. On Mac, on `docker compose up --build` fails with `244.0 error An unexpected error occurred: "https://registry.npmjs.org/rxjs/-/rxjs-7.5.4.tgz: ESOCKETTIMEDOUT".`
-- Fix lint with prettier
+- Fixed: lint with prettier
+- Fixed: Clean up and remove OLD dir
+- Build fails for server test because auth.json does not contain John. So first run with auth.json.example instead of auth.json?
 - Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
-- Clean up and remove OLD dir
+- Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
+- Release and replace production version
 - Service workers is registered, but implementation of service-worker is incorrect / not caching when offline
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - Homeremote simple bookmarklist of services (in sidebar?)
