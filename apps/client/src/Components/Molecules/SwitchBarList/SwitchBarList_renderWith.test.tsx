@@ -95,5 +95,3 @@ describe("SwitchBarList with mock Provider", () => {
         expect(queryByText(/My Nested Light Switch/)).toBeInTheDocument();
     });
 });
-
-
