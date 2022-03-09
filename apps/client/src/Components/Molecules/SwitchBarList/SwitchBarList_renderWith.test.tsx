@@ -1,10 +1,7 @@
-import React from "react";
-import * as ReactRedux from "react-redux";
-import { render, fireEvent } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import SwitchBarList from "./SwitchBarList";
 import { RootState } from "../../../Reducers";
 import * as Slice from "./switchBarListSlice";
-import SwitchBar from "./SwitchBar";
 import { renderWithProviders } from "../../../testHelpers";
 
 type MockRootState = Pick<RootState, "switchesList">;
