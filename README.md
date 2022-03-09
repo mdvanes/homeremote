@@ -43,9 +43,13 @@ Other utils:
 - Remove an app: `yarn nx g rm homeremote-server-e2e --dry-run` 
 - Move/rename an app: `yarn nx g mv --project homeremote client --dry-run`
 - To build storybook run: `yarn nx run demo:build-storybook`
-- Run lint on all projects: `yarn nx run-many --all --target=lint` (with `yarn nx lint` only the default project is linted)
+- Run lint on all projects: `yarn nx run-many --all --target=lint` (with `yarn nx lint` only the default project is linted) or for a specific project `yarn nx run server:lint`
 - Test with watch: `yarn nx test frontend --watch`
 - Add a controllor: `yarn nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
+- Format (prettier):
+  - check changed: `yarn nx format:check`
+  - format changed: `yarn nx format:check`
+  - format all: `yarn nx format:write --all`
 
 Api proxying: server is running on 3333 and client on 4200, but a proxy.conf.json exists that forwards /api from 4200 to 3333. 
 - `yarn start`
