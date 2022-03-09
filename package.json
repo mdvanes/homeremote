@@ -21,7 +21,7 @@
         "typecheck": "yarn typecheck:client && yarn typecheck:server",
         "typecheck:client": "tsc --noEmit --pretty -p apps/client/tsconfig.app.json",
         "typecheck:server": "tsc --noEmit --pretty -p apps/server/tsconfig.app.json",
-        "validate": "yarn lint && yarn test:ci",
+        "validate": "yarn typecheck && yarn lint && yarn test:ci",
         "prebuild": "yarn writeGitInfo && yarn validate"
     },
     "private": true,
@@ -70,7 +70,7 @@
         "@nestjs/testing": "^8.0.0",
         "@nrwl/cli": "13.4.3",
         "@nrwl/cypress": "13.4.3",
-        "@nrwl/eslint-plugin-nx": "13.4.3",
+        "@nrwl/eslint-plugin-nx": "^13.8.5",
         "@nrwl/jest": "13.4.3",
         "@nrwl/js": "13.8.1",
         "@nrwl/linter": "13.4.3",
