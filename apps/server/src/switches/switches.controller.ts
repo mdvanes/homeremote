@@ -69,18 +69,16 @@ type MapIncludedSwitch = (
     Type: DomoticzType;
     Name: string;
 }) => HomeRemoteSwitch;
-const mapIncludedSwitch: MapIncludedSwitch = (SceneStatus) => ({
-    DevID,
-    Type,
-    Name,
-}) => ({
-    idx: DevID,
-    type: Type,
-    name: Name,
-    status: SceneStatus,
-    dimLevel: null, // NYI, to implement this get each switch detail by DevID on /json.htm?type=command&param=getlightswitches
-    readOnly: false, // NYI, to implement this get each switch detail by DevID on /json.htm?type=command&param=getlightswitches
-});
+const mapIncludedSwitch: MapIncludedSwitch =
+    (SceneStatus) =>
+    ({ DevID, Type, Name }) => ({
+        idx: DevID,
+        type: Type,
+        name: Name,
+        status: SceneStatus,
+        dimLevel: null, // NYI, to implement this get each switch detail by DevID on /json.htm?type=command&param=getlightswitches
+        readOnly: false, // NYI, to implement this get each switch detail by DevID on /json.htm?type=command&param=getlightswitches
+    });
 
 type GetChildren = (
     domoticzuri: string,
@@ -108,29 +106,31 @@ const getChildren: GetChildren = async (
     return false;
 };
 
-const mapSwitch = (domoticzuri: string) => async ({
-    idx,
-    Type,
-    Name,
-    Status,
-    SwitchType,
-    Level,
-    Protected,
-}: DomoticzSwitch): Promise<HomeRemoteSwitch> => {
-    const isSelector = SwitchType === "Selector";
-    const isOnDimmer = getIsOnDimmer(SwitchType, Status);
-    const children = await getChildren(domoticzuri, idx, Type, Status);
-    const switchResult: HomeRemoteSwitch = {
+const mapSwitch =
+    (domoticzuri: string) =>
+    async ({
         idx,
-        type: isSelector ? SwitchType : Type,
-        name: Name,
-        status: Status,
-        dimLevel: getDimLevel(isOnDimmer, isSelector, Level),
-        readOnly: Protected,
-        children,
+        Type,
+        Name,
+        Status,
+        SwitchType,
+        Level,
+        Protected,
+    }: DomoticzSwitch): Promise<HomeRemoteSwitch> => {
+        const isSelector = SwitchType === "Selector";
+        const isOnDimmer = getIsOnDimmer(SwitchType, Status);
+        const children = await getChildren(domoticzuri, idx, Type, Status);
+        const switchResult: HomeRemoteSwitch = {
+            idx,
+            type: isSelector ? SwitchType : Type,
+            name: Name,
+            status: Status,
+            dimLevel: getDimLevel(isOnDimmer, isSelector, Level),
+            readOnly: Protected,
+            children,
+        };
+        return switchResult;
     };
-    return switchResult;
-};
 
 interface UpdateSwitchMessage {
     state: string;

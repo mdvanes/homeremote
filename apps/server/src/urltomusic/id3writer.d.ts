@@ -4,9 +4,7 @@ declare module "id3-writer" {
     class MetaType {}
 
     class WriterType {
-        setFile(
-            file: FileType
-        ): {
+        setFile(file: FileType): {
             write: (meta: any, callback: any) => any;
         };
     }

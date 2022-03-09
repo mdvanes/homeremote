@@ -28,15 +28,15 @@ describe("DockerList Controller", () => {
         });
 
         // Example of strong typing on mock without ts-jest/utils
-        (startContainer as jest.MockedFunction<
-            typeof startContainer
-        >).mockResolvedValue({
+        (
+            startContainer as jest.MockedFunction<typeof startContainer>
+        ).mockResolvedValue({
             status: "received",
         });
 
-        (stopContainer as jest.MockedFunction<
-            typeof stopContainer
-        >).mockResolvedValue({
+        (
+            stopContainer as jest.MockedFunction<typeof stopContainer>
+        ).mockResolvedValue({
             status: "received",
         });
     });
