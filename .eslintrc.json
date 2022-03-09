@@ -27,7 +27,12 @@
     {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nrwl/nx/typescript"],
-      "rules": {}
+      "rules": {
+        // Sometimes wrapping a child in fragment is needed for typing
+        "react/jsx-no-useless-fragment": [2, {
+          "allowExpressions": true
+        }]
+      }
     },
     {
       "files": ["*.js", "*.jsx"],
