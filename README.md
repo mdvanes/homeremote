@@ -44,7 +44,9 @@ Other utils:
 - Move/rename an app: `yarn nx g mv --project homeremote client --dry-run`
 - To build storybook run: `yarn nx run demo:build-storybook`
 - Run lint on all projects: `yarn nx run-many --all --target=lint` (with `yarn nx lint` only the default project is linted) or for a specific project `yarn nx run server:lint`
-- Test with watch: `yarn nx test frontend --watch`
+- Testing:
+  - with watch: `yarn test:client` or `yarn nx test client --watch`
+  - a single file without coverage and with watch, e.g. users.service: `yarn test:server --testFile=users.service`
 - Add a controllor: `yarn nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
 - Format (prettier):
   - check changed: `yarn nx format:check`
@@ -89,7 +91,6 @@ Migration todo:
 - Fixed: production serve index.html (/app/apps/server/src/assets/) in Docker. On Mac, on `docker compose up --build` fails with `244.0 error An unexpected error occurred: "https://registry.npmjs.org/rxjs/-/rxjs-7.5.4.tgz: ESOCKETTIMEDOUT".`
 - Fixed: lint with prettier
 - Fixed: Clean up and remove OLD dir
-- Build fails for server test because auth.json does not contain John. So first run with auth.json.example instead of auth.json?
 - Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - Release and replace production version

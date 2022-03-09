@@ -21,7 +21,6 @@ jobs:
       - name: Install and Build components 🔧
         run: |
           yarn install --frozen-lockfile
-          cp apps/server/auth.json.example apps/server/auth.json
           yarn build --if-present
         env:
           CI: false # true -> fails on warning
