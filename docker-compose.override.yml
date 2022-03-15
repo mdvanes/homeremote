@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  # USAGE: see README.md
+  homeremote:
+    # For development:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      # For Mac:
+      # args:
+      #   - INSTALL_TIMEOUT=--network-timeout 1000001
+    env_file:
+      - ./apps/server/.env
+    ports:
+      - "3333:3333"
+    volumes:
+      - ./apps/server/auth.json:/usr/src/dist/apps/server/auth.json

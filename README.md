@@ -47,7 +47,7 @@ Other utils:
 - Testing:
   - with watch: `yarn test:client` or `yarn nx test client --watch`
   - a single file without coverage and with watch, e.g. users.service: `yarn test:server --testFile=users.service`
-- Add a controllor: `yarn nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
+- Add a controller: `yarn nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
 - Format (prettier):
   - check changed: `yarn nx format:check`
   - format changed: `yarn nx format:check`
@@ -66,6 +66,7 @@ Building / Run in production:
 - Set correct path for volumes in docker-compose.yml
 - When on Mac with Lima: disable docker.sock volume in docker-compose.yml (or try https://github.com/abiosoft/colima)
 - `docker-compose up -d --build`. Build duration: ca. 4 minutes
+- On Mac with Lima use `docker compose -f docker-compose.yml -f docker-compose.override.yml up --build`. Real docker-compose automatically finds docker-compose.yml and docker-compose.override.yml.
 - Show logs: `docker-compose logs --follow`
 - Alternative, instead of docker compose (e.g. for debugging): 
   - `docker build -t homeremotenx .` and
@@ -77,9 +78,16 @@ Building / Run in production:
 
 Publishing:
 
-- Tag with `git tag -a v3.0.0 -m "publish version 3.0.0"` and push
-- Wait for CI to finish, and all tests are OK
-- On the target server:
+1. Merge changes to main branch
+2. Tag with GitHub UI or with `git tag -a v3.0.0 -m "publish version 3.0.0"` and push
+3. Wait for CI to finish, and all tests are OK
+4. On dev machine, build image with correct version: `docker build . -t mdworld/homeremote:3.0.0`
+5. On dev machine, push image to registry:
+  - Note: should also work with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub
+  - `docker login --username=yourhubusername --email=youremail@company.com`
+  - `docker push mdworld/homeremote:3.0.0`
+6. On the target server: set up settings/auth, settings/env and docker-compose
+7. On the target server: `docker-compose up -d`
   - `git clone` or `git pull`
   - `docker-compose up -d`
 
