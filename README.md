@@ -81,15 +81,16 @@ Publishing:
 1. Merge changes to main branch
 2. Tag with GitHub UI or with `git tag -a v3.0.0 -m "publish version 3.0.0"` and push
 3. Wait for CI to finish, and all tests are OK
-4. On dev machine, build image with correct version: `docker build . -t mdworld/homeremote:3.0.0`
+4. On dev machine, build image with correct version: `docker build -t mdworld/homeremote:3.0.0 .` (on mac `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:3.0.0 .`)
 5. On dev machine, push image to registry:
   - Note: should also work with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub
   - `docker login --username=yourhubusername --email=youremail@company.com`
   - `docker push mdworld/homeremote:3.0.0`
-6. On the target server: set up settings/auth, settings/env and docker-compose
+6. On the target server, set up: 
+  - ~/homeremote/settings/auth (use apps/server/auth.json.example as base)
+  - ~/homeremote/settings/.env (use apps/server/.env.example as base)
+  - ~/homeremote/docker-compose.yml (copy docker-compose.yml from this project)
 7. On the target server: `docker-compose up -d`
-  - `git clone` or `git pull`
-  - `docker-compose up -d`
 
 Migration todo:
 
