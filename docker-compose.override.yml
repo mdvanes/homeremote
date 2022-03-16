@@ -9,6 +9,7 @@ services:
       # For Mac:
       # args:
       #   - INSTALL_TIMEOUT=--network-timeout 1000000
+    tty: true
     env_file:
       - ./apps/server/.env
     ports:
