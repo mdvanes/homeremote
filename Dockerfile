@@ -6,7 +6,7 @@ ARG INSTALL_TIMEOUT
 WORKDIR /home/node/code
 
 # Copy the files needed before yarn install
-COPY package.json yarn.lock bsconfig.json ./
+COPY package.json package.prod.json yarn.lock bsconfig.json ./
 
 # Copy the rescript source for the postinstall script
 COPY ./apps/client/src/Dummy.res ./apps/client/src/
@@ -39,27 +39,39 @@ RUN apk --no-cache add --virtual .builds-deps build-base python3
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-# TODO apk del .gyp
 
 # Copy the files needed before yarn install
 # COPY package.json yarn.lock bsconfig.json ./
-COPY --from=build-env /home/node/code/package.json ./package.json
+# COPY --from=build-env /home/node/code/package.json ./package.json
 COPY --from=build-env /home/node/code/package.json /home/node/code/yarn.lock /home/node/code/bsconfig.json  ./
 # COPY --from=build-env /home/node/code/node_modules ./node_modules
 COPY --from=build-env /home/node/code/dist/apps/server ./dist/apps/server
+
+COPY --from=build-env /home/node/code/package.prod.json ./package.json
 
 # Skip only postinstall here. The --ignore-scripts flag also ignores build for the bcrypt dependency
 RUN npm set-script postinstall ""
 # but this also runs rescript rebuild without the --ignore-scripts flag...
 
-# TODO in this case, rescript post install fails
-# RUN yarn install --frozen-lockfile $INSTALL_TIMEOUT
-RUN yarn install --ignore-scripts --frozen-lockfile $INSTALL_TIMEOUT
+# TODO convert yarn.lock to package-lock.json?
 
-RUN npm rebuild bcrypt
+# TODO in this case, rescript post install fails
+RUN yarn install --frozen-lockfile $INSTALL_TIMEOUT
+# RUN yarn install --ignore-scripts --frozen-lockfile $INSTALL_TIMEOUT
+# TODO timeout settings seem to have no effect, but disabling VPN does (timeout after 1796s instead of 110s) But still fails and is incredibly slow. Maybe Pi-hole?
+# RUN npm config set timeout 6000000
+# RUN npm config set fetch-retry-mintimeout 20000
+# RUN npm config set fetch-retry-maxtimeout 6000000
+# TODO try without --legacy-peer-deps
+# RUN npm install --production --legacy-peer-deps
+# RUN timeout=6000000 fetch_retry_mintimeout=20000 fetch_retry_maxtimeout=6000000 fetch_timeout=6000000 npm install --production --legacy-peer-deps
+
+# TODO apk del .gyp
+
+# RUN npm rebuild bcrypt
 
 # Remove all npm dependencies not needed for production
-RUN npm prune --production
+# RUN npm prune --production
 
 # Runtime stage
 FROM node:16-alpine
