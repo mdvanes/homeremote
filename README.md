@@ -9,267 +9,174 @@ Material Design:
 * Keep.google.com
 * https://codelabs.developers.google.com/codelabs/polymer-2-carousel/
 
-
-## Run
-
-For the moment, `npm i` is not enough. After `npm i` also run `buildPatchExpressWs.sh` until PR has been accepted.
-
-After installation (see below), use ```sudo service homeremote start``` and go to https://localhost:3443
-
-Read log file with:
-
-* ```bunyan -o short homeremote-error.log``` (or bunyan /var/log/foo.log). Bunyan has many options for filtering.
-
-
-## Test
-
-Tests will run
-
-* lint (server/client)
-* Jest API test
-
-The API tests try to access all the HTTP endpoints when logged out, to see if they are
-secure. 
-
-Also run curl-ws.sh manually. It will call (existing and non-existing) websocket endpoints when logged 
-out to see if the server crashes (https://github.com/HenningM/express-ws/issues/64)
-
-To run API tests, first build and run the server:
-
-* `npm run build`
-* `npm run start`
-// This does not work as expected, it keeps the first websocket open instead of continuing * in second terminal: `./test/curl-ws.sh` and after completion without errors ctrl+c
-* in second terminal: `npm run test`
-* in the browser (localhost:3000) be logged out and run:
-    * probe non-existing ws endpoint `const socket1 = new WebSocket('ws://localhost:3000/hack'); socket1.onopen = () => socket1.send(JSON.stringify({type: 'init'}));`
-    * probe (the only) existing ws endpoint `const socket2 = new WebSocket('ws://localhost:3000/fm/mvToTargetLocationProgress'); socket2.onopen = () => socket2.send(JSON.stringify({type: 'init'}));`
-    * both should give no error, but in the Network panel no responses are received.
-    * now login and run:
-    * probe non-existing ws endpoint `const socket1 = new WebSocket('ws://localhost:3000/hack'); socket1.onopen = () => socket1.send(JSON.stringify({type: 'init'}));`
-    * probe (the only) existing ws endpoint `const socket2 = new WebSocket('ws://localhost:3000/fm/mvToTargetLocationProgress'); socket2.onopen = () => socket2.send(JSON.stringify({type: 'init'}));`
-
-
 ## Screenshot
 
 ![Screenshot](screenshot.png)
 
-## Updating
-
-* `npm build` and test locally
-* set build version in package.json and push commits
-* ssh to server
-* stop "services" via web app, if running.
-* stop `sudo service homeremote stop`
-* `cd /opt/homeremote`
-* update `git pull origin master`
-* update dependencies `npm i`
-// the patch was merged in express-ws@4.x // * install patched express-ws (if needed): `chmod +x buildPatchExpressWs.sh` and `./buildPatchExpressWs.sh`
-* build for production: `npm run build` to create updated JS and source map
-* test run `node server/app.js | bunyan`
-* start `sudo service homeremote start`
-
-
 ## Installation
 
+Requirements:
 
-### Domoticz
+- Nginx/Traefik reverse proxy with SSL
+- [Domoticz](https://www.domoticz.com/) server (optional)
+- [DataLora](https://github.com/mdvanes/datalora) (optional)
 
-Install [Domoticz](https://www.domoticz.com). Use the domain name + port as domoticzuri in the settings.json, e.g. http://192.168.0.19:8080.
+- WIP
 
+## Adding a user
 
-### Node server
+- This endpoint is only enabled in development mode
+- Start dev server: `yarn start:dev-temp`
+- For password "test", call (e.g. in browser) `http://localhost:4200/api/pw-to-hash/?password=test`
+- Store the hash with the username in auth.json
 
-Requires that the node server upstart script is run as root. (Was because of ELRO, no longer needed?)
+## Running
 
-Install in /opt (because of upstart script):
+Development:
 
-* cache git credentials for this session: ```git config --global credential.helper cache```
-* `cd /opt`
-* check out with ```sudo git clone``` to create /opt/homeremote (update later with ```git pull origin master```)
-* change ownership of the created /opt/homeremote to a normal user with ```sudo chown -R```
-* ```npm i --production```
-* create a settings.json in the root of the project, like:
-```
-#!javascript
-{
-    "domoticzuri": "http://192.168.0.19:8080",
-    "enableAuth": true,
-    "radiologpath": "/tmp/homeremote-playradio-status.log",
-    "fm": {
-        "rootPath": "/path/to/list",
-        "targetLocations": [
-            {
-                "path": "/path/to/move/to"
-            }
-        ]
-    },
-    "ftp": {
-        "host": "ftp.example.com",
-        "user": "ftp_user",
-        "password": "ftp_pass",
-        "remotePath": "/remote/directory"
-    },
-    "musicpath": "/path/to/music",
-    "ownerinfo": {
-        "uid": 1000,
-        "gid": 1000
-    },
-    "gears": {
-        "sn": {
-            "uri": "http://192.168.0.1:8000/",
-            "apikey": "123"
-        },
-        "tr": {
-            "host": "192.168.0.1",
-            "port": "8000",
-            "user": "username",
-            "password": "password"
-        }
-    },
-    "vm": {
-        "vmName": "name-of-the-vm",
-        "userName" "USER"
-    },
-    "vmservices": {
-        "elevate": "elevation-prefix",
-        "host": "192.168.0.1",
-        "port": "1234",
-        "user": "username"
-    },
-    "shell": [
-        {
-            "name": "SomeLabel",
-            "cmd": "ls",
-            "mapping": ["json properties of which the value must be shown"]
-        }
-    ]
-}
-```
-* ownerinfo: the uid and gid of the user account for the "Get Music" feature
-* The "Get Music" feature has an OS dependency to ffmpeg, ffprobe and eyeD3. For Debian based systems install with
-  * sudo apt-get install software-properties-common # to get add-apt-repository
-  * sudo add-apt-repository ppa:jonathonf/ffmpeg-3
-  * sudo apt-get update
-  * sudo apt-get install ffmpeg eyed3 # to get ffmpeg, eyeD3
-* it is possible to install HomeRemote on multiple servers, have the USB stick in one of them and call one from another by setting a URL in heserverip, like: http://192.168.0.25:3000
-* it is possible to disable authentication (for servers that are only accessible within the LAN) by setting enableAuth to false (default is true)
-* create a auth.json in the root and content should be: 
-```
-{
-  "salt": "SOME_RANDOM_TEXT",
-  "users": [{
-    "id": 1,
-    "name": "username",
-    "password": "password"
-  }]
-}
-```
-* the /keys dir contains a server.cert and server.key. The ones in the repo are for localhost, and so only usable for debugging. Create your own (see below, Set up localhost SSL) for the target domain and place in the /keys dir.
-* set up the router for access to the SSL server (do not allow non-SSL access from outside the network), enable port forwarding to <ip of this server>:3443
-* ```npm run start``` or ```node server/app.js``` or ```sudo service homeremote restart``` (see below)
- 
+- serve all: `yarn start` or `yarn nx run-many --target=serve --projects=server,client --parallel`
 
-### Upstart scripts
+Other utils:
 
-For the node server and toggles (e.g. radio toggle). Broadcast toggle upstart script and server need to be installed on a remote machine.
+- serve client: `yarn nx serve:all` or `yarn nx serve client` or `yarn nx run client:serve`
+- Add an app (without e2e): `yarn nx g @nrwl/react:application --name=client --e2eTestRunner=none --dry-run` or `yarn nx g @nrwl/nest:application --name=server --frontendProject=client --dry-run`
+- Remove an app: `yarn nx g rm homeremote-server-e2e --dry-run` 
+- Move/rename an app: `yarn nx g mv --project homeremote client --dry-run`
+- To build storybook run: `yarn nx run demo:build-storybook`
+- Run lint on all projects: `yarn nx run-many --all --target=lint` (with `yarn nx lint` only the default project is linted) or for a specific project `yarn nx run server:lint`
+- Testing:
+  - with watch: `yarn test:client` or `yarn nx test client --watch`
+  - a single file without coverage and with watch, e.g. users.service: `yarn test:server --testFile=users.service`
+- Add a controller: `yarn nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
+- Format (prettier):
+  - check changed: `yarn nx format:check`
+  - format changed: `yarn nx format:check`
+  - format all: `yarn nx format:write --all`
 
-On the server (with speakers plugged in), install the homeremote and playradio upstart scripts:
+Api proxying: server is running on 3333 and client on 4200, but a proxy.conf.json exists that forwards /api from 4200 to 3333. 
+- `yarn start`
+- This URL works: http://localhost:4200/api/profile/current
 
-* ```sudo cp upstart/homeremote.conf /etc/init/```
-* homeremote should now be startable with ```sudo service homeremote start``` 
-* ```sudo cp upstart/playradio.conf /etc/init/```
-* playing the radio should now be startable with ```sudo service playradio start``` 
-* the playradio upstart script is set to [3fm](http://www.3fm.nl), but the playradio.conf can be easily modified to use a different radio stream URL.
+env files: https://nx.dev/guides/environment-variables
+
+Building / Run in production:
+
+- Optional: test building with `yarn build`
+- Make sure apps/server/.env and apps/server/auth.json exist
+- Set correct path for volumes in docker-compose.yml
+- When on Mac with Lima: disable docker.sock volume in docker-compose.yml (or try https://github.com/abiosoft/colima)
+- `docker-compose up -d --build`. Build duration: ca. 4 minutes
+- On Mac with Lima use `docker compose -f docker-compose.yml -f docker-compose.override.yml up --build`. Real docker-compose automatically finds docker-compose.yml and docker-compose.override.yml.
+- Show logs: `docker-compose logs --follow`
+- Alternative, instead of docker compose (e.g. for debugging): 
+  - `docker build -t homeremotenx .` and
+  - `docker run --rm --name homeremotenx homeremotenx ls -lah dist/apps/server/src/assets/`
+- If yarn install fails with timeouts on Mac with Lima compose (`lima nerdctl compose up`):
+  - Seems to be Lima issue: https://github.com/lima-vm/lima/issues/561
+  - https://github.com/yarnpkg/yarn/issues/5259
+  - Solved by setting `RUN yarn install --frozen-lockfile --network-timeout 1000000` in Dockerfile
+
+Publishing:
+
+1. Merge changes to main branch
+2. Tag with GitHub UI or with `git tag -a v3.0.0 -m "publish version 3.0.0"` and push
+3. Wait for CI to finish, and all tests are OK
+4. On dev machine, build image with correct version: `docker build -t mdworld/homeremote:3.0.0 .` (on mac `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:3.0.0 .`)
+5. On dev machine, push image to registry:
+  - Note: should also work with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub
+  - `docker login --username=yourhubusername --email=youremail@company.com`
+  - `docker push mdworld/homeremote:3.0.0`
+6. On the target server, set up: 
+  - ~/homeremote/settings/auth (use apps/server/auth.json.example as base)
+  - ~/homeremote/settings/.env (use apps/server/.env.example as base)
+  - ~/homeremote/docker-compose.yml (copy docker-compose.yml from this project)
+7. On the target server: `docker-compose up -d`
+
+Migration todo:
+
+- Fixed: run tests
+- Fixed: Fix build (copy client to server). Run with `yarn build` and then `node dist/apps/server/main.js` (needs to load the .env (docker-compose?) and auth.json (check blue lines in log!))
+- Fixed: PUBLIC_HTML in index.html
+- Fixed: production serve index.html (/app/apps/server/src/assets/) in Docker. On Mac, on `docker compose up --build` fails with `244.0 error An unexpected error occurred: "https://registry.npmjs.org/rxjs/-/rxjs-7.5.4.tgz: ESOCKETTIMEDOUT".`
+- Fixed: lint with prettier
+- Fixed: Clean up and remove OLD dir
+- Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
+- Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
+- Release and replace production version
+- Service workers is registered, but implementation of service-worker is incorrect / not caching when offline
+- https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
+- Homeremote simple bookmarklist of services (in sidebar?)
+- add WHO to log: CEF, Common Event Format, When Where Who What, Is the log persisted? 
+- Reactive/observable for InfluxDB
+
+## Notes
+
+-  "noPropertyAccessFromIndexSignature": was turned to false when migrating, also see https://www.typescriptlang.org/tsconfig#noPropertyAccessFromIndexSignature
 
 
-### Notes for installing on Raspberry Pi
+## Adding capabilities to your workspace
 
-To install the server on a Pi with OSMC:
+Nx supports many plugins which add capabilities for developing different types of applications and different tools.
 
-* If git not installed: ```sudo apt-get install git```
-* Install newest version of node, but don't use apt-get 
-    * installing with ```sudo apt-get install nodejs``` results in nodejs -v v0.10.29, current LTS is 4.4.3 and current stable is 5.11.0
-    * instead go to https://nodejs.org/dist/ and find the latest LTS (currently 4.4.3) that ends with "armv7l" (for RPi2B, for older RPi it would be "armv6l")
-    * e.g. ```wget https://nodejs.org/dist/latest-v4.x/node-v4.4.3-linux-armv7l.tar.gz```
-    * untar and cd into the untarred dir
-    * copy to /usr/local/ ```sudo cp -R * /usr/local/```
-    * test with ```node -v```
-* npm install can take a long time on a RPi, at least 12 minutes on a RPi2
-    * test with ```node /opt/homeremote/app.js``` before setting up the upstart scripts
-    * At this time OSMC doesn't use Upstart, but it is possible to set up a daemon service. See below for more details. 
-* Server is on http://localhost:3000/
+These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
 
-Source: https://blog.wia.io/installing-node-js-v4-0-0-on-a-raspberry-pi
+Below are our core plugins:
 
-#### Set up systemd service
+- [React](https://reactjs.org)
+  - `npm install --save-dev @nrwl/react`
+- Web (no framework frontends)
+  - `npm install --save-dev @nrwl/web`
+- [Angular](https://angular.io)
+  - `npm install --save-dev @nrwl/angular`
+- [Nest](https://nestjs.com)
+  - `npm install --save-dev @nrwl/nest`
+- [Express](https://expressjs.com)
+  - `npm install --save-dev @nrwl/express`
+- [Node](https://nodejs.org)
+  - `npm install --save-dev @nrwl/node`
 
-* ```cd /etc/systemd/system```
-* Create a file ```sudo pico homeremote.service``` with content:
-        
-```
-#!bash
+There are also many [community plugins](https://nx.dev/community) you could add.
 
-[Unit]
-Description=HomeRemote
+## Generate an application
 
-[Service]
-User=root
-WorkingDirectory=/opt/homeremote/
-ExecStart=/usr/local/bin/node app.js
-Restart=always
-# Restart service after 10 seconds if node service crashes
-RestartSec=10
-# Output to syslog
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=homeremote
+Run `nx g @nrwl/react:app my-app` to generate an application.
 
-[Install]
-WantedBy=multi-user.target
-```
+> You can use any of the plugins above to generate applications as well.
 
-* ```sudo systemctl daemon-reload```
-* ```sudo systemctl start homeremote.service``` (should keep running after CTRL-C, or try ```sudo systemctl start homeremote.service &```)
-* This last instruction should be called automatically when booting.
-* Stop with: ```sudo systemctl stop homeremote.service```
-* Status with: ```sudo systemctl status homeremote.service```
+When using Nx, you can create multiple applications and libraries in the same workspace.
 
+## Generate a library
 
-#### Temporarily disable git security on raspberry pi:
+Run `nx g @nrwl/react:lib my-lib` to generate a library.
 
-* ```git config --global http.sslVerify false``` 
-* and afterwards enable with ```git config --global http.sslVerify true```
+> You can also use any of the plugins above to generate libraries as well.
 
+Libraries are shareable across libraries and applications. They can be imported from `@homeremote/mylib`.
 
-## Set up localhost SSL
+## Development server
 
-On Ubuntu, in a temp dir do:
+Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
 
-* ```openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days XXX -nodes -subj '/CN=localhost'```
-* This will create a cert.pem (certificate) and a key.pem (prive key).
-* Rename and move key.pem from the Ubuntu system to keys/localhost.key in this dir.
-* Likewise, rename and move cert.pem to keys/localhost.cert
+## Code scaffolding
 
-details:
+Run `nx g @nrwl/react:component my-component --project=my-app` to generate a new component.
 
-* -nodes => no DES, so do not use a password
-* -subj => configure 
-* also possible with -subj '/CN=servername.local' for testing on a server within a network
+## Build
 
-Note:
+Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-1. AppCache will fail when using a self-signed certificate. Starting Chrome with ```--ignore-certicate-errors``` should help, and also using a real certificate should work.
-Otherwise, for testing AppCache, just use the non-SSL entrypoint at :3000
-2. The SSL certificate that I created for use within the network (e.g. "foo.local") also seems to works for the external domain (e.g. "foo.com"), albeit with warnings. This is good enough for now.  
+## Running unit tests
 
+Run `nx test my-app` to execute the unit tests via [Jest](https://jestjs.io).
 
-## TODO
+Run `nx affected:test` to execute the unit tests affected by a change.
 
-* strip packages from package.json until no longer works, because there are some unused packages in there
-* extract everything that is on a remote server (only broadcast for now) to a subdir: remote-broadcast-server with it's own node server and upstart scripts
-* Add static typing with Flow: doesn't work on Windows but works on Ubuntu and probably on Travis. The problem is that this requires transpilation to remove the typing, so it would not be possible to build on Windows anymore.
-* bunyan logging in grunt-express
-* bunyan logging on RPi (requires npm on RPi)
-* should have rotating logs (bunyan offers support for it)
+## Running end-to-end tests
 
-Currently it is required when using :8080 to navigate to /login manually after each server restart because of /r/* redirect in app.js
+Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
+
+Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
+
+## Understand your workspace
+
+Run `nx dep-graph` to see a diagram of the dependencies of your projects.

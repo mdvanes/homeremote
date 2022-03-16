@@ -1,0 +1,9 @@
+{
+  "secret": "my_jwt_secret",
+  "users": [{
+    "id": 1,
+    "name": "john",
+    "displayName": "John",
+    "hash": "$2b$my_password_hash"
+  }]
+}

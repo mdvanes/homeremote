@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  # USAGE: see README.md
+  homeremote:
+    # Use docker-compose.override.yml for this! https://docs.docker.com/compose/extends/#understanding-multiple-compose-files
+    # For production:
+    image: mdworld/homeremote:3.0.0
+    env_file:
+      - ./settings/.env
+    ports:
+      - "3333:3333"
+    container_name: homeremote-stack
+    volumes:
+      - ./settings/auth.json:/usr/src/dist/apps/server/auth.json
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /foo:/songsfrom/:/songsfrom
+    restart: unless-stopped
