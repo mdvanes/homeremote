@@ -6,7 +6,7 @@ ARG INSTALL_TIMEOUT
 WORKDIR /home/node/code
 
 # Copy the files needed before yarn install
-COPY package.json package.prod.json yarn.lock bsconfig.json ./
+COPY package.json yarn.lock bsconfig.json ./
 
 # Copy the rescript source for the postinstall script
 COPY ./apps/client/src/Dummy.res ./apps/client/src/
@@ -35,7 +35,7 @@ ARG INSTALL_TIMEOUT
 WORKDIR /app
 
 # For bcrypt build that works on Alpine
-RUN apk --no-cache add --virtual .builds-deps build-base python3
+RUN apk --no-cache add --virtual .builds-deps build-base python3 jq
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
@@ -47,7 +47,9 @@ COPY --from=build-env /home/node/code/package.json /home/node/code/yarn.lock /ho
 # COPY --from=build-env /home/node/code/node_modules ./node_modules
 COPY --from=build-env /home/node/code/dist/apps/server ./dist/apps/server
 
-COPY --from=build-env /home/node/code/package.prod.json ./package.json
+# Yarn does not properly support the --prod flag, npm fails with timeout, and reinstall of node_modules is neccesary for bcrypt. npm rebuild instead of reinstall does not seem to work.
+# So manually strip devDependencies from package.json
+RUN jq 'del(.devDependencies)' package.json > tmp.json && mv tmp.json package.json
 
 # Skip only postinstall here. The --ignore-scripts flag also ignores build for the bcrypt dependency
 RUN npm set-script postinstall ""
