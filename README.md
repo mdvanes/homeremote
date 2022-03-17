@@ -95,7 +95,6 @@ Publishing:
 
 Migration todo:
 
-- Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - Homeremote simple bookmarklist of local services (in sidebar? under topbar?)
 - Update screenshot
