@@ -1,4 +1,10 @@
 import {
+    DomoticzStatus,
+    DomoticzType,
+    HomeRemoteSwitch,
+    SwitchesResponse,
+} from "@homeremote/types";
+import {
     Controller,
     Logger,
     Get,
@@ -11,15 +17,6 @@ import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
-export enum DomoticzType {
-    Group = "Group",
-    LightSwitch = "Light/Switch",
-    Dimmer = "Dimmer",
-    Selector = "Selector",
-}
-
-type DomoticzStatus = string;
-
 export interface DomoticzSwitch {
     idx: string;
     Type: DomoticzType;
@@ -28,21 +25,6 @@ export interface DomoticzSwitch {
     SwitchType: DomoticzType;
     Level: number;
     Protected: boolean;
-}
-
-interface HomeRemoteSwitch {
-    idx: string;
-    type: DomoticzType;
-    status: DomoticzStatus;
-    name: string;
-    dimLevel: number | null;
-    readOnly: boolean;
-    children?: HomeRemoteSwitch[] | false;
-}
-
-interface SwitchesResponse {
-    status: "received" | "error";
-    switches?: HomeRemoteSwitch[];
 }
 
 type GetIsOnDimmer = (SwitchType: DomoticzType, Status: string) => boolean;

@@ -1,11 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
 import * as Got from "got";
-import {
-    DomoticzSwitch,
-    DomoticzType,
-    SwitchesController,
-} from "./switches.controller";
+import { DomoticzSwitch, SwitchesController } from "./switches.controller";
+import { DomoticzType } from "@homeremote/types";
 
 jest.mock("got");
 const gotSpy = jest.spyOn(Got, "default");

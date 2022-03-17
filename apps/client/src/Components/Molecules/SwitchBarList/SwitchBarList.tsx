@@ -8,9 +8,10 @@ import {
     SwitchBarListState,
     toggleExpandScene,
 } from "./switchBarListSlice";
-import { DSwitch, getSwitches } from "./getSwitchesThunk";
+import { getSwitches } from "./getSwitchesThunk";
 import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
+import { HomeRemoteSwitch } from "@homeremote/types";
 
 // TODO improve type
 const SELECTOR_STATES: Record<number, string> = {
@@ -41,7 +42,7 @@ const getRightIcon = (label: string): string =>
 
 const getNameAndChildren = (
     name: string,
-    children: DSwitch[] | false
+    children: HomeRemoteSwitch[] | false
 ): string => (children ? `${name} \u25BE` : name);
 
 const getLabel = (
@@ -58,7 +59,7 @@ const getLabel = (
 type SendSomeState = (id: string, type: string) => void;
 
 const mapSwitchToSwitchBar = (
-    { idx, name, type, dimLevel, readOnly, status, children }: DSwitch,
+    { idx, name, type, dimLevel, readOnly, status, children }: HomeRemoteSwitch,
     sendOn: SendSomeState,
     sendOff: SendSomeState,
     labelAction: (() => void) | false
@@ -67,7 +68,7 @@ const mapSwitchToSwitchBar = (
         key={`switch-${idx}`}
         icon={false}
         label={getLabel(
-            getNameAndChildren(name, children),
+            getNameAndChildren(name, children ?? []),
             dimLevel,
             getType(type)
         )}
@@ -127,7 +128,7 @@ const SwitchBarList: FC = () => {
     useEffect(() => {
         dispatch(logError(errorMessage));
     }, [errorMessage, dispatch]);
-    const switchBars = switches.map((dSwitch: DSwitch) => {
+    const switchBars = switches.map((dSwitch: HomeRemoteSwitch) => {
         const hasChildren = Boolean(dSwitch.children);
         const labelAction = getLabelAction(
             hasChildren,
@@ -146,13 +147,14 @@ const SwitchBarList: FC = () => {
                 {hasChildren && showChildren ? (
                     <div style={{ padding: "0.5em" }}>
                         {dSwitch.children &&
-                            dSwitch.children.map((switchChild: DSwitch) =>
-                                mapSwitchToSwitchBar(
-                                    switchChild,
-                                    sendOn,
-                                    sendOff,
-                                    false
-                                )
+                            dSwitch.children.map(
+                                (switchChild: HomeRemoteSwitch) =>
+                                    mapSwitchToSwitchBar(
+                                        switchChild,
+                                        sendOn,
+                                        sendOff,
+                                        false
+                                    )
                             )}
                     </div>
                 ) : null}
