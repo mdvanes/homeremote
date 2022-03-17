@@ -1,16 +1,17 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { UsersService } from "./users.service";
 
-jest.mock("../../auth.json", () => ({
-    users: [
-        {
-            id: 1,
-            name: "john",
-            displayName: "John",
-            hash: "$2b$my_password_hash",
-        },
-    ],
-}));
+// TODO convert mock to use readFileSync
+// jest.mock("../../auth.json", () => ({
+//     users: [
+//         {
+//             id: 1,
+//             name: "john",
+//             displayName: "John",
+//             hash: "$2b$my_password_hash",
+//         },
+//     ],
+// }));
 
 describe("UsersService", () => {
     let service: UsersService;

@@ -15,4 +15,4 @@ services:
     ports:
       - "3333:3333"
     volumes:
-      - ./apps/server/auth.json:/usr/src/dist/apps/server/auth.json
+      - ./apps/server/auth.json:/app/dist/auth.json

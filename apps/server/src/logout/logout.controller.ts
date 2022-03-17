@@ -1,7 +1,7 @@
-import { Controller, Get, Logger, Req } from "@nestjs/common";
-import { Request } from "express";
+import { Controller, Get, Logger, Req, UseGuards } from "@nestjs/common";
 import { User } from "../users/users.service";
 import { clearCookie } from "../auth/auth.service";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 @Controller("auth/logout")
 export class LogoutController {
@@ -11,8 +11,10 @@ export class LogoutController {
         this.logger = new Logger(LogoutController.name);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Get()
-    async logout(@Req() req: Request): Promise<User> {
+    async logout(@Req() req): Promise<User> {
+        // Note: req.user can only be accessed when @UseGuards(JwtAuthGuard) is added
         this.logger.verbose(`logout: ${JSON.stringify(req.user)}`);
         if (req.res) {
             req.res.clearCookie(...clearCookie);
