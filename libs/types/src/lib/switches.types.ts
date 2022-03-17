@@ -1,10 +1,12 @@
-// TODO avoid enum
-export enum DomoticzType {
-    Group = "Group",
-    LightSwitch = "Light/Switch",
-    Dimmer = "Dimmer",
-    Selector = "Selector",
-}
+export const DomoticzTypeOptions = {
+    Group: "Group",
+    LightSwitch: "Light/Switch",
+    Dimmer: "Dimmer",
+    Selector: "Selector",
+} as const;
+
+export type DomoticzType =
+    typeof DomoticzTypeOptions[keyof typeof DomoticzTypeOptions];
 
 export type DomoticzStatus = string;
 
