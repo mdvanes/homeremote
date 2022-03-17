@@ -84,8 +84,9 @@ Publishing:
 4. On dev machine, build image with correct version: `docker build -t mdworld/homeremote:3.0.0 .` (on mac `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:3.0.0 .`)
 5. On dev machine, push image to registry:
   - Note: should also work with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub
-  - `docker login --username=yourhubusername --email=youremail@company.com`
+  - `docker login --username=yourhubusername`
   - `docker push mdworld/homeremote:3.0.0`
+  - `docker logout`
 6. On the target server, set up: 
   - ~/homeremote/settings/auth (use apps/server/auth.json.example as base)
   - ~/homeremote/settings/.env (use apps/server/.env.example as base)

@@ -11,7 +11,7 @@ services:
       - "3333:3333"
     container_name: homeremote-stack
     volumes:
-      - ./settings/auth.json:/usr/src/dist/apps/server/auth.json
+      - ./settings/auth.json:/app/dist/auth.json
       - /var/run/docker.sock:/var/run/docker.sock
       - /foo:/songsfrom/:/songsfrom
     restart: unless-stopped

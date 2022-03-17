@@ -20,8 +20,14 @@ COPY .git/ ./.git/
 # Copy the source files to be able to cache Docker layers up to this point
 COPY . .
 
+# Needed by typecheck and unit test
+RUN cp apps/server/auth.json.example apps/server/auth.json
+
 # Note --ignore-scripts does not work on composite yarn build
 RUN yarn build
+
+# Should not be published
+RUN rm apps/server/auth.json
 
 #### INSTALL DEPS FOR ALPINE STAGE ####
 FROM node:16-alpine AS build-alpine-env
