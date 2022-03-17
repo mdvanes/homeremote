@@ -10,15 +10,9 @@ import {
 import { FluxTableMetaData, InfluxDB } from "@influxdata/influxdb-client";
 import { ConfigService } from "@nestjs/config";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { TrackerItem, TrackerQueryType } from "@homeremote/types";
 
-interface Item {
-    loc: [number, number];
-    time: string;
-}
-
-type QueryType = "24h" | "all";
-
-const createFluxQuery = (queryType: QueryType): string =>
+const createFluxQuery = (queryType: TrackerQueryType): string =>
     `from(bucket:"iot") 
   |> range(start: ${queryType === "24h" ? "-24h" : "0"}) 
   |> filter(fn: (r) => r._measurement == "location")`;
@@ -26,7 +20,7 @@ const createFluxQuery = (queryType: QueryType): string =>
 const rowMapper = (
     row: string[],
     tableMeta: FluxTableMetaData
-): Item | null => {
+): TrackerItem | null => {
     const o = tableMeta.toObject(row);
     // console.log(row);
     // console.log(
@@ -51,8 +45,8 @@ const isNotNull = <T>(item: T | null): item is T => {
     return item !== null;
 };
 
-const getQueryType = (query: { type: QueryType }): QueryType => {
-    const t: QueryType = query?.type ?? "24h";
+const getQueryType = (query: { type: TrackerQueryType }): TrackerQueryType => {
+    const t: TrackerQueryType = query?.type ?? "24h";
     const isValid = t === "all" || t === "24h";
     return isValid ? t : "24h";
 };
@@ -70,7 +64,7 @@ export class DataloraController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getCoords(@Query() query: { type: QueryType }): Promise<any> {
+    async getCoords(@Query() query: { type: TrackerQueryType }): Promise<any> {
         this.logger.verbose(`GET to /api/datalora`);
 
         const url = this.configService.get<string>("INFLUX_URL") || "";
@@ -80,7 +74,7 @@ export class DataloraController {
         const queryApi = new InfluxDB({ url, token }).getQueryApi(org);
 
         try {
-            const queryType: QueryType = getQueryType(query);
+            const queryType: TrackerQueryType = getQueryType(query);
             // TODO use subscription and web socket instead of collectRows___
             const rows = await queryApi.collectRows(
                 createFluxQuery(queryType),
