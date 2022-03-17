@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { Item } from "../Components/Molecules/DataLora/types";
+import { TrackerItem } from "@homeremote/types";
 import { willAddCredentials } from "../devUtils";
 
-type GetCoordsResponse = Item[];
+type GetCoordsResponse = TrackerItem[];
 type GetCoordsArgs = {
     type: string;
 };
@@ -16,7 +16,7 @@ export const dataloraApi = createApi({
     endpoints: (builder) => ({
         getCoords: builder.query<GetCoordsResponse, GetCoordsArgs>({
             query: (queryParams) => `?type=${queryParams.type}`,
-            transformResponse: (response: { data: Item[] }) => {
+            transformResponse: (response: { data: TrackerItem[] }) => {
                 return response?.data ?? [];
             },
         }),

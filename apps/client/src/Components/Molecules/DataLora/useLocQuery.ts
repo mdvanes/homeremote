@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { useGetCoordsQuery } from "../../../Services/dataloraApi";
-import { Item, QueryType } from "./types";
+import { TrackerItem, TrackerQueryType } from "@homeremote/types";
 
 const UPDATE_INTERVAL_MS = 1000 * 60 * 60; // 1000 ms / 60 seconds / 60 minutes = 1x per hour
 
 interface LocQuery {
-    coords: Item[];
+    coords: TrackerItem[];
     update: () => Promise<void>;
     toggleQueryType: () => void;
     isLoading: boolean;
-    queryType: QueryType;
+    queryType: TrackerQueryType;
 }
 
 export const useLocQuery = (): LocQuery => {
-    const [queryType, setQueryType] = useState<QueryType>("24h");
+    const [queryType, setQueryType] = useState<TrackerQueryType>("24h");
     const {
         data: coords,
         isLoading,

@@ -1,7 +1,7 @@
 import { polygon } from "leaflet";
 import { FC, useCallback, useEffect, useState } from "react";
 import { TileLayer, Marker, Popup, Polyline, useMap } from "react-leaflet";
-import { Item } from "./types";
+import { TrackerItem } from "@homeremote/types";
 
 // const DEFAULT_CENTER: LatLngTuple = [52, 5.1];
 
@@ -13,11 +13,11 @@ const TILES_LAYER_DARK =
     "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
 interface Props {
-    coords: Item[];
+    coords: TrackerItem[];
 }
 
 const MapContent: FC<Props> = ({ coords }) => {
-    const [marker, setMarker] = useState<Item | null>(null);
+    const [marker, setMarker] = useState<TrackerItem | null>(null);
     const map = useMap();
 
     const updateBoundsAndMarker = useCallback(() => {
