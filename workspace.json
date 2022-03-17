@@ -3,6 +3,7 @@
     "projects": {
         "client": "apps/client",
         "server": "apps/server",
-        "service-worker": "libs/service-worker"
+        "service-worker": "libs/service-worker",
+        "types": "libs/types"
     }
 }
