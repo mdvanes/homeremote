@@ -5,7 +5,7 @@ import SwitchBarList from "./SwitchBarList";
 import { RootState } from "../../../Reducers";
 import * as Slice from "./switchBarListSlice";
 import SwitchBar from "./SwitchBar";
-import { DomoticzType } from "@homeremote/types";
+import { DomoticzTypeOptions } from "@homeremote/types";
 
 type MockRootState = Pick<RootState, "switchesList">;
 
@@ -16,7 +16,7 @@ const mockRootState: MockRootState = {
         switches: [
             {
                 idx: "3",
-                type: DomoticzType.LightSwitch,
+                type: DomoticzTypeOptions.LightSwitch,
                 name: "My Normal Light Switch",
                 status: "On",
                 dimLevel: null,
@@ -25,7 +25,7 @@ const mockRootState: MockRootState = {
             },
             {
                 idx: "4",
-                type: DomoticzType.Group,
+                type: DomoticzTypeOptions.Group,
                 name: "My Scene",
                 status: "On",
                 dimLevel: null,
@@ -33,7 +33,7 @@ const mockRootState: MockRootState = {
                 children: [
                     {
                         idx: "5",
-                        type: DomoticzType.LightSwitch,
+                        type: DomoticzTypeOptions.LightSwitch,
                         name: "My Nested Light Switch",
                         status: "On",
                         dimLevel: null,
@@ -44,7 +44,7 @@ const mockRootState: MockRootState = {
             },
             {
                 idx: "6",
-                type: DomoticzType.Selector,
+                type: DomoticzTypeOptions.Selector,
                 name: "My Selector Switch",
                 status: "FOO",
                 dimLevel: 30,
@@ -53,7 +53,7 @@ const mockRootState: MockRootState = {
             },
             {
                 idx: "7",
-                type: DomoticzType.LightSwitch,
+                type: DomoticzTypeOptions.LightSwitch,
                 name: "My Dimmer",
                 status: "FOO",
                 dimLevel: 30,
@@ -62,7 +62,7 @@ const mockRootState: MockRootState = {
             },
             {
                 idx: "8",
-                type: DomoticzType.LightSwitch,
+                type: DomoticzTypeOptions.LightSwitch,
                 name: "Blinds",
                 status: "FOO",
                 dimLevel: null,
