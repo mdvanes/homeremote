@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { DownloadItem } from "../ApiTypes/downloadlist.types";
+import { DownloadItem } from "@homeremote/types";
 import { willAddCredentials } from "../devUtils";
 
 interface ToggleArgs {
