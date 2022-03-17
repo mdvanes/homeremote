@@ -3,6 +3,7 @@ import SwitchBarList from "./SwitchBarList";
 import { RootState } from "../../../Reducers";
 import * as Slice from "./switchBarListSlice";
 import { renderWithProviders } from "../../../testHelpers";
+import { DomoticzType } from "@homeremote/types";
 
 type MockRootState = Pick<RootState, "switchesList">;
 
@@ -13,7 +14,7 @@ const mockRootState: MockRootState = {
         switches: [
             {
                 idx: "3",
-                type: "Light/Switch",
+                type: DomoticzType.LightSwitch,
                 name: "My Normal Light Switch",
                 status: "On",
                 dimLevel: null,
@@ -22,7 +23,7 @@ const mockRootState: MockRootState = {
             },
             {
                 idx: "4",
-                type: "Group",
+                type: DomoticzType.Group,
                 name: "My Scene",
                 status: "On",
                 dimLevel: null,
@@ -30,7 +31,7 @@ const mockRootState: MockRootState = {
                 children: [
                     {
                         idx: "5",
-                        type: "Light/Switch",
+                        type: DomoticzType.LightSwitch,
                         name: "My Nested Light Switch",
                         status: "On",
                         dimLevel: null,
@@ -41,7 +42,7 @@ const mockRootState: MockRootState = {
             },
             {
                 idx: "6",
-                type: "Selector",
+                type: DomoticzType.Selector,
                 name: "My Selector Switch",
                 status: "FOO",
                 dimLevel: 30,
@@ -50,7 +51,7 @@ const mockRootState: MockRootState = {
             },
             {
                 idx: "7",
-                type: "Light/Switch",
+                type: DomoticzType.LightSwitch,
                 name: "My Dimmer",
                 status: "FOO",
                 dimLevel: 30,
@@ -59,7 +60,7 @@ const mockRootState: MockRootState = {
             },
             {
                 idx: "8",
-                type: "Light/Switch",
+                type: DomoticzType.LightSwitch,
                 name: "Blinds",
                 status: "FOO",
                 dimLevel: null,
