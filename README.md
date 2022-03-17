@@ -79,7 +79,7 @@ Building / Run in production:
 Publishing:
 
 1. Merge changes to main branch
-2. Tag with GitHub UI or with `git tag -a v3.0.0 -m "publish version 3.0.0"` and push
+2. Tag with GitHub UI or with `git tag -a v3.0.0 -m "publish version 3.0.0"` and push `git push --tags`
 3. Wait for CI to finish, and all tests are OK
 4. On dev machine, build image with correct version: `docker build -t mdworld/homeremote:3.0.0 .` (on mac `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:3.0.0 .`)
 5. On dev machine, push image to registry:
@@ -95,18 +95,12 @@ Publishing:
 
 Migration todo:
 
-- Fixed: run tests
-- Fixed: Fix build (copy client to server). Run with `yarn build` and then `node dist/apps/server/main.js` (needs to load the .env (docker-compose?) and auth.json (check blue lines in log!))
-- Fixed: PUBLIC_HTML in index.html
-- Fixed: production serve index.html (/app/apps/server/src/assets/) in Docker. On Mac, on `docker compose up --build` fails with `244.0 error An unexpected error occurred: "https://registry.npmjs.org/rxjs/-/rxjs-7.5.4.tgz: ESOCKETTIMEDOUT".`
-- Fixed: lint with prettier
-- Fixed: Clean up and remove OLD dir
 - Dedupe FE/BE types: server/api-types, datalora types, switches types, etc.
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
-- Release and replace production version
+- Homeremote simple bookmarklist of local services (in sidebar? under topbar?)
+- Update screenshot
 - Service workers is registered, but implementation of service-worker is incorrect / not caching when offline
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
-- Homeremote simple bookmarklist of services (in sidebar?)
 - add WHO to log: CEF, Common Event Format, When Where Who What, Is the log persisted? 
 - Reactive/observable for InfluxDB
 
