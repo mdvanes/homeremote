@@ -1,6 +1,5 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { readFileSync } from "fs";
-import { join } from "path";
+import { getAuthConfig } from "../auth/constants";
 
 export interface StoredUser {
     id: number;
@@ -18,9 +17,7 @@ export class UsersService {
 
     constructor() {
         this.logger = new Logger(UsersService.name);
-        const auth = JSON.parse(
-            readFileSync(join(__dirname, "../../auth.json"), "utf8")
-        );
+        const auth = getAuthConfig();
         if (auth.users.length > 0) {
             this.logger.verbose(
                 `Found auth config with ${auth.users.length} users`
