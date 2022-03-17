@@ -19,15 +19,11 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install and Build components 🔧
-        # auth.json is needed for typecheck, but is mocked for unit test
         run: |
           yarn install --frozen-lockfile
-          cp apps/server/auth.json.example apps/server/auth.json
           yarn build --if-present
         env:
           CI: false # true -> fails on warning
       - name: Build docker image
-        # if: ${{ github.ref == 'main' }}
         run: |
           docker build . -t mdworld/homeremote:latest
-        # docker save desks-api:latest > desk-api_latest.tar
