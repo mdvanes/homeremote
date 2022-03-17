@@ -1,6 +1,6 @@
-name: Validate and Build
+name: Docker Build
 
-on: [push]
+# For manual trigger
 
 jobs:
   build:
@@ -18,13 +18,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install and Build components 🔧
-        run: |
-          yarn install --frozen-lockfile
-          yarn build --if-present
-        env:
-          CI: false # true -> fails on warning
       - name: Build docker image
-        if: ${{ github.ref == 'main' }}
         run: |
           docker build . -t mdworld/homeremote:latest
