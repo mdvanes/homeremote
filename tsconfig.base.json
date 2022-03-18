@@ -15,7 +15,8 @@
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
         "paths": {
-            "@homeremote/service-worker": ["libs/service-worker/src/index.ts"]
+            "@homeremote/service-worker": ["libs/service-worker/src/index.ts"],
+            "@homeremote/types": ["libs/types/src/index.ts"]
         },
         "resolveJsonModule": true
     },
