@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { DownloadItem } from "../../../ApiTypes/downloadlist.types";
+import { DownloadItem } from "@homeremote/types";
 import DownloadList from "./DownloadList";
 import { downloadListApi } from "../../../Services/downloadListApi";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";

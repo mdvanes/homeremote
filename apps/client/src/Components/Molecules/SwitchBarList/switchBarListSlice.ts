@@ -1,12 +1,9 @@
+import { HomeRemoteSwitch, SwitchesResponse } from "@homeremote/types";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import fetchToJson from "../../../fetchToJson";
 import ApiBaseState from "../../../Reducers/state.types";
 import { logInfo } from "../LogCard/logSlice";
-import { DSwitch, getSwitches } from "./getSwitchesThunk";
-
-interface FetchReturned {
-    status: string;
-}
+import { getSwitches } from "./getSwitchesThunk";
 
 export const sendSwitchState = createAsyncThunk<
     void,
@@ -14,13 +11,16 @@ export const sendSwitchState = createAsyncThunk<
 >(
     `switchesList/sendSwitchState`,
     async ({ id, state, type }, { rejectWithValue, dispatch }) => {
-        const json = await fetchToJson<FetchReturned>(`/api/switches/${id}`, {
-            method: "POST",
-            body: JSON.stringify({
-                state,
-                type,
-            }),
-        });
+        const json = await fetchToJson<SwitchesResponse>(
+            `/api/switches/${id}`,
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    state,
+                    type,
+                }),
+            }
+        );
         if (json.status !== "received") {
             throw new Error(`Can't set ${state}: ${json.status}`);
         } else {
@@ -31,7 +31,7 @@ export const sendSwitchState = createAsyncThunk<
 );
 
 export interface SwitchBarListState extends ApiBaseState {
-    switches: DSwitch[];
+    switches: HomeRemoteSwitch[];
     expanded: string[];
 }
 
@@ -66,7 +66,7 @@ const switchBarListSlice = createSlice({
         });
         builder.addCase(getSwitches.fulfilled, (draft, { payload }): void => {
             draft.isLoading = initialState.isLoading;
-            draft.switches = payload.switches;
+            draft.switches = payload.switches ?? [];
         });
         builder.addCase(getSwitches.rejected, (draft, { error }): void => {
             draft.isLoading = initialState.isLoading;

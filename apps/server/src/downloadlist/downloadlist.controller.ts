@@ -14,10 +14,7 @@ import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
 import prettyBytes from "pretty-bytes";
 import prettyMs from "pretty-ms";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import {
-    DownloadItem,
-    SimpleDownloadState,
-} from "../api-types/downloadlist.types";
+import { DownloadItem, SimpleDownloadState } from "@homeremote/types";
 
 type DownloadListResponse =
     | { status: "received"; downloads: DownloadItem[] }

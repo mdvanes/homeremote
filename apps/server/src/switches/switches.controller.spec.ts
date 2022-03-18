@@ -1,11 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
 import * as Got from "got";
-import {
-    DomoticzSwitch,
-    DomoticzType,
-    SwitchesController,
-} from "./switches.controller";
+import { DomoticzSwitch, SwitchesController } from "./switches.controller";
+import { DomoticzTypeOptions } from "@homeremote/types";
 
 jest.mock("got");
 const gotSpy = jest.spyOn(Got, "default");
@@ -35,10 +32,10 @@ describe("Switches Controller", () => {
     it("returns the switches states on /GET ", async () => {
         const mockSwitch: DomoticzSwitch = {
             idx: "1",
-            Type: DomoticzType.LightSwitch,
+            Type: DomoticzTypeOptions.LightSwitch,
             Name: "My Switch",
             Status: "on",
-            SwitchType: DomoticzType.LightSwitch,
+            SwitchType: DomoticzTypeOptions.LightSwitch,
             Level: 0,
             Protected: false,
         };
