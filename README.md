@@ -95,10 +95,10 @@ Publishing:
 
 Migration todo:
 
-- Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - Homeremote simple bookmarklist of local services (in sidebar? under topbar?)
 - Update screenshot
-- Service workers is registered, but implementation of service-worker is incorrect / not caching when offline
+- Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
+- Service workers is registered, but implementation of service-worker is incorrect / not caching when offline. Use Nx workers?
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - add WHO to log: CEF, Common Event Format, When Where Who What, Is the log persisted? 
 - Reactive/observable for InfluxDB
