@@ -79,14 +79,14 @@ Building / Run in production:
 Publishing:
 
 1. Merge changes to main branch
-2. Update version in package.json
-3. Tag with GitHub UI or with `git tag -a v3.0.0 -m "publish version 3.0.0"` and push `git push --tags`
+2. Update version in package.json to `X.Y.Z`, e.g. 3.0.0
+3. Tag with GitHub UI or with `git tag -a vX.Y.Z -m "publish version X.Y.Z"` and push `git push --tags`
 4. Wait for CI to finish, and all tests are OK
-5. On dev machine, build image with correct version: `docker build -t mdworld/homeremote:3.0.0 .` (on mac `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:3.0.0 .`)
+5. On dev machine, build image with correct version: `docker build -t mdworld/homeremote:X.Y.Z .` (on mac `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:X.Y.Z .`)
 6. On dev machine, push image to registry:
   - Note: should also work with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub
   - `docker login --username=yourhubusername`
-  - `docker push mdworld/homeremote:3.0.0`
+  - `docker push mdworld/homeremote:X.Y.Z`
   - `docker logout`
 7. On the target server, set up: 
   - ~/homeremote/settings/auth (use apps/server/auth.json.example as base)
