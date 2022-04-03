@@ -1,11 +1,9 @@
 name: Publish to Docker Hub
 
-# on: 
-#   push:
-#     tags:
-#       - '*'
-
-on: [push]
+on: 
+  push:
+    tags:
+      - '*'
 
 jobs:
   push_to_registry:
