@@ -1,11 +1,9 @@
 name: Publish to Docker Hub
 
-# on: 
-#   push:
-#     tags:
-#       - '*'
-
-on: [push]
+on: 
+  push:
+    tags:
+      - '*'
 
 jobs:
   push_to_registry:
@@ -29,16 +27,12 @@ jobs:
         with:
           images: mdworld/homeremote
 
-      - name: Debug info
+      - name: Get version for tag
         id: version
         run: |
-          ls -lah
-          echo ${{ steps.meta.outputs.tags }}
-          cat package.json | jq '.version'
-          cat package.json | jq '.version' | cut -c2-100 | rev | cut -c2-100 | rev
           echo "::set-output name=version::$(cat package.json | jq '.version' | cut -c2-100 | rev | cut -c2-100 | rev)"
 
-      - name: Debug info 2
+      - name: Log tag
         run: |
           echo ${{ steps.version.outputs.version }}
 
