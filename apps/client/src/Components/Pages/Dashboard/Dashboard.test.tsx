@@ -20,6 +20,10 @@ jest.mock(
 );
 jest.mock("../../Molecules/DataLora/DataLora", () => "mock-datalora");
 jest.mock("../../Molecules/VideoStream/VideoStream", () => "mock-video-stream");
+jest.mock(
+    "../../Molecules/ServiceLinksBar/ServiceLinksBar",
+    () => "mock-service-links-bar"
+);
 
 describe("Dashboard page", () => {
     it("contains all the control components", () => {

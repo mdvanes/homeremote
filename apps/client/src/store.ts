@@ -1,10 +1,11 @@
-import { useDispatch } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import { useDispatch } from "react-redux";
 import rootReducer from "./Reducers";
-import { downloadListApi } from "./Services/downloadListApi";
 import { activeConnectionsApi } from "./Services/activeConnectionsApi";
 import { dataloraApi } from "./Services/dataloraApi";
+import { downloadListApi } from "./Services/downloadListApi";
+import { serviceLinksApi } from "./Services/serviceLinksApi";
 
 export const store = configureStore({
     reducer: rootReducer,
@@ -12,7 +13,8 @@ export const store = configureStore({
         getDefaultMiddleware().concat(
             downloadListApi.middleware,
             activeConnectionsApi.middleware,
-            dataloraApi.middleware
+            dataloraApi.middleware,
+            serviceLinksApi.middleware
         ),
 });
 
