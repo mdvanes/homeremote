@@ -1,9 +1,11 @@
 name: Publish to Docker Hub
 
-on: 
-  push:
-    tags:
-      - '*'
+# on: 
+#   push:
+#     tags:
+#       - '*'
+
+on: [push]
 
 jobs:
   push_to_registry:
@@ -27,15 +29,25 @@ jobs:
         with:
           images: mdworld/homeremote
 
-      - name: Test stuff
+      - name: Debug info
+        id: version
         run: |
           ls -lah
           echo ${{ steps.meta.outputs.tags }}
+          cat package.json | jq '.version'
+          cat package.json | jq '.version' | cut -c2-100 | rev | cut -c2-100 | rev
+          echo "::set-output name=version::$(cat package.json | jq '.version' | cut -c2-100 | rev | cut -c2-100 | rev)"
+
+      - name: Debug info 2
+        run: |
+          echo ${{ steps.version.outputs.version }}
 
       - name: Build and push Docker image
+        if: ${{ github.ref == 'main' }}
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          push: false
+          # tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ cat package.json | jq '.version' | cut -c2-100 | rev | cut -c2-100 | rev }}
           labels: ${{ steps.meta.outputs.labels }}
