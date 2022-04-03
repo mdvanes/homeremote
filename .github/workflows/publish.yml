@@ -27,31 +27,17 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: my-docker-hub-namespace/my-docker-hub-repository
+          images: mdworld/homeremote
 
       - name: Test stuff
         run: |
           ls -lah
+          echo ${{ steps.meta.outputs.tags }}
 
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
-
-      # - name: Use Node.js ${{ matrix.node-version }}
-      #   uses: actions/setup-node@v1
-      #   with:
-      #     node-version: ${{ matrix.node-version }}
-      # - name: Install and Build components 🔧
-      #   run: |
-      #     yarn install --frozen-lockfile
-      #     yarn build --if-present
-      #   env:
-      #     CI: false # true -> fails on warning
-      # - name: Build docker image
-      #   if: ${{ github.ref == 'main' }}
-      #   run: |
-      #     docker build . -t mdworld/homeremote:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

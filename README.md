@@ -78,6 +78,11 @@ Building / Run in production:
 
 Publishing:
 
+Publishing is done automatically when tagging on the main branch. So make sure to set up
+
+- secrets.DOCKER_USERNAME
+- secrets.DOCKER_PASSWORD
+
 1. Merge changes to main branch
 2. Update version in package.json to `X.Y.Z`, e.g. 3.0.0
 3. Tag with GitHub UI or with `git tag -a vX.Y.Z -m "publish version X.Y.Z"` and push `git push --tags`
