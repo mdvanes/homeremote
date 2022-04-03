@@ -43,5 +43,5 @@ jobs:
           context: .
           push: true
           # tags: ${{ steps.meta.outputs.tags }}
-          tags: ${{ steps.version.outputs.version }}
+          tags: mdworld/homeremote:${{ steps.version.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
