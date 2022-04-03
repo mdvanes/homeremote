@@ -49,5 +49,5 @@ jobs:
           context: .
           push: false
           # tags: ${{ steps.meta.outputs.tags }}
-          tags: ${{ cat package.json | jq '.version' | cut -c2-100 | rev | cut -c2-100 | rev }}
+          tags: ${{ steps.version.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
