@@ -1,0 +1,57 @@
+name: Publish to Docker Hub
+
+# on: 
+#   push:
+#     tags:
+#       - '*'
+
+on: [push]
+
+jobs:
+  push_to_registry:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - name: Check out the repo 🛎️
+        uses: actions/checkout@v3        
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: my-docker-hub-namespace/my-docker-hub-repository
+
+      - name: Test stuff
+        run: |
+          ls -lah
+
+      # - name: Build and push Docker image
+      #   uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      #   with:
+      #     context: .
+      #     push: true
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
+
+      # - name: Use Node.js ${{ matrix.node-version }}
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: ${{ matrix.node-version }}
+      # - name: Install and Build components 🔧
+      #   run: |
+      #     yarn install --frozen-lockfile
+      #     yarn build --if-present
+      #   env:
+      #     CI: false # true -> fails on warning
+      # - name: Build docker image
+      #   if: ${{ github.ref == 'main' }}
+      #   run: |
+      #     docker build . -t mdworld/homeremote:latest
