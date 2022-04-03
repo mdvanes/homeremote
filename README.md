@@ -86,13 +86,13 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 1. Merge changes to main branch
 2. Update version in package.json to `X.Y.Z`, e.g. 3.0.0
 3. Tag with GitHub UI or with `git tag -a vX.Y.Z -m "publish version X.Y.Z"` and push `git push --tags`
-4. Wait for CI to finish, and all tests are OK
-5. On dev machine, build image with correct version: `docker build -t mdworld/homeremote:X.Y.Z .` (on mac `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:X.Y.Z .`)
-6. On dev machine, push image to registry:
-  - Note: should also work with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub
-  - `docker login --username=yourhubusername`
-  - `docker push mdworld/homeremote:X.Y.Z`
-  - `docker logout`
+4. Wait for CI to finish, and all tests are OK. This will automatically build and push to the docker registry. To do this by hand, do this:
+  - ONLY WHEN MANUAL: On dev machine, build image with correct version: `docker build -t mdworld/homeremote:X.Y.Z .` (on mac `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:X.Y.Z .`)
+  - ONLY WHEN MANUAL: On dev machine, push image to registry:
+    - Note: should also work with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub
+    - `docker login --username=yourhubusername`
+    - `docker push mdworld/homeremote:X.Y.Z`
+    - `docker logout`
 7. On the target server, set up: 
   - ~/homeremote/settings/auth (use apps/server/auth.json.example as base)
   - ~/homeremote/settings/.env (use apps/server/.env.example as base)
@@ -101,10 +101,9 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 
 Migration todo:
 
-- Homeremote simple bookmarklist of local services (in sidebar? under topbar?)
 - Update screenshot
-- Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - Service workers is registered, but implementation of service-worker is incorrect / not caching when offline. Use Nx workers?
+- Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - add WHO to log: CEF, Common Event Format, When Where Who What, Is the log persisted? 
 - Reactive/observable for InfluxDB
