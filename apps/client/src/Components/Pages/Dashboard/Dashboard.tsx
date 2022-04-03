@@ -1,16 +1,15 @@
 import { FC } from "react";
-import { Box, Grid } from "@material-ui/core";
+import { Box, Grid, makeStyles } from "@material-ui/core";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 import LogCard from "../../Molecules/LogCard/LogCard";
 import Streams from "../Streams/Streams";
 import Docker from "../Docker/Docker";
 import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
-
-import { makeStyles } from "@material-ui/core";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
 // import ActiveConnections from "../../Molecules/ActiveConnections/ActiveConnections";
 import DataLora from "../../Molecules/DataLora/DataLora";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
+import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -30,6 +29,9 @@ const Dashboard: FC = () => {
             </Grid>
             <Grid item xs={12} md>
                 <Streams />
+                <Box marginTop={2} />
+                <ServiceLinksBar />
+                <Box marginTop={2} />
                 <DataLora />
                 <Box marginTop={2} />
                 <Docker />

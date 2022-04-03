@@ -21,6 +21,13 @@ exports[`Dashboard page contains all the control components 1`] = `
             url="http://localhost"
           />
         </div>
+        <div
+          class="MuiBox-root MuiBox-root"
+        />
+        <mock-service-links-bar />
+        <div
+          class="MuiBox-root MuiBox-root"
+        />
         <mock-datalora />
         <div
           class="MuiBox-root MuiBox-root"
