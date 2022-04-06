@@ -35,6 +35,8 @@ jobs:
       - name: Log tag
         run: |
           echo ${{ steps.version.outputs.version }}
+          git log -n 1 | cat
+          git status
 
       - name: Build and push Docker image
         # if: ${{ github.ref == 'main' }}

@@ -97,11 +97,11 @@ Publishing is done automatically when tagging on the main branch. So make sure t
   - ~/homeremote/settings/auth (use apps/server/auth.json.example as base)
   - ~/homeremote/settings/.env (use apps/server/.env.example as base)
   - ~/homeremote/docker-compose.yml (copy docker-compose.yml from this project)
-8. On the target server: `docker-compose up -d`
+8. Update the version in docker-compose.yml
+9. On the target server: `docker-compose up -d`
 
 Migration todo:
 
-- Update screenshot
 - Service workers is registered, but implementation of service-worker is incorrect / not caching when offline. Use Nx workers?
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
