@@ -39,7 +39,7 @@ WORKDIR /app
 # For bcrypt build that works on Alpine
 RUN apk --no-cache add --virtual .builds-deps build-base python3 jq
 
-# Set a symlink because some deps need `python` to rebuild 
+# Set a symlink because some deps need `python` to rebuild
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Copy the files needed before yarn install
@@ -67,6 +67,9 @@ WORKDIR /app
 
 # Install runtime dependencies
 RUN apk add --no-cache curl python3 ffmpeg py3-eyed3
+
+# Set a symlink because some deps need `python`
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Copy assets from the previous stage
 COPY --from=build-alpine-env /app/package.json ./package.json
