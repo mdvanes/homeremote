@@ -5,7 +5,7 @@
     "scripts": {
         "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
         "serve:all": "nx run-many --target=serve --projects=server,client --parallel",
-        "start": "yarn rescript build -with-deps && yarn writeGitInfo dev && yarn serve:all",
+        "start": "npx rescript build -with-deps && npm run writeGitInfo dev && npm run serve:all",
         "assets:copy": "mv apps/server/src/assets apps/server/src/assets_bu && mkdir apps/server/src/assets && cp -r dist/apps/client/* apps/server/src/assets/",
         "assets:restore": "rm -rf apps/server/src/assets/ && mv apps/server/src/assets_bu apps/server/src/assets",
         "build": "yarn build:sw && NODE_ENV=production nx run client:build --prod && yarn assets:copy && nx run server:build --prod",
