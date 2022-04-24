@@ -23,8 +23,11 @@ COPY . .
 # Needed by typecheck and unit test
 RUN cp apps/server/auth.json.example apps/server/auth.json
 
-# Note --ignore-scripts does not work on composite npm build
-RUN npm build
+# Workaround for missing binary
+RUN npm i @swc/core-linux-x64-gnu
+
+# Note --ignore-scripts does not work on composite npm run build
+RUN npm run build
 
 # Should not be published
 RUN rm apps/server/auth.json
@@ -55,7 +58,7 @@ RUN npm set-script postinstall ""
 
 # NOTE: timeout settings seem to have no effect, but disabling VPN does (timeout after 1796s instead of 110s) But still fails and is incredibly slow. Disabling DNS proxy also seems to help.
 # Install only production dependencies
-RUN npm ci $INSTALL_TIMEOUT
+RUN npm i $INSTALL_TIMEOUT
 
 # Clean up build artifacts
 RUN apk del jq
