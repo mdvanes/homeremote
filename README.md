@@ -61,6 +61,7 @@ env files: https://nx.dev/guides/environment-variables
 
 Building / Run in production:
 
+- Install on Mac: python is on path, but can't be found by npm, even with `npm config python`. This makes the youtube-dl dependency installation fail when running `npm i` or `npm i -f` or even `npm i --python=python3`. For now, just remove `youtube-dl` on Mac from package.json, `npm i`, `npm i youtube-dl@^3.5.0 --ignore-scripts`
 - Optional: test building with `yarn build`
 - Make sure apps/server/.env and apps/server/auth.json exist
 - Set correct path for volumes in docker-compose.yml
