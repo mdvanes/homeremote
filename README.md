@@ -66,10 +66,10 @@ Building / Run in production:
 - Set correct path for volumes in docker-compose.yml
 - When on Mac with Lima: disable docker.sock volume in docker-compose.yml (or try https://github.com/abiosoft/colima)
 - `docker-compose up -d --build`. Build duration: ca. 4 minutes
-- On Mac with Lima use `docker compose -f docker-compose.yml -f docker-compose.override.yml up --build`. Real docker-compose automatically finds docker-compose.yml and docker-compose.override.yml.
+- On Mac with Lima use `docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build`. Real docker-compose automatically finds docker-compose.yml and docker-compose.override.yml.
 - Show logs: `docker-compose logs --follow`
 - Alternative, instead of docker compose (e.g. for debugging): 
-  - `docker build -t homeremotenx .` and
+  - `DOCKER_BUILDKIT=0 docker build -t homeremotenx .` and
   - `docker run --rm --name homeremotenx homeremotenx ls -lah dist/apps/server/src/assets/`
 - If yarn install fails with timeouts on Mac with Lima compose (`lima nerdctl compose up`):
   - Seems to be Lima issue: https://github.com/lima-vm/lima/issues/561
