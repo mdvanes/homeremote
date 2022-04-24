@@ -26,7 +26,7 @@ Requirements:
 ## Adding a user
 
 - This endpoint is only enabled in development mode
-- Start dev server: `yarn start:dev-temp`
+- Start dev server: `npm start`
 - For password "test", call (e.g. in browser) `http://localhost:4200/api/pw-to-hash/?password=test`
 - Store the hash with the username in auth.json
 
@@ -34,27 +34,27 @@ Requirements:
 
 Development:
 
-- serve all: `yarn start` or `yarn nx run-many --target=serve --projects=server,client --parallel`
+- serve all: `npm start` or `npx nx run-many --target=serve --projects=server,client --parallel`
 
 Other utils:
 
-- serve client: `yarn nx serve:all` or `yarn nx serve client` or `yarn nx run client:serve`
-- Add an app (without e2e): `yarn nx g @nrwl/react:application --name=client --e2eTestRunner=none --dry-run` or `yarn nx g @nrwl/nest:application --name=server --frontendProject=client --dry-run`
-- Remove an app: `yarn nx g rm homeremote-server-e2e --dry-run` 
-- Move/rename an app: `yarn nx g mv --project homeremote client --dry-run`
-- To build storybook run: `yarn nx run demo:build-storybook`
-- Run lint on all projects: `yarn nx run-many --all --target=lint` (with `yarn nx lint` only the default project is linted) or for a specific project `yarn nx run server:lint`
+- serve client: `npx nx serve:all` or `npx nx serve client` or `npx nx run client:serve`
+- Add an app (without e2e): `npx nx g @nrwl/react:application --name=client --e2eTestRunner=none --dry-run` or `npx nx g @nrwl/nest:application --name=server --frontendProject=client --dry-run`
+- Remove an app: `npx nx g rm homeremote-server-e2e --dry-run` 
+- Move/rename an app: `npx nx g mv --project homeremote client --dry-run`
+- To build storybook run: `npx nx run demo:build-storybook`
+- Run lint on all projects: `npx nx run-many --all --target=lint` (with `npx nx lint` only the default project is linted) or for a specific project `npx nx run server:lint`
 - Testing:
-  - with watch: `yarn test:client` or `yarn nx test client --watch`
-  - a single file without coverage and with watch, e.g. users.service: `yarn test:server --testFile=users.service`
-- Add a controller: `yarn nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
+  - with watch: `npm run test:client` or `npx nx test client --watch`
+  - a single file without coverage and with watch, e.g. users.service: `npm run test:server --testFile=users.service`
+- Add a controller: `npx nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
 - Format (prettier):
-  - check changed: `yarn nx format:check`
-  - format changed: `yarn nx format:check`
-  - format all: `yarn nx format:write --all`
+  - check changed: `npx nx format:check`
+  - format changed: `npx nx format:write`
+  - format all: `npx nx format:write --all`
 
 Api proxying: server is running on 3333 and client on 4200, but a proxy.conf.json exists that forwards /api from 4200 to 3333. 
-- `yarn start`
+- `npm start`
 - This URL works: http://localhost:4200/api/profile/current
 
 env files: https://nx.dev/guides/environment-variables
@@ -62,7 +62,7 @@ env files: https://nx.dev/guides/environment-variables
 Building / Run in production:
 
 - Install on Mac: python is on path, but can't be found by npm, even with `npm config python`. This makes the youtube-dl dependency installation fail when running `npm i` or `npm i -f` or even `npm i --python=python3`. For now, just remove `youtube-dl` on Mac from package.json, `npm i`, `npm i youtube-dl@^3.5.0 --ignore-scripts`
-- Optional: test building with `yarn build`
+- Optional: test building with `npm run build`
 - Make sure apps/server/.env and apps/server/auth.json exist
 - Set correct path for volumes in docker-compose.yml
 - When on Mac with Lima: disable docker.sock volume in docker-compose.yml (or try https://github.com/abiosoft/colima)
