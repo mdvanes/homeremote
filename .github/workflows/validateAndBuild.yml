@@ -20,8 +20,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install and Build components 🔧
         run: |
-          yarn install --frozen-lockfile
-          yarn build --if-present
+          npm ci
+          # Workaround for missing binary
+          npm i @swc/core-linux-x64-gnu
+          npm run build --if-present
         env:
           CI: false # true -> fails on warning
       - name: Build docker image
