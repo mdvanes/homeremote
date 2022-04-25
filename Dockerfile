@@ -5,14 +5,14 @@ ARG INSTALL_TIMEOUT
 
 WORKDIR /home/node/code
 
-# Copy the files needed before yarn install
-COPY package.json yarn.lock bsconfig.json ./
+# Copy the files needed before npm install
+COPY package.json package-lock.json bsconfig.json ./
 
 # Copy the rescript source for the postinstall script
 COPY ./apps/client/src/Dummy.res ./apps/client/src/
 
 # Install npm dependencies and fail if lock file requires changes
-RUN yarn install --frozen-lockfile $INSTALL_TIMEOUT
+RUN npm ci $INSTALL_TIMEOUT
 
 # Copy git dir for writeGitInfo
 COPY .git/ ./.git/
@@ -23,8 +23,11 @@ COPY . .
 # Needed by typecheck and unit test
 RUN cp apps/server/auth.json.example apps/server/auth.json
 
-# Note --ignore-scripts does not work on composite yarn build
-RUN yarn build
+# Workaround for missing binary
+RUN npm i @swc/core-linux-x64-gnu
+
+# Note --ignore-scripts does not work on composite npm run build
+RUN npm run build
 
 # Should not be published
 RUN rm apps/server/auth.json
@@ -42,8 +45,8 @@ RUN apk --no-cache add --virtual .builds-deps build-base python3 jq
 # Set a symlink because some deps need `python` to rebuild
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-# Copy the files needed before yarn install
-COPY --from=build-env /home/node/code/package.json /home/node/code/yarn.lock ./
+# Copy the files needed before npm install
+COPY --from=build-env /home/node/code/package.json /home/node/code/package-lock.json ./
 COPY --from=build-env /home/node/code/dist/apps/server ./dist/apps/server
 
 # Yarn does not properly support the --prod flag, npm fails with timeout, and reinstall of node_modules is neccesary for bcrypt. npm rebuild instead of reinstall does not seem to work.
@@ -55,7 +58,7 @@ RUN npm set-script postinstall ""
 
 # NOTE: timeout settings seem to have no effect, but disabling VPN does (timeout after 1796s instead of 110s) But still fails and is incredibly slow. Disabling DNS proxy also seems to help.
 # Install only production dependencies
-RUN yarn install --frozen-lockfile $INSTALL_TIMEOUT
+RUN npm i $INSTALL_TIMEOUT
 
 # Clean up build artifacts
 RUN apk del jq
