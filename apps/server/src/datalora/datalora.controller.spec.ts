@@ -14,10 +14,13 @@ jest.mock("@influxdata/influxdb-client", () => {
     };
 });
 
+type MapperFn = (x: unknown, y: unknown) => unknown;
+
 const identity = <T>(x: T): T => x;
-const collectRowsCreator = (rows: any[]) => (query: string, mapperFn: any) => {
-    return rows.map((x) => mapperFn(x, { toObject: identity }));
-};
+const collectRowsCreator =
+    (rows: typeof MOCK_ROWS) => (query: string, mapperFn: MapperFn) => {
+        return rows.map((x) => mapperFn(x, { toObject: identity }));
+    };
 
 const MOCK_ROWS = [
     { _value: "[1,2]", _time: "123" },

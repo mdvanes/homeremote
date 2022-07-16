@@ -1,23 +1,20 @@
 import {
-    Controller,
-    Get,
-    Logger,
-    HttpException,
-    HttpStatus,
-    UseGuards,
-    Headers,
-    Req,
-} from "@nestjs/common";
-import {
-    getNowPlaying,
     ChannelName,
+    getNowPlaying,
     NowPlayingResponse,
 } from "@mdworld/homeremote-stream-player-server";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import got from "got";
+import {
+    Controller,
+    Get,
+    Headers,
+    HttpException,
+    HttpStatus,
+    Logger,
+    UseGuards,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { LocalAuthGuard } from "../auth/local-auth.guard";
-import { LoginRequest } from "../login/LoginRequest.types";
+import got from "got";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 @Controller("api/nowplaying")
 export class NowplayingController {
