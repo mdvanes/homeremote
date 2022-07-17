@@ -8,7 +8,7 @@
         "start": "npx rescript build -with-deps && npm run writeGitInfo dev && npm run serve:all",
         "assets:copy": "mv apps/server/src/assets apps/server/src/assets_bu && mkdir apps/server/src/assets && cp -r dist/apps/client/* apps/server/src/assets/",
         "assets:restore": "rm -rf apps/server/src/assets/ && mv apps/server/src/assets_bu apps/server/src/assets",
-        "build": "npm run build:sw && NODE_ENV=production nx run client:build --prod && npm run assets:copy && nx run server:build --prod",
+        "build": "NODE_ENV=production nx run client:build --prod && npm run assets:copy && nx run server:build --prod",
         "build:sw": "nx run service-worker:build --prod && cp dist/libs/service-worker/main.es5.js apps/client/src/assets/service-worker.js",
         "test": "nx run-many --target=test --projects=server,client --parallel",
         "test:ci": "nx run-many --target=test --projects=server,client --parallel --coverage",
