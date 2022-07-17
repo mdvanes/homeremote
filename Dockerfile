@@ -12,7 +12,7 @@ COPY package.json package-lock.json bsconfig.json ./
 COPY ./apps/client/src/Dummy.res ./apps/client/src/
 
 # Install npm dependencies and fail if lock file requires changes
-RUN npm ci $INSTALL_TIMEOUT
+RUN npm i $INSTALL_TIMEOUT --legacy-peer-deps
 
 # Copy git dir for writeGitInfo
 COPY .git/ ./.git/
@@ -24,7 +24,7 @@ COPY . .
 RUN cp apps/server/auth.json.example apps/server/auth.json
 
 # Workaround for missing binary
-RUN npm i @swc/core-linux-x64-gnu
+RUN npm i @swc/core-linux-x64-gnu --legacy-peer-deps
 
 # Note --ignore-scripts does not work on composite npm run build
 RUN npm run build
@@ -58,7 +58,7 @@ RUN npm set-script postinstall ""
 
 # NOTE: timeout settings seem to have no effect, but disabling VPN does (timeout after 1796s instead of 110s) But still fails and is incredibly slow. Disabling DNS proxy also seems to help.
 # Install only production dependencies
-RUN npm i $INSTALL_TIMEOUT
+RUN npm i $INSTALL_TIMEOUT --legacy-peer-deps
 
 # Clean up build artifacts
 RUN apk del jq
