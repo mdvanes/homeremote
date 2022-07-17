@@ -106,6 +106,7 @@ Migration todo:
 
 - Upgrade youtubedl
 - Upgrade nx libs to latest patch version
+- postcss-import was added to packages.json for this issue, remove? https://github.com/postcss/postcss-import/issues/435
 - Service workers is registered, but implementation of service-worker is incorrect / not caching when offline. Use Nx workers?
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
