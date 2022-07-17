@@ -1,6 +1,6 @@
 {
     "name": "homeremote",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "license": "MIT",
     "scripts": {
         "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
