@@ -62,6 +62,7 @@ env files: https://nx.dev/guides/environment-variables
 Building / Run in production:
 
 - Install on Mac: python is on path, but can't be found by npm, even with `npm config python`. This makes the youtube-dl dependency installation fail when running `npm i` or `npm i -f` or even `npm i --python=python3`. For now, just remove `youtube-dl` on Mac from package.json, `npm i`, `npm i youtube-dl@^3.5.0 --ignore-scripts`
+- Python also failing Mac M1 and Ubuntu now. `which python` gives nothing, `which python3` gives `/usr/bin/python3`. Symlink: `ln -s /usr/bin/python3 /usr/bin/python`
 - Optional: test building with `npm run build`
 - Make sure apps/server/.env and apps/server/auth.json exist
 - Set correct path for volumes in docker-compose.yml
@@ -103,6 +104,8 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 
 Migration todo:
 
+- Upgrade youtubedl
+- Upgrade nx libs to latest patch version
 - Service workers is registered, but implementation of service-worker is incorrect / not caching when offline. Use Nx workers?
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
