@@ -64,7 +64,9 @@ export class DataloraController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getCoords(@Query() query: { type: TrackerQueryType }): Promise<any> {
+    async getCoords(
+        @Query() query: { type: TrackerQueryType }
+    ): Promise<{ data: TrackerItem[] }> {
         this.logger.verbose(`GET to /api/datalora`);
 
         const url = this.configService.get<string>("INFLUX_URL") || "";
