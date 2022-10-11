@@ -2,7 +2,7 @@ import { FC } from "react";
 import { DockerListMod } from "@mdworld/homeremote-dockerlist";
 import { useDispatch } from "react-redux";
 import { logError } from "../../Molecules/LogCard/logSlice";
-import { Card } from "@material-ui/core";
+import { Card } from "@mui/material";
 
 const DockerList = DockerListMod.make;
 

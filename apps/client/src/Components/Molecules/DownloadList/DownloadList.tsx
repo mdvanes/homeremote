@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react";
-import { LinearProgress, List, Paper } from "@material-ui/core";
+import { LinearProgress, List, Paper } from "@mui/material";
 import { useAppDispatch } from "../../../store";
 import DownloadListItem from "./DownloadListItem";
 import { logError } from "../LogCard/logSlice";

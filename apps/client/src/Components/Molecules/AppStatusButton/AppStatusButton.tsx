@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from "react";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";

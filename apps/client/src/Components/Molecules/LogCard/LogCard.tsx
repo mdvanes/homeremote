@@ -5,7 +5,7 @@ import {
     CardActions,
     Typography,
     Button,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Warning, InfoOutlined } from "@material-ui/icons";
 import gitinfoJson from "../../../gitinfo.json";
 import packageJson from "../../../../../../package.json";

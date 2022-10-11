@@ -1,4 +1,4 @@
-import { MuiThemeProvider } from "@material-ui/core";
+import { MuiThemeProvider } from "@mui/material";
 import { render, screen } from "@testing-library/react";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC } from "react";

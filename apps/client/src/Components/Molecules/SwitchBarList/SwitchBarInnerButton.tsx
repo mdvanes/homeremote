@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Icon } from "@material-ui/core";
+import { Icon } from "@mui/material";
 import useStyles from "./SwitchBarInnerButton.styles";
 
 type Props = {

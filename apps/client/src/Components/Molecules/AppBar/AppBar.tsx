@@ -5,7 +5,7 @@ import {
     IconButton,
     Toolbar,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import MenuIcon from "@material-ui/icons/Menu";
 import AppStatusButton from "../AppStatusButton/AppStatusButton";
 import useStyles from "./AppBar.styles";

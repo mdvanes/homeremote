@@ -9,9 +9,9 @@ import {
     Tooltip,
     Typography,
     useMediaQuery,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "@mui/material";
 import { ReactComponent as PortainerIconRaw } from "./icons/docker.svg";
 import { ReactComponent as PiHoleIconRaw } from "./icons/pi-hole.svg";
 import { ReactComponent as SubsonicIconRaw } from "./icons/subsonic.svg";

@@ -7,7 +7,7 @@ import {
     createStyles,
     StyleRules,
     Theme,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Warning, Close } from "@material-ui/icons";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";

@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { Theme, useMediaQuery } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core";
+import { Theme, useMediaQuery } from "@mui/material";
+import { makeStyles } from "@mui/material";
 import { ServiceLink } from "./ServiceLink";
 import { useGetServiceLinksQuery } from "../../../Services/serviceLinksApi";
 

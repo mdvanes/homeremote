@@ -1,4 +1,4 @@
-import { makeStyles, lighten } from "@material-ui/core";
+import { makeStyles, lighten } from "@mui/material";
 
 export const useListItemStyles = makeStyles(({ palette }) => ({
     root: {

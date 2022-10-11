@@ -1,4 +1,4 @@
-import { makeStyles, Theme, StyleRules, createStyles } from "@material-ui/core";
+import { makeStyles, Theme, StyleRules, createStyles } from "@mui/material";
 
 const useStyles = makeStyles(
     ({ spacing, typography }: Theme): StyleRules =>

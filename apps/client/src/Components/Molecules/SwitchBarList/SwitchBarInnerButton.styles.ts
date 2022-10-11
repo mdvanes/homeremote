@@ -1,4 +1,4 @@
-import { makeStyles, Theme, createStyles, StyleRules } from "@material-ui/core";
+import { makeStyles, Theme, createStyles, StyleRules } from "@mui/material";
 
 // This should use generic styles on makeStyles or createStyles with Props to make it work without "any" type
 // const useStyles = makeStyles(

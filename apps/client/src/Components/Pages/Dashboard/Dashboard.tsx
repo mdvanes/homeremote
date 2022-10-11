@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, Grid, makeStyles } from "@material-ui/core";
+import { Box, Grid, makeStyles } from "@mui/material";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 import LogCard from "../../Molecules/LogCard/LogCard";
 import Streams from "../Streams/Streams";

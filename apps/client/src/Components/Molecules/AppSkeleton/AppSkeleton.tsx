@@ -9,7 +9,7 @@ import {
     MuiThemeProvider,
     Toolbar,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Skeleton } from "@material-ui/lab";
 import MenuIcon from "@material-ui/icons/Menu";
 

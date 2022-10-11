@@ -8,7 +8,7 @@
 
         */
 
-import { Card, CardContent, CardHeader, Typography } from "@material-ui/core";
+import { Card, CardContent, CardHeader, Typography } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useGetMessagesQuery } from "../../../Services/activeConnectionsApi";
 // import { io } from "socket.io-client";
