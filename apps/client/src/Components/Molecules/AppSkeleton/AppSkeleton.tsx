@@ -6,12 +6,12 @@ import {
     Container,
     Grid,
     IconButton,
-    MuiThemeProvider,
+    ThemeProvider as MuiThemeProvider,
     Toolbar,
     Typography,
 } from "@mui/material";
-import { Skeleton } from "@material-ui/lab";
-import MenuIcon from "@material-ui/icons/Menu";
+import { Skeleton } from "@mui/lab";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const AppSkeleton: FC = () => (
     <MuiThemeProvider theme={theme}>
@@ -27,16 +27,16 @@ const AppSkeleton: FC = () => (
             <Box mt={3}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={3}>
-                        <Skeleton variant="rect" height={300} />
+                        <Skeleton variant="rectangular" height={300} />
                     </Grid>
                     <Grid item xs={12} md>
-                        <Skeleton variant="rect" height={300} />
+                        <Skeleton variant="rectangular" height={300} />
                     </Grid>
                     <Grid item xs={12} md={2}>
-                        <Skeleton variant="rect" height={300} />
+                        <Skeleton variant="rectangular" height={300} />
                     </Grid>
                     <Grid item xs={12} md={2}>
-                        <Skeleton variant="rect" height={300} />
+                        <Skeleton variant="rectangular" height={300} />
                     </Grid>
                 </Grid>
             </Box>

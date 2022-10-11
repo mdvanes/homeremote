@@ -6,7 +6,7 @@ import {
     TextField,
     LinearProgress,
 } from "@mui/material";
-import Alert from "@material-ui/lab/Alert";
+import Alert from "@mui/lab/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import {

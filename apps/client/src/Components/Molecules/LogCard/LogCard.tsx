@@ -6,7 +6,7 @@ import {
     Typography,
     Button,
 } from "@mui/material";
-import { Warning, InfoOutlined } from "@material-ui/icons";
+import { Warning, InfoOutlined } from "@mui/icons-material";
 import gitinfoJson from "../../../gitinfo.json";
 import packageJson from "../../../../../../package.json";
 import { useSelector, useDispatch } from "react-redux";

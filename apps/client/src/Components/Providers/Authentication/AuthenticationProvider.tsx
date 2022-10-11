@@ -1,6 +1,6 @@
 import React, { FC, FormEvent, useEffect, useState } from "react";
 import { Button, Container, TextField } from "@mui/material";
-import { Alert, AlertTitle } from "@material-ui/lab";
+import { Alert, AlertTitle } from "@mui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import {
     AuthenticationState,

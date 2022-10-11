@@ -6,7 +6,7 @@ import {
     Toolbar,
     Typography,
 } from "@mui/material";
-import MenuIcon from "@material-ui/icons/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
 import AppStatusButton from "../AppStatusButton/AppStatusButton";
 import useStyles from "./AppBar.styles";
 import { useSelector } from "react-redux";

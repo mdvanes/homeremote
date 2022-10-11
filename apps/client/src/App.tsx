@@ -3,7 +3,11 @@ import React, { FC, useState } from "react";
 // import logo from './logo.svg';
 // Example of importing CSS
 // import './App.css';
-import { Drawer, MuiThemeProvider, Container } from "@mui/material";
+import {
+    Drawer,
+    ThemeProvider as MuiThemeProvider,
+    Container,
+} from "@mui/material";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import { BrowserRouter, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";

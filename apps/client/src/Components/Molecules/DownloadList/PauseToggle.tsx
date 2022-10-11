@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { CircularProgress, IconButton } from "@mui/material";
-import { PauseCircleFilled, PlayCircleFilled } from "@material-ui/icons";
+import { PauseCircleFilled, PlayCircleFilled } from "@mui/icons-material";
 import {
     usePauseDownloadMutation,
     useResumeDownloadMutation,

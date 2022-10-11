@@ -5,10 +5,9 @@ import {
     Grid,
     IconButton,
     createStyles,
-    StyleRules,
     Theme,
 } from "@mui/material";
-import { Warning, Close } from "@material-ui/icons";
+import { Warning, Close } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { LogState, Severity } from "../LogCard/logSlice";
