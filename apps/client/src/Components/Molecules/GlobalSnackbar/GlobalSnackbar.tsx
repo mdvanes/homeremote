@@ -1,35 +1,26 @@
 import React, { FC, useState, useEffect } from "react";
-import {
-    Snackbar,
-    makeStyles,
-    Grid,
-    IconButton,
-    createStyles,
-    Theme,
-} from "@mui/material";
+import { Snackbar, Grid, IconButton } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import { Warning, Close } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { LogState, Severity } from "../LogCard/logSlice";
 
-const useStyles = makeStyles(
-    (theme: Theme): StyleRules =>
-        createStyles({
-            error: {
-                background: theme.palette.error.dark,
-            },
-            info: {
-                background: theme.palette.info.dark,
-            },
-            message: {
-                width: "100%",
-            },
-        })
-);
+const useStyles = makeStyles()((theme) => ({
+    error: {
+        background: theme.palette.error.dark,
+    },
+    info: {
+        background: theme.palette.info.dark,
+    },
+    message: {
+        width: "100%",
+    },
+}));
 
 /** Show a Snackbar for new error messages */
 const GlobalSnackbar: FC = ({ children }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const [isOpen, setIsOpen] = useState(false);
     const [line, setLine] = useState<LogState["urgentMessage"]>(false);
     const handleClose = (): void => setIsOpen(false);
@@ -59,7 +50,11 @@ const GlobalSnackbar: FC = ({ children }) => {
                         {line && line.message}
                     </Grid>
                     <Grid item>
-                        <IconButton onClick={handleClose} color="inherit" size="large">
+                        <IconButton
+                            onClick={handleClose}
+                            color="inherit"
+                            size="large"
+                        >
                             <Close />
                         </IconButton>
                     </Grid>

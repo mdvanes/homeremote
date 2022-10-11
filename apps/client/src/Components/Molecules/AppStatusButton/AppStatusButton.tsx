@@ -7,7 +7,7 @@ import useStyles from "./AppStatusButton.styles";
 import { AppStatusState, getAppStatus } from "./appStatusSlice";
 
 const AppStatusButton: FC = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const dispatch = useDispatch();
 
     const status = useSelector<RootState, AppStatusState["status"]>(

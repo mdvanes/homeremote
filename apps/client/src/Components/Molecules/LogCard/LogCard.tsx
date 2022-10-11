@@ -32,7 +32,7 @@ const SeverityIcons = {
 };
 
 const Log: FC = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const dispatch = useDispatch();
     const loglines = useSelector<RootState, LogState["lines"]>(
         (state: RootState) => state.loglines.lines

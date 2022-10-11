@@ -1,6 +1,7 @@
-import { makeStyles, lighten } from "@mui/material";
+import { lighten } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 
-export const useListItemStyles = makeStyles(({ palette }) => ({
+export const useListItemStyles = makeStyles()(({ palette }) => ({
     root: {
         "&:hover": {
             backgroundColor: lighten(palette.primary.light, 0.8),
@@ -8,7 +9,7 @@ export const useListItemStyles = makeStyles(({ palette }) => ({
     },
 }));
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles()(({ palette }) => ({
     main: {
         flexGrow: 1,
     },

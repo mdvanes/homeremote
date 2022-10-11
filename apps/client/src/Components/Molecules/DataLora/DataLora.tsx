@@ -4,7 +4,7 @@ import Map from "./Map";
 import useStyles from "./Map.styles";
 
 const DataLora: FC = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return (
         <Paper className={classes.card}>
             <Map />

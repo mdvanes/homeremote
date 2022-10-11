@@ -5,7 +5,7 @@ import MapContent from "./MapContent";
 import { useLocQuery } from "./useLocQuery";
 
 const Map: FC = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const { coords, update, isLoading, toggleQueryType, queryType } =
         useLocQuery();
 

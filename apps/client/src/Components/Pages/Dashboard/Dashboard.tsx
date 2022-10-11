@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Box, Grid, makeStyles } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 import LogCard from "../../Molecules/LogCard/LogCard";
 import Streams from "../Streams/Streams";
@@ -10,8 +10,9 @@ import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import DataLora from "../../Molecules/DataLora/DataLora";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
+import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
     container: {
         "& .card-dashboard-height": {
             minHeight: "374px",
@@ -20,7 +21,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Dashboard: FC = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return (
         <Grid container spacing={2} className={classes.container}>
             <Grid item xs={12} md={3}>

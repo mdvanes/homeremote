@@ -21,8 +21,8 @@ const DownloadListItem: FC<Props> = ({
         eta,
     },
 }) => {
-    const listItemClasses = useListItemStyles();
-    const classes = useStyles();
+    const { classes: listItemClasses } = useListItemStyles();
+    const { classes } = useStyles();
     const isDownloading = simpleState === "downloading";
     return (
         <>

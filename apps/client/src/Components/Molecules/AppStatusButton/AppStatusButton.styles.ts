@@ -1,6 +1,6 @@
-import { makeStyles } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles()(({ palette }) => ({
     root: {
         backgroundColor: palette.primary.dark,
         maxWidth: "120px",

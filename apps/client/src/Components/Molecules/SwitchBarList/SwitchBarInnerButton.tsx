@@ -17,7 +17,7 @@ const SwitchBarInnerButton: FC<Props> = ({
     icon,
     isActive,
 }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return (
         <button
             onClick={isReadOnly ? undefined : clickAction}

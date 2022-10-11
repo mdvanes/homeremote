@@ -18,7 +18,7 @@ interface Props {
 }
 
 const AppBar: FC<Props> = ({ toggleDrawer }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const greeting = useSelector<RootState, AuthenticationState["displayName"]>(
         (state: RootState) =>
             state.authentication.displayName
@@ -35,7 +35,8 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                         color="inherit"
                         aria-label="menu"
                         onClick={toggleDrawer}
-                        size="large">
+                        size="large"
+                    >
                         <MenuIcon />
                     </IconButton>
                     <Hidden smUp>

@@ -36,7 +36,7 @@ const SwitchBar: FC<Props> = ({
     label,
     labelAction,
 }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return (
         <Card className={classes.card}>
             <CardContent

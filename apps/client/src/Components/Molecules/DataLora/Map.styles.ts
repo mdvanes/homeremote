@@ -1,6 +1,6 @@
-import { makeStyles } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
     page: {
         height: "calc(100vh - 80px)",
         overflow: "clip",

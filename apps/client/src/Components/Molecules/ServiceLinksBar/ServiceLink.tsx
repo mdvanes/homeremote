@@ -10,14 +10,13 @@ import {
     Typography,
     useMediaQuery,
 } from "@mui/material";
-
-import { makeStyles } from "@mui/material";
+import { makeStyles } from "tss-react/mui";
 import { ReactComponent as PortainerIconRaw } from "./icons/docker.svg";
 import { ReactComponent as PiHoleIconRaw } from "./icons/pi-hole.svg";
 import { ReactComponent as SubsonicIconRaw } from "./icons/subsonic.svg";
 import { ReactComponent as JellyfinIconRaw } from "./icons/jellyfin.svg";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
     icon: {
         color: "black",
     },
@@ -37,7 +36,7 @@ interface Props {
 }
 
 export const ServiceLink: FC<Props> = ({ label, iconName, url, children }) => {
-    const buttonClasses = useStyles();
+    const { classes: buttonClasses } = useStyles();
     const customIcon = customIconMap[iconName];
     const isBig = useMediaQuery<Theme>((theme) => theme.breakpoints.up("md"));
     const iconResult = (
@@ -46,7 +45,12 @@ export const ServiceLink: FC<Props> = ({ label, iconName, url, children }) => {
     return (
         <Tooltip title={label} aria-label={label.toLowerCase()}>
             {isBig ? (
-                <IconButton className={buttonClasses.icon} component="a" href={url} size="large">
+                <IconButton
+                    className={buttonClasses.icon}
+                    component="a"
+                    href={url}
+                    size="large"
+                >
                     {iconResult}
                 </IconButton>
             ) : (
