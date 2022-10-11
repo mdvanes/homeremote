@@ -7,7 +7,6 @@ import {
     Grid,
     IconButton,
     ThemeProvider as MuiThemeProvider,
-    Theme,
     StyledEngineProvider,
     Toolbar,
     Typography,
@@ -15,19 +14,17 @@ import {
 import { Skeleton } from "@mui/lab";
 import MenuIcon from "@mui/icons-material/Menu";
 
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
-
 const AppSkeleton: FC = () => (
     <StyledEngineProvider injectFirst>
         <MuiThemeProvider theme={theme}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu" size="large">
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        size="large"
+                    >
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6">HomeRemote</Typography>
