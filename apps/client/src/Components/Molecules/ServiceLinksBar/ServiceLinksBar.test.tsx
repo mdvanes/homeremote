@@ -1,4 +1,4 @@
-import { MuiThemeProvider } from "@mui/material";
+import { MuiThemeProvider, Theme, StyledEngineProvider } from "@mui/material";
 import { render, screen } from "@testing-library/react";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC } from "react";
@@ -11,11 +11,13 @@ enableFetchMocks();
 
 const Wrapper: FC = ({ children }) => {
     return (
-        <MuiThemeProvider theme={theme}>
-            <MockStoreProvider api={serviceLinksApi}>
-                {children}
-            </MockStoreProvider>
-        </MuiThemeProvider>
+        <StyledEngineProvider injectFirst>
+            <MuiThemeProvider theme={theme}>
+                <MockStoreProvider api={serviceLinksApi}>
+                    {children}
+                </MockStoreProvider>
+            </MuiThemeProvider>
+        </StyledEngineProvider>
     );
 };
 

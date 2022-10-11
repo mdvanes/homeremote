@@ -26,7 +26,7 @@ const PauseToggle: FC<Props> = ({ isResumed, id }) => {
     };
 
     const button = (
-        <IconButton color="secondary" onClick={handleClick(id)}>
+        <IconButton color="secondary" onClick={handleClick(id)} size="large">
             {isResumed ? <PauseCircleFilled /> : <PlayCircleFilled />}
         </IconButton>
     );

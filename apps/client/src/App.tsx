@@ -6,6 +6,8 @@ import React, { FC, useState } from "react";
 import {
     Drawer,
     ThemeProvider as MuiThemeProvider,
+    Theme,
+    StyledEngineProvider,
     Container,
 } from "@mui/material";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
@@ -24,6 +26,13 @@ import UrlToMusic from "./Components/Molecules/UrlToMusic/UrlToMusic";
 import DownloadList from "./Components/Molecules/DownloadList/DownloadList";
 import Docker from "./Components/Pages/Docker/Docker";
 import DataLora from "./Components/Pages/DataLora/DataLora";
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 
 // TODO typescript should be upgraded but causes problem: https://github.com/facebook/create-react-app/issues/10110#issuecomment-731109866
 
@@ -47,26 +56,28 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
 
     return (
         <AuthenticationProvider>
-            <MuiThemeProvider theme={theme}>
-                <AppBar toggleDrawer={toggleDrawer} />
-                <BrowserRouter>
-                    <Drawer open={isDrawerOpen} onClose={closeDrawer}>
-                        <DrawerMenu closeDrawer={closeDrawer} />
-                    </Drawer>
-                    {/* TODO this was for checking online/offline status for AppCache <StatusBar/>*/}
-                    <Container maxWidth="xl">
-                        <Route exact path="/" component={HomeAutomation} />
-                        <Route exact path="/music" component={UrlToMusic} />
-                        <Route exact path="/gears" component={DownloadList} />
-                        <Route exact path="/dashboard" component={Dashboard} />
-                        <Route exact path="/streams" component={Streams} />
-                        <Route exact path="/docker" component={Docker} />
-                        <Route exact path="/datalora" component={DataLora} />
-                        <Route exact path="/about" component={Log} />
-                    </Container>
-                </BrowserRouter>
-                <GlobalSnackbar />
-            </MuiThemeProvider>
+            <StyledEngineProvider injectFirst>
+                <MuiThemeProvider theme={theme}>
+                    <AppBar toggleDrawer={toggleDrawer} />
+                    <BrowserRouter>
+                        <Drawer open={isDrawerOpen} onClose={closeDrawer}>
+                            <DrawerMenu closeDrawer={closeDrawer} />
+                        </Drawer>
+                        {/* TODO this was for checking online/offline status for AppCache <StatusBar/>*/}
+                        <Container maxWidth="xl">
+                            <Route exact path="/" component={HomeAutomation} />
+                            <Route exact path="/music" component={UrlToMusic} />
+                            <Route exact path="/gears" component={DownloadList} />
+                            <Route exact path="/dashboard" component={Dashboard} />
+                            <Route exact path="/streams" component={Streams} />
+                            <Route exact path="/docker" component={Docker} />
+                            <Route exact path="/datalora" component={DataLora} />
+                            <Route exact path="/about" component={Log} />
+                        </Container>
+                    </BrowserRouter>
+                    <GlobalSnackbar />
+                </MuiThemeProvider>
+            </StyledEngineProvider>
         </AuthenticationProvider>
     );
 };

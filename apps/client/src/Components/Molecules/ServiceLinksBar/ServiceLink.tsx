@@ -46,11 +46,7 @@ export const ServiceLink: FC<Props> = ({ label, iconName, url, children }) => {
     return (
         <Tooltip title={label} aria-label={label.toLowerCase()}>
             {isBig ? (
-                <IconButton
-                    className={buttonClasses.icon}
-                    component="a"
-                    href={url}
-                >
+                <IconButton className={buttonClasses.icon} component="a" href={url} size="large">
                     {iconResult}
                 </IconButton>
             ) : (

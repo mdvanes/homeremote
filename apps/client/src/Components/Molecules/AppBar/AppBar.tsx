@@ -35,7 +35,7 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                         color="inherit"
                         aria-label="menu"
                         onClick={toggleDrawer}
-                    >
+                        size="large">
                         <MenuIcon />
                     </IconButton>
                     <Hidden smUp>
@@ -43,7 +43,7 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                             HR
                         </Typography>
                     </Hidden>
-                    <Hidden xsDown>
+                    <Hidden smDown>
                         <Typography variant="h6" className={classes.title}>
                             HomeRemote
                         </Typography>

@@ -59,7 +59,7 @@ const GlobalSnackbar: FC = ({ children }) => {
                         {line && line.message}
                     </Grid>
                     <Grid item>
-                        <IconButton onClick={handleClose} color="inherit">
+                        <IconButton onClick={handleClose} color="inherit" size="large">
                             <Close />
                         </IconButton>
                     </Grid>
