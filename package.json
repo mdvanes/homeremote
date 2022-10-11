@@ -70,9 +70,6 @@
         "youtube-dl": "^3.5.0"
     },
     "devDependencies": {
-        "@material-ui/core": "^4.9.5",
-        "@material-ui/icons": "^4.9.1",
-        "@material-ui/lab": "^4.0.0-alpha.56",
         "@mdworld/homeremote-dockerlist": "^1.8.2",
         "@mdworld/homeremote-stream-player": "^1.8.5",
         "@nestjs/schematics": "^8.0.0",
