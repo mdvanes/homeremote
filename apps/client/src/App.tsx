@@ -56,7 +56,7 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                             <DrawerMenu closeDrawer={closeDrawer} />
                         </Drawer>
                         {/* TODO this was for checking online/offline status for AppCache <StatusBar/>*/}
-                        <Container maxWidth="xl">
+                        <Container maxWidth={false}>
                             <Route exact path="/" component={HomeAutomation} />
                             <Route exact path="/music" component={UrlToMusic} />
                             <Route

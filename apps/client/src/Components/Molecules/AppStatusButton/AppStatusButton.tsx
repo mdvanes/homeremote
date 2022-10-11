@@ -1,13 +1,22 @@
 import React, { FC, useEffect } from "react";
-import { Button } from "@mui/material";
+import { Button, colors } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
-import useStyles from "./AppStatusButton.styles";
 import { AppStatusState, getAppStatus } from "./appStatusSlice";
+import { styled } from "@mui/material/styles";
+
+const DarkButton = styled(Button)(
+    ({ theme }) => `
+    background-color: ${theme.palette.primary.dark};
+
+    :hover {
+        background-color: ${theme.palette.primary.light};
+    }
+`
+);
 
 const AppStatusButton: FC = () => {
-    const { classes } = useStyles();
     const dispatch = useDispatch();
 
     const status = useSelector<RootState, AppStatusState["status"]>(
@@ -32,9 +41,14 @@ const AppStatusButton: FC = () => {
     };
 
     return (
-        <Button classes={classes} color="inherit" onClick={handleClick}>
+        <DarkButton
+            variant="contained"
+            size="small"
+            onClick={handleClick}
+            disableElevation
+        >
             {status}
-        </Button>
+        </DarkButton>
     );
 };
 
