@@ -104,15 +104,16 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 
 Migration todo:
 
-- Upgrade youtubedl
+- MUI 5 + dark mode + toggle during ads on radio (keyboard shortcuts)
+- _Upgrade youtubedl, e.g. https://www.npmjs.com/package/youtube-dl-exec or https://www.npmjs.com/package/ytdl-core
 - Upgrade nx libs to latest patch version
 - postcss-import was added to packages.json for this issue, remove? https://github.com/postcss/postcss-import/issues/435
 - fix `npm i` with `--legacy-peer-deps` in github ymls and Dockerfile (check if it was `npm ci`), caused by migration of @jsiebern/bs-material-ui to rescript-material-ui with newer material ui peerdep?
-- Service workers is registered, but implementation of service-worker is incorrect / not caching when offline. Use Nx workers?
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - add WHO to log: CEF, Common Event Format, When Where Who What, Is the log persisted? 
 - Reactive/observable for InfluxDB
+- Service workers is registered, but implementation of service-worker is incorrect / not caching when offline. Use Nx workers?
 
 ## Notes
 
