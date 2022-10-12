@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 import HomeremoteStreamPlayer from "@mdworld/homeremote-stream-player";
 import { styled } from "@mui/material/styles";
 import { Container, lighten } from "@mui/system";
@@ -8,10 +8,9 @@ const StreamContainer = styled(Container)(
     padding: 0 !important;
     font-family: 'Roboto';
     max-width: 800px;
-    color1: black;
     
     .card {
-        background-color: ${lighten(theme.palette.background.paper, 4 * 0.025)};
+        background-color: ${lighten(theme.palette.background.paper, 2 * 0.025)};
     }
 
     .card .channel {
@@ -25,6 +24,7 @@ const StreamContainer = styled(Container)(
     }
 
     .card .channel .channel-info {
+        color: ${theme.palette.text.primary};
         max-height: 3rem;
     }
 
@@ -44,17 +44,45 @@ const StreamContainer = styled(Container)(
         display: inline;
     }
 
-    .card .title {
-        margin-right: 1rem;
+    .card .artist {
+        color: ${theme.palette.primary.main};
     }
 
+    .card .title {
+        font-size: 100%;
+        margin-right: 0.5rem;
+    }
 `
 );
 
-const Streams: FC = () => (
-    <StreamContainer>
-        <HomeremoteStreamPlayer url={process.env.NX_BASE_URL || ""} />
-    </StreamContainer>
-);
+const Streams: FC = () => {
+    // handle what happens on key press
+    const handleKeyPress = useCallback((event) => {
+        if (event.key === "Control") {
+            return;
+        }
+        if (event.ctrlKey) {
+            console.log(`Key pressed: ctrl+${event.key}`);
+        }
+        // p for pause
+        if (event.key === "t") {
+            console.log("toggle radio v stream");
+        }
+    }, []);
+
+    useEffect(() => {
+        document.addEventListener("keydown", handleKeyPress);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [handleKeyPress]);
+
+    return (
+        <StreamContainer>
+            <HomeremoteStreamPlayer url={process.env.NX_BASE_URL || ""} />
+        </StreamContainer>
+    );
+};
 
 export default Streams;
