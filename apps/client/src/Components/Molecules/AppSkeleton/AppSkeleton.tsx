@@ -10,8 +10,8 @@ import {
     StyledEngineProvider,
     Toolbar,
     Typography,
+    Skeleton
 } from "@mui/material";
-import { Skeleton } from "@mui/lab";
 import MenuIcon from "@mui/icons-material/Menu";
 
 const AppSkeleton: FC = () => (
