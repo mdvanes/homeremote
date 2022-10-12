@@ -1,16 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-// import { TrackerItem } from "@homeremote/types";
 import { willAddCredentials } from "../devUtils";
-
-// type GetCoordsResponse = TrackerItem[];
-// type GetCoordsArgs = {
-//     type: string;
-// };
-
-// type DockerListResponse = {
-//     status: "received";
-//     containers: Array<{ Id: string; Names: string[] }>;
-// };
 
 export interface DockerContainerInfo {
     Id: string;
@@ -55,4 +44,8 @@ export const dockerListApi = createApi({
     }),
 });
 
-export const { useGetDockerListQuery } = dockerListApi;
+export const {
+    useGetDockerListQuery,
+    useStartDockerMutation,
+    useStopDockerMutation,
+} = dockerListApi;

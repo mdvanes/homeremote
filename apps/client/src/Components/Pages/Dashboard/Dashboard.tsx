@@ -14,6 +14,7 @@ import { makeStyles } from "tss-react/mui";
 
 const useStyles = makeStyles()(() => ({
     container: {
+        marginBottom: '10px',
         "& .card-dashboard-height": {
             minHeight: "374px",
         },
