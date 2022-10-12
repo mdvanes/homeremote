@@ -1,19 +1,28 @@
 import { createTheme } from "@mui/material";
-import { adaptV4Theme } from '@mui/material/styles';
-import { indigo, orange } from "@mui/material/colors";
+import { lightBlue, orange } from "@mui/material/colors";
 
-const theme = createTheme(adaptV4Theme({
+const theme = createTheme({
     palette: {
-        primary: {
-            main: indigo[900],
+        mode: "dark",
+        primary: lightBlue,
+        secondary: orange,
+        background: {
+            default: "#0a1829",
+            paper: "#001e3c",
         },
-        secondary: {
-            main: orange[400],
+        text: {
+            primary: "#bdbdbd",
         },
-        // background: {
-        //     // paper: blueGrey[400],
-        // },
     },
-}));
+    components: {
+        MuiToolbar: {
+            styleOverrides: {
+                root: {
+                    color: lightBlue[200],
+                },
+            },
+        },
+    },
+});
 
 export default theme;

@@ -1,13 +1,16 @@
 import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(({ palette }) => ({
     root: {
+        color: palette.primary.light,
         "&:hover": {
-            backgroundColor: theme.palette.primary.light,
+            color: palette.background.paper,
+            backgroundColor: palette.primary.light,
         },
     },
     active: {
-        backgroundColor: `${theme.palette.primary.light} !important`,
+        backgroundColor: `${palette.primary.light} !important`,
+        color: palette.background.paper,
     },
 }));
 

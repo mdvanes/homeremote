@@ -1,13 +1,10 @@
 import React, { FC, useState } from "react";
-// Example of importing image
-// import logo from './logo.svg';
-// Example of importing CSS
-// import './App.css';
 import {
     Drawer,
-    ThemeProvider as MuiThemeProvider,
+    ThemeProvider,
     StyledEngineProvider,
     Container,
+    CssBaseline,
 } from "@mui/material";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import { BrowserRouter, Route } from "react-router-dom";
@@ -25,8 +22,6 @@ import UrlToMusic from "./Components/Molecules/UrlToMusic/UrlToMusic";
 import DownloadList from "./Components/Molecules/DownloadList/DownloadList";
 import Docker from "./Components/Pages/Docker/Docker";
 import DataLora from "./Components/Pages/DataLora/DataLora";
-
-// TODO typescript should be upgraded but causes problem: https://github.com/facebook/create-react-app/issues/10110#issuecomment-731109866
 
 export interface AppProps {
     swCallbacks: {
@@ -49,7 +44,8 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
     return (
         <AuthenticationProvider>
             <StyledEngineProvider injectFirst>
-                <MuiThemeProvider theme={theme}>
+                <ThemeProvider theme={theme}>
+                    <CssBaseline />
                     <AppBar toggleDrawer={toggleDrawer} />
                     <BrowserRouter>
                         <Drawer open={isDrawerOpen} onClose={closeDrawer}>
@@ -80,7 +76,7 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                         </Container>
                     </BrowserRouter>
                     <GlobalSnackbar />
-                </MuiThemeProvider>
+                </ThemeProvider>
             </StyledEngineProvider>
         </AuthenticationProvider>
     );
