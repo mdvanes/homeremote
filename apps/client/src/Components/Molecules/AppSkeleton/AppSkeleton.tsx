@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import theme from "../../../theme";
+import createThemeWithMode from "../../../theme";
 import {
     AppBar,
     Box,
@@ -16,7 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 const AppSkeleton: FC = () => (
     <StyledEngineProvider injectFirst>
-        <MuiThemeProvider theme={theme}>
+        <MuiThemeProvider theme={createThemeWithMode('dark')}>
             <AppBar position="static">
                 <Toolbar>
                     <IconButton

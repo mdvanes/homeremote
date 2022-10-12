@@ -96,12 +96,12 @@ const DockerList: FC = () => {
     const containers1 = containers.slice(0, containers.length / 2);
     const containers2 = containers.slice(containers.length / 2);
     return (
-        <Grid container gap={4}>
+        <Grid container gap={0.5}>
             <Grid item xs>
-                <Stack spacing={2}>{containers1.map(mapInfo)}</Stack>
+                <Stack spacing={0.5}>{containers1.map(mapInfo)}</Stack>
             </Grid>
             <Grid item xs>
-                <Stack spacing={2}>{containers2.map(mapInfo)}</Stack>
+                <Stack spacing={0.5}>{containers2.map(mapInfo)}</Stack>
             </Grid>
         </Grid>
     );

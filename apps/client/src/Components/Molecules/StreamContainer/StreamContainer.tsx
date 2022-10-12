@@ -1,8 +1,11 @@
 import HomeremoteStreamPlayer from "@mdworld/homeremote-stream-player";
-import { FC, useCallback, useEffect } from "react";
+import { Box, Card, CardContent } from "@mui/material";
+import { FC, useCallback, useEffect, useState } from "react";
 import StyledStreamPlayer from "./StyledStreamPlayer";
 
 const StreamContainer: FC = () => {
+    const [play, setPlay] = useState(false);
+
     // handle what happens on key press
     const handleKeyPress = useCallback((event) => {
         if (event.key === "Control") {
@@ -14,6 +17,7 @@ const StreamContainer: FC = () => {
         // p for pause
         if (event.key === "t") {
             console.log("toggle radio v stream");
+            setPlay((prev) => !prev);
         }
     }, []);
 
@@ -26,9 +30,15 @@ const StreamContainer: FC = () => {
     }, [handleKeyPress]);
 
     return (
-        <StyledStreamPlayer>
-            <HomeremoteStreamPlayer url={process.env.NX_BASE_URL || ""} />
-        </StyledStreamPlayer>
+        <>
+            <StyledStreamPlayer>
+                <HomeremoteStreamPlayer url={process.env.NX_BASE_URL || ""} />
+            </StyledStreamPlayer>
+            <Box marginTop={2} />
+            <Card sx={{ height: 250 }}>
+                <CardContent>{play ? "playing" : "stopped"}</CardContent>
+            </Card>
+        </>
     );
 };
 

@@ -1,10 +1,10 @@
-import { MuiThemeProvider, Theme, StyledEngineProvider } from "@mui/material";
+import { ThemeProvider, Theme, StyledEngineProvider } from "@mui/material";
 import { render, screen } from "@testing-library/react";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC } from "react";
 import { serviceLinksApi } from "../../../Services/serviceLinksApi";
 import { MockStoreProvider } from "../../../testHelpers";
-import theme from "../../../theme";
+import createThemeWithMode from "../../../theme";
 import ServiceLinksBar from "./ServiceLinksBar";
 
 enableFetchMocks();
@@ -12,11 +12,11 @@ enableFetchMocks();
 const Wrapper: FC = ({ children }) => {
     return (
         <StyledEngineProvider injectFirst>
-            <MuiThemeProvider theme={theme}>
+            <ThemeProvider theme={createThemeWithMode("dark")}>
                 <MockStoreProvider api={serviceLinksApi}>
                     {children}
                 </MockStoreProvider>
-            </MuiThemeProvider>
+            </ThemeProvider>
         </StyledEngineProvider>
     );
 };

@@ -7,7 +7,6 @@ const useStyles = makeStyles()(() => ({
     },
     card: {
         aspectRatio: "16/9",
-        marginTop: 10,
         overflow: "clip",
     },
     map: {

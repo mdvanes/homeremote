@@ -1,10 +1,13 @@
-import React, { FC, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import {
     Drawer,
     ThemeProvider,
     StyledEngineProvider,
     Container,
     CssBaseline,
+    Box,
+    useMediaQuery,
+    PaletteMode,
 } from "@mui/material";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import { BrowserRouter, Route } from "react-router-dom";
@@ -12,7 +15,7 @@ import { useDispatch } from "react-redux";
 import Log from "./Components/Pages/Log/Log";
 import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
 import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar";
-import theme from "./theme";
+import createThemeWithMode from "./theme";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
 import Streams from "./Components/Pages/Streams/Streams";
 import AppBar from "./Components/Molecules/AppBar/AppBar";
@@ -31,6 +34,7 @@ export interface AppProps {
 }
 
 const App: FC<AppProps> = ({ swCallbacks }) => {
+    const [colorMode, setColorMode] = useState<PaletteMode>("dark");
     const dispatch = useDispatch();
     const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
     const toggleDrawer = (): void => setIsDrawerOpen(!isDrawerOpen);
@@ -41,6 +45,13 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
     swCallbacks.logUpdate = (message: string) =>
         dispatch(logUrgentInfo(message));
 
+    const isFullHd = useMediaQuery("(min-width:1920px)");
+
+    const toggleColorMode = () => {
+        setColorMode((prev) => (prev === "dark" ? "light" : "dark"));
+    };
+    const theme = useMemo(() => createThemeWithMode(colorMode), [colorMode]);
+
     return (
         <AuthenticationProvider>
             <StyledEngineProvider injectFirst>
@@ -49,10 +60,27 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                     <AppBar toggleDrawer={toggleDrawer} />
                     <BrowserRouter>
                         <Drawer open={isDrawerOpen} onClose={closeDrawer}>
-                            <DrawerMenu closeDrawer={closeDrawer} />
+                            <DrawerMenu
+                                closeDrawer={closeDrawer}
+                                colorMode={colorMode}
+                                toggleColorMode={toggleColorMode}
+                            />
                         </Drawer>
                         {/* TODO this was for checking online/offline status for AppCache <StatusBar/>*/}
-                        <Container maxWidth={false}>
+                        <Box
+                            sx={
+                                isFullHd
+                                    ? {
+                                          maxWidth: 1880,
+                                          marginLeft: "auto",
+                                          marginRight: "auto",
+                                      }
+                                    : {
+                                          marginLeft: "16px",
+                                          marginRight: "16px",
+                                      }
+                            }
+                        >
                             <Route exact path="/" component={HomeAutomation} />
                             <Route exact path="/music" component={UrlToMusic} />
                             <Route
@@ -73,7 +101,7 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                 component={DataLora}
                             />
                             <Route exact path="/about" component={Log} />
-                        </Container>
+                        </Box>
                     </BrowserRouter>
                     <GlobalSnackbar />
                 </ThemeProvider>

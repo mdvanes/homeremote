@@ -28,26 +28,27 @@ const Dashboard: FC = () => {
             <Grid item xs={12} md={3}>
                 <SwitchBarList />
                 {/* <ActiveConnections /> */}
+                <Box marginTop={2} />
+                <VideoStream />
+                <Box marginTop={2} />
+                <UrlToMusic />
+                <Box marginTop={2} />
+                <LogCard />
             </Grid>
             <Grid item xs={12} md>
                 <StreamContainer />
                 <Box marginTop={2} />
                 <ServiceLinksBar />
                 <Box marginTop={2} />
+                <Box marginTop={2} />
+                <DownloadList />
+            </Grid>
+            <Grid item xs={12} md={5}>
                 <DataLora />
                 <Box marginTop={2} />
                 <Docker />
             </Grid>
-            <Grid item xs={12} md={3}>
-                <VideoStream />
-                <Box marginTop={2} />
-                <DownloadList />
-            </Grid>
-            <Grid item xs={12} md={2}>
-                <UrlToMusic />
-                <Box marginTop={2} />
-                <LogCard />
-            </Grid>
+            <Grid item xs={12} md={2}></Grid>
         </Grid>
     );
 };

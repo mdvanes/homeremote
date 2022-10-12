@@ -1,9 +1,8 @@
-import { createTheme } from "@mui/material";
-import { lightBlue, orange } from "@mui/material/colors";
+import { createTheme, PaletteMode, ThemeOptions } from "@mui/material";
+import { blue, lightBlue, orange } from "@mui/material/colors";
 
-const theme = createTheme({
+const darkThemeOptions: ThemeOptions = {
     palette: {
-        mode: "dark",
         primary: lightBlue,
         secondary: orange,
         background: {
@@ -23,6 +22,27 @@ const theme = createTheme({
             },
         },
     },
-});
+};
 
-export default theme;
+const lightThemeOptions: ThemeOptions = {
+    palette: {
+        primary: blue,
+        secondary: orange,
+        background: {
+            default: "#ccc",
+        },
+    },
+};
+
+const createThemeWithMode = (mode: PaletteMode) =>
+    createTheme({
+        ...(mode === "dark" ? darkThemeOptions : lightThemeOptions),
+        palette: {
+            mode,
+            ...(mode === "dark"
+                ? darkThemeOptions.palette
+                : lightThemeOptions.palette),
+        },
+    });
+
+export default createThemeWithMode;
