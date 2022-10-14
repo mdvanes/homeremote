@@ -1,16 +1,6 @@
+import { PlaylistsResponse } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { willAddCredentials } from "../devUtils";
-
-// TODO move to shared types
-interface IPlaylist {
-    id: string;
-    name: string;
-}
-
-interface PlaylistsResponse {
-    status: "received" | "error";
-    playlists: IPlaylist[];
-}
 
 export const jukeboxApi = createApi({
     reducerPath: "jukeboxApi",
