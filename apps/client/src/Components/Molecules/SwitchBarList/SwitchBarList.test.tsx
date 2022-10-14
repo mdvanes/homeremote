@@ -1,6 +1,6 @@
 import React from "react";
 import * as ReactRedux from "react-redux";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import SwitchBarList from "./SwitchBarList";
 import { RootState } from "../../../Reducers";
 import * as Slice from "./switchBarListSlice";
@@ -129,8 +129,8 @@ describe("SwitchBarList", () => {
     it("sends a switch state on clicking the 'off' button", () => {
         jest.spyOn(Slice, "sendSwitchState").mockReset();
         mockUseSelectorWith({});
-        const { getByText, baseElement } = render(<SwitchBarList />);
-        const offButton = baseElement.querySelector("button.makeStyles-root");
+        const { getByText } = render(<SwitchBarList />);
+        const offButton = screen.getAllByRole("button")[1];
         expect(offButton).toBeInTheDocument();
         mockDispatch.mockReset();
         if (offButton) {
@@ -147,8 +147,8 @@ describe("SwitchBarList", () => {
     it("sends a switch state on clicking the 'on' button", () => {
         jest.spyOn(Slice, "sendSwitchState").mockReset();
         mockUseSelectorWith({});
-        const { getByText, baseElement } = render(<SwitchBarList />);
-        const onButton = baseElement.querySelector("button.makeStyles-active");
+        const { getByText } = render(<SwitchBarList />);
+        const onButton = screen.getAllByRole("button")[0];
         expect(onButton).toBeInTheDocument();
         mockDispatch.mockReset();
         if (onButton) {
@@ -197,11 +197,9 @@ describe("SwitchBar", () => {
                 labelAction={false}
             />
         );
+        expect(baseElement.querySelector("span")).toHaveTextContent("my bar");
         expect(
-            baseElement.querySelector(".makeStyles-label")
-        ).toHaveTextContent("my bar");
-        expect(
-            baseElement.querySelector(".makeStyles-label > button")
+            baseElement.querySelector("span > button")
         ).not.toBeInTheDocument();
     });
 
@@ -215,11 +213,8 @@ describe("SwitchBar", () => {
                 labelAction={jest.fn()}
             />
         );
-        expect(
-            baseElement.querySelector(".makeStyles-label")
-        ).toHaveTextContent("my bar");
-        expect(
-            baseElement.querySelector(".makeStyles-label > button")
-        ).toBeInTheDocument();
+        screen.debug(baseElement);
+        expect(baseElement.querySelector("p")).toHaveTextContent("my bar");
+        expect(baseElement.querySelector("button")).toBeInTheDocument();
     });
 });

@@ -21,12 +21,19 @@ const mockRootState: MockRootState = {
 const mockCloseDrawer = jest.fn();
 
 const renderDrawerMenu = (initialState: MockRootState) =>
-    renderWithProviders(<DrawerMenu closeDrawer={mockCloseDrawer} />, {
-        initialState,
-        reducers: {
-            authentication: authenticationReducer,
-        },
-    });
+    renderWithProviders(
+        <DrawerMenu
+            colorMode="dark"
+            toggleColorMode={jest.fn()}
+            closeDrawer={mockCloseDrawer}
+        />,
+        {
+            initialState,
+            reducers: {
+                authentication: authenticationReducer,
+            },
+        }
+    );
 
 // https://codeburst.io/module-mocking-in-jest-ff174397e5ff
 jest.mock("react-router-dom", () => ({
