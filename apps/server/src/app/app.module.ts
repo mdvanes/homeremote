@@ -14,6 +14,7 @@ import { StatusController } from "../status/status.controller";
 import { DataloraController } from "../datalora/datalora.controller";
 import { DockerlistController } from "../dockerlist/dockerlist.controller";
 import { DownloadlistController } from "../downloadlist/downloadlist.controller";
+import { JukeboxController } from "../jukebox/jukebox.controller";
 import { UrltomusicController } from "../urltomusic/urltomusic.controller";
 import { LogoutController } from "../logout/logout.controller";
 import { NowplayingController } from "../nowplaying/nowplaying.controller";
@@ -43,6 +44,7 @@ import { ServiceLinksController } from "../service-links/service-links.controlle
         DataloraController,
         DockerlistController,
         DownloadlistController,
+        JukeboxController,
         LoginController,
         LogoutController,
         NowplayingController,

@@ -104,7 +104,7 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 
 Migration todo:
 
-- MUI 5 + dark mode + toggle during ads on radio (keyboard shortcuts)
+- toggle during ads on radio (keyboard shortcuts)
 - _Upgrade youtubedl, e.g. https://www.npmjs.com/package/youtube-dl-exec or https://www.npmjs.com/package/ytdl-core
 - Upgrade nx libs to latest patch version
 - postcss-import was added to packages.json for this issue, remove? https://github.com/postcss/postcss-import/issues/435
@@ -122,6 +122,19 @@ Migration todo:
 - For Apple Silicon / ARM / Mac M1 there is an issue that the build will because it uses a platform specific version of @swc/core. Adding the ARM specific version @swc/core-darwin-arm64 breaks CI. Workaround to test the build locally is: `docker build . -t mdworld/homeremote:latest --platform=linux/amd64`
 
 - For Apple Silicon / ARM / Mac M1 with Colima, when Docker build fails with 'killed', try increasing available memory to 8GB with `colima stop && colima start --cpu 2 --memory 8`
+
+### Subsonic API_TOKEN
+
+JUKEBOX_API_TOKEN is md5 of "subsonic password" + "some random salt"
+
+``` 
+FOO="$password$salt" 
+
+# Mac:
+echo -n FOO | md5
+# Linux:
+echo -n FOO | md5sum
+```
 
 ## Adding capabilities to your workspace
 
