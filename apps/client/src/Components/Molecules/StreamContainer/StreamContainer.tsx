@@ -11,26 +11,35 @@ const StreamContainer: FC = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [ports, setPorts] = useState<Ports | null>(null);
 
-    // handle what happens on key press
-    const handleKeyPress = useCallback((event) => {
-        if (event.key === "Control") {
-            return;
-        }
-        if (event.ctrlKey) {
-            console.log(`Key pressed: ctrl+${event.key}`);
-        }
-        // p for pause
-        if (event.key === "t") {
-            console.log("toggle radio v stream");
-            setPlay((prev) => !prev);
-
-            if (ports?.receivePlayPauseStatusPort?.send) {
-                ports.receivePlayPauseStatusPort.send(
-                    isPlaying ? "Pause" : "Play"
-                );
-            }
+    const toggleStream = useCallback(() => {
+        if (ports?.receivePlayPauseStatusPort?.send) {
+            ports.receivePlayPauseStatusPort.send(isPlaying ? "Pause" : "Play");
         }
     }, [ports, isPlaying]);
+
+    // handle what happens on key press
+    const handleKeyPress = useCallback(
+        (event) => {
+            if (event.key === "Control") {
+                return;
+            }
+            if (event.ctrlKey) {
+                console.log(`Key pressed: ctrl+${event.key}`);
+            }
+            // p for pause/play
+            if (event.key === "p") {
+                toggleStream();
+            }
+            // t for toggle
+            if (event.key === "t") {
+                console.log("toggle radio v stream");
+                setPlay((prev) => !prev);
+
+                toggleStream();
+            }
+        },
+        [toggleStream]
+    );
 
     useEffect(() => {
         document.addEventListener("keydown", handleKeyPress);
@@ -54,7 +63,7 @@ const StreamContainer: FC = () => {
             <StyledStreamPlayer>
                 <HomeremoteStreamPlayer
                     url={process.env.NX_BASE_URL || ""}
-                    
+                    setPorts={setPorts}
                 />
             </StyledStreamPlayer>
             <Box marginTop={2} />

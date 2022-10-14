@@ -1,4 +1,3 @@
-import { FC, useState } from "react";
 import {
     Alert,
     Button,
@@ -10,13 +9,15 @@ import {
     Grid,
     Typography,
 } from "@mui/material";
+import { Stack } from "@mui/system";
+import { FC, useState } from "react";
 import {
     DockerContainerInfo,
     useGetDockerListQuery,
     useStartDockerMutation,
     useStopDockerMutation,
 } from "../../../Services/dockerListApi";
-import { Stack } from "@mui/system";
+import DockerListExpandBar from "../DockerListExpandBar/DockerListExpandBar";
 
 const DockerInfo: FC<{ info: DockerContainerInfo }> = ({ info }) => {
     const [startDocker] = useStartDockerMutation();
@@ -88,22 +89,37 @@ const DockerInfo: FC<{ info: DockerContainerInfo }> = ({ info }) => {
 const mapInfo = (c: DockerContainerInfo) => <DockerInfo key={c.Id} info={c} />;
 
 const DockerList: FC = () => {
+    const [isOpen, setIsOpen] = useState(false);
     const { data } = useGetDockerListQuery({});
     if (data?.status !== "received") {
         return <></>;
     }
-    const containers = data.containers ?? [];
+    const allContainers = data.containers ?? [];
+    const notRunningContainers = (data.containers ?? []).filter(
+        (c) => c.State !== "running"
+    );
+    const containers = isOpen ? allContainers : notRunningContainers;
     const containers1 = containers.slice(0, containers.length / 2);
     const containers2 = containers.slice(containers.length / 2);
+
+    // TODO add polling
+
     return (
-        <Grid container gap={0.5}>
-            <Grid item xs>
-                <Stack spacing={0.5}>{containers1.map(mapInfo)}</Stack>
+        <>
+            <Grid container gap={0.5}>
+                <Grid item xs>
+                    <Stack spacing={0.5}>{containers1.map(mapInfo)}</Stack>
+                </Grid>
+                <Grid item xs>
+                    <Stack spacing={0.5}>{containers2.map(mapInfo)}</Stack>
+                </Grid>
             </Grid>
-            <Grid item xs>
-                <Stack spacing={0.5}>{containers2.map(mapInfo)}</Stack>
-            </Grid>
-        </Grid>
+            <DockerListExpandBar
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                nrOfHidden={allContainers.length - containers.length}
+            />
+        </>
     );
 };
 

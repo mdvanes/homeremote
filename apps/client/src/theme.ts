@@ -10,7 +10,9 @@ const darkThemeOptions: ThemeOptions = {
             paper: "#001e3c",
         },
         text: {
-            primary: "#bdbdbd",
+            // primary: "#e2e2e2", // grey
+            // primary: "#b8e7fb", // blue
+            primary: "#cbdbe2",
         },
     },
     components: {
