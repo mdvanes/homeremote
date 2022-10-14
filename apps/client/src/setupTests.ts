@@ -13,7 +13,7 @@ interface StyleSheetOptionsWithName extends StyleSheetOptions {
 }
 
 jest.mock(
-    "@material-ui/styles/createGenerateClassName",
+    "@mui/styles/createGenerateClassName",
     () =>
         (): GenerateId =>
         (rule, styleSheet): string => {

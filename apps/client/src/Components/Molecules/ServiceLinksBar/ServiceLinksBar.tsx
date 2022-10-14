@@ -1,10 +1,10 @@
 import { FC } from "react";
-import { Theme, useMediaQuery } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core";
+import { Theme, useMediaQuery } from "@mui/material";
 import { ServiceLink } from "./ServiceLink";
 import { useGetServiceLinksQuery } from "../../../Services/serviceLinksApi";
+import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
     contained: {
         backgroundColor: "white",
     },
@@ -15,7 +15,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const ServiceLinksBar: FC = () => {
-    const classNames = useStyles();
+    const { classes: classNames } = useStyles();
     const isBig = useMediaQuery<Theme>((theme) => theme.breakpoints.up("md"));
     const { data } = useGetServiceLinksQuery();
 

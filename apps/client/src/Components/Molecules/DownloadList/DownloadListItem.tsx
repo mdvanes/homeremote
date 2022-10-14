@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { LinearProgress, ListItem, Typography } from "@material-ui/core";
+import { LinearProgress, ListItem, Typography } from "@mui/material";
 import PauseToggle from "./PauseToggle";
 import { DownloadItem } from "@homeremote/types";
 import useStyles, { useListItemStyles } from "./DownloadListItem.styles";
@@ -21,8 +21,8 @@ const DownloadListItem: FC<Props> = ({
         eta,
     },
 }) => {
-    const listItemClasses = useListItemStyles();
-    const classes = useStyles();
+    const { classes: listItemClasses } = useListItemStyles();
+    const { classes } = useStyles();
     const isDownloading = simpleState === "downloading";
     return (
         <>

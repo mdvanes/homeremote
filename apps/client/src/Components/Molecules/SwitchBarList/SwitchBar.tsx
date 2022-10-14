@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from "react";
-import { Icon, Card, CardContent } from "@material-ui/core";
+import { Icon, Card, CardContent, Button, Typography } from "@mui/material";
 import useStyles from "./SwitchBar.styles";
 
 const getIconElem = (icon: string | false): ReactElement => {
@@ -36,7 +36,7 @@ const SwitchBar: FC<Props> = ({
     label,
     labelAction,
 }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return (
         <Card className={classes.card}>
             <CardContent
@@ -47,7 +47,7 @@ const SwitchBar: FC<Props> = ({
                 <span className={classes.label}>
                     {getIconElem(icon)}
                     {labelAction ? (
-                        <button onClick={labelAction}>{label}</button>
+                        <Typography onClick={labelAction}>{label}</Typography>
                     ) : (
                         label
                     )}

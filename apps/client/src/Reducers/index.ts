@@ -4,10 +4,12 @@ import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBa
 import authenticationReducer from "../Components/Providers/Authentication/authenticationSlice";
 import urlToMusicReducer from "../Components/Molecules/UrlToMusic/urlToMusicSlice";
 import { dataloraApi } from "../Services/dataloraApi";
+import { dockerListApi } from "../Services/dockerListApi";
 import { downloadListApi } from "../Services/downloadListApi";
 import { activeConnectionsApi } from "../Services/activeConnectionsApi";
 import { combineReducers } from "redux";
 import { serviceLinksApi } from "../Services/serviceLinksApi";
+import { jukeboxApi } from "../Services/jukeboxApi";
 
 const rootReducer = combineReducers({
     loglines: loglinesReducer,
@@ -15,9 +17,11 @@ const rootReducer = combineReducers({
     switchesList: switchBarListReducer,
     authentication: authenticationReducer,
     urlToMusic: urlToMusicReducer,
-    [dataloraApi.reducerPath]: dataloraApi.reducer,
-    [downloadListApi.reducerPath]: downloadListApi.reducer,
     [activeConnectionsApi.reducerPath]: activeConnectionsApi.reducer,
+    [dataloraApi.reducerPath]: dataloraApi.reducer,
+    [dockerListApi.reducerPath]: dockerListApi.reducer,
+    [downloadListApi.reducerPath]: downloadListApi.reducer,
+    [jukeboxApi.reducerPath]: jukeboxApi.reducer,
     [serviceLinksApi.reducerPath]: serviceLinksApi.reducer,
 });
 

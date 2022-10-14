@@ -5,8 +5,8 @@ import {
     CardActions,
     Typography,
     Button,
-} from "@material-ui/core";
-import { Warning, InfoOutlined } from "@material-ui/icons";
+} from "@mui/material";
+import { Warning, InfoOutlined } from "@mui/icons-material";
 import gitinfoJson from "../../../gitinfo.json";
 import packageJson from "../../../../../../package.json";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,7 +32,7 @@ const SeverityIcons = {
 };
 
 const Log: FC = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const dispatch = useDispatch();
     const loglines = useSelector<RootState, LogState["lines"]>(
         (state: RootState) => state.loglines.lines

@@ -1,18 +1,50 @@
-import { createTheme } from "@material-ui/core/styles";
-import { indigo, orange } from "@material-ui/core/colors";
+import { createTheme, PaletteMode, ThemeOptions } from "@mui/material";
+import { blue, lightBlue, orange } from "@mui/material/colors";
 
-const theme = createTheme({
+const darkThemeOptions: ThemeOptions = {
     palette: {
-        primary: {
-            main: indigo[900],
+        primary: lightBlue,
+        secondary: orange,
+        background: {
+            default: "#0a1829",
+            paper: "#001e3c",
         },
-        secondary: {
-            main: orange[400],
+        text: {
+            // primary: "#e2e2e2", // grey
+            // primary: "#b8e7fb", // blue
+            primary: "#cbdbe2",
         },
-        // background: {
-        //     // paper: blueGrey[400],
-        // },
     },
-});
+    components: {
+        MuiToolbar: {
+            styleOverrides: {
+                root: {
+                    color: lightBlue[200],
+                },
+            },
+        },
+    },
+};
 
-export default theme;
+const lightThemeOptions: ThemeOptions = {
+    palette: {
+        primary: blue,
+        secondary: orange,
+        background: {
+            default: "#ccc",
+        },
+    },
+};
+
+const createThemeWithMode = (mode: PaletteMode) =>
+    createTheme({
+        ...(mode === "dark" ? darkThemeOptions : lightThemeOptions),
+        palette: {
+            mode,
+            ...(mode === "dark"
+                ? darkThemeOptions.palette
+                : lightThemeOptions.palette),
+        },
+    });
+
+export default createThemeWithMode;

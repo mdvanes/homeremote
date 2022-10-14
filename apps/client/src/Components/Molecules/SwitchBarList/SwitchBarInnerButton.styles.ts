@@ -1,30 +1,17 @@
-import { makeStyles, Theme, createStyles, StyleRules } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
 
-// This should use generic styles on makeStyles or createStyles with Props to make it work without "any" type
-// const useStyles = makeStyles(
-//     (theme: Theme): StyleRules =>
-//         createStyles({
-//             root: {
-//                 backgroundColor: (props: any): string =>
-//                     props.isActive
-//                         ? `${theme.palette.primary.light} !important`
-//                         : "transparent",
-//             },
-//         })
-// );
-
-const useStyles = makeStyles(
-    (theme: Theme): StyleRules =>
-        createStyles({
-            root: {
-                "&:hover": {
-                    backgroundColor: theme.palette.primary.light,
-                },
-            },
-            active: {
-                backgroundColor: `${theme.palette.primary.light} !important`,
-            },
-        })
-);
+const useStyles = makeStyles()(({ palette }) => ({
+    root: {
+        color: palette.primary.light,
+        "&:hover": {
+            color: palette.background.paper,
+            backgroundColor: palette.primary.light,
+        },
+    },
+    active: {
+        backgroundColor: `${palette.primary.light} !important`,
+        color: palette.background.paper,
+    },
+}));
 
 export default useStyles;

@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Icon } from "@material-ui/core";
+import { Icon } from "@mui/material";
 import useStyles from "./SwitchBarInnerButton.styles";
 
 type Props = {
@@ -17,7 +17,7 @@ const SwitchBarInnerButton: FC<Props> = ({
     icon,
     isActive,
 }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return (
         <button
             onClick={isReadOnly ? undefined : clickAction}

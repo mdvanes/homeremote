@@ -1,10 +1,10 @@
 import { FC, useEffect, useState } from "react";
-import { LinearProgress, List, Paper } from "@material-ui/core";
+import { LinearProgress, List, Paper } from "@mui/material";
 import { useAppDispatch } from "../../../store";
 import DownloadListItem from "./DownloadListItem";
 import { logError } from "../LogCard/logSlice";
 import { useGetDownloadListQuery } from "../../../Services/downloadListApi";
-import { Alert } from "@material-ui/lab";
+import { Alert } from "@mui/lab";
 
 const UPDATE_INTERVAL_MS = 30000;
 const SLOW_UDPATE_MS = 1000; // if the response takes longer than 1000ms, it is considered slow and the full progress bar is shown

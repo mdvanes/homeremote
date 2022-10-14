@@ -5,8 +5,8 @@ import {
     CardContent,
     TextField,
     LinearProgress,
-} from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
+} from "@mui/material";
+import Alert from "@mui/lab/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import {
@@ -85,6 +85,7 @@ const UrlToMusic: FC = () => {
                         value={form.url.value}
                         error={Boolean(form.url.error)}
                         helperText={form.url.error}
+                        variant="standard"
                         onChange={handleUrlChange}
                     />
                     <Button
@@ -104,6 +105,7 @@ const UrlToMusic: FC = () => {
                         value={form.title.value}
                         error={Boolean(form.title.error)}
                         helperText={form.title.error}
+                        variant="standard"
                         onChange={handleMusicDataChange}
                     />
                     <TextField
@@ -114,6 +116,7 @@ const UrlToMusic: FC = () => {
                         value={form.artist.value}
                         error={Boolean(form.artist.error)}
                         helperText={form.artist.error}
+                        variant="standard"
                         onChange={handleMusicDataChange}
                     />
                     <TextField
@@ -123,6 +126,7 @@ const UrlToMusic: FC = () => {
                         value={form.album.value}
                         error={Boolean(form.album.error)}
                         helperText={form.album.error}
+                        variant="standard"
                         onChange={handleMusicDataChange}
                     />
                     <Button

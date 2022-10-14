@@ -1,19 +1,29 @@
 import React, { FC } from "react";
-import { List, ListItem, ListItemText } from "@material-ui/core";
+import {
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    PaletteMode,
+} from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import {
     fetchAuth,
     FetchAuthType,
 } from "../../Providers/Authentication/authenticationSlice";
 import { useDispatch } from "react-redux";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 
 interface Props {
     closeDrawer: () => void;
+    colorMode: PaletteMode;
+    toggleColorMode: () => void;
 }
 
 // TODO indicate active route, see https://material-ui.com/guides/composition/#link
 
-const DrawerMenu: FC<Props> = ({ closeDrawer }) => {
+const DrawerMenu: FC<Props> = ({ closeDrawer, colorMode, toggleColorMode }) => {
     const dispatch = useDispatch();
     return (
         <div role="presentation" onClick={closeDrawer}>
@@ -49,6 +59,18 @@ const DrawerMenu: FC<Props> = ({ closeDrawer }) => {
                     }}
                 >
                     <ListItemText primary="Log out" />
+                </ListItem>
+                <ListItem>
+                    <IconButton
+                        aria-label="toggle-dark-mode"
+                        onClick={toggleColorMode}
+                    >
+                        {colorMode === "light" ? (
+                            <DarkModeIcon />
+                        ) : (
+                            <LightModeIcon />
+                        )}
+                    </IconButton>
                 </ListItem>
             </List>
         </div>

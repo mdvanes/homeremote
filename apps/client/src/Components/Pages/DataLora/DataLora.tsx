@@ -1,10 +1,10 @@
 import { FC } from "react";
-import { Paper } from "@material-ui/core";
+import { Paper } from "@mui/material";
 import Map from "../../Molecules/DataLora/Map";
 import useStyles from "../../Molecules/DataLora/Map.styles";
 
 const DataLoraPage: FC = () => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     return (
         <Paper className={classes.page}>
             <Map />

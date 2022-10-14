@@ -5,8 +5,8 @@ import {
     IconButton,
     Toolbar,
     Typography,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import AppStatusButton from "../AppStatusButton/AppStatusButton";
 import useStyles from "./AppBar.styles";
 import { useSelector } from "react-redux";
@@ -18,7 +18,7 @@ interface Props {
 }
 
 const AppBar: FC<Props> = ({ toggleDrawer }) => {
-    const classes = useStyles();
+    const { classes } = useStyles();
     const greeting = useSelector<RootState, AuthenticationState["displayName"]>(
         (state: RootState) =>
             state.authentication.displayName
@@ -35,6 +35,7 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                         color="inherit"
                         aria-label="menu"
                         onClick={toggleDrawer}
+                        size="large"
                     >
                         <MenuIcon />
                     </IconButton>
@@ -43,7 +44,7 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                             HR
                         </Typography>
                     </Hidden>
-                    <Hidden xsDown>
+                    <Hidden smDown>
                         <Typography variant="h6" className={classes.title}>
                             HomeRemote
                         </Typography>

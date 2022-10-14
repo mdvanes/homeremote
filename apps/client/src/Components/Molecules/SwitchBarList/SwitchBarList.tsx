@@ -2,7 +2,7 @@ import React, { FC, Fragment, ReactElement, useEffect } from "react";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
 import { useDispatch, useSelector } from "react-redux";
-import { LinearProgress } from "@material-ui/core";
+import { LinearProgress } from "@mui/material";
 import {
     sendSwitchState,
     SwitchBarListState,

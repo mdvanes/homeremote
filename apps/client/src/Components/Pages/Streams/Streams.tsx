@@ -1,10 +1,8 @@
-import React, { FC } from "react";
-import HomeremoteStreamPlayer from "@mdworld/homeremote-stream-player";
+import { FC } from "react";
+import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
 
-const Streams: FC = () => (
-    <div style={{ fontFamily: "Roboto", maxWidth: "800px" }}>
-        <HomeremoteStreamPlayer url={process.env.NX_BASE_URL || ""} />
-    </div>
-);
+const Streams: FC = () => {
+    return <StreamContainer />;
+};
 
 export default Streams;

@@ -1,13 +1,12 @@
-import { makeStyles } from "@material-ui/core";
+import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
     page: {
         height: "calc(100vh - 80px)",
         overflow: "clip",
     },
     card: {
         aspectRatio: "16/9",
-        marginTop: 10,
         overflow: "clip",
     },
     map: {
