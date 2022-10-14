@@ -43,6 +43,7 @@ apps/server/.env
 apps/server/auth.json
 
 # Rescript dummy files
+.merlin
 lib/bs
 apps/client/src/Dummy.bs.js
 
