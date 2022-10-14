@@ -6,22 +6,36 @@ import {
     ListItemButton,
     ListItemText,
 } from "@mui/material";
-import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
-import { FC } from "react";
+import {
+    jukeboxApi,
+    useGetPlaylistQuery,
+    useGetPlaylistsQuery,
+} from "../../../Services/jukeboxApi";
+import { FC, useState } from "react";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { PlaylistArgs } from "@homeremote/types";
 // import TreeView from "@mui/lab/TreeView";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 // import TreeItem from "@mui/lab/TreeItem";
+
+// type PlaylistArgs = { id: string };
 
 interface IJukeboxProps {
     play: boolean;
 }
 
 const Jukebox: FC<IJukeboxProps> = ({ play }) => {
+    const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
     const { data } = useGetPlaylistsQuery(undefined);
+    const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
+        ? { id: currentPlaylistId }
+        : skipToken;
+    const { data: playlist } = useGetPlaylistQuery(playlistArgs);
+    // const [getPlaylist] = jukeboxApi.endpoints.getPlaylist.useLazyQuery();
 
     if (data?.status !== "received") {
-        return <></>;
+        return null;
     }
 
     return (
@@ -42,9 +56,26 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
                         ))}
                 </ul> */}
 
+                {playlist?.status === "received" && (
+                    <List>
+                        {playlist.songs.map(({ id, artist, title, url }) => (
+                            <ListItemButton key={id}>
+                                <ListItemText>
+                                    {artist} - {title}
+                                    <audio controls src={url} />
+                                </ListItemText>
+                            </ListItemButton>
+                        ))}
+                    </List>
+                )}
                 <List>
                     {data.playlists.map(({ id, name }) => (
-                        <ListItemButton key={id}>
+                        <ListItemButton
+                            key={id}
+                            onClick={() => {
+                                setCurrentPlaylistId(id);
+                            }}
+                        >
                             <ListItemText>{name}</ListItemText>
                         </ListItemButton>
                     ))}

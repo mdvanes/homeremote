@@ -1,4 +1,4 @@
-import { PlaylistsResponse } from "@homeremote/types";
+import { ISong, PlaylistResponse, PlaylistsResponse } from "@homeremote/types";
 import { Controller, Logger, UseGuards, Get, Param } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import got from "got";
@@ -29,8 +29,8 @@ export class JukeboxController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get()
-    async getDockerList(): Promise<PlaylistsResponse> {
+    @Get("playlists")
+    async getPlaylists(): Promise<PlaylistsResponse> {
         this.logger.verbose("GET to /api/jukebox");
 
         try {
@@ -40,6 +40,35 @@ export class JukeboxController {
                 "subsonic-response"
             ].playlists.playlist.map(({ id, name }) => ({ id, name }));
             return { status: "received", playlists };
+        } catch (err) {
+            this.logger.error(err);
+            return { status: "error" };
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("playlist/:id")
+    async getPlaylist(@Param("id") id: string): Promise<PlaylistResponse> {
+        this.logger.verbose("GET to /api/jukebox");
+
+        try {
+            const url = this.getAPI("getPlaylist", `&id=${id}`);
+            const response = await got(url).json();
+            const playlist = response["subsonic-response"].playlist;
+            const songs = (playlist.entry as ISong[]).map(
+                ({ id, artist, title, duration }) => {
+                    return {
+                        id,
+                        artist,
+                        title,
+                        duration,
+                        url: "x" + this.getAPI("stream", `&id=${id}`).slice(23),
+                    };
+                }
+            );
+            // console.log(playlist, playlist.entry);
+            console.log(songs);
+            return { status: "received", songs };
         } catch (err) {
             this.logger.error(err);
             return { status: "error" };
