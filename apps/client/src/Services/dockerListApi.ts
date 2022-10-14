@@ -25,7 +25,7 @@ export const dockerListApi = createApi({
     }),
     tagTypes: ["DockerItem"],
     endpoints: (builder) => ({
-        getDockerList: builder.query<DockerListResponse, {}>({
+        getDockerList: builder.query<DockerListResponse, undefined>({
             query: () => "",
             providesTags: ["DockerItem"],
         }),

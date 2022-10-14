@@ -16,7 +16,7 @@ import { ReactComponent as PiHoleIconRaw } from "./icons/pi-hole.svg";
 import { ReactComponent as SubsonicIconRaw } from "./icons/subsonic.svg";
 import { ReactComponent as JellyfinIconRaw } from "./icons/jellyfin.svg";
 
-const useStyles = makeStyles()(({palette}) => ({
+const useStyles = makeStyles()(({ palette }) => ({
     icon: {
         color: palette.primary.main,
     },

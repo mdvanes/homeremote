@@ -2,16 +2,16 @@ import {
     Card,
     CardContent,
     List,
-    ListItem,
+    // ListItem,
     ListItemButton,
     ListItemText,
 } from "@mui/material";
-import { useGetPlaylistsQuery } from "apps/client/src/Services/jukeboxApi";
+import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
 import { FC } from "react";
-import TreeView from "@mui/lab/TreeView";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import TreeItem from "@mui/lab/TreeItem";
+// import TreeView from "@mui/lab/TreeView";
+// import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+// import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+// import TreeItem from "@mui/lab/TreeItem";
 
 interface IJukeboxProps {
     play: boolean;

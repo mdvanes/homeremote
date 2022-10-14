@@ -10,13 +10,13 @@ import {
     StyledEngineProvider,
     Toolbar,
     Typography,
-    Skeleton
+    Skeleton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
 const AppSkeleton: FC = () => (
     <StyledEngineProvider injectFirst>
-        <MuiThemeProvider theme={createThemeWithMode('dark')}>
+        <MuiThemeProvider theme={createThemeWithMode("dark")}>
             <AppBar position="static">
                 <Toolbar>
                     <IconButton

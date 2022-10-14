@@ -1,8 +1,5 @@
 import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
-import {
-    Grid,
-    IconButton
-} from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import { FC } from "react";
 
 interface DockerListExpandBarProps {

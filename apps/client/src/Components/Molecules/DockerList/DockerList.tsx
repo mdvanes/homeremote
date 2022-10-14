@@ -14,14 +14,11 @@ const mapInfo = (c: DockerContainerInfo) => <DockerInfo key={c.Id} info={c} />;
 
 const DockerList: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { data, isLoading, isFetching, refetch } = useGetDockerListQuery(
-        {},
-        {
-            pollingInterval: UPDATE_INTERVAL_MS,
-        }
-    );
+    const { data, isLoading, isFetching } = useGetDockerListQuery(undefined, {
+        pollingInterval: UPDATE_INTERVAL_MS,
+    });
     if (data?.status !== "received") {
-        return <></>;
+        return null;
     }
     const allContainers = data.containers ?? [];
     const notRunningContainers = (data.containers ?? []).filter(
