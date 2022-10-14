@@ -2,33 +2,35 @@
 
 exports[`SwitchBarList shows a blinds switch 1`] = `
 <div
-  class="MuiCardContent-root makeStyles-buttonGroup"
+  class="MuiCardContent-root css-bi9i8-MuiCardContent-root-buttonGroup"
   data-testid="switchbar-Blinds"
 >
   <button
-    class="makeStyles-root"
+    class="css-l44rl-root"
   >
     <span
       aria-hidden="true"
-      class="material-icons MuiIcon-root material-icons"
+      class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium material-icons css-kp9ftd-MuiIcon-root"
     >
       arrow_drop_down
     </span>
   </button>
   <span
-    class="makeStyles-label"
+    class="css-ccz72j-label"
   >
     <i />
-    <button>
+    <p
+      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    >
       Blinds
-    </button>
+    </p>
   </span>
   <button
-    class="makeStyles-root"
+    class="css-l44rl-root"
   >
     <span
       aria-hidden="true"
-      class="material-icons MuiIcon-root material-icons"
+      class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium material-icons css-kp9ftd-MuiIcon-root"
     >
       arrow_drop_up
     </span>
@@ -38,33 +40,35 @@ exports[`SwitchBarList shows a blinds switch 1`] = `
 
 exports[`SwitchBarList shows a normal light switch 1`] = `
 <div
-  class="MuiCardContent-root makeStyles-buttonGroup"
+  class="MuiCardContent-root css-bi9i8-MuiCardContent-root-buttonGroup"
   data-testid="switchbar-My Normal Light Switch"
 >
   <button
-    class="makeStyles-active"
+    class="css-nm7ep5-active"
   >
     <span
       aria-hidden="true"
-      class="material-icons MuiIcon-root material-icons"
+      class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium material-icons css-kp9ftd-MuiIcon-root"
     >
       radio_button_checked
     </span>
   </button>
   <span
-    class="makeStyles-label"
+    class="css-ccz72j-label"
   >
     <i />
-    <button>
+    <p
+      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    >
       My Normal Light Switch
-    </button>
+    </p>
   </span>
   <button
-    class="makeStyles-root"
+    class="css-l44rl-root"
   >
     <span
       aria-hidden="true"
-      class="material-icons MuiIcon-root material-icons"
+      class="material-icons notranslate MuiIcon-root MuiIcon-fontSizeMedium material-icons css-kp9ftd-MuiIcon-root"
     >
       radio_button_unchecked
     </span>
@@ -74,26 +78,28 @@ exports[`SwitchBarList shows a normal light switch 1`] = `
 
 exports[`SwitchBarList shows a selector switch 1`] = `
 <div
-  class="MuiCardContent-root makeStyles-buttonGroup"
+  class="MuiCardContent-root css-bi9i8-MuiCardContent-root-buttonGroup"
   data-testid="switchbar-My Selector Switch: armed"
 >
   <button
-    class="makeStyles-root"
+    class="css-l44rl-root"
   >
     <div
       class="dummy"
     />
   </button>
   <span
-    class="makeStyles-label"
+    class="css-ccz72j-label"
   >
     <i />
-    <button>
+    <p
+      class="MuiTypography-root MuiTypography-body1 css-ahj2mt-MuiTypography-root"
+    >
       My Selector Switch: armed
-    </button>
+    </p>
   </span>
   <button
-    class="makeStyles-root"
+    class="css-l44rl-root"
   >
     <div
       class="dummy"

@@ -2,11 +2,12 @@
 
 exports[`LogCard shows error logline with icon 1`] = `
 <p
-  class="MuiTypography-root makeStyles-message MuiTypography-body2"
+  class="MuiTypography-root MuiTypography-body2 css-17c3ce7-MuiTypography-root-message"
 >
   <svg
     aria-hidden="true"
-    class="MuiSvgIcon-root"
+    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+    data-testid="WarningIcon"
     focusable="false"
     style="fill: red;"
     viewBox="0 0 24 24"
@@ -21,11 +22,12 @@ exports[`LogCard shows error logline with icon 1`] = `
 
 exports[`LogCard shows info logline with icon 1`] = `
 <p
-  class="MuiTypography-root makeStyles-message MuiTypography-body2"
+  class="MuiTypography-root MuiTypography-body2 css-17c3ce7-MuiTypography-root-message"
 >
   <svg
     aria-hidden="true"
-    class="MuiSvgIcon-root"
+    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+    data-testid="InfoOutlinedIcon"
     focusable="false"
     style="fill: grey;"
     viewBox="0 0 24 24"

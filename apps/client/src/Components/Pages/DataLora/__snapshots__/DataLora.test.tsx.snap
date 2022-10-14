@@ -4,7 +4,7 @@ exports[`DataLora page contains the Map component 1`] = `
 <body>
   <div>
     <div
-      class="MuiPaper-root makeStyles-page MuiPaper-elevation1 MuiPaper-rounded"
+      class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 css-1jzbjpi-MuiPaper-root-page"
     >
       <mock-map />
     </div>

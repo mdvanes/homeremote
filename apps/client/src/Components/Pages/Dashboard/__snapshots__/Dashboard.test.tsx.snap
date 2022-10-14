@@ -4,54 +4,62 @@ exports[`Dashboard page contains all the control components 1`] = `
 <body>
   <div>
     <div
-      class="MuiGrid-root makeStyles-container MuiGrid-container MuiGrid-spacing-xs-2"
+      class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-ke7jgj-MuiGrid-root-container"
     >
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-iv7vbz-MuiGrid-root"
       >
         <mock-switch-bar-list />
+        <div
+          class="MuiBox-root css-1yuhvjn"
+        />
+        <div
+          class="MuiBox-root css-1yuhvjn"
+        />
+        <mock-log-card />
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-true"
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-true css-1p5zwaw-MuiGrid-root"
       >
         <div
-          style="font-family: Roboto; max-width: 800px;"
+          class="MuiContainer-root MuiContainer-maxWidthLg css-d93ppg-MuiContainer-root"
         >
           <mock-stream-player
             url="http://localhost"
           />
         </div>
         <div
-          class="MuiBox-root MuiBox-root"
+          class="MuiBox-root css-1yuhvjn"
+        />
+        <div
+          class="MuiBox-root css-1yuhvjn"
         />
         <mock-service-links-bar />
         <div
-          class="MuiBox-root MuiBox-root"
+          class="MuiBox-root css-1yuhvjn"
         />
-        <mock-datalora />
-        <div
-          class="MuiBox-root MuiBox-root"
-        />
-        <mock-docker />
-      </div>
-      <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3"
-      >
         <mock-video-stream />
         <div
-          class="MuiBox-root MuiBox-root"
+          class="MuiBox-root css-1yuhvjn"
+        />
+        <mock-url-to-music />
+      </div>
+      <div
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-5 css-urj5pv-MuiGrid-root"
+      >
+        <mock-datalora />
+        <div
+          class="MuiBox-root css-1yuhvjn"
+        />
+        <mock-docker />
+        <div
+          class="MuiBox-root css-1yuhvjn"
         />
         <mock-download-list />
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-2"
-      >
-        <mock-url-to-music />
-        <div
-          class="MuiBox-root MuiBox-root"
-        />
-        <mock-log-card />
-      </div>
+        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-2 css-12xeub0-MuiGrid-root"
+      />
     </div>
   </div>
 </body>
