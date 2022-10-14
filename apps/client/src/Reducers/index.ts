@@ -9,6 +9,7 @@ import { downloadListApi } from "../Services/downloadListApi";
 import { activeConnectionsApi } from "../Services/activeConnectionsApi";
 import { combineReducers } from "redux";
 import { serviceLinksApi } from "../Services/serviceLinksApi";
+import { jukeboxApi } from "../Services/jukeboxApi";
 
 const rootReducer = combineReducers({
     loglines: loglinesReducer,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
     [dataloraApi.reducerPath]: dataloraApi.reducer,
     [dockerListApi.reducerPath]: dockerListApi.reducer,
     [downloadListApi.reducerPath]: downloadListApi.reducer,
+    [jukeboxApi.reducerPath]: jukeboxApi.reducer,
     [serviceLinksApi.reducerPath]: serviceLinksApi.reducer,
 });
 
