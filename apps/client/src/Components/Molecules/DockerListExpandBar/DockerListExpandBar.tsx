@@ -1,25 +1,9 @@
-import { FC, useState } from "react";
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import {
-    Alert,
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
     Grid,
-    IconButton,
-    Typography,
+    IconButton
 } from "@mui/material";
-import {
-    DockerContainerInfo,
-    useGetDockerListQuery,
-    useStartDockerMutation,
-    useStopDockerMutation,
-} from "../../../Services/dockerListApi";
-import { Stack } from "@mui/system";
-import { ArrowDropUp, ArrowDropDown } from "@mui/icons-material";
+import { FC } from "react";
 
 interface DockerListExpandBarProps {
     isOpen: boolean;
@@ -37,7 +21,6 @@ const DockerListExpandBar: FC<DockerListExpandBarProps> = ({
             <Grid item>
                 {!isOpen ? (
                     <span>
-                        {/* and {allContainers.length - containers.length} running{" "} */}
                         and {nrOfHidden} running{" "}
                         <IconButton
                             aria-label="up"
