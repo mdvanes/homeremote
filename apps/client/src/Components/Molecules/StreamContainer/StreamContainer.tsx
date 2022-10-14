@@ -67,7 +67,7 @@ const StreamContainer: FC = () => {
                 />
             </StyledStreamPlayer>
             <Box marginTop={2} />
-            <button
+            {/* <button
                 style={{ marginTop: "1rem" }}
                 onClick={() => {
                     console.log(ports, ports?.receivePlayPauseStatusPort);
@@ -80,7 +80,7 @@ const StreamContainer: FC = () => {
             >
                 External toggle: {isPlaying ? "playing" : "paused"}
             </button>
-            <Jukebox play={play} />
+            <Jukebox play={play} /> */}
         </>
     );
 };

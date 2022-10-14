@@ -29,9 +29,6 @@ const Dashboard: FC = () => {
                 <SwitchBarList />
                 {/* <ActiveConnections /> */}
                 <Box marginTop={2} />
-                <VideoStream />
-                <Box marginTop={2} />
-                <UrlToMusic />
                 <Box marginTop={2} />
                 <LogCard />
             </Grid>
@@ -40,13 +37,16 @@ const Dashboard: FC = () => {
                 <Box marginTop={2} />
                 <ServiceLinksBar />
                 <Box marginTop={2} />
+                <VideoStream />
                 <Box marginTop={2} />
-                <DownloadList />
+                <UrlToMusic />
             </Grid>
             <Grid item xs={12} md={5}>
                 <DataLora />
                 <Box marginTop={2} />
                 <Docker />
+                <Box marginTop={2} />
+                <DownloadList />
             </Grid>
             <Grid item xs={12} md={2}></Grid>
         </Grid>
