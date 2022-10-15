@@ -1,69 +1,119 @@
+import { ISong } from "@homeremote/types";
 import {
     Card,
     CardContent,
-    IconButton,
     List,
     ListItemButton,
-    ListItemIcon,
     ListItemText,
     Typography,
 } from "@mui/material";
-import {
-    useGetPlaylistQuery,
-    useGetPlaylistsQuery,
-} from "../../../Services/jukeboxApi";
-import { FC, RefObject, useRef, useState } from "react";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { ISong, PlaylistArgs } from "@homeremote/types";
+import { FC, useRef, useState } from "react";
+import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import {
-    PlayArrow as PlayArrowIcon,
-    ArrowBack as ArrowBackIcon,
-} from "@mui/icons-material";
+import JukeboxPlayer from "./JukeboxPlay";
+import JukeboxSongList from "./JukeboxSongList";
 
 interface IJukeboxProps {
     play: boolean;
 }
 
-interface IJukeboxPlayerProps {
-    audioElemRef: RefObject<HTMLAudioElement>;
-    song: ISong;
-}
+// interface IJukeboxPlayerProps {
+//     audioElemRef: RefObject<HTMLAudioElement>;
+//     song: ISong;
+// }
 
-const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({ audioElemRef, song }) => {
-    // const audioElem = useRef<HTMLAudioElement>(null);
-    const hash = song ? btoa(`${song.artist} - ${song.title}`) : "";
-    return (
-        <div>
-            <Typography>
-                <IconButton
-                    onClick={() => {
-                        const elem = audioElemRef.current;
-                        if (elem) {
-                            elem.pause();
-                        }
-                    }}
-                >
-                    <PlayArrowIcon />
-                </IconButton>
-                {song.artist} - {song.title}
-            </Typography>
-            <audio
-                ref={audioElemRef}
-                controls
-                src={`${process.env.NX_BASE_URL}/api/jukebox/song/${song.id}?hash=${hash}`}
-                onEnded={() => {
-                    console.log("song ended");
-                    const elem = audioElemRef.current;
-                    if (elem) {
-                        elem.play();
-                    }
-                }}
-            />
-            {/* TODO on finished, play next in playlist on loop */}
-        </div>
-    );
-};
+// interface IJukeboxSongListProps {
+//     currentPlaylistId: string;
+//     setCurrentPlaylistId: (x: string | undefined) => void;
+//     setCurrentSong: (x: ISong) => void;
+//     // songs: ISong[];
+//     audioElemRef: RefObject<HTMLAudioElement>;
+// }
+
+// const JukeboxSongList: FC<IJukeboxSongListProps> = ({
+//     currentPlaylistId,
+//     setCurrentPlaylistId,
+//     setCurrentSong,
+//     // songs,
+//     audioElemRef,
+// }) => {
+//     const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
+//         ? { id: currentPlaylistId }
+//         : skipToken;
+//     const { data: playlist } = useGetPlaylistQuery(playlistArgs);
+
+//     if (playlist?.status !== "received") {
+//         return null;
+//     }
+
+//     return (
+//         <List>
+//             <ListItemButton
+//                 onClick={() => {
+//                     setCurrentPlaylistId(undefined);
+//                 }}
+//             >
+//                 <ListItemIcon>
+//                     <ArrowBackIcon />
+//                 </ListItemIcon>
+//                 <ListItemText>back</ListItemText>
+//             </ListItemButton>
+//             {playlist.songs.map((song) => (
+//                 <ListItemButton
+//                     key={song.id}
+//                     onClick={() => {
+//                         setCurrentSong(song);
+//                         // Wait for audio elem loading
+//                         setTimeout(() => {
+//                             if (audioElemRef.current) {
+//                                 audioElemRef.current.play();
+//                             }
+//                         }, 100);
+//                     }}
+//                 >
+//                     <ListItemText>
+//                         {song.artist} - {song.title}
+//                     </ListItemText>
+//                 </ListItemButton>
+//             ))}
+//         </List>
+//     );
+// };
+
+// const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({ audioElemRef, song }) => {
+//     // const audioElem = useRef<HTMLAudioElement>(null);
+//     const hash = song ? btoa(`${song.artist} - ${song.title}`) : "";
+//     return (
+//         <div>
+//             <Typography>
+//                 <IconButton
+//                     onClick={() => {
+//                         const elem = audioElemRef.current;
+//                         if (elem) {
+//                             elem.pause();
+//                         }
+//                     }}
+//                 >
+//                     <PlayArrowIcon />
+//                 </IconButton>
+//                 {song.artist} - {song.title}
+//             </Typography>
+//             <audio
+//                 ref={audioElemRef}
+//                 controls
+//                 src={`${process.env.NX_BASE_URL}/api/jukebox/song/${song.id}?hash=${hash}`}
+//                 onEnded={() => {
+//                     console.log("song ended");
+//                     const elem = audioElemRef.current;
+//                     if (elem) {
+//                         elem.play();
+//                     }
+//                 }}
+//             />
+//             {/* TODO on finished, play next in playlist on loop */}
+//         </div>
+//     );
+// };
 
 const Jukebox: FC<IJukeboxProps> = ({ play }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -73,10 +123,10 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
     //     ? btoa(`${currentSong.artist} - ${currentSong.title}`)
     //     : "";
     const { data } = useGetPlaylistsQuery(undefined);
-    const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
-        ? { id: currentPlaylistId }
-        : skipToken;
-    const { data: playlist } = useGetPlaylistQuery(playlistArgs);
+    // const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
+    //     ? { id: currentPlaylistId }
+    //     : skipToken;
+    // const { data: playlist } = useGetPlaylistQuery(playlistArgs);
 
     const audioElemRef = useRef<HTMLAudioElement>(null);
 
@@ -143,38 +193,46 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
                             </List>
                         )}
 
-                        {currentPlaylistId && playlist?.status === "received" && (
-                            <List>
-                                <ListItemButton
-                                    onClick={() => {
-                                        setCurrentPlaylistId(undefined);
-                                    }}
-                                >
-                                    <ListItemIcon>
-                                        <ArrowBackIcon />
-                                    </ListItemIcon>
-                                    <ListItemText>back</ListItemText>
-                                </ListItemButton>
-                                {playlist.songs.map((song) => (
-                                    <ListItemButton
-                                        key={song.id}
-                                        onClick={() => {
-                                            setCurrentSong(song);
-                                            // Wait for audio elem loading
-                                            setTimeout(() => {
-                                                if (audioElemRef.current) {
-                                                    audioElemRef.current.play();
-                                                }
-                                            }, 100);
-                                        }}
-                                    >
-                                        <ListItemText>
-                                            {song.artist} - {song.title}
-                                        </ListItemText>
-                                    </ListItemButton>
-                                ))}
-                            </List>
-                        )}
+                        <JukeboxSongList
+                            audioElemRef={audioElemRef}
+                            currentPlaylistId={currentPlaylistId}
+                            setCurrentPlaylistId={setCurrentPlaylistId}
+                            setCurrentSong={setCurrentSong}
+                        />
+
+                        {/*                        {currentPlaylistId && playlist?.status === "received" && (
+                            
+                            // <List>
+                            //     <ListItemButton
+                            //         onClick={() => {
+                            //             setCurrentPlaylistId(undefined);
+                            //         }}
+                            //     >
+                            //         <ListItemIcon>
+                            //             <ArrowBackIcon />
+                            //         </ListItemIcon>
+                            //         <ListItemText>back</ListItemText>
+                            //     </ListItemButton>
+                            //     {playlist.songs.map((song) => (
+                            //         <ListItemButton
+                            //             key={song.id}
+                            //             onClick={() => {
+                            //                 setCurrentSong(song);
+                            //                 // Wait for audio elem loading
+                            //                 setTimeout(() => {
+                            //                     if (audioElemRef.current) {
+                            //                         audioElemRef.current.play();
+                            //                     }
+                            //                 }, 100);
+                            //             }}
+                            //         >
+                            //             <ListItemText>
+                            //                 {song.artist} - {song.title}
+                            //             </ListItemText>
+                            //         </ListItemButton>
+                            //     ))}
+                            // </List>
+                        )} */}
                     </>
                 )}
 
