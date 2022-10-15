@@ -1,6 +1,6 @@
 {
     "name": "homeremote",
-    "version": "3.3.2",
+    "version": "3.3.4",
     "license": "MIT",
     "scripts": {
         "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
@@ -34,7 +34,6 @@
         "@emotion/react": "^11.10.4",
         "@emotion/styled": "^11.10.4",
         "@influxdata/influxdb-client": "^1.21.0",
-        "@mdworld/homeremote-dockerlist-server": "^1.9.0",
         "@mdworld/homeremote-stream-player-server": "^1.9.0",
         "@mui/icons-material": "^5.10.6",
         "@mui/lab": "^5.0.0-alpha.102",
@@ -133,7 +132,6 @@
         "react-leaflet": "^3.2.2",
         "react-redux": "^7.2.4",
         "react-router-dom": "^5.1.2",
-        "react-scripts": "^4.0.3",
         "react-test-renderer": "17.0.2",
         "redux": "^4.1.0",
         "redux-thunk": "^2.3.0",

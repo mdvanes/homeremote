@@ -68,7 +68,13 @@ Building / Run in production:
 - Set correct path for volumes in docker-compose.yml
 - When on Mac with Lima: disable docker.sock volume in docker-compose.yml (or try https://github.com/abiosoft/colima)
 - `docker-compose up -d --build`. Build duration: ca. 4 minutes
-- On Mac with Lima use `docker-compose -f docker-compose.yml -f docker-compose.override.yml up --build`. Real docker-compose automatically finds docker-compose.yml and docker-compose.override.yml.
+- On Mac with colima use
+  - `colima start --network-address`
+  - `DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose -f docker-compose.override.yml up --build`. Real docker-compose automatically finds docker-compose.yml and docker-compose.override.yml.
+  - If docker.sock does not work, maybe this will help https://github.com/abiosoft/colima/blob/main/docs/FAQ.md#cannot-connect-to-the-docker-daemon-at-unixvarrundockersock-is-the-docker-daemon-running
+    - `export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"`
+    - `sudo ln -sf $HOME/.colima/default/docker.sock /var/run/docker.sock`
+    - in docker-compose.override.yml, just map `- /var/run/docker.sock:/var/run/docker.sock`
 - Show logs: `docker-compose logs --follow`
 - Alternative, instead of docker compose (e.g. for debugging): 
   - `DOCKER_BUILDKIT=0 docker build -t homeremotenx .` and

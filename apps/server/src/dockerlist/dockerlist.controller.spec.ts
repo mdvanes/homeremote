@@ -1,15 +1,10 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DockerlistController } from "./dockerlist.controller";
 import { mocked } from "ts-jest/utils";
-import {
-    getDockerList,
-    startContainer,
-    stopContainer,
-} from "@mdworld/homeremote-dockerlist-server";
+import got, { Response, CancelableRequest } from "got";
 
-jest.mock("@mdworld/homeremote-dockerlist-server");
-
-const mockGetDockerList = mocked(getDockerList, true); // not to have: getDockerList as unknown as jest.Mock<getDockerList>;
+jest.mock("got");
+const mockGot = mocked(got);
 
 describe("DockerList Controller", () => {
     let controller: DockerlistController;
@@ -21,31 +16,22 @@ describe("DockerList Controller", () => {
 
         controller = module.get<DockerlistController>(DockerlistController);
 
-        mockGetDockerList.mockReset();
-        mockGetDockerList.mockResolvedValue({
-            status: "received",
-            containers: [],
-        });
-
-        // Example of strong typing on mock without ts-jest/utils
-        (
-            startContainer as jest.MockedFunction<typeof startContainer>
-        ).mockResolvedValue({
-            status: "received",
-        });
-
-        (
-            stopContainer as jest.MockedFunction<typeof stopContainer>
-        ).mockResolvedValue({
-            status: "received",
-        });
+        mockGot.mockReset();
     });
 
     describe("getDockerList GET", () => {
         it("returns a list of running docker containers", async () => {
+            mockGot.mockReturnValue({
+                json: () => Promise.resolve([]),
+            } as CancelableRequest<Response>);
             const result = await controller.getDockerList();
-            expect(mockGetDockerList).toBeCalledWith();
-            expect(mockGetDockerList).toBeCalledTimes(1);
+            expect(mockGot).toBeCalledWith(
+                "http://docker/v1.41/containers/json?all=true",
+                {
+                    socketPath: "/var/run/docker.sock",
+                }
+            );
+            expect(mockGot).toBeCalledTimes(1);
             expect(result).toEqual({
                 status: "received",
                 containers: [],
@@ -53,10 +39,17 @@ describe("DockerList Controller", () => {
         });
 
         it("returns an error if the library fails", async () => {
-            mockGetDockerList.mockRejectedValue(new Error("some error"));
+            mockGot.mockReturnValue({
+                json: () => Promise.reject("some error"),
+            } as CancelableRequest<Response>);
             const result = await controller.getDockerList();
-            expect(mockGetDockerList).toBeCalledWith();
-            expect(mockGetDockerList).toBeCalledTimes(1);
+            expect(mockGot).toBeCalledWith(
+                "http://docker/v1.41/containers/json?all=true",
+                {
+                    socketPath: "/var/run/docker.sock",
+                }
+            );
+            expect(mockGot).toBeCalledTimes(1);
             expect(result).toEqual({
                 status: "error",
             });
@@ -65,9 +58,15 @@ describe("DockerList Controller", () => {
 
     describe("startContainer GET", () => {
         it("returns 'received' when succesful", async () => {
+            mockGot.mockReturnValue({
+                json: () => Promise.resolve(undefined),
+            } as CancelableRequest<Response>);
             const result = await controller.startContainer("123");
-            expect(startContainer).toBeCalledWith("123");
-            expect(startContainer).toBeCalledTimes(1);
+            expect(mockGot).toBeCalledWith(
+                "http://docker/v1.41/containers/123/start",
+                { method: "POST", socketPath: "/var/run/docker.sock" }
+            );
+            expect(mockGot).toBeCalledTimes(1);
             expect(result).toEqual({
                 status: "received",
             });
@@ -76,9 +75,15 @@ describe("DockerList Controller", () => {
 
     describe("stopContainer GET", () => {
         it("returns 'received' when succesful", async () => {
+            mockGot.mockReturnValue({
+                json: () => Promise.resolve(undefined),
+            } as CancelableRequest<Response>);
             const result = await controller.stopContainer("123");
-            expect(stopContainer).toBeCalledWith("123");
-            expect(stopContainer).toBeCalledTimes(1);
+            expect(mockGot).toBeCalledWith(
+                "http://docker/v1.41/containers/123/stop",
+                { method: "POST", socketPath: "/var/run/docker.sock" }
+            );
+            expect(mockGot).toBeCalledTimes(1);
             expect(result).toEqual({
                 status: "received",
             });
