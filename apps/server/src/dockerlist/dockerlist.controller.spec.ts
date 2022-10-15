@@ -44,7 +44,9 @@ describe("DockerList Controller", () => {
     describe("getDockerList GET", () => {
         it("returns a list of running docker containers", async () => {
             const result = await controller.getDockerList();
-            expect(mockGetDockerList).toBeCalledWith();
+            expect(mockGetDockerList).toBeCalledWith({
+                socketPath: "/var/run/docker.sock",
+            });
             expect(mockGetDockerList).toBeCalledTimes(1);
             expect(result).toEqual({
                 status: "received",
@@ -55,7 +57,9 @@ describe("DockerList Controller", () => {
         it("returns an error if the library fails", async () => {
             mockGetDockerList.mockRejectedValue(new Error("some error"));
             const result = await controller.getDockerList();
-            expect(mockGetDockerList).toBeCalledWith();
+            expect(mockGetDockerList).toBeCalledWith({
+                socketPath: "/var/run/docker.sock",
+            });
             expect(mockGetDockerList).toBeCalledTimes(1);
             expect(result).toEqual({
                 status: "error",

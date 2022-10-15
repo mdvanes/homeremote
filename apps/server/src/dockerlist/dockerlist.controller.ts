@@ -21,7 +21,9 @@ export class DockerlistController {
         this.logger.verbose("GET to /api/dockerlist");
 
         try {
-            const res = await getDockerList();
+            const res = await getDockerList({
+                socketPath: "/var/run/docker.sock",
+            });
             return res;
         } catch (err) {
             this.logger.error(err);
