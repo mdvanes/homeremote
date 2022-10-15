@@ -38,6 +38,8 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
         return null;
     }
 
+    const hash = btoa("Thundercat - Dragonball Durag");
+
     return (
         <Card
             sx={
@@ -56,13 +58,20 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
                         ))}
                 </ul> */}
 
+                <div>
+                    <audio
+                        controls
+                        src={`${process.env.NX_BASE_URL}/api/jukebox/song/1350?hash=${hash}`}
+                    />
+                </div>
+
                 {playlist?.status === "received" && (
                     <List>
-                        {playlist.songs.map(({ id, artist, title, url }) => (
+                        {playlist.songs.map(({ id, artist, title }) => (
                             <ListItemButton key={id}>
                                 <ListItemText>
                                     {artist} - {title}
-                                    <audio controls src={url} />
+                                    {/* <audio controls src={url} /> */}
                                 </ListItemText>
                             </ListItemButton>
                         ))}

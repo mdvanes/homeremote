@@ -1,5 +1,13 @@
 import { ISong, PlaylistResponse, PlaylistsResponse } from "@homeremote/types";
-import { Controller, Logger, UseGuards, Get, Param } from "@nestjs/common";
+import {
+    Controller,
+    Logger,
+    UseGuards,
+    Get,
+    Param,
+    StreamableFile,
+    Query,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -31,7 +39,7 @@ export class JukeboxController {
     @UseGuards(JwtAuthGuard)
     @Get("playlists")
     async getPlaylists(): Promise<PlaylistsResponse> {
-        this.logger.verbose("GET to /api/jukebox");
+        this.logger.verbose("GET to /api/jukebox/playlists");
 
         try {
             const url = this.getAPI("getPlaylists");
@@ -49,7 +57,7 @@ export class JukeboxController {
     @UseGuards(JwtAuthGuard)
     @Get("playlist/:id")
     async getPlaylist(@Param("id") id: string): Promise<PlaylistResponse> {
-        this.logger.verbose("GET to /api/jukebox");
+        this.logger.verbose("GET to /api/jukebox/playlist/:id");
 
         try {
             const url = this.getAPI("getPlaylist", `&id=${id}`);
@@ -62,16 +70,53 @@ export class JukeboxController {
                         artist,
                         title,
                         duration,
-                        url: "x" + this.getAPI("stream", `&id=${id}`).slice(23),
+                        // url:
+                        //     "https://xxxxxxx" +
+                        //     this.getAPI("stream", `&id=${id}`).slice(23),
                     };
                 }
             );
-            // console.log(playlist, playlist.entry);
-            console.log(songs);
+            // console.log(
+            //     playlist,
+            //     playlist.entry,
+            //     this.getAPI("stream", `&id=1`)
+            // );
+            // console.log(songs);
             return { status: "received", songs };
         } catch (err) {
             this.logger.error(err);
             return { status: "error" };
         }
+    }
+
+    // TODO when getting stream, validate the song id and the artist+title hash
+    @Get("song/:id")
+    getSong(
+        @Param("id") id: string,
+        @Query("hash") hash: string
+    ): StreamableFile {
+        this.logger.verbose("GET to /api/jukebox/song/:id");
+        // const getSongUrl = this.getAPI("getSong", `&id=${id}`);
+        // const getCoverArtUrl = this.getAPI("getCoverArt", `&id=${id}`);
+
+        // const test = async () => {
+        //     const song = await got(getSongUrl).json();
+        //     const coverArt = await got(getCoverArtUrl).json();
+
+        //     console.log(
+        //         id,
+        //         hash,
+        //         atob(hash),
+        //         "songinfo",
+        //         song,
+        //         "coverArt",
+        //         coverArt
+        //     );
+        // };
+        // test();
+
+        const streamUrl = this.getAPI("stream", `&id=${id}`);
+        const str = got.stream(streamUrl);
+        return new StreamableFile(str);
     }
 }

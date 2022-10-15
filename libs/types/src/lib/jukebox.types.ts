@@ -9,7 +9,6 @@ export interface ISong {
     title: string;
     duration: number;
     album?: string;
-    url: string;
 }
 
 export type PlaylistsResponse =
