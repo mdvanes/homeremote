@@ -4,20 +4,23 @@ import {
     List,
     ListItemButton,
     ListItemText,
+    Typography,
 } from "@mui/material";
 import {
     useGetPlaylistQuery,
     useGetPlaylistsQuery,
 } from "../../../Services/jukeboxApi";
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { PlaylistArgs } from "@homeremote/types";
+import CardExpandBar from "../CardExpandBar/CardExpandBar";
 
 interface IJukeboxProps {
     play: boolean;
 }
 
 const Jukebox: FC<IJukeboxProps> = ({ play }) => {
+    const [isOpen, setIsOpen] = useState(false);
     const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
     const [currentSong, setCurrentSong] =
         useState<{ id: string; artist: string; title: string }>();
@@ -30,6 +33,8 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
         : skipToken;
     const { data: playlist } = useGetPlaylistQuery(playlistArgs);
 
+    const audioElem = useRef<HTMLAudioElement>(null);
+
     if (data?.status !== "received") {
         return null;
     }
@@ -39,83 +44,81 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
             <CardContent>
                 {play ? "playing" : "stopped"}
 
-                {currentSong && (
+                {currentSong ? (
                     <div>
-                        <div>
+                        <Typography>
                             {currentSong.artist} - {currentSong.title}
-                        </div>
+                        </Typography>
                         <audio
+                            ref={audioElem}
                             controls
                             src={`${process.env.NX_BASE_URL}/api/jukebox/song/${currentSong.id}?hash=${hash}`}
-                        />
-                    </div>
-                )}
-
-                {!currentPlaylistId && (
-                    <List>
-                        {data.playlists.map(({ id, name }) => (
-                            <ListItemButton
-                                key={id}
-                                onClick={() => {
-                                    setCurrentPlaylistId(id);
-                                }}
-                            >
-                                <ListItemText>{name}</ListItemText>
-                            </ListItemButton>
-                        ))}
-                    </List>
-                )}
-
-                {currentPlaylistId && playlist?.status === "received" && (
-                    <List>
-                        <ListItemButton
-                            onClick={() => {
-                                setCurrentPlaylistId(undefined);
+                            onEnded={() => {
+                                console.log("song ended");
+                                const elem = audioElem.current;
+                                if (elem) {
+                                    elem.play();
+                                }
                             }}
-                        >
-                            <ListItemText>&lt; back</ListItemText>
-                        </ListItemButton>
-                        {playlist.songs.map(({ id, artist, title }) => (
-                            <ListItemButton
-                                key={id}
-                                onClick={() => {
-                                    setCurrentSong({
-                                        id,
-                                        artist,
-                                        title,
-                                    });
-                                }}
-                            >
-                                <ListItemText>
-                                    {artist} - {title}
-                                </ListItemText>
-                            </ListItemButton>
-                        ))}
-                    </List>
+                        />
+                        {/* TODO on finished, play next in playlist on loop */}
+                    </div>
+                ) : (
+                    <Typography>Select a song</Typography>
                 )}
 
-                {/* <TreeView
-                    aria-label="file system navigator"
-                    defaultCollapseIcon={<ExpandMoreIcon />}
-                    defaultExpandIcon={<ChevronRightIcon />}
-                    sx={{
-                        height: 240,
-                        flexGrow: 1,
-                        maxWidth: 400,
-                        overflowY: "auto",
-                    }}
-                >
-                    <TreeItem nodeId="1" label="Applications">
-                        <TreeItem nodeId="2" label="Calendar" />
-                    </TreeItem>
-                    <TreeItem nodeId="5" label="Documents">
-                        {data?.playlists &&
-                            data.playlists.map(({ id, name }) => (
-                                <TreeItem key={id} nodeId={id} label={name} />
-                            ))}
-                        
-                    </TreeItem>
-                </TreeView> */}
+                {isOpen && (
+                    <>
+                        {!currentPlaylistId && (
+                            <List>
+                                {data.playlists.map(({ id, name }) => (
+                                    <ListItemButton
+                                        key={id}
+                                        onClick={() => {
+                                            setCurrentPlaylistId(id);
+                                        }}
+                                    >
+                                        <ListItemText>{name}</ListItemText>
+                                    </ListItemButton>
+                                ))}
+                            </List>
+                        )}
+
+                        {currentPlaylistId && playlist?.status === "received" && (
+                            <List>
+                                <ListItemButton
+                                    onClick={() => {
+                                        setCurrentPlaylistId(undefined);
+                                    }}
+                                >
+                                    <ListItemText>&lt; back</ListItemText>
+                                </ListItemButton>
+                                {playlist.songs.map(({ id, artist, title }) => (
+                                    <ListItemButton
+                                        key={id}
+                                        onClick={() => {
+                                            setCurrentSong({
+                                                id,
+                                                artist,
+                                                title,
+                                            });
+                                        }}
+                                    >
+                                        <ListItemText>
+                                            {artist} - {title}
+                                        </ListItemText>
+                                    </ListItemButton>
+                                ))}
+                            </List>
+                        )}
+                    </>
+                )}
+
+                <CardExpandBar
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    hint="browse"
+                />
             </CardContent>
         </Card>
     );
