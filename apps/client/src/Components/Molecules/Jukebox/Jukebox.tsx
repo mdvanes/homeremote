@@ -2,7 +2,6 @@ import {
     Card,
     CardContent,
     List,
-    // ListItem,
     ListItemButton,
     ListItemText,
 } from "@mui/material";
@@ -13,12 +12,6 @@ import {
 import { FC, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { PlaylistArgs } from "@homeremote/types";
-// import TreeView from "@mui/lab/TreeView";
-// import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-// import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-// import TreeItem from "@mui/lab/TreeItem";
-
-// type PlaylistArgs = { id: string };
 
 interface IJukeboxProps {
     play: boolean;
@@ -27,7 +20,10 @@ interface IJukeboxProps {
 const Jukebox: FC<IJukeboxProps> = ({ play }) => {
     const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
     const [currentSong, setCurrentSong] =
-        useState<{ id: string; hash: string }>();
+        useState<{ id: string; artist: string; title: string }>();
+    const hash = currentSong
+        ? btoa(`${currentSong.artist} - ${currentSong.title}`)
+        : "";
     const { data } = useGetPlaylistsQuery(undefined);
     const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
         ? { id: currentPlaylistId }
@@ -39,42 +35,54 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
     }
 
     return (
-        <Card
-            sx={
-                {
-                    // height: 250
-                }
-            }
-        >
+        <Card>
             <CardContent>
                 {play ? "playing" : "stopped"}
 
-                {/* <ul>
-                    {data?.playlists &&
-                        data.playlists.map(({ id, name }) => (
-                            <li key={id}>{name}</li>
-                        ))}
-                </ul> */}
-
                 {currentSong && (
                     <div>
+                        <div>
+                            {currentSong.artist} - {currentSong.title}
+                        </div>
                         <audio
                             controls
-                            // src={`${process.env.NX_BASE_URL}/api/jukebox/song/3105?hash=${hash}`}
-                            src={`${process.env.NX_BASE_URL}/api/jukebox/song/${currentSong.id}?hash=${currentSong.hash}`}
+                            src={`${process.env.NX_BASE_URL}/api/jukebox/song/${currentSong.id}?hash=${hash}`}
                         />
                     </div>
                 )}
 
-                {playlist?.status === "received" && (
+                {!currentPlaylistId && (
                     <List>
+                        {data.playlists.map(({ id, name }) => (
+                            <ListItemButton
+                                key={id}
+                                onClick={() => {
+                                    setCurrentPlaylistId(id);
+                                }}
+                            >
+                                <ListItemText>{name}</ListItemText>
+                            </ListItemButton>
+                        ))}
+                    </List>
+                )}
+
+                {currentPlaylistId && playlist?.status === "received" && (
+                    <List>
+                        <ListItemButton
+                            onClick={() => {
+                                setCurrentPlaylistId(undefined);
+                            }}
+                        >
+                            <ListItemText>&lt; back</ListItemText>
+                        </ListItemButton>
                         {playlist.songs.map(({ id, artist, title }) => (
                             <ListItemButton
                                 key={id}
                                 onClick={() => {
                                     setCurrentSong({
                                         id,
-                                        hash: btoa(`${artist} - ${title}`),
+                                        artist,
+                                        title,
                                     });
                                 }}
                             >
@@ -85,18 +93,6 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
                         ))}
                     </List>
                 )}
-                <List>
-                    {data.playlists.map(({ id, name }) => (
-                        <ListItemButton
-                            key={id}
-                            onClick={() => {
-                                setCurrentPlaylistId(id);
-                            }}
-                        >
-                            <ListItemText>{name}</ListItemText>
-                        </ListItemButton>
-                    ))}
-                </List>
 
                 {/* <TreeView
                     aria-label="file system navigator"

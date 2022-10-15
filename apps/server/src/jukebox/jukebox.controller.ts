@@ -76,18 +76,10 @@ export class JukeboxController {
                         artist,
                         title,
                         duration,
-                        // url:
-                        //     "https://xxxxxxx" +
-                        //     this.getAPI("stream", `&id=${id}`).slice(23),
                     };
                 }
             );
-            // console.log(
-            //     playlist,
-            //     playlist.entry,
-            //     this.getAPI("stream", `&id=1`)
-            // );
-            // console.log(songs);
+
             return { status: "received", songs };
         } catch (err) {
             this.logger.error(err);
@@ -107,7 +99,6 @@ export class JukeboxController {
         const getSongUrl = this.getAPI("getSong", `&id=${id}`);
         // const getCoverArtUrl = this.getAPI("getCoverArt", `&id=${id}`);
 
-        // const test = async () => {
         try {
             const songResponse = await got(getSongUrl).json();
 
@@ -123,25 +114,6 @@ export class JukeboxController {
             }
 
             // const coverArtResponse = await got(getCoverArtUrl).text();
-            // const x = coverArtResponse["subsonic-response"];
-
-            // console.log(
-            //     id,
-            //     hash,
-            //     // atob(hash),
-            //     // artistTitle,
-            //     "songinfo",
-            //     // getSongUrl,
-            //     // song["subsonic-response"],
-            //     // retrievedHash,
-            //     hash === retrievedHash
-            //     // song,
-            //     // "coverArt",
-            //     // getCoverArtUrl
-            //     // coverArt
-            //     // btoa(coverArtResponse)
-            // );
-
             const streamUrl = this.getAPI("stream", `&id=${id}`);
             const str = got.stream(streamUrl);
             return new StreamableFile(str);
@@ -152,7 +124,5 @@ export class JukeboxController {
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
-        // };
-        // test();
     }
 }
