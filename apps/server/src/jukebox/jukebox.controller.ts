@@ -7,6 +7,9 @@ import {
     Param,
     StreamableFile,
     Query,
+    NotFoundException,
+    HttpStatus,
+    HttpException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import got from "got";
@@ -50,7 +53,10 @@ export class JukeboxController {
             return { status: "received", playlists };
         } catch (err) {
             this.logger.error(err);
-            return { status: "error" };
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -85,38 +91,68 @@ export class JukeboxController {
             return { status: "received", songs };
         } catch (err) {
             this.logger.error(err);
-            return { status: "error" };
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 
-    // TODO when getting stream, validate the song id and the artist+title hash
     @Get("song/:id")
-    getSong(
+    async getSong(
         @Param("id") id: string,
         @Query("hash") hash: string
-    ): StreamableFile {
+    ): Promise<StreamableFile> {
         this.logger.verbose("GET to /api/jukebox/song/:id");
-        // const getSongUrl = this.getAPI("getSong", `&id=${id}`);
+        const getSongUrl = this.getAPI("getSong", `&id=${id}`);
         // const getCoverArtUrl = this.getAPI("getCoverArt", `&id=${id}`);
 
         // const test = async () => {
-        //     const song = await got(getSongUrl).json();
-        //     const coverArt = await got(getCoverArtUrl).json();
+        try {
+            const songResponse = await got(getSongUrl).json();
 
-        //     console.log(
-        //         id,
-        //         hash,
-        //         atob(hash),
-        //         "songinfo",
-        //         song,
-        //         "coverArt",
-        //         coverArt
-        //     );
+            // NOTE: when getting stream, validate the song id and the artist+title hash
+            const { artist, title } = songResponse["subsonic-response"]
+                .song as ISong;
+            const artistTitle = `${artist} - ${title}`;
+            const retrievedHash = btoa(artistTitle);
+
+            if (hash !== retrievedHash) {
+                this.logger.error("hashes do not match");
+                throw new NotFoundException(HttpStatus.NOT_FOUND);
+            }
+
+            // const coverArtResponse = await got(getCoverArtUrl).text();
+            // const x = coverArtResponse["subsonic-response"];
+
+            // console.log(
+            //     id,
+            //     hash,
+            //     // atob(hash),
+            //     // artistTitle,
+            //     "songinfo",
+            //     // getSongUrl,
+            //     // song["subsonic-response"],
+            //     // retrievedHash,
+            //     hash === retrievedHash
+            //     // song,
+            //     // "coverArt",
+            //     // getCoverArtUrl
+            //     // coverArt
+            //     // btoa(coverArtResponse)
+            // );
+
+            const streamUrl = this.getAPI("stream", `&id=${id}`);
+            const str = got.stream(streamUrl);
+            return new StreamableFile(str);
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
         // };
         // test();
-
-        const streamUrl = this.getAPI("stream", `&id=${id}`);
-        const str = got.stream(streamUrl);
-        return new StreamableFile(str);
     }
 }

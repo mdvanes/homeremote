@@ -7,7 +7,6 @@ import {
     ListItemText,
 } from "@mui/material";
 import {
-    jukeboxApi,
     useGetPlaylistQuery,
     useGetPlaylistsQuery,
 } from "../../../Services/jukeboxApi";
@@ -27,18 +26,17 @@ interface IJukeboxProps {
 
 const Jukebox: FC<IJukeboxProps> = ({ play }) => {
     const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
+    const [currentSong, setCurrentSong] =
+        useState<{ id: string; hash: string }>();
     const { data } = useGetPlaylistsQuery(undefined);
     const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
         ? { id: currentPlaylistId }
         : skipToken;
     const { data: playlist } = useGetPlaylistQuery(playlistArgs);
-    // const [getPlaylist] = jukeboxApi.endpoints.getPlaylist.useLazyQuery();
 
     if (data?.status !== "received") {
         return null;
     }
-
-    const hash = btoa("Thundercat - Dragonball Durag");
 
     return (
         <Card
@@ -58,20 +56,30 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
                         ))}
                 </ul> */}
 
-                <div>
-                    <audio
-                        controls
-                        src={`${process.env.NX_BASE_URL}/api/jukebox/song/1350?hash=${hash}`}
-                    />
-                </div>
+                {currentSong && (
+                    <div>
+                        <audio
+                            controls
+                            // src={`${process.env.NX_BASE_URL}/api/jukebox/song/3105?hash=${hash}`}
+                            src={`${process.env.NX_BASE_URL}/api/jukebox/song/${currentSong.id}?hash=${currentSong.hash}`}
+                        />
+                    </div>
+                )}
 
                 {playlist?.status === "received" && (
                     <List>
                         {playlist.songs.map(({ id, artist, title }) => (
-                            <ListItemButton key={id}>
+                            <ListItemButton
+                                key={id}
+                                onClick={() => {
+                                    setCurrentSong({
+                                        id,
+                                        hash: btoa(`${artist} - ${title}`),
+                                    });
+                                }}
+                            >
                                 <ListItemText>
                                     {artist} - {title}
-                                    {/* <audio controls src={url} /> */}
                                 </ListItemText>
                             </ListItemButton>
                         ))}
