@@ -1,21 +1,29 @@
-import { ISong } from "@homeremote/types";
+import { ISong, PlaylistArgs } from "@homeremote/types";
 import { PlayArrow as PlayArrowIcon } from "@mui/icons-material";
 import { IconButton, Typography } from "@mui/material";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { useGetPlaylistQuery } from "../../../Services/jukeboxApi";
 import { FC, RefObject } from "react";
 
 interface IJukeboxPlayerProps {
     audioElemRef: RefObject<HTMLAudioElement>;
     song: ISong;
-    playlist: ISong[] | undefined;
+    playlistId: string | undefined;
 }
 
 const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
     audioElemRef,
     song,
-    playlist,
+    playlistId,
 }) => {
+    const playlistArgs: PlaylistArgs | typeof skipToken = playlistId
+        ? { id: playlistId }
+        : skipToken;
+    const { data: playlist } = useGetPlaylistQuery(playlistArgs);
+    console.log("JukeboxPlayer: playlist=", playlist);
     const hash = song ? btoa(`${song.artist} - ${song.title}`) : "";
 
+    // TODO on finished, play next in playlist on loop
     // if (playlist) {
     //     const index = playlist.findIndex((s) => s.id === song.id);
     //     const pl = playlist.slice(index);
@@ -57,7 +65,6 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                     }
                 }}
             />
-            {/* TODO on finished, play next in playlist on loop */}
         </div>
     );
 };

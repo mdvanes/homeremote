@@ -12,19 +12,15 @@ import { useGetPlaylistQuery } from "../../../Services/jukeboxApi";
 
 interface IJukeboxSongListProps {
     currentPlaylistId: string | undefined;
-    setCurrentPlaylistId: (x: string | undefined) => void;
-    setCurrentSong: (x: ISong) => void;
-    setCurrentPlaylist: (x: ISong[]) => void;
-    // songs: ISong[];
+    setCurrentPlaylistId: (playlistId: string | undefined) => void;
+    setCurrentSong: (song: ISong) => void;
     audioElemRef: RefObject<HTMLAudioElement>;
 }
 
 const JukeboxSongList: FC<IJukeboxSongListProps> = ({
     currentPlaylistId,
     setCurrentPlaylistId,
-    setCurrentPlaylist,
     setCurrentSong,
-    // songs,
     audioElemRef,
 }) => {
     const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
@@ -41,7 +37,6 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
             <ListItemButton
                 onClick={() => {
                     setCurrentPlaylistId(undefined);
-                    setCurrentPlaylist(playlist.songs);
                 }}
             >
                 <ListItemIcon>

@@ -20,7 +20,6 @@ interface IJukeboxProps {
 const Jukebox: FC<IJukeboxProps> = ({ play }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
-    const [currentPlaylist, setCurrentPlaylist] = useState<ISong[]>();
     const [currentSong, setCurrentSong] = useState<ISong>();
     const { data } = useGetPlaylistsQuery(undefined);
 
@@ -39,7 +38,7 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
                     <JukeboxPlayer
                         audioElemRef={audioElemRef}
                         song={currentSong}
-                        playlist={currentPlaylist}
+                        playlistId={currentPlaylistId}
                     />
                 ) : (
                     <Typography>Select a song</Typography>
@@ -66,7 +65,6 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
                             audioElemRef={audioElemRef}
                             currentPlaylistId={currentPlaylistId}
                             setCurrentPlaylistId={setCurrentPlaylistId}
-                            setCurrentPlaylist={setCurrentPlaylist}
                             setCurrentSong={setCurrentSong}
                         />
                     </>
