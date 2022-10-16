@@ -19,7 +19,7 @@ const StreamContainer: FC = () => {
                 isRadioPlaying ? "Pause" : "Play"
             );
         }
-    }, [ports, isRadioPlaying, jukeboxElem]);
+    }, [ports, isRadioPlaying]);
 
     const toggleBetween = useCallback(() => {
         if (ports?.receivePlayPauseStatusPort?.send) {

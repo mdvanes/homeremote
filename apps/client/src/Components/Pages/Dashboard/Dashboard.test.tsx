@@ -24,6 +24,7 @@ jest.mock(
     "../../Molecules/ServiceLinksBar/ServiceLinksBar",
     () => "mock-service-links-bar"
 );
+jest.mock("../../Molecules/Jukebox/Jukebox", () => "mock-jukebox");
 
 describe("Dashboard page", () => {
     it("contains all the control components", () => {

@@ -13,6 +13,7 @@ exports[`Streams page contains the stream player 1`] = `
     <div
       class="MuiBox-root css-1yuhvjn"
     />
+    <mock-jukebox />
   </div>
 </body>
 `;

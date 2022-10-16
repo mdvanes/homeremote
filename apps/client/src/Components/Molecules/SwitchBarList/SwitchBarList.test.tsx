@@ -213,7 +213,6 @@ describe("SwitchBar", () => {
                 labelAction={jest.fn()}
             />
         );
-        screen.debug(baseElement);
         expect(baseElement.querySelector("p")).toHaveTextContent("my bar");
         expect(baseElement.querySelector("button")).toBeInTheDocument();
     });
