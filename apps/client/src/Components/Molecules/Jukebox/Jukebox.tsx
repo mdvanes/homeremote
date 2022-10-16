@@ -1,77 +1,96 @@
+import { ISong } from "@homeremote/types";
 import {
     Card,
     CardContent,
     List,
-    // ListItem,
     ListItemButton,
     ListItemText,
+    Typography,
 } from "@mui/material";
+import { FC, RefObject, useEffect, useRef, useState } from "react";
 import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
-import { FC } from "react";
-// import TreeView from "@mui/lab/TreeView";
-// import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-// import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-// import TreeItem from "@mui/lab/TreeItem";
+import CardExpandBar from "../CardExpandBar/CardExpandBar";
+import JukeboxPlayer from "./JukeboxPlayer";
+import JukeboxSongList, { LAST_SONG } from "./JukeboxSongList";
 
 interface IJukeboxProps {
-    play: boolean;
+    // play: boolean;
+    setJukeboxElem: (elem: RefObject<HTMLAudioElement>) => void;
 }
 
-const Jukebox: FC<IJukeboxProps> = ({ play }) => {
+const Jukebox: FC<IJukeboxProps> = ({ setJukeboxElem }) => {
+    const audioElemRef = useRef<HTMLAudioElement>(null);
+    const [isOpen, setIsOpen] = useState(false);
+    const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
+    const [currentSong, setCurrentSong] = useState<ISong>();
     const { data } = useGetPlaylistsQuery(undefined);
 
+    useEffect(() => {
+        setJukeboxElem(audioElemRef);
+    }, [audioElemRef, setJukeboxElem]);
+
+    useEffect(() => {
+        try {
+            const lastSongStr = localStorage.getItem(LAST_SONG);
+            if (lastSongStr) {
+                const lastSong: ISong = JSON.parse(lastSongStr);
+                setCurrentSong(lastSong);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, [setCurrentSong]);
+
     if (data?.status !== "received") {
-        return <></>;
+        return null;
     }
 
     return (
-        <Card
-            sx={
-                {
-                    // height: 250
-                }
-            }
-        >
+        <Card>
             <CardContent>
-                {play ? "playing" : "stopped"}
+                {/* {play ? "playing" : "stopped"} */}
 
-                {/* <ul>
-                    {data?.playlists &&
-                        data.playlists.map(({ id, name }) => (
-                            <li key={id}>{name}</li>
-                        ))}
-                </ul> */}
+                {currentSong ? (
+                    <JukeboxPlayer
+                        audioElemRef={audioElemRef}
+                        song={currentSong}
+                        playlistId={currentPlaylistId}
+                    />
+                ) : (
+                    <Typography>Select a song</Typography>
+                )}
 
-                <List>
-                    {data.playlists.map(({ id, name }) => (
-                        <ListItemButton key={id}>
-                            <ListItemText>{name}</ListItemText>
-                        </ListItemButton>
-                    ))}
-                </List>
+                {isOpen && (
+                    <>
+                        {!currentPlaylistId && (
+                            <List>
+                                {data.playlists.map(({ id, name }) => (
+                                    <ListItemButton
+                                        key={id}
+                                        onClick={() => {
+                                            setCurrentPlaylistId(id);
+                                        }}
+                                    >
+                                        <ListItemText>{name}</ListItemText>
+                                    </ListItemButton>
+                                ))}
+                            </List>
+                        )}
 
-                {/* <TreeView
-                    aria-label="file system navigator"
-                    defaultCollapseIcon={<ExpandMoreIcon />}
-                    defaultExpandIcon={<ChevronRightIcon />}
-                    sx={{
-                        height: 240,
-                        flexGrow: 1,
-                        maxWidth: 400,
-                        overflowY: "auto",
-                    }}
-                >
-                    <TreeItem nodeId="1" label="Applications">
-                        <TreeItem nodeId="2" label="Calendar" />
-                    </TreeItem>
-                    <TreeItem nodeId="5" label="Documents">
-                        {data?.playlists &&
-                            data.playlists.map(({ id, name }) => (
-                                <TreeItem key={id} nodeId={id} label={name} />
-                            ))}
-                        
-                    </TreeItem>
-                </TreeView> */}
+                        <JukeboxSongList
+                            audioElemRef={audioElemRef}
+                            currentPlaylistId={currentPlaylistId}
+                            setCurrentPlaylistId={setCurrentPlaylistId}
+                            setCurrentSong={setCurrentSong}
+                        />
+                    </>
+                )}
+
+                <CardExpandBar
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    hint="browse"
+                />
             </CardContent>
         </Card>
     );

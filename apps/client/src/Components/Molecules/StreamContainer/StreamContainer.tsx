@@ -1,44 +1,55 @@
 import HomeremoteStreamPlayer, {
     Ports,
 } from "@mdworld/homeremote-stream-player";
-import { Box, Card, CardContent } from "@mui/material";
-import { FC, useCallback, useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import { FC, RefObject, useCallback, useEffect, useState } from "react";
 import Jukebox from "../Jukebox/Jukebox";
 import StyledStreamPlayer from "./StyledStreamPlayer";
 
 const StreamContainer: FC = () => {
-    const [play, setPlay] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false);
+    // const [play, setPlay] = useState(false);
+    const [isRadioPlaying, setIsRadioPlaying] = useState(false);
     const [ports, setPorts] = useState<Ports | null>(null);
+    const [jukeboxElem, setJukeboxElem] =
+        useState<RefObject<HTMLAudioElement> | null>(null);
 
-    const toggleStream = useCallback(() => {
+    const toggleRadio = useCallback(() => {
         if (ports?.receivePlayPauseStatusPort?.send) {
-            ports.receivePlayPauseStatusPort.send(isPlaying ? "Pause" : "Play");
+            ports.receivePlayPauseStatusPort.send(
+                isRadioPlaying ? "Pause" : "Play"
+            );
         }
-    }, [ports, isPlaying]);
+    }, [ports, isRadioPlaying]);
+
+    const toggleBetween = useCallback(() => {
+        if (ports?.receivePlayPauseStatusPort?.send) {
+            ports.receivePlayPauseStatusPort.send(
+                isRadioPlaying ? "Pause" : "Play"
+            );
+        }
+        if (jukeboxElem?.current) {
+            if (isRadioPlaying) {
+                jukeboxElem.current.play();
+            } else {
+                jukeboxElem.current.pause();
+            }
+        }
+    }, [ports, isRadioPlaying, jukeboxElem]);
 
     // handle what happens on key press
     const handleKeyPress = useCallback(
         (event) => {
-            if (event.key === "Control") {
-                return;
-            }
-            if (event.ctrlKey) {
-                console.log(`Key pressed: ctrl+${event.key}`);
-            }
             // p for pause/play
             if (event.key === "p") {
-                toggleStream();
+                toggleRadio();
             }
             // t for toggle
             if (event.key === "t") {
-                console.log("toggle radio v stream");
-                setPlay((prev) => !prev);
-
-                toggleStream();
+                // setPlay((prev) => !prev);
+                toggleBetween();
             }
         },
-        [toggleStream]
+        [toggleRadio, toggleBetween]
     );
 
     useEffect(() => {
@@ -53,7 +64,7 @@ const StreamContainer: FC = () => {
         const subscribe = ports?.setPlayPauseStatusPort?.subscribe;
         if (subscribe) {
             subscribe((newStatus) => {
-                setIsPlaying(newStatus === "Play" ? true : false);
+                setIsRadioPlaying(newStatus === "Play" ? true : false);
             });
         }
     }, [ports]);
@@ -73,14 +84,14 @@ const StreamContainer: FC = () => {
                     console.log(ports, ports?.receivePlayPauseStatusPort);
                     if (ports?.receivePlayPauseStatusPort?.send) {
                         ports.receivePlayPauseStatusPort.send(
-                            isPlaying ? "Pause" : "Play"
+                            isRadioPlaying ? "Pause" : "Play"
                         );
                     }
                 }}
             >
-                External toggle: {isPlaying ? "playing" : "paused"}
-            </button>
-            <Jukebox play={play} /> */}
+                External toggle: {isRadioPlaying ? "playing" : "paused"}
+            </button> */}
+            <Jukebox setJukeboxElem={setJukeboxElem} />
         </>
     );
 };

@@ -2,23 +2,19 @@ import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { Grid, IconButton } from "@mui/material";
 import { FC } from "react";
 
-interface DockerListExpandBarProps {
+interface CardExpandBarProps {
     isOpen: boolean;
     setIsOpen: (_: boolean) => void;
-    nrOfHidden: number;
+    hint: string;
 }
 
-const DockerListExpandBar: FC<DockerListExpandBarProps> = ({
-    isOpen,
-    setIsOpen,
-    nrOfHidden,
-}) => {
+const CardExpandBar: FC<CardExpandBarProps> = ({ isOpen, setIsOpen, hint }) => {
     return (
         <Grid container justifyContent="flex-end">
             <Grid item>
                 {!isOpen ? (
                     <span>
-                        and {nrOfHidden} running{" "}
+                        {hint}
                         <IconButton
                             aria-label="up"
                             size="small"
@@ -41,4 +37,4 @@ const DockerListExpandBar: FC<DockerListExpandBarProps> = ({
     );
 };
 
-export default DockerListExpandBar;
+export default CardExpandBar;

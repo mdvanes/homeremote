@@ -3,6 +3,14 @@ export interface IPlaylist {
     name: string;
 }
 
+export interface ISong {
+    id: string;
+    artist: string;
+    title: string;
+    duration: number;
+    album?: string;
+}
+
 export type PlaylistsResponse =
     | {
           status: "received";
@@ -11,3 +19,14 @@ export type PlaylistsResponse =
     | {
           status: "error";
       };
+
+export type PlaylistResponse =
+    | {
+          status: "received";
+          songs: ISong[];
+      }
+    | {
+          status: "error";
+      };
+
+export type PlaylistArgs = { id: string };

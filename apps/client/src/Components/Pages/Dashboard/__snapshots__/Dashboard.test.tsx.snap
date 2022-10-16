@@ -31,6 +31,7 @@ exports[`Dashboard page contains all the control components 1`] = `
         <div
           class="MuiBox-root css-1yuhvjn"
         />
+        <mock-jukebox />
         <div
           class="MuiBox-root css-1yuhvjn"
         />

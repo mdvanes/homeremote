@@ -6,7 +6,7 @@ import {
     useGetDockerListQuery,
 } from "../../../Services/dockerListApi";
 import DockerInfo from "../DockerInfo/DockerInfo";
-import DockerListExpandBar from "../DockerListExpandBar/DockerListExpandBar";
+import CardExpandBar from "../CardExpandBar/CardExpandBar";
 
 const UPDATE_INTERVAL_MS = 30000;
 
@@ -48,10 +48,10 @@ const DockerList: FC = () => {
                     <Stack spacing={0.5}>{containers2.map(mapInfo)}</Stack>
                 </Grid>
             </Grid>
-            <DockerListExpandBar
+            <CardExpandBar
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
-                nrOfHidden={allContainers.length - containers.length}
+                hint={`and ${allContainers.length - containers.length} running`}
             />
         </>
     );
