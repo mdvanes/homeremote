@@ -14,6 +14,7 @@ interface IJukeboxSongListProps {
     currentPlaylistId: string | undefined;
     setCurrentPlaylistId: (x: string | undefined) => void;
     setCurrentSong: (x: ISong) => void;
+    setCurrentPlaylist: (x: ISong[]) => void;
     // songs: ISong[];
     audioElemRef: RefObject<HTMLAudioElement>;
 }
@@ -21,6 +22,7 @@ interface IJukeboxSongListProps {
 const JukeboxSongList: FC<IJukeboxSongListProps> = ({
     currentPlaylistId,
     setCurrentPlaylistId,
+    setCurrentPlaylist,
     setCurrentSong,
     // songs,
     audioElemRef,
@@ -39,6 +41,7 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
             <ListItemButton
                 onClick={() => {
                     setCurrentPlaylistId(undefined);
+                    setCurrentPlaylist(playlist.songs);
                 }}
             >
                 <ListItemIcon>
