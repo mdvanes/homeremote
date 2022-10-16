@@ -7,23 +7,39 @@ import {
     ListItemText,
     Typography,
 } from "@mui/material";
-import { FC, useRef, useState } from "react";
+import { FC, RefObject, useEffect, useRef, useState } from "react";
 import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import JukeboxPlayer from "./JukeboxPlayer";
-import JukeboxSongList from "./JukeboxSongList";
+import JukeboxSongList, { LAST_SONG } from "./JukeboxSongList";
 
 interface IJukeboxProps {
-    play: boolean;
+    // play: boolean;
+    setJukeboxElem: (elem: RefObject<HTMLAudioElement>) => void;
 }
 
-const Jukebox: FC<IJukeboxProps> = ({ play }) => {
+const Jukebox: FC<IJukeboxProps> = ({ setJukeboxElem }) => {
+    const audioElemRef = useRef<HTMLAudioElement>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
     const [currentSong, setCurrentSong] = useState<ISong>();
     const { data } = useGetPlaylistsQuery(undefined);
 
-    const audioElemRef = useRef<HTMLAudioElement>(null);
+    useEffect(() => {
+        setJukeboxElem(audioElemRef);
+    }, [audioElemRef, setJukeboxElem]);
+
+    useEffect(() => {
+        try {
+            const lastSongStr = localStorage.getItem(LAST_SONG);
+            if (lastSongStr) {
+                const lastSong: ISong = JSON.parse(lastSongStr);
+                setCurrentSong(lastSong);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, [setCurrentSong]);
 
     if (data?.status !== "received") {
         return null;
@@ -32,7 +48,7 @@ const Jukebox: FC<IJukeboxProps> = ({ play }) => {
     return (
         <Card>
             <CardContent>
-                {play ? "playing" : "stopped"}
+                {/* {play ? "playing" : "stopped"} */}
 
                 {currentSong ? (
                     <JukeboxPlayer

@@ -17,6 +17,8 @@ interface IJukeboxSongListProps {
     audioElemRef: RefObject<HTMLAudioElement>;
 }
 
+export const LAST_SONG = "LAST_SONG";
+
 const JukeboxSongList: FC<IJukeboxSongListProps> = ({
     currentPlaylistId,
     setCurrentPlaylistId,
@@ -49,6 +51,7 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
                     key={song.id}
                     onClick={() => {
                         setCurrentSong(song);
+                        localStorage.setItem(LAST_SONG, JSON.stringify(song));
                         // Wait for audio elem loading
                         setTimeout(() => {
                             if (audioElemRef.current) {
