@@ -64,7 +64,7 @@ describe("DownloadList", () => {
 
     it("renders download info", async () => {
         render(
-            <MockStoreProvider api={downloadListApi}>
+            <MockStoreProvider apis={[downloadListApi]}>
                 <DownloadList />
             </MockStoreProvider>
         );
@@ -95,7 +95,7 @@ describe("DownloadList", () => {
         });
 
         render(
-            <MockStoreProvider api={downloadListApi}>
+            <MockStoreProvider apis={[downloadListApi]}>
                 <DownloadList />
             </MockStoreProvider>
         );

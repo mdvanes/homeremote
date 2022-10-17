@@ -40,26 +40,45 @@ export const renderWithProviders: RenderWithProviders = (
 };
 
 // For RTK Query
-interface MockStoreProviderProps {
-    api: {
-        reducerPath: string;
-        reducer: Reducer;
-        middleware: Middleware;
-    };
+export interface MockStoreProviderApi {
+    reducerPath: string;
+    reducer: Reducer;
+    middleware?: Middleware;
 }
 
+interface MockStoreProviderApiWithMiddleware {
+    reducerPath: string;
+    reducer: Reducer;
+    middleware: Middleware;
+}
+
+interface MockStoreProviderProps {
+    apis: MockStoreProviderApi[];
+}
+
+const hasMiddleWare = (
+    api: MockStoreProviderApi | MockStoreProviderApiWithMiddleware
+): api is MockStoreProviderApiWithMiddleware => {
+    return typeof api.middleware !== "undefined";
+};
+
 export const MockStoreProvider: FC<MockStoreProviderProps> = ({
-    api,
+    apis,
     children,
 }) => {
+    const reducerEntries = Object.fromEntries(
+        apis.map((api) => [[api.reducerPath], api.reducer])
+    );
+    const middlewares = apis.filter(hasMiddleWare).map((api) => api.middleware);
+
     const rootReducer = combineReducers({
-        [api.reducerPath]: api.reducer,
+        ...reducerEntries,
     });
 
     const store = configureStore({
         reducer: rootReducer,
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(api.middleware),
+            getDefaultMiddleware().concat(...middlewares),
     });
 
     return <Provider store={store}>{children}</Provider>;

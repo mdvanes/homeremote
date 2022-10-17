@@ -65,7 +65,7 @@ describe("DataLora", () => {
 
     it("retrieves coords", async () => {
         render(
-            <MockStoreProvider api={dataloraApi}>
+            <MockStoreProvider apis={[dataloraApi]}>
                 <DataLora />
             </MockStoreProvider>
         );
@@ -84,7 +84,7 @@ describe("DataLora", () => {
 
     it("can toggle to show all coords", async () => {
         render(
-            <MockStoreProvider api={dataloraApi}>
+            <MockStoreProvider apis={[dataloraApi]}>
                 <DataLora />
             </MockStoreProvider>
         );
@@ -108,7 +108,7 @@ describe("DataLora", () => {
 
     it("updates manually", async () => {
         render(
-            <MockStoreProvider api={dataloraApi}>
+            <MockStoreProvider apis={[dataloraApi]}>
                 <DataLora />
             </MockStoreProvider>
         );

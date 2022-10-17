@@ -13,7 +13,7 @@ const Wrapper: FC = ({ children }) => {
     return (
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={createThemeWithMode("dark")}>
-                <MockStoreProvider api={serviceLinksApi}>
+                <MockStoreProvider apis={[serviceLinksApi]}>
                     {children}
                 </MockStoreProvider>
             </ThemeProvider>
