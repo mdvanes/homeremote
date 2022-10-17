@@ -5,11 +5,13 @@ import DownloadListItem from "./DownloadListItem";
 import { logError } from "../LogCard/logSlice";
 import { useGetDownloadListQuery } from "../../../Services/downloadListApi";
 import { Alert } from "@mui/lab";
+import CardExpandBar from "../CardExpandBar/CardExpandBar";
 
 const UPDATE_INTERVAL_MS = 30000;
 const SLOW_UDPATE_MS = 1000; // if the response takes longer than 1000ms, it is considered slow and the full progress bar is shown
 
 const DownloadList: FC = () => {
+    const [isOpen, setIsOpen] = useState(false);
     const dispatch = useAppDispatch();
 
     const { data, error, isLoading, isFetching } = useGetDownloadListQuery(
@@ -29,15 +31,18 @@ const DownloadList: FC = () => {
 
     useEffect(() => {
         if (data && data.status === "received" && data.downloads) {
+            const downloads = isOpen
+                ? data.downloads
+                : data.downloads.filter((d) => d.simpleState !== "paused");
             setListItems(
-                data.downloads.map<JSX.Element>((item) => (
+                downloads.map<JSX.Element>((item) => (
                     <DownloadListItem key={item.id} item={item} />
                 ))
             );
         } else if (data && data.status === "error") {
             dispatch(logError("GetDownloadList failed"));
         }
-    }, [dispatch, data]);
+    }, [dispatch, data, isOpen]);
 
     useEffect(() => {
         let timer: ReturnType<typeof setTimeout> | null = null;
@@ -73,6 +78,15 @@ const DownloadList: FC = () => {
                 </Alert>
             )}
             {listItems}
+            <CardExpandBar
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                hint={`and ${
+                    data && data.status === "received" && data.downloads
+                        ? data.downloads.length - listItems.length
+                        : 0
+                } paused`}
+            />
         </List>
     );
 };
