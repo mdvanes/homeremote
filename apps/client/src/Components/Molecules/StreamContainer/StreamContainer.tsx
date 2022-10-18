@@ -21,6 +21,16 @@ const StreamContainer: FC = () => {
         }
     }, [ports, isRadioPlaying]);
 
+    const toggleJukebox = useCallback(() => {
+        if (jukeboxElem?.current) {
+            if (jukeboxElem.current.paused) {
+                jukeboxElem.current.play();
+            } else {
+                jukeboxElem.current.pause();
+            }
+        }
+    }, [ports, isRadioPlaying]);
+
     const toggleBetween = useCallback(() => {
         if (ports?.receivePlayPauseStatusPort?.send) {
             ports.receivePlayPauseStatusPort.send(
@@ -43,13 +53,17 @@ const StreamContainer: FC = () => {
             if (event.key === "p") {
                 toggleRadio();
             }
+            // j for pause/play of jukebox
+            if (event.key === "j") {
+                toggleJukebox();
+            }
             // t for toggle
             if (event.key === "t") {
                 // setPlay((prev) => !prev);
                 toggleBetween();
             }
         },
-        [toggleRadio, toggleBetween]
+        [toggleRadio, toggleBetween, toggleJukebox]
     );
 
     useEffect(() => {
