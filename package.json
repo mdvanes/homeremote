@@ -1,6 +1,6 @@
 {
     "name": "homeremote",
-    "version": "3.3.5",
+    "version": "3.3.6",
     "license": "MIT",
     "scripts": {
         "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
@@ -91,7 +91,7 @@
         "@testing-library/jest-dom": "^5.11.4",
         "@testing-library/react": "^12.1.2",
         "@testing-library/react-hooks": "7.0.2",
-        "@testing-library/user-event": "^12.1.7",
+        "@testing-library/user-event": "^14.4.3",
         "@types/bcrypt": "^3.0.1",
         "@types/cookie-parser": "^1.4.2",
         "@types/css-mediaquery": "^0.1.0",

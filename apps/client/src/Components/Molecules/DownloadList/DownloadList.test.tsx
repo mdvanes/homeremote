@@ -1,11 +1,16 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import {
+    render,
+    screen,
+    waitForElementToBeRemoved,
+} from "@testing-library/react";
 import { DownloadItem } from "@homeremote/types";
 import DownloadList from "./DownloadList";
 import { downloadListApi } from "../../../Services/downloadListApi";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
-import { MockStoreProvider } from "../../../testHelpers";
+import { createGetCalledUrl, MockStoreProvider } from "../../../testHelpers";
+import userEvent from "@testing-library/user-event";
 
-// const fetchSpy = jest.spyOn(window, "fetch");
+const getCalledUrl = (callNr: number) => createGetCalledUrl(fetchMock)(callNr);
 
 const mockDownload: DownloadItem = {
     id: 14,
@@ -102,29 +107,23 @@ describe("DownloadList", () => {
 
         expect(await screen.findByText("SomeName")).toBeVisible();
         expect(screen.queryByText("SomePausedState")).not.toBeInTheDocument();
-        const toggleButton = screen.getByRole("button");
+        const toggleButton = screen.getAllByRole("button")[0];
 
-        // const mockResponse = createMockResponse({
-        //     ...mockDownload,
-        //     state: "SomePausedState",
-        //     simpleState: "paused",
-        // });
-
-        // fetchSpy.mockReset();
         fetchMock.mockReset();
         fetchMock.mockResponse(mockToggleResponse);
-        // Fetch for pauseDownload and getDownloadList (on interval)
-        // fetchSpy.mockResolvedValue(mockResponse as Response);
-        // expect(fetchSpy).not.toBeCalled();
-        fireEvent.click(toggleButton);
+
+        userEvent.click(toggleButton);
+        await waitForElementToBeRemoved(() => screen.queryByText("SomeName"));
         expect(screen.queryByText("SomeState")).not.toBeInTheDocument();
-        expect(await screen.findByText("SomePausedState")).toBeVisible();
+
+        const expandButtonElem = screen.getAllByRole("button")[0];
+        userEvent.click(expandButtonElem);
+
+        const someElem = await screen.findByText("SomePausedState");
+        expect(someElem).toBeVisible();
         expect(fetchMock).toBeCalledTimes(2);
-        expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
+        expect(getCalledUrl(0)).toBe(
             "http://localhost/api/downloadlist/pauseDownload/14"
         );
-        // expect(fetchMock).toBeCalledWith(
-        //     // "/api/downloadlist/pauseDownload/14",
-        // );
     });
 });
