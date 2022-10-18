@@ -9,6 +9,7 @@ import {
     Store,
 } from "@reduxjs/toolkit";
 import { RootState } from "./Reducers";
+import { FetchMock } from "jest-fetch-mock";
 
 interface RenderWithProvidersOptions extends RenderOptions {
     initialState: Partial<RootState>;
@@ -38,6 +39,18 @@ export const renderWithProviders: RenderWithProviders = (
     };
     return render(ui, { wrapper: Wrapper, ...renderOptions });
 };
+
+// For jest-fetch-mock
+export const createGetCalledUrl = (fetchMock: FetchMock) => (callNr: number) =>
+    (fetchMock.mock.calls[callNr][0] as Request).url;
+export const createGetCalledMethod =
+    (fetchMock: FetchMock) => (callNr: number) =>
+        (fetchMock.mock.calls[callNr][0] as Request).method;
+export const createGetCalledBody =
+    (fetchMock: FetchMock) => (callNr: number) => {
+        const request = fetchMock.mock.calls[callNr][0] as Request;
+        return request.json();
+    };
 
 // For RTK Query
 export interface MockStoreProviderApi {
