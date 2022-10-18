@@ -9,6 +9,7 @@ import {
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { FC, RefObject } from "react";
 import { useGetPlaylistQuery } from "../../../Services/jukeboxApi";
+import { LAST_SONG } from "./JukeboxPlayer";
 
 interface IJukeboxSongListProps {
     currentPlaylistId: string | undefined;
@@ -16,8 +17,6 @@ interface IJukeboxSongListProps {
     setCurrentSong: (song: ISong) => void;
     audioElemRef: RefObject<HTMLAudioElement>;
 }
-
-export const LAST_SONG = "LAST_SONG";
 
 const JukeboxSongList: FC<IJukeboxSongListProps> = ({
     currentPlaylistId,
@@ -28,9 +27,17 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
     const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
         ? { id: currentPlaylistId }
         : skipToken;
-    const { data: playlist } = useGetPlaylistQuery(playlistArgs);
+    const {
+        data: playlist,
+        isLoading,
+        isFetching,
+    } = useGetPlaylistQuery(playlistArgs);
 
     if (playlist?.status !== "received" || !currentPlaylistId) {
+        return null;
+    }
+
+    if (isLoading && isFetching) {
         return null;
     }
 

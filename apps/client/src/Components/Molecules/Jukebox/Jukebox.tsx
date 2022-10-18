@@ -10,8 +10,8 @@ import {
 import { FC, RefObject, useEffect, useRef, useState } from "react";
 import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import JukeboxPlayer from "./JukeboxPlayer";
-import JukeboxSongList, { LAST_SONG } from "./JukeboxSongList";
+import JukeboxPlayer, { LAST_PLAYLIST_ID, LAST_SONG } from "./JukeboxPlayer";
+import JukeboxSongList from "./JukeboxSongList";
 
 interface IJukeboxProps {
     // play: boolean;
@@ -23,12 +23,13 @@ const Jukebox: FC<IJukeboxProps> = ({ setJukeboxElem }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
     const [currentSong, setCurrentSong] = useState<ISong>();
-    const { data } = useGetPlaylistsQuery(undefined);
+    const { data, isLoading, isFetching } = useGetPlaylistsQuery(undefined);
 
     useEffect(() => {
         setJukeboxElem(audioElemRef);
     }, [audioElemRef, setJukeboxElem]);
 
+    // TODO Move both getItems to hook
     useEffect(() => {
         try {
             const lastSongStr = localStorage.getItem(LAST_SONG);
@@ -41,20 +42,34 @@ const Jukebox: FC<IJukeboxProps> = ({ setJukeboxElem }) => {
         }
     }, [setCurrentSong]);
 
+    useEffect(() => {
+        try {
+            const lastPlaylistId = localStorage.getItem(LAST_PLAYLIST_ID);
+            if (lastPlaylistId) {
+                setCurrentPlaylistId(lastPlaylistId);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }, [setCurrentPlaylistId]);
+
     if (data?.status !== "received") {
+        return null;
+    }
+
+    if (isLoading && isFetching) {
         return null;
     }
 
     return (
         <Card>
             <CardContent>
-                {/* {play ? "playing" : "stopped"} */}
-
                 {currentSong ? (
                     <JukeboxPlayer
                         audioElemRef={audioElemRef}
-                        song={currentSong}
                         playlistId={currentPlaylistId}
+                        song={currentSong}
+                        setCurrentSong={setCurrentSong}
                     />
                 ) : (
                     <Typography>Select a song</Typography>
@@ -69,6 +84,10 @@ const Jukebox: FC<IJukeboxProps> = ({ setJukeboxElem }) => {
                                         key={id}
                                         onClick={() => {
                                             setCurrentPlaylistId(id);
+                                            localStorage.setItem(
+                                                LAST_PLAYLIST_ID,
+                                                id
+                                            );
                                         }}
                                     >
                                         <ListItemText>{name}</ListItemText>
