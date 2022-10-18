@@ -10,11 +10,11 @@ import {
 import { FC, RefObject, useEffect, useRef, useState } from "react";
 import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import JukeboxPlayer, { LAST_PLAYLIST_ID, LAST_SONG } from "./JukeboxPlayer";
+import JukeboxPlayer, { LAST_PLAYLIST_ID } from "./JukeboxPlayer";
 import JukeboxSongList from "./JukeboxSongList";
+import { useLocalStorage } from "./useLocalStorage";
 
 interface IJukeboxProps {
-    // play: boolean;
     setJukeboxElem: (elem: RefObject<HTMLAudioElement>) => void;
 }
 
@@ -24,34 +24,11 @@ const Jukebox: FC<IJukeboxProps> = ({ setJukeboxElem }) => {
     const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
     const [currentSong, setCurrentSong] = useState<ISong>();
     const { data, isLoading, isFetching } = useGetPlaylistsQuery(undefined);
+    useLocalStorage({ setCurrentPlaylistId, setCurrentSong });
 
     useEffect(() => {
         setJukeboxElem(audioElemRef);
     }, [audioElemRef, setJukeboxElem]);
-
-    // TODO Move both getItems to hook
-    useEffect(() => {
-        try {
-            const lastSongStr = localStorage.getItem(LAST_SONG);
-            if (lastSongStr) {
-                const lastSong: ISong = JSON.parse(lastSongStr);
-                setCurrentSong(lastSong);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }, [setCurrentSong]);
-
-    useEffect(() => {
-        try {
-            const lastPlaylistId = localStorage.getItem(LAST_PLAYLIST_ID);
-            if (lastPlaylistId) {
-                setCurrentPlaylistId(lastPlaylistId);
-            }
-        } catch (err) {
-            console.error(err);
-        }
-    }, [setCurrentPlaylistId]);
 
     if (data?.status !== "received") {
         return null;

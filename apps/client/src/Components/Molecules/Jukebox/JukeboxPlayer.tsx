@@ -1,4 +1,4 @@
-import { ISong, PlaylistArgs, PlaylistResponse } from "@homeremote/types";
+import { ISong, PlaylistArgs } from "@homeremote/types";
 import { PlayArrow as PlayArrowIcon } from "@mui/icons-material";
 import { IconButton, Typography } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
@@ -7,6 +7,7 @@ import {
     useGetPlaylistsQuery,
 } from "../../../Services/jukeboxApi";
 import { FC, RefObject } from "react";
+import { getNextSong } from "./getNextSong";
 
 interface IJukeboxPlayerProps {
     audioElemRef: RefObject<HTMLAudioElement>;
@@ -17,30 +18,6 @@ interface IJukeboxPlayerProps {
 
 export const LAST_PLAYLIST_ID = "LAST_PLAYLIST_ID";
 export const LAST_SONG = "LAST_SONG";
-
-const getNextSong = (
-    response: PlaylistResponse | undefined,
-    currentSongId: string
-): ISong | null => {
-    if (!response || response.status !== "received") {
-        console.log("no playlist");
-        return null;
-    }
-    // if (response && response.status === "received") {
-    const index = response.songs.findIndex((s) => s.id === currentSongId);
-
-    const isLast = index >= response.songs.length - 1;
-    const newPlaylist = isLast
-        ? response.songs
-        : response.songs.slice(index + 1);
-    const nextSong = newPlaylist[0];
-    console.log("next:", nextSong.artist, nextSong.title);
-    // console.log(pl.map((p) => p.artist).join(", "));
-    return nextSong;
-    // } else {
-
-    // }
-};
 
 const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
     audioElemRef,
@@ -53,28 +30,12 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
         ? { id: playlistId }
         : skipToken;
     const { data: playlist } = useGetPlaylistQuery(playlistArgs);
-    // console.log("JukeboxPlayer: playlist=", playlist);
     const hash = song ? btoa(`${song.artist} - ${song.title}`) : "";
 
     const playlistName =
         playlists?.status === "received"
             ? playlists.playlists.find((p) => p.id === playlistId)?.name
             : "";
-
-    // TODO on finished, play next in playlist on loop_
-    // if (playlist && playlist.status === "received") {
-    //     const index = playlist.songs.findIndex((s) => s.id === song.id);
-
-    //     const isLast = index >= playlist.songs.length - 1;
-    //     const newPlaylist = isLast
-    //         ? playlist.songs
-    //         : playlist.songs.slice(index + 1);
-    //     const nextSong = newPlaylist[0];
-    //     console.log("next:", nextSong.artist, nextSong.title);
-    //     // console.log(pl.map((p) => p.artist).join(", "));
-    // } else {
-    //     console.log("no playlist");
-    // }
 
     return (
         <div>
@@ -103,7 +64,6 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                     controls
                     src={`${process.env.NX_BASE_URL}/api/jukebox/song/${song.id}?hash=${hash}`}
                     onEnded={() => {
-                        // console.log("song ended");
                         const nextSong = getNextSong(playlist, song.id);
                         if (!nextSong) {
                             return;
@@ -114,12 +74,6 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                         // Wait for audio elem loading
                         setTimeout(() => {
                             if (elem) {
-                                // const index = playlist.findIndex(
-                                //     (s) => s.id === song.id
-                                // );
-                                // const pl = playlist.slice(index);
-                                // console.log(pl);
-
                                 elem.play();
                             }
                         }, 100);
