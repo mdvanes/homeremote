@@ -69,7 +69,7 @@ FROM node:16-alpine
 WORKDIR /app
 
 # Install runtime dependencies
-RUN apk add --no-cache curl python3 ffmpeg py3-eyed3
+RUN apk add --no-cache curl python3 ffmpeg
 
 # Set a symlink because some deps need `python`
 RUN ln -s /usr/bin/python3 /usr/bin/python

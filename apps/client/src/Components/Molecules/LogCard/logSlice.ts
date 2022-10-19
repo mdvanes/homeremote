@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { urlToMusicApi } from "../../../Services/urlToMusicApi";
 
 export enum Severity {
     INFO,
@@ -55,6 +56,30 @@ const logSlice = createSlice({
         clearLog: (): LogState => {
             return initialState;
         },
+    },
+    extraReducers: (builder) => {
+        builder.addMatcher(
+            urlToMusicApi.endpoints.getInfo.matchFulfilled,
+            (draft, { payload }): void => {
+                draft.lines.push({
+                    message: writeLog(
+                        `INFO: music bin v${payload.versionInfo}`
+                    ),
+                    severity: Severity.INFO,
+                });
+            }
+        );
+        builder.addMatcher(
+            urlToMusicApi.endpoints.getMusicProgress.matchFulfilled,
+            (draft, { payload }): void => {
+                if (payload.state === "finished") {
+                    draft.lines.push({
+                        message: writeLog(`INFO: Music in v${payload.path}`),
+                        severity: Severity.INFO,
+                    });
+                }
+            }
+        );
     },
 });
 
