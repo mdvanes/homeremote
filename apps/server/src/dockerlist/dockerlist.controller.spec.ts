@@ -42,7 +42,10 @@ describe("DockerList Controller", () => {
             mockGot.mockReturnValue({
                 json: () => Promise.reject("some error"),
             } as CancelableRequest<Response>);
-            const result = await controller.getDockerList();
+
+            await expect(controller.getDockerList()).rejects.toThrow(
+                "failed to receive downstream data"
+            );
             expect(mockGot).toBeCalledWith(
                 "http://docker/v1.41/containers/json?all=true",
                 {
@@ -50,9 +53,6 @@ describe("DockerList Controller", () => {
                 }
             );
             expect(mockGot).toBeCalledTimes(1);
-            expect(result).toEqual({
-                status: "error",
-            });
         });
     });
 

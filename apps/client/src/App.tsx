@@ -3,7 +3,6 @@ import {
     Drawer,
     ThemeProvider,
     StyledEngineProvider,
-    Container,
     CssBaseline,
     Box,
     useMediaQuery,

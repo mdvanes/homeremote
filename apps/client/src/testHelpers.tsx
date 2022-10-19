@@ -9,6 +9,7 @@ import {
     Store,
 } from "@reduxjs/toolkit";
 import { RootState } from "./Reducers";
+import { FetchMock } from "jest-fetch-mock";
 
 interface RenderWithProvidersOptions extends RenderOptions {
     initialState: Partial<RootState>;
@@ -39,27 +40,58 @@ export const renderWithProviders: RenderWithProviders = (
     return render(ui, { wrapper: Wrapper, ...renderOptions });
 };
 
-// For RTK Query
-interface MockStoreProviderProps {
-    api: {
-        reducerPath: string;
-        reducer: Reducer;
-        middleware: Middleware;
+// For jest-fetch-mock
+export const createGetCalledUrl = (fetchMock: FetchMock) => (callNr: number) =>
+    (fetchMock.mock.calls[callNr][0] as Request).url;
+export const createGetCalledMethod =
+    (fetchMock: FetchMock) => (callNr: number) =>
+        (fetchMock.mock.calls[callNr][0] as Request).method;
+export const createGetCalledBody =
+    (fetchMock: FetchMock) => (callNr: number) => {
+        const request = fetchMock.mock.calls[callNr][0] as Request;
+        return request.json();
     };
+
+// For RTK Query
+export interface MockStoreProviderApi {
+    reducerPath: string;
+    reducer: Reducer;
+    middleware?: Middleware;
 }
 
+interface MockStoreProviderApiWithMiddleware {
+    reducerPath: string;
+    reducer: Reducer;
+    middleware: Middleware;
+}
+
+interface MockStoreProviderProps {
+    apis: MockStoreProviderApi[];
+}
+
+const hasMiddleWare = (
+    api: MockStoreProviderApi | MockStoreProviderApiWithMiddleware
+): api is MockStoreProviderApiWithMiddleware => {
+    return typeof api.middleware !== "undefined";
+};
+
 export const MockStoreProvider: FC<MockStoreProviderProps> = ({
-    api,
+    apis,
     children,
 }) => {
+    const reducerEntries = Object.fromEntries(
+        apis.map((api) => [[api.reducerPath], api.reducer])
+    );
+    const middlewares = apis.filter(hasMiddleWare).map((api) => api.middleware);
+
     const rootReducer = combineReducers({
-        [api.reducerPath]: api.reducer,
+        ...reducerEntries,
     });
 
     const store = configureStore({
         reducer: rootReducer,
         middleware: (getDefaultMiddleware) =>
-            getDefaultMiddleware().concat(api.middleware),
+            getDefaultMiddleware().concat(...middlewares),
     });
 
     return <Provider store={store}>{children}</Provider>;

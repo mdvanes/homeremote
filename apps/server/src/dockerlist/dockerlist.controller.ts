@@ -1,4 +1,12 @@
-import { Controller, Logger, UseGuards, Get, Param } from "@nestjs/common";
+import {
+    Controller,
+    Logger,
+    UseGuards,
+    Get,
+    Param,
+    HttpException,
+    HttpStatus,
+} from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import got from "got";
 import {
@@ -42,7 +50,10 @@ export class DockerlistController {
             };
         } catch (err) {
             this.logger.error(err);
-            return { status: "error" };
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -61,7 +72,10 @@ export class DockerlistController {
             };
         } catch (err) {
             this.logger.error(err);
-            return { status: "error" };
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -80,7 +94,10 @@ export class DockerlistController {
             };
         } catch (err) {
             this.logger.error(err);
-            return { status: "error" };
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 }

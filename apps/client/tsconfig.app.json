@@ -10,6 +10,7 @@
   ],
   "exclude": [
     "**/setupTests.ts",
+    "**/testHelpers.tsx",
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/*.spec.tsx",
