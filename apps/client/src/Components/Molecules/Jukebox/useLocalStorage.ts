@@ -29,7 +29,7 @@ export const useLocalStorage = ({
                 )
             );
         }
-    }, [setCurrentSong]);
+    }, [setCurrentSong, dispatch]);
 
     useEffect(() => {
         try {
@@ -46,5 +46,5 @@ export const useLocalStorage = ({
                 )
             );
         }
-    }, [setCurrentPlaylistId]);
+    }, [setCurrentPlaylistId, dispatch]);
 };

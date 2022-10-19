@@ -43,7 +43,7 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
         if (error) {
             onError(getErrorMessage(error));
         }
-    }, [error]);
+    }, [error, onError]);
 
     if (error) {
         return <Alert severity="error">{getErrorMessage(error)}</Alert>;

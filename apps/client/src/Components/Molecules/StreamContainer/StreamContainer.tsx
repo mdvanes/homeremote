@@ -29,7 +29,7 @@ const StreamContainer: FC = () => {
                 jukeboxElem.current.pause();
             }
         }
-    }, [ports, isRadioPlaying]);
+    }, [jukeboxElem]);
 
     const toggleBetween = useCallback(() => {
         if (ports?.receivePlayPauseStatusPort?.send) {
