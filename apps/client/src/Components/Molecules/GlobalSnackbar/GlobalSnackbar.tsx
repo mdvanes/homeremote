@@ -19,7 +19,7 @@ const useStyles = makeStyles()((theme) => ({
 }));
 
 /** Show a Snackbar for new error messages */
-const GlobalSnackbar: FC = ({ children }) => {
+const GlobalSnackbar: FC = () => {
     const { classes } = useStyles();
     const [isOpen, setIsOpen] = useState(false);
     const [line, setLine] = useState<LogState["urgentMessage"]>(false);

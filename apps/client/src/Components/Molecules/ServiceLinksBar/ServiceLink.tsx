@@ -33,6 +33,7 @@ interface Props {
     label: string;
     iconName: string;
     url: string;
+    children?: ReactNode;
 }
 
 export const ServiceLink: FC<Props> = ({ label, iconName, url, children }) => {
