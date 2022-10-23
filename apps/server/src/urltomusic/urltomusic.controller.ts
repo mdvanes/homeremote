@@ -99,13 +99,13 @@ const ydlExec = async ({
     return { path: targetPath, fileName };
 };
 
-const setMetadata = async ({
+const setMetadata = ({
     path,
     fileName,
     artist,
     title,
     album,
-}: UrlToMusicSetMetadataArgs): Promise<UrlToMusicSetMetadataResponse> => {
+}: UrlToMusicSetMetadataArgs): UrlToMusicSetMetadataResponse => {
     const hasValidArgs =
         artist && artist.length > 0 && title && title.length > 0;
     if (!hasValidArgs) {
@@ -182,7 +182,8 @@ export class UrltomusicController {
             title,
         });
         this.logger.verbose(`Got music for ${url} to ${fileName}`);
-        const result = await setMetadata({
+
+        const result = setMetadata({
             path,
             fileName,
             artist,
