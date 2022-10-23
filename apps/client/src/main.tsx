@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import App, { AppProps } from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
@@ -12,13 +12,26 @@ const swCallbacks: AppProps["swCallbacks"] = {
 };
 
 const root = ReactDOM.createRoot(
-document.getElementById("root") as HTMLElement
+    document.getElementById("root") as HTMLElement
 );
+
 root.render(
-<Provider store={store}>
-<App swCallbacks={swCallbacks} />
-</Provider>
-);   onUpdate: (message) => {
+    <Provider store={store}>
+        <App swCallbacks={swCallbacks} />
+    </Provider>
+);
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://cra.link/PWA
+serviceWorkerRegistration.register({
+    onSuccess: (message) => {
+        const { logSuccess } = swCallbacks;
+        if (logSuccess) {
+            logSuccess(message);
+        }
+    },
+    onUpdate: (message) => {
         const { logUpdate } = swCallbacks;
         if (logUpdate) {
             logUpdate(message);
