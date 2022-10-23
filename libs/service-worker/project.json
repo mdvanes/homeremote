@@ -1,10 +1,10 @@
 {
-    "root": "libs/service-worker",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "libs/service-worker/src",
     "projectType": "library",
     "targets": {
         "build": {
-            "executor": "@nrwl/web:webpack",
+            "executor": "@nrwl/webpack:webpack",
             "outputs": ["{options.outputPath}"],
             "options": {
                 "compiler": "babel",
@@ -23,8 +23,15 @@
                     "namedChunks": false,
                     "extractLicenses": false,
                     "vendorChunk": false
+                },
+                "development": {
+                    "extractLicenses": false,
+                    "optimization": false,
+                    "sourceMap": true,
+                    "vendorChunk": true
                 }
-            }
+            },
+            "defaultConfiguration": "production"
         },
         "lint": {
             "executor": "@nrwl/linter:eslint",
@@ -35,9 +42,9 @@
         },
         "test": {
             "executor": "@nrwl/jest:jest",
-            "outputs": ["coverage/libs/service-worker"],
+            "outputs": ["{workspaceRoot}/coverage/libs/service-worker"],
             "options": {
-                "jestConfig": "libs/service-worker/jest.config.js",
+                "jestConfig": "libs/service-worker/jest.config.ts",
                 "passWithNoTests": true
             }
         }

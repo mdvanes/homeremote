@@ -11,24 +11,14 @@ const swCallbacks: AppProps["swCallbacks"] = {
     logUpdate: null,
 };
 
-ReactDOM.render(
-    <Provider store={store}>
-        <App swCallbacks={swCallbacks} />
-    </Provider>,
-    document.getElementById("root")
+const root = ReactDOM.createRoot(
+document.getElementById("root") as HTMLElement
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://cra.link/PWA
-serviceWorkerRegistration.register({
-    onSuccess: (message) => {
-        const { logSuccess } = swCallbacks;
-        if (logSuccess) {
-            logSuccess(message);
-        }
-    },
-    onUpdate: (message) => {
+root.render(
+<Provider store={store}>
+<App swCallbacks={swCallbacks} />
+</Provider>
+);   onUpdate: (message) => {
         const { logUpdate } = swCallbacks;
         if (logUpdate) {
             logUpdate(message);
