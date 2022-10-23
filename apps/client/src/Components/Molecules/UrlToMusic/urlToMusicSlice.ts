@@ -59,6 +59,9 @@ const urlToMusicSlice = createSlice({
                 },
             };
         },
+        resetProgressLoading: (draft) => {
+            draft.isLoading = false;
+        },
         setFormField: (
             draft,
             { payload }: PayloadAction<NameAndValue>
@@ -105,7 +108,7 @@ const urlToMusicSlice = createSlice({
     },
 });
 
-export const { setFormField, setFormFieldError, reset } =
+export const { setFormField, setFormFieldError, reset, resetProgressLoading } =
     urlToMusicSlice.actions;
 
 export default urlToMusicSlice.reducer;

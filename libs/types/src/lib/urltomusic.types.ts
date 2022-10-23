@@ -40,7 +40,7 @@ export interface UrlToMusicSetMetadataArgs {
     album: string;
 }
 
-export type UrlToMusicState = "idle" | "downloading" | "finished";
+export type UrlToMusicState = "idle" | "downloading" | "finished" | "error";
 
 export type UrlToMusicGetMusicProgressResponse =
     | {

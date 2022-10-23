@@ -15,6 +15,7 @@ import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
 import { FILL_IN_THIS_FIELD } from "./constants";
 import {
+    resetProgressLoading,
     setFormField,
     setFormFieldError,
     UrlToMusicState,
@@ -43,7 +44,7 @@ const GetMusicForm: FC = () => {
         isProgressLoading && form.url.value
             ? { url: encodeURIComponent(form.url.value) }
             : skipToken;
-    useGetMusicProgressQuery(progressArgs, {
+    const { error: progressError } = useGetMusicProgressQuery(progressArgs, {
         pollingInterval: UPDATE_INTERVAL_MS,
     });
 
@@ -64,12 +65,13 @@ const GetMusicForm: FC = () => {
     };
 
     useEffect(() => {
-        if (error) {
-            dispatch(
-                logError(`GetMusicForm failure: ${getErrorMessage(error)}`)
-            );
+        if (error || progressError) {
+            const msg1 = error ? getErrorMessage(error) : "";
+            const msg2 = progressError ? getErrorMessage(progressError) : "";
+            dispatch(logError(`GetMusicForm failure: ${msg1}${msg2}`));
+            dispatch(resetProgressLoading());
         }
-    }, [error, dispatch]);
+    }, [error, progressError, dispatch]);
 
     return (
         <form>
@@ -130,6 +132,9 @@ const GetMusicForm: FC = () => {
                         <Alert severity="error">{getErrorMessage(error)}</Alert>
                     )}
                 </>
+            )}
+            {progressError && (
+                <Alert severity="error">{getErrorMessage(progressError)}</Alert>
             )}
             {(isLoading || isFetching || isProgressLoading) && (
                 <LinearProgress />

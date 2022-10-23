@@ -123,6 +123,7 @@ const setMetadata = ({
 export class UrltomusicController {
     private readonly logger: Logger;
     private state: UrlToMusicState;
+    private asyncException: HttpException;
     private result: UrlToMusicSetMetadataResponse | null;
 
     constructor(private configService: ConfigService) {
@@ -156,46 +157,62 @@ export class UrltomusicController {
         );
         const uid = this.configService.get<string>("OWNERINFO_UID");
         const gid = this.configService.get<string>("OWNERINFO_GID");
-        if (!rootPath) {
-            throw new HttpException(
-                "rootPath not configured",
-                HttpStatus.NOT_ACCEPTABLE
-            );
-        }
-        if (!uid) {
-            throw new HttpException(
-                "OWNERINFO_UID not configured",
-                HttpStatus.NOT_ACCEPTABLE
-            );
-        }
-        if (!gid) {
-            throw new HttpException(
-                "OWNERINFO_GID not configured",
-                HttpStatus.NOT_ACCEPTABLE
-            );
+        try {
+            if (!rootPath) {
+                throw new HttpException(
+                    "rootPath not configured",
+                    HttpStatus.NOT_ACCEPTABLE
+                );
+            }
+            if (!uid) {
+                throw new HttpException(
+                    "OWNERINFO_UID not configured",
+                    HttpStatus.NOT_ACCEPTABLE
+                );
+            }
+            if (!gid) {
+                throw new HttpException(
+                    "OWNERINFO_GID not configured",
+                    HttpStatus.NOT_ACCEPTABLE
+                );
+            }
+        } catch (ex) {
+            this.state = "error";
+            this.asyncException = ex;
+            return;
         }
 
-        const { path, fileName } = await ydlExec({
-            rootPath,
-            url,
-            artist,
-            title,
-        });
-        this.logger.verbose(`Got music for ${url} to ${fileName}`);
+        try {
+            const { path, fileName } = await ydlExec({
+                rootPath,
+                url,
+                artist,
+                title,
+            });
+            this.logger.verbose(`Got music for ${url} to ${fileName}`);
 
-        const result = setMetadata({
-            path,
-            fileName,
-            artist,
-            title,
-            album,
-        });
-        this.logger.verbose(`Set metadata for ${fileName}`);
-        chmodSync(result.path, "664");
-        chownSync(result.path, parseInt(uid, 10), parseInt(gid, 10));
-        this.logger.verbose(`Set owner permissions for ${result.path}`);
-        this.state = "finished";
-        this.result = result;
+            const result = setMetadata({
+                path,
+                fileName,
+                artist,
+                title,
+                album,
+            });
+            this.logger.verbose(`Set metadata for ${fileName}`);
+            chmodSync(result.path, "664");
+            chownSync(result.path, parseInt(uid, 10), parseInt(gid, 10));
+            this.logger.verbose(`Set owner permissions for ${result.path}`);
+            this.state = "finished";
+            this.result = result;
+        } catch (err) {
+            const message =
+                err instanceof Error ? `${err.name} ${err.message}` : "";
+            this.asyncException = new HttpException(
+                message,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+            this.state = "error";
+        }
     };
 
     @UseGuards(JwtAuthGuard)
@@ -269,11 +286,18 @@ export class UrltomusicController {
     ): Promise<UrlToMusicGetMusicProgressResponse> {
         this.logger.verbose(`GET to /api/getmusic/${url}/progress`);
 
-        if (this.state !== "finished") {
+        if (this.state === "idle" || this.state === "downloading") {
             return {
                 url,
                 state: this.state,
             };
+        }
+
+        if (this.state === "error") {
+            const message = this.asyncException;
+            this.state = "idle";
+            this.asyncException = null;
+            throw new HttpException(message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         const path = this.result.path;

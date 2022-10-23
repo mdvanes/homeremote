@@ -3,10 +3,8 @@ import { ConfigService } from "@nestjs/config";
 import * as youtubedl from "youtube-dl-exec";
 import nodeID3 from "node-id3";
 import { UrltomusicController } from "./urltomusic.controller";
-// import got, { Response, CancelableRequest } from "got";
 import * as got from "got";
 import { CancelableRequest } from "got";
-// import { mocked } from "ts-jest/utils";
 import fs from "fs";
 
 jest.mock("got", () => {
@@ -23,21 +21,6 @@ jest.mock("youtube-dl-exec", () => {
     };
 });
 
-// const mockFoo = jest.fn();
-
-// jest.mock("node-id3", () => {
-//     // const x = jest.requireActual("node-id3");
-//     // nodeID3.Promise.write()
-//     return {
-//         // ...x,
-//         // __esModule: true,
-//         write: jest.fn().mockImplementation((x, y) => {
-//             mockFoo(x, y);
-//         }),
-//         // write: jest.fn(), // .mockReturnValue(true),
-//     };
-// });
-
 jest.mock("fs", () => {
     return {
         chmodSync: jest.fn(),
@@ -45,43 +28,11 @@ jest.mock("fs", () => {
     };
 });
 
-// const mockGot =
-// mocked(got);
-
 const youtubeDlExecSpy = jest.spyOn(youtubedl, "default");
-
-// const id3WriteSpy = jest.fn();
-
-// .mockImplementation((url: string): Promise<youtubedl.YtResponse> => {
-//     // callback(undefined, { title: "foo - bar" } as any);
-//     return Promise.resolve({
-//         title: "foo - bar",
-//         formats: [],
-//         _version: { version: "123" },
-//     } as any);
-// });
-
-// const execSpy = jest
-//     .spyOn(youtubedl, "exec")
-//     .mockImplementation((url, args, options, callback) =>
-//         callback(undefined, {} as any)
-//     );
 
 const id3WriteSpy = jest
     .spyOn(nodeID3, "write")
     .mockImplementation((path) => `mock file ${path}`);
-
-// const writeSpy = jest.fn().mockImplementation((meta, callback) => {
-//     return callback(undefined);
-// });
-
-// const writerSpy = jest.spyOn(nodeID3, "write").mockImplementation(() => ({
-//     setFile: (/* file */) => {
-//         return {
-//             write: writeSpy,
-//         };
-//     },
-// }));
 
 describe("Urltomusic Controller", () => {
     let controller: UrltomusicController;
@@ -117,14 +68,6 @@ describe("Urltomusic Controller", () => {
         } as CancelableRequest<Response>);
 
         youtubeDlExecSpy.mockReset();
-    });
-
-    afterEach(() => {
-        // mockGot.mockReset();
-        // getInfoSpy.mockClear();
-        // execSpy.mockClear();
-        // writerSpy.mockClear();
-        // writeSpy.mockClear();
     });
 
     describe("getInfo POST", () => {
@@ -252,44 +195,92 @@ describe("Urltomusic Controller", () => {
                 state: "finished",
                 url: "some_url",
             });
+
+            const progressIdle = await controller.getMusicProgress("some_url");
+            expect(progressIdle).toEqual({
+                state: "idle",
+                url: "some_url",
+            });
         });
 
-        // it("throws error on missing property", async () => {
-        //     await expect(
-        //         controller.getMusic({
-        //             url: "",
-        //             artist: "some_artist",
-        //             title: "some_title",
-        //             album: "some_album",
-        //         })
-        //     ).rejects.toThrow("url, artist, title, and album are required");
-        // });
+        it("throws error on missing property", async () => {
+            await expect(
+                controller.getMusic(
+                    "",
+                    "some_artist",
+                    "some_title",
+                    "some_album"
+                )
+            ).rejects.toThrow("url, artist, title, and album are required");
+        });
 
-        // it("throws error when rootPath not configured", async () => {
-        //     jest.spyOn(configService, "get").mockReturnValue(undefined);
-        //     await expect(
-        //         controller.getMusic({
-        //             url: "some_url",
-        //             artist: "some_artist",
-        //             title: "some_title",
-        //             album: "some_album",
-        //         })
-        //     ).rejects.toThrow("rootPath not configured");
-        // });
+        it("throws error when rootPath not configured", async () => {
+            const progressBefore = await controller.getMusicProgress(
+                "some_url"
+            );
+            expect(progressBefore).toEqual({
+                state: "idle",
+                url: "some_url",
+            });
 
-        // it("throws error on remote error", async () => {
-        //     execSpy.mockImplementation((url, args, options, callback) =>
-        //         callback("URL DOES NOT EXIST", {} as any)
-        //     );
+            jest.spyOn(configService, "get").mockReturnValue(undefined);
+            const result = await controller.getMusic(
+                "some_url",
+                "some_artist",
+                "some_title",
+                "some_album"
+            );
+            expect(result).toEqual({
+                url: "some_url",
+            });
 
-        //     await expect(
-        //         controller.getMusic({
-        //             url: "some_url",
-        //             artist: "some_artist",
-        //             title: "some_title",
-        //             album: "some_album",
-        //         })
-        //     ).rejects.toThrow("GetMusic failed: some_url URL DOES NOT EXIST");
-        // });
+            // Wait for detached promise to finish
+            await new Promise(process.nextTick);
+
+            await expect(
+                controller.getMusicProgress("some_url")
+            ).rejects.toThrow("rootPath not configured");
+
+            const progressIdle = await controller.getMusicProgress("some_url");
+            expect(progressIdle).toEqual({
+                state: "idle",
+                url: "some_url",
+            });
+        });
+
+        it("throws error on remote error", async () => {
+            const progressBefore = await controller.getMusicProgress(
+                "some_url"
+            );
+            expect(progressBefore).toEqual({
+                state: "idle",
+                url: "some_url",
+            });
+
+            youtubeDlExecSpy.mockRejectedValue(Error("URL DOES NOT EXIST"));
+
+            const result = await controller.getMusic(
+                "some_url",
+                "some_artist",
+                "some_title",
+                "some_album"
+            );
+            expect(result).toEqual({
+                url: "some_url",
+            });
+
+            // Wait for detached promise to finish
+            await new Promise(process.nextTick);
+
+            await expect(
+                controller.getMusicProgress("some_url")
+            ).rejects.toThrow("Error URL DOES NOT EXIST");
+
+            const progressIdle = await controller.getMusicProgress("some_url");
+            expect(progressIdle).toEqual({
+                state: "idle",
+                url: "some_url",
+            });
+        });
     });
 });
