@@ -73,7 +73,7 @@ describe("Docker", () => {
         );
 
         const elem = await screen.findByText(
-            /ERROR: Dockerlist failure: Error: getDockerList rejected/
+            /ERROR: Dockerlist failure: \[FETCH_ERROR\] Error: getDockerList rejected/
         );
         expect(elem).toBeInTheDocument();
         expect(fetchMock).toBeCalledTimes(1);
