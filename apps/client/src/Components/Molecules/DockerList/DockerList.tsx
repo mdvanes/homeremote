@@ -5,10 +5,9 @@ import {
     DockerContainerInfo,
     useGetDockerListQuery,
 } from "../../../Services/dockerListApi";
-import DockerInfo from "../DockerInfo/DockerInfo";
+import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
-import { SerializedError } from "@reduxjs/toolkit";
+import DockerInfo from "../DockerInfo/DockerInfo";
 
 const UPDATE_INTERVAL_MS = 30000;
 
@@ -17,18 +16,6 @@ const mapInfo = (c: DockerContainerInfo) => <DockerInfo key={c.Id} info={c} />;
 interface DockerListProps {
     onError: (err: string) => void;
 }
-
-const getErrorMessage = (
-    error: FetchBaseQueryError | SerializedError
-): string => {
-    if ("error" in error) {
-        return error.error;
-    }
-    if ("message" in error) {
-        return `${error.name} ${error.message}`;
-    }
-    return "Unexpected error";
-};
 
 const DockerList: FC<DockerListProps> = ({ onError }) => {
     const [isOpen, setIsOpen] = useState(false);

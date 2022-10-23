@@ -1,8 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import fetchToJson from "../../../fetchToJson";
-import { RootState } from "../../../Reducers";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import ApiBaseState from "../../../Reducers/state.types";
-import { logInfo } from "../LogCard/logSlice";
+import { urlToMusicApi } from "../../../Services/urlToMusicApi";
 
 interface FormField {
     value: string;
@@ -11,6 +9,7 @@ interface FormField {
 
 export interface UrlToMusicState extends ApiBaseState {
     form: Record<string, FormField>;
+    showGetMusicForm: boolean;
     result: string | false;
 }
 
@@ -19,6 +18,7 @@ const year = new Date().getFullYear();
 export const initialState: UrlToMusicState = {
     isLoading: false,
     error: false,
+    showGetMusicForm: false,
     form: {
         url: {
             value: "",
@@ -40,71 +40,28 @@ export const initialState: UrlToMusicState = {
     result: false,
 };
 
-interface FetchInfoReturned {
-    title: string;
-    artist: string;
-    versionInfo: string;
-}
-
-interface FetchMusicReturned {
-    path: string;
-    fileName: string;
-}
-
-export const getInfo = createAsyncThunk<FetchInfoReturned>(
-    `urlToMusic/getInfo`,
-    async (_, { getState, dispatch }) => {
-        const url = (getState() as RootState).urlToMusic.form.url.value;
-        const result = await fetchToJson<FetchInfoReturned>(
-            "/api/urltomusic/getinfo",
-            {
-                method: "POST",
-                body: JSON.stringify({ url }),
-            }
-        );
-        dispatch(
-            logInfo(
-                `Finished getInfo with bin version info: ${result.versionInfo}`
-            )
-        );
-        return result;
-    }
-);
-
-export const getMusic = createAsyncThunk<FetchMusicReturned>(
-    `urlToMusic/getMusic`,
-    async (_, { getState, dispatch }) => {
-        const form = (getState() as RootState).urlToMusic.form;
-        const fieldEntries = Object.entries(form).map(([fieldName, field]) => [
-            fieldName,
-            field.value,
-        ]);
-        const body = JSON.stringify(Object.fromEntries(fieldEntries));
-        dispatch(
-            logInfo(
-                `Started getMusic: ${fieldEntries
-                    .map(([fieldName, value]) => `${fieldName}=${value}`)
-                    .join("; ")}`
-            )
-        );
-        const result = await fetchToJson<FetchMusicReturned>(
-            "/api/urltomusic/getmusic",
-            {
-                method: "POST",
-                body,
-            }
-        );
-        dispatch(logInfo(`Finished getMusic: ${result.path}`));
-        return result;
-    }
-);
-
 type NameAndValue = [string, string];
 
 const urlToMusicSlice = createSlice({
     name: "urlToMusic",
     initialState,
     reducers: {
+        reset: (draft) => {
+            const url = draft.form.url.value;
+            return {
+                ...initialState,
+                form: {
+                    ...initialState.form,
+                    url: {
+                        ...initialState.form.url,
+                        value: url,
+                    },
+                },
+            };
+        },
+        resetProgressLoading: (draft) => {
+            draft.isLoading = false;
+        },
         setFormField: (
             draft,
             { payload }: PayloadAction<NameAndValue>
@@ -122,36 +79,36 @@ const urlToMusicSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(getInfo.pending, (draft, { payload }): void => {
-            draft.error = initialState.error;
-            draft.isLoading = true;
-            draft.result = initialState.result;
-        });
-        builder.addCase(getInfo.fulfilled, (draft, { payload }): void => {
-            draft.isLoading = initialState.isLoading;
-            draft.form.title.value = payload.title;
-            draft.form.artist.value = payload.artist;
-        });
-        builder.addCase(getInfo.rejected, (draft, { error }): void => {
-            draft.isLoading = initialState.isLoading;
-            draft.error = error.message || "An error occurred";
-        });
-        builder.addCase(getMusic.pending, (draft, { payload }): void => {
-            draft.error = initialState.error;
-            draft.isLoading = true;
-            draft.result = initialState.result;
-        });
-        builder.addCase(getMusic.fulfilled, (draft, { payload }): void => {
-            draft.isLoading = initialState.isLoading;
-            draft.result = payload.path;
-        });
-        builder.addCase(getMusic.rejected, (draft, { error }): void => {
-            draft.isLoading = initialState.isLoading;
-            draft.error = error.message || "An error occurred";
-        });
+        builder.addMatcher(
+            urlToMusicApi.endpoints.getInfo.matchFulfilled,
+            (draft, { payload }): void => {
+                draft.isLoading = initialState.isLoading;
+                draft.form.title.value = payload.title;
+                draft.form.title.error = false;
+                draft.form.artist.value = payload.artist;
+                draft.form.artist.error = false;
+                draft.showGetMusicForm = true;
+            }
+        );
+        builder.addMatcher(
+            urlToMusicApi.endpoints.getMusic.matchFulfilled,
+            (draft, { payload }): void => {
+                draft.isLoading = true;
+            }
+        );
+        builder.addMatcher(
+            urlToMusicApi.endpoints.getMusicProgress.matchFulfilled,
+            (draft, { payload }): void => {
+                if (payload.state === "finished") {
+                    draft.isLoading = initialState.isLoading;
+                    draft.result = payload.path;
+                }
+            }
+        );
     },
 });
 
-export const { setFormField, setFormFieldError } = urlToMusicSlice.actions;
+export const { setFormField, setFormFieldError, reset, resetProgressLoading } =
+    urlToMusicSlice.actions;
 
 export default urlToMusicSlice.reducer;

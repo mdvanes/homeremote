@@ -8,6 +8,7 @@ import { dockerListApi } from "./Services/dockerListApi";
 import { downloadListApi } from "./Services/downloadListApi";
 import { jukeboxApi } from "./Services/jukeboxApi";
 import { serviceLinksApi } from "./Services/serviceLinksApi";
+import { urlToMusicApi } from "./Services/urlToMusicApi";
 
 export const store = configureStore({
     reducer: rootReducer,
@@ -18,7 +19,8 @@ export const store = configureStore({
             dockerListApi.middleware,
             downloadListApi.middleware,
             jukeboxApi.middleware,
-            serviceLinksApi.middleware
+            serviceLinksApi.middleware,
+            urlToMusicApi.middleware
         ),
 });
 

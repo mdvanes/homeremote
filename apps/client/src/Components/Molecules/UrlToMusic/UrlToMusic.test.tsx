@@ -1,115 +1,169 @@
-import React from "react";
-import { fireEvent, waitFor } from "@testing-library/react";
+import {
+    UrlToMusicGetInfoResponse,
+    UrlToMusicGetMusicProgressResponse,
+    UrlToMusicGetMusicResponse,
+} from "@homeremote/types";
+import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
+import { FC } from "react";
+import { urlToMusicApi } from "../../../Services/urlToMusicApi";
+import {
+    createGetCalledUrl,
+    MockStoreProvider,
+    MockStoreProviderApi,
+} from "../../../testHelpers";
+import loglinesReducer from "../../Molecules/LogCard/logSlice";
 import UrlToMusic from "./UrlToMusic";
-import urlToMusicReducer, { initialState } from "./urlToMusicSlice";
-import { RootState } from "../../../Reducers";
-import { renderWithProviders } from "../../../testHelpers";
+import urlToMusicReducer from "./urlToMusicSlice";
 
-const fetchSpy = jest.spyOn(window, "fetch");
+enableFetchMocks();
 
-type MockRootState = Pick<RootState, "urlToMusic">;
+const getCalledUrl = (callNr: number) => createGetCalledUrl(fetchMock)(callNr);
 
-const mockRootState: MockRootState = {
-    urlToMusic: initialState,
+const urlToMusicSliceFakeApi: MockStoreProviderApi = {
+    reducerPath: "urlToMusic",
+    reducer: urlToMusicReducer,
 };
 
-const renderUrlToMusic = (initialState: MockRootState) =>
-    renderWithProviders(<UrlToMusic />, {
-        initialState,
-        reducers: {
-            urlToMusic: urlToMusicReducer,
-        },
-    });
+const loglinesFakeApi: MockStoreProviderApi = {
+    reducerPath: "loglines",
+    reducer: loglinesReducer,
+};
+
+const Wrapper: FC = ({ children }) => {
+    return (
+        <MockStoreProvider
+            apis={[urlToMusicApi, urlToMusicSliceFakeApi, loglinesFakeApi]}
+        >
+            {children}
+        </MockStoreProvider>
+    );
+};
 
 describe("UrlToMusic", () => {
     beforeEach(() => {
-        const mockResponse: Partial<Response> = {
-            ok: true,
-            json: () =>
-                Promise.resolve({
-                    title: "Some Title",
-                    artist: "Some Artist",
-                }),
-        };
-        fetchSpy.mockResolvedValueOnce(mockResponse as Response);
+        fetchMock.resetMocks();
     });
 
-    afterEach(() => {
-        fetchSpy.mockClear();
-    });
-
-    it("looks like a form", () => {
-        const { asFragment } = renderUrlToMusic({
-            ...mockRootState,
-            urlToMusic: {
-                ...initialState,
-                form: {
-                    ...initialState.form,
-                    album: {
-                        ...initialState.form.album,
-                        value: "Mock Initial Album Name",
-                    },
-                },
-            },
-        });
+    it("shows the GetInfo form", () => {
+        const { asFragment } = render(<UrlToMusic />, { wrapper: Wrapper });
 
         expect(asFragment()).toMatchSnapshot();
     });
 
-    it("can submit the getinfo form", async () => {
-        const { getByTestId } = renderUrlToMusic(mockRootState);
+    const expectSetUrl = async () => {
+        const rendered = render(<UrlToMusic />, { wrapper: Wrapper });
 
-        expect(getByTestId("title").querySelector("input")).toHaveDisplayValue(
-            ""
-        );
-        const urlInput = getByTestId("url").querySelector("input");
-        if (urlInput) {
-            fireEvent.change(urlInput, { target: { value: "Some URL" } });
+        const urlInput = screen.getByRole("textbox", { name: "URL" });
+        expect(
+            screen.queryByRole("textbox", {
+                name: "Title",
+            })
+        ).not.toBeInTheDocument();
+
+        if (!urlInput) {
+            throw Error("missing input");
         }
-        const getInfoButton = getByTestId("get-info");
-        fireEvent.click(getInfoButton);
-        expect(fetchSpy).toHaveBeenCalledTimes(1);
-        await waitFor(() =>
-            expect(
-                getByTestId("title").querySelector("input")
-            ).toHaveDisplayValue("Some Title")
+
+        fireEvent.change(urlInput, { target: { value: "Some URL" } });
+        // userEvent.type(urlInput, "Some URL");
+        // userEvent.tab();
+
+        expect(fetchMock).not.toBeCalled();
+        const getInfoButton = screen.getByRole("button", { name: "Get Info" });
+        return { urlInput, getInfoButton, rendered };
+    };
+
+    const mockGetInfoResponse: UrlToMusicGetInfoResponse = {
+        title: "Some Title",
+        artist: "Some Artist",
+        streamUrl: ["a"],
+        versionInfo: "1",
+    };
+
+    const mockGetMusicResponse: UrlToMusicGetMusicResponse = { url: "a" };
+    const mockGetMusicProgressResponse: UrlToMusicGetMusicProgressResponse = {
+        state: "finished",
+        url: "a",
+        path: "some/result/path.txt",
+    };
+
+    it("can submit the getinfo form", async () => {
+        const { urlInput, getInfoButton, rendered } = await expectSetUrl();
+
+        fetchMock.mockResponse(JSON.stringify(mockGetInfoResponse));
+        await userEvent.click(getInfoButton);
+
+        const titleInput = await screen.findByRole("textbox", {
+            name: "Title",
+        });
+
+        expect(urlInput).toHaveValue("Some URL");
+        expect(rendered.asFragment()).toMatchSnapshot(
+            "shows the GetMusic form"
         );
-        expect(getByTestId("artist").querySelector("input")).toHaveDisplayValue(
+
+        expect(titleInput).toHaveValue("Some Title");
+        expect(screen.getByRole("textbox", { name: "Artist" })).toHaveValue(
             "Some Artist"
         );
-        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        expect(fetchMock).toBeCalledTimes(1);
+        expect(getCalledUrl(0)).toBe(
+            "http://localhost/api/urltomusic/getinfo/Some%20URL"
+        );
+    });
+
+    it("can handle getinfo error", async () => {
+        const { getInfoButton } = await expectSetUrl();
+
+        fetchMock.mockReject(Error("some getinfo error"));
+        await userEvent.click(getInfoButton);
+
+        expect(
+            screen.getByText("[FETCH_ERROR] Error: some getinfo error")
+        ).toBeVisible();
     });
 
     it("can submit the getmusic form", async () => {
-        const mockResponse: Partial<Response> = {
-            ok: true,
-            json: () =>
-                Promise.resolve({
-                    path: "Some Path",
-                    fileName: "Some FileName",
-                }),
-        };
-        fetchSpy.mockReset().mockResolvedValueOnce(mockResponse as Response);
+        const { getInfoButton } = await expectSetUrl();
 
-        const { getByTestId, getByText } = renderUrlToMusic(mockRootState);
+        fetchMock.mockResponse(JSON.stringify(mockGetInfoResponse));
+        await userEvent.click(getInfoButton);
 
-        const urlInput = getByTestId("url").querySelector("input");
-        if (urlInput) {
-            fireEvent.change(urlInput, { target: { value: "Some URL" } });
-        }
-        const titleInput = getByTestId("title").querySelector("input");
+        const titleInput = await screen.findByRole("textbox", {
+            name: "Title",
+        });
+
         if (titleInput) {
-            fireEvent.change(titleInput, { target: { value: "Some Title" } });
+            fireEvent.change(titleInput, {
+                target: { value: "Some Other Title" },
+            });
         }
-        const artistInput = getByTestId("artist").querySelector("input");
-        if (artistInput) {
-            fireEvent.change(artistInput, { target: { value: "Some Artist" } });
-        }
-        const getMusicButton = getByTestId("get-music");
-        fireEvent.click(getMusicButton);
-        await waitFor(() =>
-            expect(getByText(/Result in Some Path/)).toBeInTheDocument()
+
+        const getMusicButton = screen.getByRole("button", {
+            name: "Get Music",
+        });
+
+        fetchMock.mockReset();
+
+        fetchMock.mockResponses(
+            JSON.stringify(mockGetMusicResponse),
+            JSON.stringify(mockGetMusicProgressResponse)
         );
-        expect(fetchSpy).toHaveBeenCalledTimes(1);
+        await userEvent.click(getMusicButton);
+
+        const resultText = await screen.findByText(
+            /Result in some\/result\/path\.txt/
+        );
+        expect(resultText).toBeVisible();
+
+        expect(fetchMock).toBeCalledTimes(2);
+        expect(getCalledUrl(0)).toBe(
+            "http://localhost/api/urltomusic/getmusic/Some%20URL?artist=Some%20Artist&title=Some%20Other%20Title&album=Songs%20from%202022"
+        );
+        expect(getCalledUrl(1)).toBe(
+            "http://localhost/api/urltomusic/getmusic/Some%20URL/progress"
+        );
     });
 });

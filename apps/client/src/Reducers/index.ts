@@ -10,6 +10,7 @@ import { activeConnectionsApi } from "../Services/activeConnectionsApi";
 import { combineReducers } from "redux";
 import { serviceLinksApi } from "../Services/serviceLinksApi";
 import { jukeboxApi } from "../Services/jukeboxApi";
+import { urlToMusicApi } from "../Services/urlToMusicApi";
 
 const rootReducer = combineReducers({
     loglines: loglinesReducer,
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
     [downloadListApi.reducerPath]: downloadListApi.reducer,
     [jukeboxApi.reducerPath]: jukeboxApi.reducer,
     [serviceLinksApi.reducerPath]: serviceLinksApi.reducer,
+    [urlToMusicApi.reducerPath]: urlToMusicApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

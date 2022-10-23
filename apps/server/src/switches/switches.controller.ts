@@ -171,7 +171,7 @@ export class SwitchesController {
     async updateSwitch(
         @Param("switchId") switchId: string,
         @Body() message: UpdateSwitchMessage
-    ): Promise<any> {
+    ): Promise<{ status: "received" | "error" }> {
         const domoticzuri =
             this.configService.get<string>("DOMOTICZ_URI") || "";
         const { state, type: switchType } = message;
