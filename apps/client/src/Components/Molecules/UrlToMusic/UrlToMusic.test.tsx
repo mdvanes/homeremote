@@ -1,4 +1,8 @@
-import { UrlToMusicGetInfoResponse } from "@homeremote/types";
+import {
+    UrlToMusicGetInfoResponse,
+    UrlToMusicGetMusicProgressResponse,
+    UrlToMusicGetMusicResponse,
+} from "@homeremote/types";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
@@ -78,6 +82,13 @@ describe("UrlToMusic", () => {
         versionInfo: "1",
     };
 
+    const mockGetMusicResponse: UrlToMusicGetMusicResponse = { url: "a" };
+    const mockGetMusicProgressResponse: UrlToMusicGetMusicProgressResponse = {
+        state: "finished",
+        url: "a",
+        path: "some/result/path.txt",
+    };
+
     it("can submit the getinfo form", async () => {
         const { urlInput, getInfoButton, rendered } = await expectSetUrl();
 
@@ -135,13 +146,24 @@ describe("UrlToMusic", () => {
         });
 
         fetchMock.mockReset();
-        // const mockGetMusicResponse: UrlToMusicGetMusicResponse = {};
-        // fetchMock.mockResponses(JSON.stringify(mockGetInfoResponse));
+
+        fetchMock.mockResponses(
+            JSON.stringify(mockGetMusicResponse),
+            JSON.stringify(mockGetMusicProgressResponse)
+        );
         await userEvent.click(getMusicButton);
 
-        expect(fetchMock).toBeCalledTimes(1);
+        const resultText = await screen.findByText(
+            /Result in some\/result\/path\.txt/
+        );
+        expect(resultText).toBeVisible();
+
+        expect(fetchMock).toBeCalledTimes(2);
         expect(getCalledUrl(0)).toBe(
             "http://localhost/api/urltomusic/getmusic/Some%20URL?artist=Some%20Artist&title=Some%20Other%20Title&album=Songs%20from%202022"
+        );
+        expect(getCalledUrl(1)).toBe(
+            "http://localhost/api/urltomusic/getmusic/Some%20URL/progress"
         );
     });
 });
