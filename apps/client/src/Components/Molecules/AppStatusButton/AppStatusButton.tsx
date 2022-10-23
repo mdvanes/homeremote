@@ -1,10 +1,11 @@
 import React, { FC, useEffect } from "react";
 import { Button } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
 import { AppStatusState, getAppStatus } from "./appStatusSlice";
 import { styled } from "@mui/material/styles";
+import { useAppDispatch } from "../../../store";
 
 const DarkButton = styled(Button)(
     ({ theme }) => `
@@ -17,7 +18,7 @@ const DarkButton = styled(Button)(
 );
 
 const AppStatusButton: FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const status = useSelector<RootState, AppStatusState["status"]>(
         (state: RootState) => state.appStatus.status

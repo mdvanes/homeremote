@@ -1,7 +1,7 @@
 import React, { FC, Fragment, ReactElement, useEffect } from "react";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { LinearProgress } from "@mui/material";
 import {
     sendSwitchState,
@@ -12,6 +12,7 @@ import { getSwitches } from "./getSwitchesThunk";
 import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
 import { HomeRemoteSwitch } from "@homeremote/types";
+import { useAppDispatch } from "../../../store";
 
 // TODO improve type
 const SELECTOR_STATES: Record<number, string> = {
@@ -99,7 +100,7 @@ const getLabelAction = (
 ): (() => void) => (hasChildren ? cbWithChildren : cbWithoutChildren);
 
 const SwitchBarList: FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const switches = useSelector<RootState, SwitchBarListState["switches"]>(
         (state: RootState) => state.switchesList.switches
     );

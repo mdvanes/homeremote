@@ -1,7 +1,7 @@
-import React, { FC, FormEvent, useEffect, useState } from "react";
+import React, { FC, FormEvent, ReactNode, useEffect, useState } from "react";
 import { Button, Container, TextField } from "@mui/material";
 import { Alert, AlertTitle } from "@mui/lab";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
     AuthenticationState,
     fetchAuth,
@@ -9,12 +9,13 @@ import {
 } from "./authenticationSlice";
 import { RootState } from "../../../Reducers";
 import AppSkeleton from "../../Molecules/AppSkeleton/AppSkeleton";
+import { useAppDispatch } from "../../../store";
 
 const LOGIN_ENDPOINT = "/auth/login";
 const UNAUTHORIZED_MESSAGE = `${LOGIN_ENDPOINT} Unauthorized`;
 
-const AuthenticationProvider: FC = ({ children }) => {
-    const dispatch = useDispatch();
+const AuthenticationProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const dispatch = useAppDispatch();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const onSubmit = (ev: FormEvent): void => {
