@@ -9,7 +9,7 @@ import {
     PaletteMode,
 } from "@mui/material";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Log from "./Components/Pages/Log/Log";
 import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
@@ -80,14 +80,25 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                       }
                             }
                         >
-                            <Route path="/" element={<HomeAutomation />} />
-                            <Route path="/music" element={<UrlToMusic />} />
-                            <Route path="/gears" element={<DownloadList />} />
-                            <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/streams" element={<Streams />} />
-                            <Route path="/docker" element={<Docker />} />
-                            <Route path="/datalora" element={<DataLora />} />
-                            <Route path="/about" element={<Log />} />
+                            <Routes>
+                                <Route path="/" element={<HomeAutomation />} />
+                                <Route path="/music" element={<UrlToMusic />} />
+                                <Route
+                                    path="/gears"
+                                    element={<DownloadList />}
+                                />
+                                <Route
+                                    path="/dashboard"
+                                    element={<Dashboard />}
+                                />
+                                <Route path="/streams" element={<Streams />} />
+                                <Route path="/docker" element={<Docker />} />
+                                <Route
+                                    path="/datalora"
+                                    element={<DataLora />}
+                                />
+                                <Route path="/about" element={<Log />} />
+                            </Routes>
                         </Box>
                     </BrowserRouter>
                     <GlobalSnackbar />
