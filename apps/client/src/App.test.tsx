@@ -50,6 +50,11 @@ jest.mock(
     "./Components/Pages/HomeAutomation/HomeAutomation",
     () => "mock-home-automation"
 );
+
+jest.mock("./Components/Pages/DataLora/DataLora", () => "mock-data-lora");
+
+jest.mock("./Components/Pages/Dashboard/Dashboard", () => "mock-dashboard");
+
 describe("App with Authentication", () => {
     beforeEach(() => {
         fetchMock.resetMocks();
