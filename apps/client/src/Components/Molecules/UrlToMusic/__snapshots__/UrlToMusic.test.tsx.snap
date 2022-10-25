@@ -137,9 +137,6 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           type="button"
         >
           Get Music
-          <span
-            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-          />
         </button>
       </form>
     </div>
