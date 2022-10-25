@@ -6,7 +6,7 @@ import {
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { urlToMusicApi } from "../../../Services/urlToMusicApi";
 import {
     createGetCalledUrl,
@@ -31,7 +31,7 @@ const loglinesFakeApi: MockStoreProviderApi = {
     reducer: loglinesReducer,
 };
 
-const Wrapper: FC = ({ children }) => {
+const Wrapper: FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <MockStoreProvider
             apis={[urlToMusicApi, urlToMusicSliceFakeApi, loglinesFakeApi]}
