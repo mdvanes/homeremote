@@ -4,6 +4,7 @@ import { fireEvent, render } from "@testing-library/react";
 import LogCard from "./LogCard";
 import { RootState } from "../../../Reducers";
 import { Logline, Severity } from "./logSlice";
+import * as Store from "../../../store";
 
 const mockUseSelectorWith = ({ lines = [] }: { lines?: Logline[] }): void => {
     jest.spyOn(ReactRedux, "useSelector").mockReset();
@@ -22,7 +23,7 @@ describe("LogCard", () => {
     const mockDispatch = jest.fn();
 
     beforeEach(() => {
-        jest.spyOn(ReactRedux, "useDispatch").mockReturnValue(mockDispatch);
+        jest.spyOn(Store, "useAppDispatch").mockReturnValue(mockDispatch);
     });
 
     it("shows the application version", () => {

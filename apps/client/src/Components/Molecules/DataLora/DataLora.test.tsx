@@ -4,7 +4,7 @@ import DataLora from "./DataLora";
 import { dataloraApi } from "../../../Services/dataloraApi";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { MockStoreProvider } from "../../../testHelpers";
-import { PolylineProps } from "react-leaflet/types/Polyline";
+import { PolylineProps } from "react-leaflet";
 
 // Also see: DownloadList.test.tsx
 // Also see: https://medium.com/@johnmcdowell0801/testing-rtk-query-with-jest-cdfa5aaf3dc1

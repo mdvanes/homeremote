@@ -27,5 +27,11 @@ jest.mock(
         }
 );
 
+jest.mock("react-redux", () => ({
+    ...jest.requireActual("react-redux"),
+    useDispatch: jest.fn(),
+    useSelector: jest.fn(),
+}));
+
 // Polyfill Fetch API in Node for Jest
 window.fetch = jest.fn();
