@@ -6,6 +6,12 @@ import { RootState } from "../../../Reducers";
 import { Logline, Severity } from "./logSlice";
 import * as Store from "../../../store";
 
+jest.mock("react-redux", () => ({
+    ...jest.requireActual("react-redux"),
+    useDispatch: jest.fn(),
+    useSelector: jest.fn(),
+}));
+
 const mockUseSelectorWith = ({ lines = [] }: { lines?: Logline[] }): void => {
     jest.spyOn(ReactRedux, "useSelector").mockReset();
     jest.spyOn(ReactRedux, "useSelector").mockImplementation((fn) => {

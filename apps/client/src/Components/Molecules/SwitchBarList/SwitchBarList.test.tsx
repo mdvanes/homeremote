@@ -74,6 +74,12 @@ const mockRootState: MockRootState = {
     },
 };
 
+jest.mock("react-redux", () => ({
+    ...jest.requireActual("react-redux"),
+    useDispatch: jest.fn(),
+    useSelector: jest.fn(),
+}));
+
 // TODO refactor to replace all uses of this by renderSwitchBarList (see SwitchBarList_renderWith.test.tsx). Also remove all `jest.spyOn(ReactRedux, "useDispatch")`
 const mockUseSelectorWith = ({ isLoading = false }): void => {
     jest.spyOn(ReactRedux, "useSelector").mockReset();

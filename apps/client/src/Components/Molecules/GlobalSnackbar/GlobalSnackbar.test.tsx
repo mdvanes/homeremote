@@ -3,6 +3,12 @@ import * as ReactRedux from "react-redux";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import GlobalSnackbar from "./GlobalSnackbar";
 
+jest.mock("react-redux", () => ({
+    ...jest.requireActual("react-redux"),
+    useDispatch: jest.fn(),
+    useSelector: jest.fn(),
+}));
+
 const mockUseSelector = jest.spyOn(ReactRedux, "useSelector");
 
 describe("GlobalSnackbar", () => {
