@@ -11,9 +11,9 @@ import {
     fetchAuth,
     FetchAuthType,
 } from "../../Providers/Authentication/authenticationSlice";
-import { useDispatch } from "react-redux";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
+import { useAppDispatch } from "../../../store";
 
 interface Props {
     closeDrawer: () => void;
@@ -24,7 +24,7 @@ interface Props {
 // TODO indicate active route, see https://material-ui.com/guides/composition/#link
 
 const DrawerMenu: FC<Props> = ({ closeDrawer, colorMode, toggleColorMode }) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     return (
         <div role="presentation" onClick={closeDrawer}>
             <List>

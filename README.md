@@ -110,7 +110,6 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 
 Migration todo:
 
-- Upgrade nx libs to latest patch version
 - postcss-import was added to packages.json for this issue, remove? https://github.com/postcss/postcss-import/issues/435
 - fix `npm i` with `--legacy-peer-deps` in github ymls and Dockerfile (check if it was `npm ci`), caused by migration of @jsiebern/bs-material-ui to rescript-material-ui with newer material ui peerdep?
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional

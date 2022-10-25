@@ -1,55 +1,83 @@
 {
-    "npmScope": "homeremote",
-    "affected": {
-        "defaultBase": "main"
-    },
-    "cli": {
-        "defaultCollection": "@nrwl/react"
-    },
-    "implicitDependencies": {
-        "package.json": {
-            "dependencies": "*",
-            "devDependencies": "*"
-        },
-        ".eslintrc.json": "*"
-    },
-    "tasksRunnerOptions": {
-        "default": {
-            "runner": "@nrwl/workspace/tasks-runners/default",
-            "options": {
-                "cacheableOperations": ["build", "lint", "test", "e2e"]
-            }
-        }
-    },
-    "targetDependencies": {
-        "build": [
-            {
-                "target": "build",
-                "projects": "dependencies"
-            }
+  "npmScope": "homeremote",
+  "affected": {
+    "defaultBase": "main"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "lint",
+          "test",
+          "e2e"
         ]
+      }
+    }
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "css",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "css"
+      },
+      "library": {
+        "style": "css",
+        "linter": "eslint"
+      }
     },
-    "generators": {
-        "@nrwl/react": {
-            "application": {
-                "style": "css",
-                "linter": "eslint",
-                "babel": true
-            },
-            "component": {
-                "style": "css"
-            },
-            "library": {
-                "style": "css",
-                "linter": "eslint"
-            }
-        },
-        "@nrwl/next": {
-            "application": {
-                "style": "css",
-                "linter": "eslint"
-            }
-        }
+    "@nrwl/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    }
+  },
+  "defaultProject": "client",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ]
     },
-    "defaultProject": "client"
+    "test": {
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js"
+      ]
+    },
+    "lint": {
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json"
+      ]
+    }
+  },
+  "namedInputs": {
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
+    "sharedGlobals": [
+      "{workspaceRoot}/babel.config.json"
+    ],
+    "production": [
+      "default",
+      "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/jest.config.[jt]s",
+      "!{projectRoot}/.eslintrc.json"
+    ]
+  }
 }

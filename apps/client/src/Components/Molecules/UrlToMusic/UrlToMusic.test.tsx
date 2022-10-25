@@ -6,7 +6,7 @@ import {
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import { urlToMusicApi } from "../../../Services/urlToMusicApi";
 import {
     createGetCalledUrl,
@@ -31,7 +31,7 @@ const loglinesFakeApi: MockStoreProviderApi = {
     reducer: loglinesReducer,
 };
 
-const Wrapper: FC = ({ children }) => {
+const Wrapper: FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <MockStoreProvider
             apis={[urlToMusicApi, urlToMusicSliceFakeApi, loglinesFakeApi]}
@@ -93,7 +93,7 @@ describe("UrlToMusic", () => {
         const { urlInput, getInfoButton, rendered } = await expectSetUrl();
 
         fetchMock.mockResponse(JSON.stringify(mockGetInfoResponse));
-        await userEvent.click(getInfoButton);
+        userEvent.click(getInfoButton);
 
         const titleInput = await screen.findByRole("textbox", {
             name: "Title",
@@ -118,8 +118,9 @@ describe("UrlToMusic", () => {
         const { getInfoButton } = await expectSetUrl();
 
         fetchMock.mockReject(Error("some getinfo error"));
-        await userEvent.click(getInfoButton);
+        userEvent.click(getInfoButton);
 
+        await screen.findByText("[FETCH_ERROR] Error: some getinfo error");
         expect(
             screen.getByText("[FETCH_ERROR] Error: some getinfo error")
         ).toBeVisible();
@@ -129,7 +130,7 @@ describe("UrlToMusic", () => {
         const { getInfoButton } = await expectSetUrl();
 
         fetchMock.mockResponse(JSON.stringify(mockGetInfoResponse));
-        await userEvent.click(getInfoButton);
+        userEvent.click(getInfoButton);
 
         const titleInput = await screen.findByRole("textbox", {
             name: "Title",
@@ -151,7 +152,7 @@ describe("UrlToMusic", () => {
             JSON.stringify(mockGetMusicResponse),
             JSON.stringify(mockGetMusicProgressResponse)
         );
-        await userEvent.click(getMusicButton);
+        userEvent.click(getMusicButton);
 
         const resultText = await screen.findByText(
             /Result in some\/result\/path\.txt/

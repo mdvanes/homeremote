@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import App, { AppProps } from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
@@ -11,11 +11,14 @@ const swCallbacks: AppProps["swCallbacks"] = {
     logUpdate: null,
 };
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(
+    document.getElementById("root") as HTMLElement
+);
+
+root.render(
     <Provider store={store}>
         <App swCallbacks={swCallbacks} />
-    </Provider>,
-    document.getElementById("root")
+    </Provider>
 );
 
 // If you want your app to work offline and load faster, you can change

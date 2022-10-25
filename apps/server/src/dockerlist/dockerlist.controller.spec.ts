@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DockerlistController } from "./dockerlist.controller";
-import { mocked } from "ts-jest/utils";
+import { mocked } from "jest-mock";
 import got, { Response, CancelableRequest } from "got";
 
 jest.mock("got");

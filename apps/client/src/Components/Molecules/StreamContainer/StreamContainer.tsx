@@ -48,7 +48,7 @@ const StreamContainer: FC = () => {
 
     // handle what happens on key press
     const handleKeyPress = useCallback(
-        (event) => {
+        (event: KeyboardEvent) => {
             // p for pause/play
             if (event.key === "p") {
                 toggleRadio();

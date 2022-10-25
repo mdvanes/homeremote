@@ -4,7 +4,7 @@ import {
     NowPlayingResponse,
 } from "@mdworld/homeremote-stream-player-server";
 import { Test, TestingModule } from "@nestjs/testing";
-import { mocked } from "ts-jest/utils";
+import { mocked } from "jest-mock";
 import { NowplayingController } from "./nowplaying.controller";
 import got, { Response, CancelableRequest } from "got";
 import { ConfigService } from "@nestjs/config";

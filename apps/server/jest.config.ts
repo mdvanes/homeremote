@@ -1,17 +1,18 @@
-module.exports = {
-    displayName: "client",
+/* eslint-disable */
+export default {
+    displayName: "server",
     preset: "../../jest.preset.js",
     globals: {
         "ts-jest": {
             tsconfig: "<rootDir>/tsconfig.spec.json",
         },
     },
+    testEnvironment: "node",
     transform: {
-        "^(?!.*\\.(js|jsx|ts|tsx|css|json)$)": "@nrwl/react/plugins/jest",
-        "^.+\\.[tj]sx?$": "ts-jest",
+        "^.+\\.[tj]s$": "ts-jest",
     },
-    moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
-    coverageDirectory: "../../coverage/apps/client",
+    moduleFileExtensions: ["ts", "js", "html"],
+    coverageDirectory: "../../coverage/apps/server",
     coverageThreshold: {
         global: {
             branches: 10,

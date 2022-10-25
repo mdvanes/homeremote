@@ -8,10 +8,8 @@ describe("urlToMusicSlice", () => {
     it("looks like a form", () => {
         // Isolate modules because getFullYear is resolved greedily in urlToMusicSlice
         jest.isolateModules(() => {
-            jest.useFakeTimers("modern").setSystemTime(
-                new Date("2010-03-14").getTime()
-            );
-
+            jest.useFakeTimers();
+            jest.setSystemTime(1000 * 60 * 60 * 24 * 365 * 41);
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const slice = require("./urlToMusicSlice");
             expect(slice.initialState.form.album.value).toBe("Songs from 2010");

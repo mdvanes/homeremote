@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, ReactNode } from "react";
 import { render, RenderResult, RenderOptions } from "@testing-library/react";
 import { Provider } from "react-redux";
 import {
@@ -34,7 +34,7 @@ export const renderWithProviders: RenderWithProviders = (
         ...renderOptions
     }
 ) => {
-    const Wrapper: FC = ({ children }) => {
+    const Wrapper: FC<{ children: ReactNode }> = ({ children }) => {
         return <Provider store={store}>{children}</Provider>;
     };
     return render(ui, { wrapper: Wrapper, ...renderOptions });
@@ -67,6 +67,7 @@ interface MockStoreProviderApiWithMiddleware {
 
 interface MockStoreProviderProps {
     apis: MockStoreProviderApi[];
+    children: ReactNode;
 }
 
 const hasMiddleWare = (
