@@ -56,7 +56,7 @@ describe("Docker", () => {
         expect(screen.getByText(/some-stopped/)).toBeVisible();
         expect(screen.queryByText("some-name")).not.toBeInTheDocument();
         const buttonElem = screen.getAllByRole("button")[0];
-        await userEvent.click(buttonElem);
+        userEvent.click(buttonElem);
         await screen.findByText(/some-name/);
         expect(screen.getByText(/some-name/)).toBeVisible();
         expect(screen.getByText(/some-stopped/)).toBeVisible();
