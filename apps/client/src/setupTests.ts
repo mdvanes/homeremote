@@ -4,28 +4,25 @@
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 
-import { GenerateId, StyleSheet } from "jss";
-
-type StyleSheetOptions = StyleSheet["options"];
-
-interface StyleSheetOptionsWithName extends StyleSheetOptions {
-    name: string;
-}
-
-jest.mock(
-    "@mui/styles/createGenerateClassName",
-    () =>
-        (): GenerateId =>
-        (rule, styleSheet): string => {
-            if (styleSheet) {
-                const { options } = styleSheet;
-                const { name, classNamePrefix } =
-                    options as StyleSheetOptionsWithName;
-                return `${name ?? classNamePrefix}-${rule.key}`;
-            }
-            return rule.key;
-        }
-);
+// import { GenerateId, StyleSheet } from "jss";
+// type StyleSheetOptions = StyleSheet["options"];
+// interface StyleSheetOptionsWithName extends StyleSheetOptions {
+//     name: string;
+// }
+// jest.mock(
+//     "@mui/styles/createGenerateClassName",
+//     () =>
+//         (): GenerateId =>
+//         (rule, styleSheet): string => {
+//             if (styleSheet) {
+//                 const { options } = styleSheet;
+//                 const { name, classNamePrefix } =
+//                     options as StyleSheetOptionsWithName;
+//                 return `${name ?? classNamePrefix}-${rule.key}`;
+//             }
+//             return rule.key;
+//         }
+// );
 
 // Polyfill Fetch API in Node for Jest
 window.fetch = jest.fn();
