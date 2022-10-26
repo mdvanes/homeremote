@@ -14,10 +14,8 @@ RUN npm i -g @swc/core-linux-x64-gnu
 # Copy the files needed before npm install
 COPY package.json package-lock.json ./
 
-# TODO why is package-lock.json ignored?
 # Install npm dependencies and fail if lock file requires changes
-# RUN npm ci $INSTALL_TIMEOUT
-RUN npm i $INSTALL_TIMEOUT
+RUN npm ci $INSTALL_TIMEOUT
 
 # Copy git dir for writeGitInfo
 COPY .git/ ./.git/
