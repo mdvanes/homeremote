@@ -1,3 +1,4 @@
+import { GetMonitResponse } from "@homeremote/types";
 import {
     Controller,
     Get,
@@ -124,7 +125,7 @@ export class MonitController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getPlaylists(): Promise<string> {
+    async getMonit(): Promise<GetMonitResponse> {
         this.logger.verbose("GET to /api/monit");
 
         const x = this.configService.get<string>("MONIT") || "";
@@ -150,7 +151,8 @@ export class MonitController {
                 (service) => service.name
             );
             this.logger.verbose(serviceNames.join(", "));
-            return response;
+            // return response;
+            return { names: serviceNames.join(", ") };
         } catch (err) {
             this.logger.error(err);
             throw new HttpException(
