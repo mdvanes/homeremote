@@ -40,7 +40,10 @@ const Log: FC = () => {
     const handleClearLog = (): void => {
         dispatch(clearLog());
     };
-    const version = `${gitinfoJson.hash}-${gitinfoJson.branch}-${packageJson.version}`;
+    const version =
+        gitinfoJson.branch === packageJson.version
+            ? `${gitinfoJson.hash}-${packageJson.version}`
+            : `${gitinfoJson.hash}-${gitinfoJson.branch}-${packageJson.version}`;
     return (
         <Card classes={{ root: `${classes.root} card-dashboard-height` }}>
             <CardContent className={classes.version}>

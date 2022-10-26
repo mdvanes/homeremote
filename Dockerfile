@@ -5,14 +5,19 @@ ARG INSTALL_TIMEOUT
 
 WORKDIR /home/node/code
 
+# CI = true is needed to disable nx daemon. Otherwise npm lint/test/build will break.
+ENV CI true
+
+# Workaround for missing binary
+RUN npm i -g @swc/core-linux-x64-gnu
+
 # Copy the files needed before npm install
-COPY package.json package-lock.json bsconfig.json ./
+COPY package.json package-lock.json ./
 
-# Copy the rescript source for the postinstall script
-COPY ./apps/client/src/Dummy.res ./apps/client/src/
-
+# TODO why is package-lock.json ignored?
 # Install npm dependencies and fail if lock file requires changes
-RUN npm i $INSTALL_TIMEOUT --legacy-peer-deps
+# RUN npm ci $INSTALL_TIMEOUT
+RUN npm i $INSTALL_TIMEOUT
 
 # Copy git dir for writeGitInfo
 COPY .git/ ./.git/
@@ -22,9 +27,6 @@ COPY . .
 
 # Needed by typecheck and unit test
 RUN cp apps/server/auth.json.example apps/server/auth.json
-
-# Workaround for missing binary
-RUN npm i @swc/core-linux-x64-gnu --legacy-peer-deps
 
 # Note --ignore-scripts does not work on composite npm run build
 RUN npm run build
@@ -54,11 +56,11 @@ COPY --from=build-env /home/node/code/dist/apps/server ./dist/apps/server
 RUN jq 'del(.devDependencies)' package.json > tmp.json && mv tmp.json package.json
 
 # Skip only postinstall here. The --ignore-scripts flag also ignores build for the bcrypt dependency
-RUN npm set-script postinstall ""
+# RUN npm set-script postinstall ""
 
 # NOTE: timeout settings seem to have no effect, but disabling VPN does (timeout after 1796s instead of 110s) But still fails and is incredibly slow. Disabling DNS proxy also seems to help.
 # Install only production dependencies
-RUN npm i $INSTALL_TIMEOUT --legacy-peer-deps
+RUN npm ci $INSTALL_TIMEOUT
 
 # Clean up build artifacts
 RUN apk del jq
