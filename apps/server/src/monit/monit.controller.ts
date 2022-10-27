@@ -66,14 +66,18 @@ export class MonitController {
             const monitlist = monitXmls.map((monitStatus): MonitItem => {
                 const { localhostname, uptime } = monitStatus.monit.server;
                 // this.logger.verbose(localhostname, uptime);
-                const serviceNames = monitStatus.monit.service.map(
-                    (service) => service.name
+                const services = monitStatus.monit.service.map(
+                    ({ name, status, status_hint }) => ({
+                        name,
+                        status,
+                        status_hint,
+                    })
                 );
                 // this.logger.verbose(serviceNames.join(", "));
                 return {
                     localhostname,
                     uptime,
-                    serviceNames,
+                    services,
                 };
             });
 

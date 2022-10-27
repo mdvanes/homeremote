@@ -95,10 +95,16 @@ export interface MonitXml {
     };
 }
 
+export interface MonitService {
+    name: string;
+    status: number;
+    status_hint: number;
+}
+
 export interface MonitItem {
     localhostname: string;
     uptime: number;
-    serviceNames: string[];
+    services: MonitService[];
 }
 
 export interface GetMonitResponse {

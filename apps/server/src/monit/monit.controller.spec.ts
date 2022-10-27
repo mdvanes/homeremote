@@ -14,77 +14,77 @@ const mockAuthenticatedRequest = {
 
 const mockXmlResponse = `<monit>
 <server>
-<id>1</id>
-<incarnation>1</incarnation>
-<version>1</version>
-<uptime>123</uptime>
-<poll>1</poll>
-<startdelay>1</startdelay>
-<localhostname>some-localhostname</localhostname>
-<controlfile>1</controlfile>
-<httpd>
-<address>1</address>
-<port>1</port>
-<ssl>1</ssl>
-</httpd>
+    <id>1</id>
+    <incarnation>1</incarnation>
+    <version>1</version>
+    <uptime>123</uptime>
+    <poll>1</poll>
+    <startdelay>1</startdelay>
+    <localhostname>some-localhostname</localhostname>
+    <controlfile>1</controlfile>
+    <httpd>
+    <address>1</address>
+    <port>1</port>
+    <ssl>1</ssl>
+    </httpd>
 </server>
 <platform>
-<name>1</name>
-<release>1</release>
-<version>1</version>
-<machine>1</machine>
-<cpu>1</cpu>
-<memory>1</memory>
-<swap>1</swap>
+    <name>1</name>
+    <release>1</release>
+    <version>1</version>
+    <machine>1</machine>
+    <cpu>1</cpu>
+    <memory>1</memory>
+    <swap>1</swap>
 </platform>
 <service type="3">
-<name>1</name>
-<collected_sec>1</collected_sec>
-<collected_usec>1</collected_usec>
-<status>1</status>
-<status_hint>1</status_hint>
-<monitor>1</monitor>
-<monitormode>1</monitormode>
-<onreboot>1</onreboot>
-<pendingaction>1</pendingaction>
-<pid>1</pid>
-<ppid>1</ppid>
-<uid>1</uid>
-<euid>1</euid>
-<gid>1</gid>
-<uptime>1</uptime>
-<threads>1</threads>
-<children>1</children>
-<memory>
-<percent>1</percent>
-<percenttotal>1</percenttotal>
-<kilobyte>1</kilobyte>
-<kilobytetotal>1</kilobytetotal>
-</memory>
-<cpu>
-<percent>1</percent>
-<percenttotal>1</percenttotal>
-</cpu>
-<read>
-<bytes>
-<count>1</count>
-<total>1</total>
-</bytes>
-</read>
-<write>
-<bytes>
-<count>1</count>
-<total>1</total>
-</bytes>
-</write>
-<port>
-<hostname>1</hostname>
-<portnumber>1</portnumber>
-<request>1</request>
-<protocol>1</protocol>
-<type>1</type>
-<responsetime>1</responsetime>
-</port>
+    <name>1</name>
+    <collected_sec>1</collected_sec>
+    <collected_usec>1</collected_usec>
+    <status>1</status>
+    <status_hint>1</status_hint>
+    <monitor>1</monitor>
+    <monitormode>1</monitormode>
+    <onreboot>1</onreboot>
+    <pendingaction>1</pendingaction>
+    <pid>1</pid>
+    <ppid>1</ppid>
+    <uid>1</uid>
+    <euid>1</euid>
+    <gid>1</gid>
+    <uptime>1</uptime>
+    <threads>1</threads>
+    <children>1</children>
+    <memory>
+        <percent>1</percent>
+        <percenttotal>1</percenttotal>
+        <kilobyte>1</kilobyte>
+        <kilobytetotal>1</kilobytetotal>
+    </memory>
+    <cpu>
+    <percent>1</percent>
+    <percenttotal>1</percenttotal>
+    </cpu>
+    <read>
+        <bytes>
+        <count>1</count>
+        <total>1</total>
+        </bytes>
+    </read>
+    <write>
+        <bytes>
+        <count>1</count>
+        <total>1</total>
+        </bytes>
+    </write>
+    <port>
+        <hostname>1</hostname>
+        <portnumber>1</portnumber>
+        <request>1</request>
+        <protocol>1</protocol>
+        <type>1</type>
+        <responsetime>1</responsetime>
+    </port>
 </service>
 <service type="0">
 <name>1</name>
@@ -578,12 +578,16 @@ describe("MonitController", () => {
                 {
                     localhostname: "some-localhostname",
                     uptime: 123,
-                    serviceNames: expect.arrayContaining([1]),
+                    services: expect.arrayContaining([
+                        { name: 1, status: 1, status_hint: 1 },
+                    ]),
                 },
                 {
                     localhostname: "some-localhostname",
                     uptime: 123,
-                    serviceNames: expect.arrayContaining([1]),
+                    services: expect.arrayContaining([
+                        { name: 1, status: 1, status_hint: 1 },
+                    ]),
                 },
             ],
         });
