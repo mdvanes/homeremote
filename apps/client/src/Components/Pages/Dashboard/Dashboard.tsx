@@ -1,13 +1,14 @@
 import { Box, Grid } from "@mui/material";
 import { FC } from "react";
+import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import LogCard from "../../Molecules/LogCard/LogCard";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
-import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import Docker from "../Docker/Docker";
 // import ActiveConnections from "../../Molecules/ActiveConnections/ActiveConnections";
 import { makeStyles } from "tss-react/mui";
 import DataLora from "../../Molecules/DataLora/DataLora";
+import Monit from "../../Molecules/Monit/Monit";
 import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
 import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
@@ -47,6 +48,8 @@ const Dashboard: FC = () => {
                 <Docker />
                 <Box marginTop={2} />
                 <DownloadList />
+                <Box marginTop={2} />
+                <Monit />
             </Grid>
             <Grid item xs={12} md={2}></Grid>
         </Grid>
