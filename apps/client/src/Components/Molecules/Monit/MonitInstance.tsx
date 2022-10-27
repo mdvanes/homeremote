@@ -4,10 +4,12 @@ import {
     MonitItem,
     MonitService,
 } from "@homeremote/types";
-import { Alert, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { FC } from "react";
 import { formatDuration, sortByName } from "./monit-utils";
+import MonitFilesystemServiceInstance from "./MonitFilesystemServiceInstance";
 import MonitHostServiceInstance from "./MonitHostServiceInstance";
+import MonitStatusAlert from "./MonitStatusAlert";
 
 const isFilesystemService = (
     service: MonitService
@@ -17,9 +19,8 @@ const isFilesystemService = (
 const isHostService = (service: MonitService): service is MonitHostService =>
     typeof service.port?.portnumber !== "undefined";
 
-// TODO prop read only
 const MonitInstance: FC<{
-    monit: MonitItem;
+    readonly monit: MonitItem;
 }> = ({ monit }) => {
     const services: MonitService[] = monit.services.slice();
     services.sort(sortByName);
@@ -35,33 +36,18 @@ const MonitInstance: FC<{
                 uptime: {formatDuration(monit.uptime)}
             </Typography>
             <Typography>Other</Typography>
-            {other.map((n) => (
-                <Alert
-                    severity={n.status === 0 ? "success" : "error"}
-                    sx={{ marginBottom: "2px" }}
-                >
-                    {n.name}
-                </Alert>
+            {other.map((item) => (
+                <MonitStatusAlert status={item.status}>
+                    {item.name}
+                </MonitStatusAlert>
             ))}
             <Typography>Filesystem</Typography>
-            {filesystems.map((n) => (
-                <Alert
-                    severity={n.status === 0 ? "success" : "error"}
-                    sx={{ marginBottom: "2px" }}
-                >
-                    {n.name} {n.block?.percent}% {n.block?.usage}/
-                    {n.block?.total}
-                </Alert>
+            {filesystems.map((item) => (
+                <MonitFilesystemServiceInstance item={item} />
             ))}
             <Typography>Host</Typography>
             {hosts.map((item) => (
                 <MonitHostServiceInstance item={item} />
-                // <Alert
-                //     severity={n.status === 0 ? "success" : "error"}
-                //     sx={{ marginBottom: "2px" }}
-                // >
-                //     {n.name} [{n.port.protocol}] {n.port.portnumber}
-                // </Alert>
             ))}
         </>
     );
