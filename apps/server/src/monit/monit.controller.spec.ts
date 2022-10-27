@@ -562,16 +562,13 @@ describe("MonitController", () => {
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<MonitController>(MonitController);
 
-        jest.spyOn(configService, "get").mockImplementation((envName) => {
-            return "a,b,c;d,e,f";
-        });
+        jest.spyOn(configService, "get").mockReturnValue("a,b,c;d,e,f");
     });
 
     it("returns localhostnames with servicenames", async () => {
         mockGot.mockReturnValue({
             text: () => Promise.resolve(mockXmlResponse),
-        } as any);
-        // } as CancelableRequest<Response>);
+        } as CancelableRequest<Response>);
         const result = await controller.getMonit(mockAuthenticatedRequest);
         expect(mockGot).toBeCalledTimes(2);
         expect(mockGot).toBeCalledWith("c", { password: "b", username: "a" });
