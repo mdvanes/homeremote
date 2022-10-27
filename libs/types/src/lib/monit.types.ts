@@ -99,6 +99,11 @@ export interface MonitService {
     name: string;
     status: number;
     status_hint: number;
+    block?: { percent: number; usage: number; total: number };
+    port?: {
+        protocol: string;
+        portnumber: number;
+    };
 }
 
 export interface MonitItem {

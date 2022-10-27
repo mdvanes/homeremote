@@ -46,7 +46,7 @@ Other utils:
 - Run lint on all projects: `npx nx run-many --all --target=lint` (with `npx nx lint` only the default project is linted) or for a specific project `npx nx run server:lint`
 - Testing:
   - with watch: `npm run test:client` or `npx nx test client --watch`
-  - a single file without coverage and with watch, e.g. users.service: `npm run test:server --testFile=users.service`
+  - a single file without coverage and with watch, e.g. users.service: `npm run test:server -- --testFile=users.service`
 - Add a controller: `npx nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
 - Format (prettier):
   - check changed: `npx nx format:check`
