@@ -106,6 +106,15 @@ export interface MonitService {
     };
 }
 
+export interface MonitFilesystemService
+    extends Omit<MonitService, "block" | "port"> {
+    block: NonNullable<MonitService["block"]>;
+}
+
+export interface MonitHostService extends Omit<MonitService, "block" | "port"> {
+    port: NonNullable<MonitService["port"]>;
+}
+
 export interface MonitItem {
     localhostname: string;
     uptime: number;
