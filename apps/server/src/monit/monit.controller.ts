@@ -37,8 +37,19 @@ const strToConfigs = (
     return monitServers;
 };
 
-export const scaleMonitSizeToBytes = (size: number): number =>
-    (size / 1024) * 1000 * 1000 * 1000;
+// export const scaleMonitSizeToBytes = (size: number): number =>
+//     (size / 1024) * 1000 * 1000 * 1000;
+
+export const scaleMonitSizeToBytes = (size: number): number => {
+    const length = `${Math.floor(size)}`.length;
+    if (length <= 3) {
+        return size * 1000 * 1000;
+    }
+    if (length <= 6) {
+        return (size / 1024) * 1000 * 1000 * 1000;
+    }
+    return (size / 1024 / 1024) * 1000 * 1000 * 1000 * 1000;
+};
 
 export const formatMonitSize = (size: number): string =>
     prettyBytes(scaleMonitSizeToBytes(size), {
@@ -90,6 +101,9 @@ export class MonitController {
                                   total: formatMonitSize(block.total),
                               }
                             : undefined;
+                        // if (block) {
+                        //     console.log(name, block);
+                        // }
                         return {
                             name,
                             status,

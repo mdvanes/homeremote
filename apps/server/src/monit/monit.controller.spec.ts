@@ -608,30 +608,16 @@ describe("MonitController", () => {
     });
 
     it.each`
-        raw         | bytes              | formatted
-        ${105317.5} | ${102849121093.75} | ${"102.8 GB"}
-        ${200502}   | ${195802734375}    | ${"195.8 GB"}
+        raw          | bytes                | formatted
+        ${105317.5}  | ${102849121093.75}   | ${"102.8 GB"}
+        ${105339.6}  | ${102870703125}      | ${"102.9 GB"}
+        ${200502}    | ${195802734375}      | ${"195.8 GB"}
+        ${204.4}     | ${204400000}         | ${"204.4 MB"}
+        ${973.4}     | ${973400000}         | ${"973.4 MB"}
+        ${9461323.8} | ${9023021507263.184} | ${"9.0 TB"}
+        ${2428512.5} | ${2316009998321.533} | ${"2.3 TB"}
     `("$raw is formatted as $formatted", ({ raw, bytes, formatted }) => {
-        expect(scaleMonitSizeToBytes(raw)).toBe(bytes);
         expect(formatMonitSize(raw)).toBe(formatted);
+        expect(scaleMonitSizeToBytes(raw)).toBe(bytes);
     });
-
-    // it("formats f", () => {
-    //     // TODO it.each
-
-    //     expect(scaleMonitSizeToBytes(105317.5)).toBe(102849121093.75); // 102.8GB
-    //     expect(
-    //         prettyBytes(scaleMonitSizeToBytes(105317.5), {
-    //             minimumFractionDigits: 1,
-    //             maximumFractionDigits: 1,
-    //         })
-    //     ).toBe("102.8 GB"); // 102.8GB
-    //     expect(scaleMonitSizeToBytes(200502)).toBe(195802734375); // 195.8GB
-    //     expect(
-    //         prettyBytes(scaleMonitSizeToBytes(200502), {
-    //             minimumFractionDigits: 1,
-    //             maximumFractionDigits: 1,
-    //         })
-    //     ).toBe("195.8 GB"); // 195.8GB
-    // });
 });
