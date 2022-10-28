@@ -56,7 +56,6 @@
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "postcss-import": "^14.1.0",
     "pretty-bytes": "^5.6.0",
     "pretty-ms": "^7.0.1",
     "react-is": "18.0.0",

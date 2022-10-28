@@ -110,7 +110,6 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 
 Migration todo:
 
-- postcss-import was added to package.json for this issue, remove? https://github.com/postcss/postcss-import/issues/435
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - add WHO to log: CEF, Common Event Format, When Where Who What, Is the log persisted? 
