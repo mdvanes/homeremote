@@ -37,19 +37,14 @@ const strToConfigs = (
     return monitServers;
 };
 
-const scaleMonitToBytes = (size: number): number => {
-    const length = `${Math.floor(size)}`.length;
-    let x = 0;
-    if (length > 6) {
-        x = size * (1000 / 1.024) * (1000 / 1.024);
-    } else if (length > 3) {
-        x = size * (1000 / 1.024);
-    } else {
-        x = size;
-    }
-    console.log(size, length, x);
-    return x;
-};
+export const scaleMonitSizeToBytes = (size: number): number =>
+    (size / 1024) * 1000 * 1000 * 1000;
+
+export const formatMonitSize = (size: number): string =>
+    prettyBytes(scaleMonitSizeToBytes(size), {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+    });
 
 @Controller("api/monit")
 export class MonitController {
@@ -86,28 +81,15 @@ export class MonitController {
         try {
             const monitlist = monitXmls.map((monitStatus): MonitItem => {
                 const { localhostname, uptime } = monitStatus.monit.server;
-                // console.log(monitStatus.monit.service);
                 const services = monitStatus.monit.service.map(
                     ({ name, status, status_hint, block, port }) => {
                         const newBlock: MonitService["block"] = block?.total
                             ? {
                                   ...block,
-                                  usage: prettyBytes(
-                                      // TODO this formula only works for TB
-                                      scaleMonitToBytes(block.usage)
-                                      //   block?.usage *
-                                      //       (1000 / 1.024) *
-                                      //       (1000 / 1.024)
-                                  ),
-                                  total: prettyBytes(
-                                      scaleMonitToBytes(block.total)
-                                      //   block?.total *
-                                      //       (1000 / 1.024) *
-                                      //       (1000 / 1.024)
-                                  ),
+                                  usage: formatMonitSize(block.usage),
+                                  total: formatMonitSize(block.total),
                               }
                             : undefined;
-                        // console.log(block, newBlock);
                         return {
                             name,
                             status,

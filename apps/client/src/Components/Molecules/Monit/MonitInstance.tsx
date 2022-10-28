@@ -41,6 +41,7 @@ const MonitInstance: FC<{
                     <Typography>Other</Typography>
                     {other.map((item) => (
                         <MonitStatusAlert
+                            key={item.name}
                             status={item.status}
                             name={item.name}
                         />
@@ -48,8 +49,11 @@ const MonitInstance: FC<{
                 </Grid>
                 <Grid item xs>
                     <Typography>Filesystem</Typography>
-                    {filesystems.map((item) => (
-                        <MonitFilesystemServiceInstance item={item} />
+                    {filesystems.map((item, index) => (
+                        <MonitFilesystemServiceInstance
+                            item={item}
+                            key={index}
+                        />
                     ))}
                 </Grid>
             </Grid>
@@ -57,13 +61,13 @@ const MonitInstance: FC<{
             <Typography>Host</Typography>
             <Grid container gap={0.5}>
                 <Grid item xs>
-                    {hosts1.map((item) => (
-                        <MonitHostServiceInstance item={item} />
+                    {hosts1.map((item, index) => (
+                        <MonitHostServiceInstance item={item} key={index} />
                     ))}
                 </Grid>
                 <Grid item xs>
-                    {hosts2.map((item) => (
-                        <MonitHostServiceInstance item={item} />
+                    {hosts2.map((item, index) => (
+                        <MonitHostServiceInstance item={item} key={index} />
                     ))}
                 </Grid>
             </Grid>

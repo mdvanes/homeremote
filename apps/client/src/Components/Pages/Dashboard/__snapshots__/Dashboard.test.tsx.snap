@@ -57,6 +57,10 @@ exports[`Dashboard page contains all the control components 1`] = `
           class="MuiBox-root css-1yuhvjn"
         />
         <mock-download-list />
+        <div
+          class="MuiBox-root css-1yuhvjn"
+        />
+        <mock-monit />
       </div>
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-2 css-12xeub0-MuiGrid-root"

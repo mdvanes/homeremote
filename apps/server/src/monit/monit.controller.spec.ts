@@ -1,5 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { MonitController } from "./monit.controller";
+import {
+    formatMonitSize,
+    MonitController,
+    scaleMonitSizeToBytes,
+} from "./monit.controller";
 import got, { Response, CancelableRequest } from "got";
 import { ConfigService } from "@nestjs/config";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
@@ -87,54 +91,54 @@ const mockXmlResponse = `<monit>
     </port>
 </service>
 <service type="0">
-<name>1</name>
-<collected_sec>1</collected_sec>
-<collected_usec>1</collected_usec>
-<status>1</status>
-<status_hint>1</status_hint>
-<monitor>1</monitor>
-<monitormode>1</monitormode>
-<onreboot>1</onreboot>
-<pendingaction>1</pendingaction>
-<fstype>1</fstype>
-<fsflags>1</fsflags>
-<mode>1</mode>
-<uid>1</uid>
-<gid>1</gid>
-<block>
-<percent>1</percent>
-<usage>1</usage>
-<total>1</total>
-</block>
-<inode>
-<percent>1</percent>
-<usage>1</usage>
-<total>1</total>
-</inode>
-<read>
-<bytes>
-<count>1</count>
-<total>1</total>
-</bytes>
-<operations>
-<count>1</count>
-<total>1</total>
-</operations>
-</read>
-<write>
-<bytes>
-<count>1</count>
-<total>1</total>
-</bytes>
-<operations>
-<count>1</count>
-<total>1</total>
-</operations>
-</write>
-<servicetime>
-<read>1</read>
-<write>1</write>
-</servicetime>
+    <name>ablock</name>
+    <collected_sec>1</collected_sec>
+    <collected_usec>1</collected_usec>
+    <status>1</status>
+    <status_hint>1</status_hint>
+    <monitor>1</monitor>
+    <monitormode>1</monitormode>
+    <onreboot>1</onreboot>
+    <pendingaction>1</pendingaction>
+    <fstype>1</fstype>
+    <fsflags>1</fsflags>
+    <mode>1</mode>
+    <uid>1</uid>
+    <gid>1</gid>
+    <block>
+        <percent>20</percent>
+        <usage>40000</usage>
+        <total>200000</total>
+    </block>
+    <inode>
+    <percent>1</percent>
+    <usage>1</usage>
+    <total>1</total>
+    </inode>
+    <read>
+    <bytes>
+    <count>1</count>
+    <total>1</total>
+    </bytes>
+    <operations>
+    <count>1</count>
+    <total>1</total>
+    </operations>
+    </read>
+    <write>
+    <bytes>
+    <count>1</count>
+    <total>1</total>
+    </bytes>
+    <operations>
+    <count>1</count>
+    <total>1</total>
+    </operations>
+    </write>
+    <servicetime>
+    <read>1</read>
+    <write>1</write>
+    </servicetime>
 </service>
 <service type="0">
 <name>1</name>
@@ -577,19 +581,57 @@ describe("MonitController", () => {
             monitlist: [
                 {
                     localhostname: "some-localhostname",
-                    uptime: 123,
+                    uptime: "2m 3s",
                     services: expect.arrayContaining([
-                        { name: 1, status: 1, status_hint: 1 },
+                        {
+                            block: {
+                                percent: 20,
+                                total: "195.3 GB",
+                                usage: "39.1 GB",
+                            },
+                            name: "ablock",
+                            port: {
+                                portnumber: undefined,
+                                protocol: undefined,
+                            },
+                            status: 1,
+                            status_hint: 1,
+                        },
                     ]),
                 },
-                {
+                expect.objectContaining({
                     localhostname: "some-localhostname",
-                    uptime: 123,
-                    services: expect.arrayContaining([
-                        { name: 1, status: 1, status_hint: 1 },
-                    ]),
-                },
+                    uptime: "2m 3s",
+                }),
             ],
         });
     });
+
+    it.each`
+        raw         | bytes              | formatted
+        ${105317.5} | ${102849121093.75} | ${"102.8 GB"}
+        ${200502}   | ${195802734375}    | ${"195.8 GB"}
+    `("$raw is formatted as $formatted", ({ raw, bytes, formatted }) => {
+        expect(scaleMonitSizeToBytes(raw)).toBe(bytes);
+        expect(formatMonitSize(raw)).toBe(formatted);
+    });
+
+    // it("formats f", () => {
+    //     // TODO it.each
+
+    //     expect(scaleMonitSizeToBytes(105317.5)).toBe(102849121093.75); // 102.8GB
+    //     expect(
+    //         prettyBytes(scaleMonitSizeToBytes(105317.5), {
+    //             minimumFractionDigits: 1,
+    //             maximumFractionDigits: 1,
+    //         })
+    //     ).toBe("102.8 GB"); // 102.8GB
+    //     expect(scaleMonitSizeToBytes(200502)).toBe(195802734375); // 195.8GB
+    //     expect(
+    //         prettyBytes(scaleMonitSizeToBytes(200502), {
+    //             minimumFractionDigits: 1,
+    //             maximumFractionDigits: 1,
+    //         })
+    //     ).toBe("195.8 GB"); // 195.8GB
+    // });
 });

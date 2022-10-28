@@ -27,7 +27,7 @@ const Monit: FC = () => {
             <CardContent>
                 {loadProgress}
                 {data?.monitlist.map((monit) => (
-                    <MonitInstance monit={monit} />
+                    <MonitInstance monit={monit} key={monit.localhostname} />
                 ))}
             </CardContent>
         </Card>
