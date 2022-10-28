@@ -37,18 +37,12 @@ const strToConfigs = (
     return monitServers;
 };
 
-// export const scaleMonitSizeToBytes = (size: number): number =>
-//     (size / 1024) * 1000 * 1000 * 1000;
-
 export const scaleMonitSizeToBytes = (size: number): number => {
-    const length = `${Math.floor(size)}`.length;
-    if (length <= 3) {
-        return size * 1000 * 1000;
-    }
-    if (length <= 6) {
-        return (size / 1024) * 1000 * 1000 * 1000;
-    }
-    return (size / 1024 / 1024) * 1000 * 1000 * 1000 * 1000;
+    const length = Math.floor(Math.log10(Math.floor(size)));
+    const n = Math.floor(length / 3);
+    const x = 1 / 1.024;
+    const y = Math.pow(10, 6);
+    return Math.pow(x, n) * y * size;
 };
 
 export const formatMonitSize = (size: number): string =>
