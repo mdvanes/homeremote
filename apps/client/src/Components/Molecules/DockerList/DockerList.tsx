@@ -1,4 +1,4 @@
-import { Alert, Box, Grid, LinearProgress } from "@mui/material";
+import { Alert, Grid } from "@mui/material";
 import { Stack } from "@mui/system";
 import { FC, useEffect, useState } from "react";
 import {
@@ -8,6 +8,7 @@ import {
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import DockerInfo from "../DockerInfo/DockerInfo";
+import LoadingDot from "../LoadingDot/LoadingDot";
 
 const UPDATE_INTERVAL_MS = 30000;
 
@@ -48,14 +49,7 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
     const containers1 = containers.slice(0, containers.length / 2);
     const containers2 = containers.slice(containers.length / 2);
 
-    const loadProgress =
-        isLoading || isFetching ? (
-            <Box sx={{ position: "absolute" }}>
-                <LinearProgress variant="indeterminate" style={{ width: 4 }} />
-            </Box>
-        ) : (
-            " "
-        );
+    const loadProgress = isLoading || isFetching ? <LoadingDot /> : " ";
 
     return (
         <>

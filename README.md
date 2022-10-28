@@ -46,7 +46,7 @@ Other utils:
 - Run lint on all projects: `npx nx run-many --all --target=lint` (with `npx nx lint` only the default project is linted) or for a specific project `npx nx run server:lint`
 - Testing:
   - with watch: `npm run test:client` or `npx nx test client --watch`
-  - a single file without coverage and with watch, e.g. users.service: `npm run test:server --testFile=users.service`
+  - a single file without coverage and with watch, e.g. users.service: `npm run test:server -- --testFile=users.service`
 - Add a controller: `npx nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
 - Format (prettier):
   - check changed: `npx nx format:check`
@@ -110,8 +110,6 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 
 Migration todo:
 
-- postcss-import was added to packages.json for this issue, remove? https://github.com/postcss/postcss-import/issues/435
-- fix `npm i` with `--legacy-peer-deps` in github ymls and Dockerfile (check if it was `npm ci`), caused by migration of @jsiebern/bs-material-ui to rescript-material-ui with newer material ui peerdep?
 - Add extra linting: https://github.com/nodesecurity/eslint-plugin-security and https://github.com/jonaskello/eslint-plugin-functional
 - https://github.com/henrikjoreteg/fixpack or `npm remove @mdworld/example && npm remove -D @mdworld/example`
 - add WHO to log: CEF, Common Event Format, When Where Who What, Is the log persisted? 

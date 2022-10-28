@@ -19,6 +19,7 @@ import { UrltomusicController } from "../urltomusic/urltomusic.controller";
 import { LogoutController } from "../logout/logout.controller";
 import { NowplayingController } from "../nowplaying/nowplaying.controller";
 import { ServiceLinksController } from "../service-links/service-links.controller";
+import { MonitController } from "../monit/monit.controller";
 
 @Module({
     imports: [
@@ -47,6 +48,7 @@ import { ServiceLinksController } from "../service-links/service-links.controlle
         JukeboxController,
         LoginController,
         LogoutController,
+        MonitController,
         NowplayingController,
         ProfileController,
         PwToHashController,
