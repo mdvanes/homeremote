@@ -1,4 +1,9 @@
-import { GetMonitResponse, MonitItem, MonitXml } from "@homeremote/types";
+import {
+    GetMonitResponse,
+    MonitItem,
+    MonitService,
+    MonitXml,
+} from "@homeremote/types";
 import {
     Controller,
     Get,
@@ -13,6 +18,8 @@ import { XMLParser } from "fast-xml-parser";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import prettyBytes from "pretty-bytes";
+import prettyMs from "pretty-ms";
 
 const strToConfigs = (
     monitConfig: string
@@ -28,6 +35,20 @@ const strToConfigs = (
         };
     });
     return monitServers;
+};
+
+const scaleMonitToBytes = (size: number): number => {
+    const length = `${Math.floor(size)}`.length;
+    let x = 0;
+    if (length > 6) {
+        x = size * (1000 / 1.024) * (1000 / 1.024);
+    } else if (length > 3) {
+        x = size * (1000 / 1.024);
+    } else {
+        x = size;
+    }
+    console.log(size, length, x);
+    return x;
 };
 
 @Controller("api/monit")
@@ -65,13 +86,33 @@ export class MonitController {
         try {
             const monitlist = monitXmls.map((monitStatus): MonitItem => {
                 const { localhostname, uptime } = monitStatus.monit.server;
+                // console.log(monitStatus.monit.service);
                 const services = monitStatus.monit.service.map(
                     ({ name, status, status_hint, block, port }) => {
+                        const newBlock: MonitService["block"] = block?.total
+                            ? {
+                                  ...block,
+                                  usage: prettyBytes(
+                                      // TODO this formula only works for TB
+                                      scaleMonitToBytes(block.usage)
+                                      //   block?.usage *
+                                      //       (1000 / 1.024) *
+                                      //       (1000 / 1.024)
+                                  ),
+                                  total: prettyBytes(
+                                      scaleMonitToBytes(block.total)
+                                      //   block?.total *
+                                      //       (1000 / 1.024) *
+                                      //       (1000 / 1.024)
+                                  ),
+                              }
+                            : undefined;
+                        // console.log(block, newBlock);
                         return {
                             name,
                             status,
                             status_hint,
-                            block,
+                            block: newBlock,
                             port: {
                                 protocol: port?.protocol,
                                 portnumber: port?.portnumber,
@@ -81,7 +122,7 @@ export class MonitController {
                 );
                 return {
                     localhostname,
-                    uptime,
+                    uptime: prettyMs(uptime * 1000),
                     services,
                 };
             });

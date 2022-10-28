@@ -5,8 +5,8 @@ import MonitStatusAlert from "./MonitStatusAlert";
 const MonitFilesystemServiceInstance: FC<{ item: MonitFilesystemService }> = ({
     item: { status, block, name },
 }) => (
-    <MonitStatusAlert status={status}>
-        {name} {block?.percent}% {block?.usage}/{block?.total}
+    <MonitStatusAlert status={status} name={name}>
+        {block?.percent}% {block?.usage}/{block?.total}
     </MonitStatusAlert>
 );
 

@@ -99,7 +99,7 @@ export interface MonitService {
     name: string;
     status: number;
     status_hint: number;
-    block?: { percent: number; usage: number; total: number };
+    block?: { percent: number; usage: string; total: string };
     port?: {
         protocol: string;
         portnumber: number;
@@ -117,7 +117,7 @@ export interface MonitHostService extends Omit<MonitService, "block" | "port"> {
 
 export interface MonitItem {
     localhostname: string;
-    uptime: number;
+    uptime: string;
     services: MonitService[];
 }
 

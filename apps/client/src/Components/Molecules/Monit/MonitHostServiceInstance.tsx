@@ -5,8 +5,8 @@ import MonitStatusAlert from "./MonitStatusAlert";
 const MonitHostServiceInstance: FC<{ item: MonitHostService }> = ({
     item: { status, port, name },
 }) => (
-    <MonitStatusAlert status={status}>
-        {name} [{port.protocol}] {port.portnumber}
+    <MonitStatusAlert status={status} name={name}>
+        [{port.protocol}] {port.portnumber}
     </MonitStatusAlert>
 );
 
