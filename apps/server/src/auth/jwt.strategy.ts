@@ -4,7 +4,6 @@ import { Injectable } from "@nestjs/common";
 import { Request } from "express";
 import { jwtConstants } from "./constants";
 import { User } from "../users/users.service";
-import cookieParser from "cookie-parser";
 
 interface WebsocketRequest {
     client?: {
@@ -16,25 +15,42 @@ interface WebsocketRequest {
     };
 }
 
+// Note: this seems to happen on profile check
+interface LogInRequest {
+    client?: {
+        request?: unknown;
+    };
+}
+
+// Note: cookieParser.JSONCookie should be able to do this, but it just returns undefined
+const parseCookie = (str: string): Record<string, string> => {
+    const cookies = str.split("; ");
+    const cookieItemsList = cookies.map((cookie) => cookie.split("="));
+    return Object.fromEntries(cookieItemsList);
+};
+
+const getAuthenticationFromWs = (request: WebsocketRequest): string => {
+    const cookieStr = request?.client?.request?.headers?.cookie;
+    if (cookieStr) {
+        const cookies = parseCookie(request?.client?.request?.headers?.cookie);
+        return cookies.Authentication ?? "";
+    } else {
+        return "";
+    }
+};
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
-                (request: Request | WebsocketRequest) => {
-                    if ("client" in request) {
-                        // console.log("extract", request?.cookies?.Authentication);
-                        console.log(
-                            "extract:",
-                            request?.client?.request?.headers?.cookie
-                        );
-                        const x = cookieParser.JSONCookie(
-                            request?.client?.request?.headers?.cookie
-                        );
-                        console.log("extract c:", x);
-                        return "?";
+                (request: Request | LogInRequest | WebsocketRequest) => {
+                    if ("client" in request && request?.client?.request) {
+                        return getAuthenticationFromWs(request);
                     } else if ("cookies" in request) {
                         return request?.cookies?.Authentication;
+                    } else {
+                        return "";
                     }
                 },
             ]),
