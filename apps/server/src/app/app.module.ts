@@ -20,6 +20,7 @@ import { LogoutController } from "../logout/logout.controller";
 import { NowplayingController } from "../nowplaying/nowplaying.controller";
 import { ServiceLinksController } from "../service-links/service-links.controller";
 import { MonitController } from "../monit/monit.controller";
+import { EventsGateway } from "./events.gateway";
 
 @Module({
     imports: [
@@ -57,6 +58,6 @@ import { MonitController } from "../monit/monit.controller";
         SwitchesController,
         UrltomusicController,
     ],
-    providers: [AppService],
+    providers: [AppService, EventsGateway],
 })
 export class AppModule {}
