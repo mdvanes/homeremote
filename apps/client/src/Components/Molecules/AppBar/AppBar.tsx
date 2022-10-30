@@ -12,12 +12,14 @@ import useStyles from "./AppBar.styles";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { AuthenticationState } from "../../Providers/Authentication/authenticationSlice";
+import useConnectionsSocket from "./useConnectionsSocket";
 
 interface Props {
     toggleDrawer: () => void;
 }
 
 const AppBar: FC<Props> = ({ toggleDrawer }) => {
+    useConnectionsSocket();
     const { classes } = useStyles();
     const greeting = useSelector<RootState, AuthenticationState["displayName"]>(
         (state: RootState) =>
