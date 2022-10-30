@@ -45,13 +45,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([
                 (request: Request | LogInRequest | WebsocketRequest) => {
-                    if ("client" in request && request?.client?.request) {
-                        return getAuthenticationFromWs(request);
-                    } else if ("cookies" in request) {
-                        return request?.cookies?.Authentication;
-                    } else {
-                        return "";
-                    }
+                    // @ts-ignore
+                    console.log("extract1: ", request?._eventsCount);
+                    // @ts-ignore
+                    console.log("extract2: ", request?._events);
+                    // @ts-ignore
+                    return request?.cookies?.Authentication;
+                    // TODO this is garbage, it only worked because socket.io was downgrading to http
+                    // TODO WebSocket does not support forwarding cookies, so also no httponly cookies
+                    // if ("client" in request && request?.client?.request) {
+                    //     return getAuthenticationFromWs(request);
+                    // } else if ("cookies" in request) {
+                    //     return request?.cookies?.Authentication;
+                    // } else {
+                    //     return "";
+                    // }
                 },
             ]),
             ignoreExpiration: false,
