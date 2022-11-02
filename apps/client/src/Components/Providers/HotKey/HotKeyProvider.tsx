@@ -6,10 +6,14 @@ import React, {
     useCallback,
     useContext,
     useEffect,
+    useMemo,
     useState,
 } from "react";
 
+type HotKeyMap = Record<string, { description: string; fn: () => void }>;
+
 export interface HotKeyState {
+    hotKeyMap: HotKeyMap;
     isRadioPlaying: boolean;
     setIsRadioPlaying: (_: boolean) => void;
     ports: Ports | null;
@@ -23,6 +27,7 @@ const noop = () => {
 };
 
 const initialState: HotKeyState = {
+    hotKeyMap: {},
     isRadioPlaying: false,
     setIsRadioPlaying: noop,
     ports: null,
@@ -35,46 +40,12 @@ export const HotKeyContext = React.createContext(initialState);
 
 export const useHotKeyContext = () => useContext(HotKeyContext);
 
-// const useHotKeyListeners = () => {
-//     const x = useHotKeyContext();
-//     // const toggleRadio = useCallback(() => {
-//     //     if (ports?.receivePlayPauseStatusPort?.send) {
-//     //         ports.receivePlayPauseStatusPort.send(
-//     //             isRadioPlaying ? "Pause" : "Play"
-//     //         );
-//     //     }
-//     // }, [ports, isRadioPlaying]);
-//     const toggleRadio = useCallback(() => {
-//         console.log(x);
-//         const { ports } = x;
-//         if (ports?.receivePlayPauseStatusPort?.send) {
-//             ports.receivePlayPauseStatusPort.send("Play");
-//         }
-//     }, [x]);
-//     return <button onClick={() => toggleRadio()}>test</button>;
-// };
-
-// TODO remove
-// export const HotKeyProvider2: FC = () => {
-//     const btn = useHotKeyListeners();
-//     return <div>{btn}</div>;
-// };
-
 // NOTE: using Context API because ports and jukeboxElemRef are not serializable and can't be stored in Redux
 export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [isRadioPlaying, setIsRadioPlaying] = useState(false);
     const [ports, setPorts] = useState<Ports | null>(null);
     const [jukeboxElem, setJukeboxElem] =
         useState<RefObject<HTMLAudioElement> | null>(null);
-
-    const state: HotKeyState = {
-        isRadioPlaying,
-        setIsRadioPlaying,
-        ports,
-        setPorts,
-        jukeboxElem,
-        setJukeboxElem,
-    };
 
     const toggleRadio = useCallback(() => {
         if (ports?.receivePlayPauseStatusPort?.send) {
@@ -109,24 +80,44 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         }
     }, [ports, isRadioPlaying, jukeboxElem]);
 
+    const hotKeyMap: Record<string, { description: string; fn: () => void }> =
+        useMemo(
+            () => ({
+                p: {
+                    description: "play/pause radio",
+                    fn: toggleRadio,
+                },
+                j: {
+                    description: "play/pause jukebox",
+                    fn: toggleJukebox,
+                },
+                t: {
+                    description: "toggle between radio and jukebox",
+                    fn: toggleBetween,
+                },
+            }),
+            [toggleBetween, toggleJukebox, toggleRadio]
+        );
+
+    const state: HotKeyState = {
+        hotKeyMap,
+        isRadioPlaying,
+        setIsRadioPlaying,
+        ports,
+        setPorts,
+        jukeboxElem,
+        setJukeboxElem,
+    };
+
     // handle what happens on key press
     const handleKeyPress = useCallback(
         (event: KeyboardEvent) => {
-            // TODO use a map instead of a list of if statements
-            // p for pause/play
-            if (event.key === "p") {
-                toggleRadio();
-            }
-            // j for pause/play of jukebox
-            if (event.key === "j") {
-                toggleJukebox();
-            }
-            // t for toggle
-            if (event.key === "t") {
-                toggleBetween();
+            const hotKeyAction = hotKeyMap[event.key];
+            if (hotKeyAction) {
+                hotKeyAction.fn();
             }
         },
-        [toggleRadio, toggleBetween, toggleJukebox]
+        [hotKeyMap]
     );
 
     useEffect(() => {
