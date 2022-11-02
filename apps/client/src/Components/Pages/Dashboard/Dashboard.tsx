@@ -12,6 +12,7 @@ import Monit from "../../Molecules/Monit/Monit";
 import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
 import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
+import Jukebox from "../../Molecules/Jukebox/Jukebox";
 
 const useStyles = makeStyles()(() => ({
     container: {
@@ -35,6 +36,8 @@ const Dashboard: FC = () => {
             </Grid>
             <Grid item xs={12} md>
                 <StreamContainer />
+                <Box marginTop={2} />
+                <Jukebox />
                 <Box marginTop={2} />
                 <ServiceLinksBar />
                 <Box marginTop={2} />

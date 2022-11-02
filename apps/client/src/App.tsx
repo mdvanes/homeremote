@@ -14,6 +14,7 @@ import AppBar from "./Components/Molecules/AppBar/AppBar";
 import DownloadList from "./Components/Molecules/DownloadList/DownloadList";
 import DrawerMenu from "./Components/Molecules/DrawerMenu/DrawerMenu";
 import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar";
+import Jukebox from "./Components/Molecules/Jukebox/Jukebox";
 import { logUrgentInfo } from "./Components/Molecules/LogCard/logSlice";
 import UrlToMusic from "./Components/Molecules/UrlToMusic/UrlToMusic";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
@@ -102,6 +103,10 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                     <Route
                                         path="/streams"
                                         element={<Streams />}
+                                    />
+                                    <Route
+                                        path="/jukebox"
+                                        element={<Jukebox />}
                                     />
                                     <Route
                                         path="/docker"

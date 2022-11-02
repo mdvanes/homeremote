@@ -7,18 +7,16 @@ import {
     ListItemText,
     Typography,
 } from "@mui/material";
-import { FC, RefObject, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
+import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import JukeboxPlayer, { LAST_PLAYLIST_ID } from "./JukeboxPlayer";
 import JukeboxSongList from "./JukeboxSongList";
 import { useLocalStorage } from "./useLocalStorage";
 
-interface IJukeboxProps {
-    setJukeboxElem: (elem: RefObject<HTMLAudioElement>) => void;
-}
-
-const Jukebox: FC<IJukeboxProps> = ({ setJukeboxElem }) => {
+const Jukebox: FC = () => {
+    const { setJukeboxElem } = useHotKeyContext();
     const audioElemRef = useRef<HTMLAudioElement>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
