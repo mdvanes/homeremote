@@ -12,6 +12,7 @@ import {
 import { FC, RefObject, useCallback } from "react";
 import { getNextSong } from "./getNextSong";
 import { getPrevSong } from "./getPrevSong";
+import HotKeyCoach from "./HotKeyCoach";
 
 interface IJukeboxPlayerProps {
     audioElemRef: RefObject<HTMLAudioElement>;
@@ -41,7 +42,6 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
             ? playlists.playlists.find((p) => p.id === playlistId)?.name
             : "";
 
-    // TODO add keybindings for prev/next
     const playNewSong = useCallback(
         (newSong: ISong) => {
             setCurrentSong(newSong);
@@ -75,10 +75,10 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
 
     return (
         <div>
-            <Typography sx={{ height: "40px" }}>
+            <Typography sx={{ height: "44px" }}>
                 {song.artist} - {song.title}
             </Typography>
-            <Typography variant="subtitle2" sx={{ height: "35px" }}>
+            <Typography variant="subtitle2" sx={{ height: "34px" }}>
                 {playlistName}
             </Typography>
             <Stack direction="row">
@@ -94,6 +94,7 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                 <IconButton title="Next track (d)" onClick={handlePlayNext}>
                     <FastForwardIcon />
                 </IconButton>
+                <HotKeyCoach />
             </Stack>
         </div>
     );
