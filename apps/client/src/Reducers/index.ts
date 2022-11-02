@@ -1,7 +1,7 @@
-import loglinesReducer from "../Components/Molecules/LogCard/logSlice";
 import appStatusReducer from "../Components/Molecules/AppStatusButton/appStatusSlice";
-import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBarListSlice";
 import authenticationReducer from "../Components/Providers/Authentication/authenticationSlice";
+import loglinesReducer from "../Components/Molecules/LogCard/logSlice";
+import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBarListSlice";
 import urlToMusicReducer from "../Components/Molecules/UrlToMusic/urlToMusicSlice";
 import { dataloraApi } from "../Services/dataloraApi";
 import { dockerListApi } from "../Services/dockerListApi";
@@ -14,10 +14,10 @@ import { urlToMusicApi } from "../Services/urlToMusicApi";
 import { monitApi } from "../Services/monitApi";
 
 const rootReducer = combineReducers({
-    loglines: loglinesReducer,
     appStatus: appStatusReducer,
-    switchesList: switchBarListReducer,
     authentication: authenticationReducer,
+    loglines: loglinesReducer,
+    switchesList: switchBarListReducer,
     urlToMusic: urlToMusicReducer,
     [activeConnectionsApi.reducerPath]: activeConnectionsApi.reducer,
     [dataloraApi.reducerPath]: dataloraApi.reducer,
