@@ -20,6 +20,10 @@ export interface HotKeyState {
     setPorts: (_: Ports | null) => void;
     jukeboxElem: RefObject<HTMLAudioElement> | null;
     setJukeboxElem: (_: RefObject<HTMLAudioElement> | null) => void;
+    handlePlayPrev: () => void;
+    setHandlePlayPrev: (_: () => void) => void;
+    handlePlayNext: () => void;
+    setHandlePlayNext: (_: () => void) => void;
 }
 
 const noop = () => {
@@ -34,6 +38,10 @@ const initialState: HotKeyState = {
     setPorts: noop,
     jukeboxElem: null,
     setJukeboxElem: noop,
+    handlePlayPrev: noop,
+    setHandlePlayPrev: noop,
+    handlePlayNext: noop,
+    setHandlePlayNext: noop,
 };
 
 export const HotKeyContext = React.createContext(initialState);
@@ -46,6 +54,8 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [ports, setPorts] = useState<Ports | null>(null);
     const [jukeboxElem, setJukeboxElem] =
         useState<RefObject<HTMLAudioElement> | null>(null);
+    const [handlePlayPrev, setHandlePlayPrev] = useState(() => noop);
+    const [handlePlayNext, setHandlePlayNext] = useState(() => noop);
 
     const toggleRadio = useCallback(() => {
         if (ports?.receivePlayPauseStatusPort?.send) {
@@ -83,20 +93,34 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const hotKeyMap: Record<string, { description: string; fn: () => void }> =
         useMemo(
             () => ({
-                p: {
+                q: {
                     description: "play/pause radio",
                     fn: toggleRadio,
                 },
-                j: {
-                    description: "play/pause jukebox",
-                    fn: toggleJukebox,
-                },
-                t: {
+                w: {
                     description: "toggle between radio and jukebox",
                     fn: toggleBetween,
                 },
+                a: {
+                    description: "play previous on jukebox",
+                    fn: handlePlayPrev,
+                },
+                s: {
+                    description: "play/pause jukebox",
+                    fn: toggleJukebox,
+                },
+                d: {
+                    description: "play next on jukebox",
+                    fn: handlePlayNext,
+                },
             }),
-            [toggleBetween, toggleJukebox, toggleRadio]
+            [
+                handlePlayNext,
+                handlePlayPrev,
+                toggleBetween,
+                toggleJukebox,
+                toggleRadio,
+            ]
         );
 
     const state: HotKeyState = {
@@ -107,6 +131,10 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setPorts,
         jukeboxElem,
         setJukeboxElem,
+        handlePlayPrev,
+        setHandlePlayPrev,
+        handlePlayNext,
+        setHandlePlayNext,
     };
 
     // handle what happens on key press

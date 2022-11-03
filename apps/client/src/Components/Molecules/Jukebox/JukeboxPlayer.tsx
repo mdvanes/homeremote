@@ -9,10 +9,11 @@ import {
     useGetPlaylistQuery,
     useGetPlaylistsQuery,
 } from "../../../Services/jukeboxApi";
-import { FC, RefObject, useCallback } from "react";
+import { FC, RefObject, useCallback, useEffect } from "react";
 import { getNextSong } from "./getNextSong";
 import { getPrevSong } from "./getPrevSong";
 import HotKeyCoach from "./HotKeyCoach";
+import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 
 interface IJukeboxPlayerProps {
     audioElemRef: RefObject<HTMLAudioElement>;
@@ -30,6 +31,7 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
     playlistId,
     setCurrentSong,
 }) => {
+    const { setHandlePlayPrev, setHandlePlayNext } = useHotKeyContext();
     const { data: playlists } = useGetPlaylistsQuery(undefined);
     const playlistArgs: PlaylistArgs | typeof skipToken = playlistId
         ? { id: playlistId }
@@ -72,6 +74,14 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
         }
         playNewSong(nextSong);
     }, [playNewSong, playlist, song.id]);
+
+    useEffect(() => {
+        setHandlePlayPrev(() => handlePlayPrev);
+    }, [handlePlayPrev, setHandlePlayPrev]);
+
+    useEffect(() => {
+        setHandlePlayNext(() => handlePlayNext);
+    }, [handlePlayNext, setHandlePlayNext]);
 
     return (
         <div>

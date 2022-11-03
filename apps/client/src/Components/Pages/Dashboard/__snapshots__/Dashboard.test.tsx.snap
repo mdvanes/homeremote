@@ -13,6 +13,7 @@ exports[`Dashboard page contains all the control components 1`] = `
         <div
           class="MuiBox-root css-1yuhvjn"
         />
+        <mock-url-to-music />
         <div
           class="MuiBox-root css-1yuhvjn"
         />
@@ -35,20 +36,16 @@ exports[`Dashboard page contains all the control components 1`] = `
         <div
           class="MuiBox-root css-1yuhvjn"
         />
-        <mock-service-links-bar />
-        <div
-          class="MuiBox-root css-1yuhvjn"
-        />
         <mock-video-stream />
         <div
           class="MuiBox-root css-1yuhvjn"
         />
-        <mock-url-to-music />
+        <mock-datalora />
       </div>
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-5 css-urj5pv-MuiGrid-root"
       >
-        <mock-datalora />
+        <mock-service-links-bar />
         <div
           class="MuiBox-root css-1yuhvjn"
         />
