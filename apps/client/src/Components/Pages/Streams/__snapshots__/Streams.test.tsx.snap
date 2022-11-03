@@ -10,10 +10,6 @@ exports[`Streams page contains the stream player 1`] = `
         url="http://localhost"
       />
     </div>
-    <div
-      class="MuiBox-root css-1yuhvjn"
-    />
-    <mock-jukebox />
   </div>
 </body>
 `;
