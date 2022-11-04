@@ -9,6 +9,7 @@ import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import DockerInfo from "../DockerInfo/DockerInfo";
 import LoadingDot from "../LoadingDot/LoadingDot";
+import ContainerDot from "./ContainerDot";
 
 const UPDATE_INTERVAL_MS = 30000;
 
@@ -17,20 +18,6 @@ const mapInfo = (c: DockerContainerInfo) => <DockerInfo key={c.Id} info={c} />;
 interface DockerListProps {
     onError: (err: string) => void;
 }
-
-const ContainerDot: FC<{ info: DockerContainerInfo }> = ({ info }) => (
-    <Box
-        title={info.Names.join(",")}
-        sx={{
-            display: "inline-block",
-            width: 8,
-            height: 8,
-            backgroundColor: "#29b6f6",
-            marginRight: 0.25,
-            borderRadius: "50%",
-        }}
-    ></Box>
-);
 
 const DockerList: FC<DockerListProps> = ({ onError }) => {
     const [isOpen, setIsOpen] = useState(false);
