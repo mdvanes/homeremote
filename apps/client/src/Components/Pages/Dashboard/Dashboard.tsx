@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { FC } from "react";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import LogCard from "../../Molecules/LogCard/LogCard";

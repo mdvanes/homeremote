@@ -53,15 +53,13 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
     const containers1 = containers.slice(0, containers.length / 2);
     const containers2 = containers.slice(containers.length / 2);
 
-    const loadProgress = isLoading || isFetching ? <LoadingDot /> : " ";
-
     const containerDots = runningContainers.map((c) => (
         <ContainerDot info={c} />
     ));
 
     return (
         <>
-            {loadProgress}
+            <LoadingDot isLoading={isLoading || isFetching} noMargin />
             <Grid container gap={0.5}>
                 <Grid item xs>
                     <Stack spacing={0.5}>{containers1.map(mapInfo)}</Stack>
