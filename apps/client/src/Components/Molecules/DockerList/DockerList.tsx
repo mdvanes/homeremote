@@ -1,4 +1,4 @@
-import { Alert, Grid } from "@mui/material";
+import { Alert, Box, Grid } from "@mui/material";
 import { Stack } from "@mui/system";
 import { FC, useEffect, useState } from "react";
 import {
@@ -17,6 +17,20 @@ const mapInfo = (c: DockerContainerInfo) => <DockerInfo key={c.Id} info={c} />;
 interface DockerListProps {
     onError: (err: string) => void;
 }
+
+const ContainerDot: FC<{ info: DockerContainerInfo }> = ({ info }) => (
+    <Box
+        title={info.Names.join(",")}
+        sx={{
+            display: "inline-block",
+            width: 8,
+            height: 8,
+            backgroundColor: "#29b6f6",
+            marginRight: 0.25,
+            borderRadius: "50%",
+        }}
+    ></Box>
+);
 
 const DockerList: FC<DockerListProps> = ({ onError }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +56,9 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
     }
 
     const allContainers = data.containers ?? [];
+    const runningContainers = (data.containers ?? []).filter(
+        (c) => c.State === "running"
+    );
     const notRunningContainers = (data.containers ?? []).filter(
         (c) => c.State !== "running"
     );
@@ -50,6 +67,10 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
     const containers2 = containers.slice(containers.length / 2);
 
     const loadProgress = isLoading || isFetching ? <LoadingDot /> : " ";
+
+    const containerDots = runningContainers.map((c) => (
+        <ContainerDot info={c} />
+    ));
 
     return (
         <>
@@ -62,6 +83,14 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
                     <Stack spacing={0.5}>{containers2.map(mapInfo)}</Stack>
                 </Grid>
             </Grid>
+            <>
+                {!isOpen && containers.length === 0 && (
+                    <Box sx={{ marginRight: 1, display: "inline-block" }}>
+                        No stopped containers
+                    </Box>
+                )}
+                {!isOpen && <>{containerDots}</>}
+            </>
             <CardExpandBar
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}

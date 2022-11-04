@@ -14,12 +14,15 @@ import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Jukebox from "../../Molecules/Jukebox/Jukebox";
 
-const useStyles = makeStyles()(() => ({
+const useStyles = makeStyles()((theme) => ({
     container: {
-        marginBottom: "10px",
         "& .card-dashboard-height": {
             minHeight: "374px",
         },
+        "& > .MuiGrid-item > .MuiPaper-root, & > .MuiGrid-item > .MuiContainer-root":
+            {
+                marginBottom: theme.spacing(2),
+            },
     },
 }));
 
@@ -30,27 +33,19 @@ const Dashboard: FC = () => {
             <Grid item xs={12} md={3}>
                 <SwitchBarList />
                 {/* <ActiveConnections /> */}
-                <Box marginTop={2} />
                 <UrlToMusic />
-                <Box marginTop={2} />
                 <LogCard />
             </Grid>
             <Grid item xs={12} md>
                 <StreamContainer />
-                <Box marginTop={2} />
                 <Jukebox />
-                <Box marginTop={2} />
                 <VideoStream />
-                <Box marginTop={2} />
                 <DataLora />
             </Grid>
             <Grid item xs={12} md={5}>
                 <ServiceLinksBar />
-                <Box marginTop={2} />
                 <Docker />
-                <Box marginTop={2} />
                 <DownloadList />
-                <Box marginTop={2} />
                 <Monit />
             </Grid>
             <Grid item xs={12} md={2}></Grid>
