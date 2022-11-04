@@ -12,7 +12,7 @@ const UrlToMusic: FC = () => {
     );
 
     return (
-        <Card className="card-dashboard-height">
+        <Card>
             <CardContent>
                 <GetInfoForm />
                 {showGetMusicForm && <GetMusicForm />}
