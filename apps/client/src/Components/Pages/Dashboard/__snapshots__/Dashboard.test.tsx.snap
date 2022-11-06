@@ -4,19 +4,13 @@ exports[`Dashboard page contains all the control components 1`] = `
 <body>
   <div>
     <div
-      class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-ke7jgj-MuiGrid-root-container"
+      class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-1nn7nf3-MuiGrid-root-container"
     >
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-iv7vbz-MuiGrid-root"
       >
         <mock-switch-bar-list />
-        <div
-          class="MuiBox-root css-1yuhvjn"
-        />
         <mock-url-to-music />
-        <div
-          class="MuiBox-root css-1yuhvjn"
-        />
         <mock-log-card />
       </div>
       <div
@@ -29,34 +23,16 @@ exports[`Dashboard page contains all the control components 1`] = `
             url="http://localhost"
           />
         </div>
-        <div
-          class="MuiBox-root css-1yuhvjn"
-        />
         <mock-jukebox />
-        <div
-          class="MuiBox-root css-1yuhvjn"
-        />
         <mock-video-stream />
-        <div
-          class="MuiBox-root css-1yuhvjn"
-        />
         <mock-datalora />
       </div>
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-5 css-urj5pv-MuiGrid-root"
       >
         <mock-service-links-bar />
-        <div
-          class="MuiBox-root css-1yuhvjn"
-        />
         <mock-docker />
-        <div
-          class="MuiBox-root css-1yuhvjn"
-        />
         <mock-download-list />
-        <div
-          class="MuiBox-root css-1yuhvjn"
-        />
         <mock-monit />
       </div>
       <div

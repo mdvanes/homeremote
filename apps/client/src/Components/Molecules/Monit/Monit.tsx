@@ -20,12 +20,10 @@ const Monit: FC = () => {
         return <Alert severity="error">{getErrorMessage(error)}</Alert>;
     }
 
-    const loadProgress = isLoading || isFetching ? <LoadingDot /> : " ";
-
     return (
         <Card>
             <CardContent>
-                {loadProgress}
+                <LoadingDot isLoading={isLoading || isFetching} noMargin />
                 {data?.monitlist.map((monit) => (
                     <MonitInstance monit={monit} key={monit.localhostname} />
                 ))}

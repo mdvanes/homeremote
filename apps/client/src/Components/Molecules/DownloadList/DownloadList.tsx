@@ -1,14 +1,14 @@
 import { FC, useEffect, useState } from "react";
-import { LinearProgress, List, Paper } from "@mui/material";
+import { List, Paper } from "@mui/material";
 import { useAppDispatch } from "../../../store";
 import DownloadListItem from "./DownloadListItem";
 import { logError } from "../LogCard/logSlice";
 import { useGetDownloadListQuery } from "../../../Services/downloadListApi";
 import { Alert } from "@mui/lab";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
+import LoadingDot from "../LoadingDot/LoadingDot";
 
 const UPDATE_INTERVAL_MS = 30000;
-const SLOW_UDPATE_MS = 1000; // if the response takes longer than 1000ms, it is considered slow and the full progress bar is shown
 
 const DownloadList: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +21,6 @@ const DownloadList: FC = () => {
         }
     );
     const [listItems, setListItems] = useState<JSX.Element[]>([]);
-    const [isSlow, setIsSlow] = useState(false);
 
     useEffect(() => {
         if (error) {
@@ -44,34 +43,9 @@ const DownloadList: FC = () => {
         }
     }, [dispatch, data, isOpen]);
 
-    useEffect(() => {
-        let timer: ReturnType<typeof setTimeout> | null = null;
-        if (isLoading || isFetching) {
-            setIsSlow(false);
-            timer = setTimeout(() => {
-                setIsSlow(true);
-            }, SLOW_UDPATE_MS);
-        }
-        return () => {
-            if (timer) {
-                clearTimeout(timer);
-            }
-        };
-    }, [isLoading, isFetching]);
-
-    const loadProgress =
-        isLoading || isFetching ? (
-            <LinearProgress
-                variant="indeterminate"
-                style={{ width: isSlow ? "auto" : 4 }}
-            />
-        ) : (
-            <div style={{ height: 4 }}></div>
-        );
-
     return (
         <List component={Paper}>
-            {loadProgress}
+            <LoadingDot isLoading={isLoading || isFetching} />
             {error && (
                 <Alert severity="error">
                     There is an error, data may be stale

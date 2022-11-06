@@ -15,6 +15,7 @@ import prettyBytes from "pretty-bytes";
 import prettyMs from "pretty-ms";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { DownloadItem, SimpleDownloadState } from "@homeremote/types";
+import { wait } from "../util/wait";
 
 type DownloadListResponse =
     | { status: "received"; downloads: DownloadItem[] }
@@ -45,13 +46,6 @@ const mapToDownloadItem = (item: NormalizedTorrent): DownloadItem => ({
     uploadSpeed: prettyBytes(item.uploadSpeed),
     eta: item.eta > 0 ? prettyMs(item.eta * 1000, { compact: true }) : "",
 });
-
-const wait = (ms: number) =>
-    new Promise<void>((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, ms);
-    });
 
 @Controller("api/downloadlist")
 export class DownloadlistController {

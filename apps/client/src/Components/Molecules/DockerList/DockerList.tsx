@@ -1,4 +1,4 @@
-import { Alert, Grid } from "@mui/material";
+import { Alert, Box, Grid } from "@mui/material";
 import { Stack } from "@mui/system";
 import { FC, useEffect, useState } from "react";
 import {
@@ -9,6 +9,7 @@ import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import DockerInfo from "../DockerInfo/DockerInfo";
 import LoadingDot from "../LoadingDot/LoadingDot";
+import ContainerDot from "./ContainerDot";
 
 const UPDATE_INTERVAL_MS = 30000;
 
@@ -42,24 +43,38 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
     }
 
     const allContainers = data.containers ?? [];
+    const runningContainers = (data.containers ?? []).filter(
+        (c) => c.State === "running"
+    );
     const notRunningContainers = (data.containers ?? []).filter(
         (c) => c.State !== "running"
     );
+    const containerDots = runningContainers.map((c) => (
+        <ContainerDot key={c.Id} info={c} />
+    ));
     const containers = isOpen ? allContainers : notRunningContainers;
-    const containers1 = containers.slice(0, containers.length / 2);
-    const containers2 = containers.slice(containers.length / 2);
-
-    const loadProgress = isLoading || isFetching ? <LoadingDot /> : " ";
+    const containers1 = containers.slice(0, Math.ceil(containers.length / 2));
+    const containers2 = containers.slice(Math.ceil(containers.length / 2));
 
     return (
         <>
-            {loadProgress}
+            <LoadingDot isLoading={isLoading || isFetching} noMargin />
+            <>
+                {!isOpen && containers.length === 0 && (
+                    <Box sx={{ marginRight: 1, display: "inline-block" }}>
+                        No stopped containers
+                    </Box>
+                )}
+            </>
             <Grid container gap={0.5}>
                 <Grid item xs>
                     <Stack spacing={0.5}>{containers1.map(mapInfo)}</Stack>
                 </Grid>
                 <Grid item xs>
-                    <Stack spacing={0.5}>{containers2.map(mapInfo)}</Stack>
+                    <Stack spacing={0.5}>
+                        {containers2.map(mapInfo)}
+                        {!isOpen && <div>{containerDots}</div>}
+                    </Stack>
                 </Grid>
             </Grid>
             <CardExpandBar
