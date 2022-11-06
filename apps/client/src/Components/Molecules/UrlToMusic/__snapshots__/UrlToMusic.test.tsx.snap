@@ -3,7 +3,7 @@
 exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
 <DocumentFragment>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root card-dashboard-height css-bhp9pd-MuiPaper-root-MuiCard-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
   >
     <div
       class="MuiCardContent-root css-46bh2p-MuiCardContent-root"
@@ -147,7 +147,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
 exports[`UrlToMusic shows the GetInfo form 1`] = `
 <DocumentFragment>
   <div
-    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root card-dashboard-height css-bhp9pd-MuiPaper-root-MuiCard-root"
+    class="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-bhp9pd-MuiPaper-root-MuiCard-root"
   >
     <div
       class="MuiCardContent-root css-46bh2p-MuiCardContent-root"

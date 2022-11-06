@@ -5,7 +5,6 @@ import LogCard from "../../Molecules/LogCard/LogCard";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import Docker from "../Docker/Docker";
-// import ActiveConnections from "../../Molecules/ActiveConnections/ActiveConnections";
 import { makeStyles } from "tss-react/mui";
 import DataLora from "../../Molecules/DataLora/DataLora";
 import Monit from "../../Molecules/Monit/Monit";
@@ -32,7 +31,6 @@ const Dashboard: FC = () => {
         <Grid container spacing={2} className={classes.container}>
             <Grid item xs={12} md={3}>
                 <SwitchBarList />
-                {/* <ActiveConnections /> */}
                 <UrlToMusic />
                 <LogCard />
             </Grid>
