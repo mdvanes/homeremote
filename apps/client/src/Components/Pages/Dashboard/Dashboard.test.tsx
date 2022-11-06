@@ -14,10 +14,6 @@ jest.mock(
 );
 jest.mock("@mdworld/homeremote-stream-player", () => "mock-stream-player");
 jest.mock("../../Pages/Docker/Docker", () => "mock-docker");
-jest.mock(
-    "../../Molecules/ActiveConnections/ActiveConnections",
-    () => "mock-active-connections"
-);
 jest.mock("../../Molecules/DataLora/DataLora", () => "mock-datalora");
 jest.mock("../../Molecules/VideoStream/VideoStream", () => "mock-video-stream");
 jest.mock(
