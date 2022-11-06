@@ -12,6 +12,7 @@ import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
 import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Jukebox from "../../Molecules/Jukebox/Jukebox";
+import Schedule from "../../Molecules/Schedule/Schedule";
 
 const useStyles = makeStyles()((theme) => ({
     container: {
@@ -43,6 +44,7 @@ const Dashboard: FC = () => {
             <Grid item xs={12} md={5}>
                 <ServiceLinksBar />
                 <Docker />
+                <Schedule />
                 <DownloadList />
                 <Monit />
             </Grid>
