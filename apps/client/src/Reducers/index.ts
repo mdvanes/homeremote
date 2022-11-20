@@ -1,17 +1,19 @@
+import { combineReducers } from "redux";
 import appStatusReducer from "../Components/Molecules/AppStatusButton/appStatusSlice";
-import authenticationReducer from "../Components/Providers/Authentication/authenticationSlice";
 import loglinesReducer from "../Components/Molecules/LogCard/logSlice";
 import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBarListSlice";
 import urlToMusicReducer from "../Components/Molecules/UrlToMusic/urlToMusicSlice";
+import authenticationReducer from "../Components/Providers/Authentication/authenticationSlice";
+import { activeConnectionsApi } from "../Services/activeConnectionsApi";
 import { dataloraApi } from "../Services/dataloraApi";
 import { dockerListApi } from "../Services/dockerListApi";
 import { downloadListApi } from "../Services/downloadListApi";
-import { activeConnectionsApi } from "../Services/activeConnectionsApi";
-import { combineReducers } from "redux";
-import { serviceLinksApi } from "../Services/serviceLinksApi";
 import { jukeboxApi } from "../Services/jukeboxApi";
-import { urlToMusicApi } from "../Services/urlToMusicApi";
 import { monitApi } from "../Services/monitApi";
+import { nextupApi } from "../Services/nextupApi";
+import { scheduleApi } from "../Services/scheduleApi";
+import { serviceLinksApi } from "../Services/serviceLinksApi";
+import { urlToMusicApi } from "../Services/urlToMusicApi";
 
 const rootReducer = combineReducers({
     appStatus: appStatusReducer,
@@ -25,6 +27,8 @@ const rootReducer = combineReducers({
     [downloadListApi.reducerPath]: downloadListApi.reducer,
     [jukeboxApi.reducerPath]: jukeboxApi.reducer,
     [monitApi.reducerPath]: monitApi.reducer,
+    [nextupApi.reducerPath]: nextupApi.reducer,
+    [scheduleApi.reducerPath]: scheduleApi.reducer,
     [serviceLinksApi.reducerPath]: serviceLinksApi.reducer,
     [urlToMusicApi.reducerPath]: urlToMusicApi.reducer,
 });

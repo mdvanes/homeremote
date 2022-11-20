@@ -32,7 +32,9 @@ exports[`Dashboard page contains all the control components 1`] = `
       >
         <mock-service-links-bar />
         <mock-docker />
+        <mock-schedule />
         <mock-download-list />
+        <mock-nextup />
         <mock-monit />
       </div>
       <div

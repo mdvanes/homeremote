@@ -14,6 +14,7 @@ import {
     setFormFieldError,
     UrlToMusicState,
 } from "./urlToMusicSlice";
+import ReactPlayer from "react-player";
 
 const GetInfoForm: FC = () => {
     const dispatch = useDispatch();
@@ -26,7 +27,8 @@ const GetInfoForm: FC = () => {
         ? { url: query }
         : skipToken;
 
-    const { isFetching, isLoading, error, refetch } = useGetInfoQuery(args);
+    const { isFetching, isLoading, error, refetch, data } =
+        useGetInfoQuery(args);
 
     const validateGetInfo = (): boolean => {
         if (form.url.value === "") {
@@ -80,11 +82,16 @@ const GetInfoForm: FC = () => {
             </form>
             {error && <Alert severity="error">{getErrorMessage(error)}</Alert>}
             {(isFetching || isLoading) && <CircularProgress />}
-            {/* TODO show a sensible preview */}
-            {/* {data?.streamUrl &&
-                data.streamUrl.map((s) => (
-                    <video width={400} controls src={s} />
-                ))} */}
+            {form.url.value && (
+                <ReactPlayer
+                    style={{
+                        aspectRatio: "16/9",
+                    }}
+                    height="auto"
+                    width="100%"
+                    url={form.url.value}
+                />
+            )}
         </>
     );
 };
