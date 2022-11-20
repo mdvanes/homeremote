@@ -1,7 +1,5 @@
 import {
     GetNextUpResponse,
-    GetScheduleResponse,
-    NextUpVideoItem,
     ShowNextUpResponse,
     UserLatestResponse,
 } from "@homeremote/types";
@@ -11,7 +9,10 @@ import {
     HttpException,
     HttpStatus,
     Logger,
+    Param,
+    Query,
     Request,
+    StreamableFile,
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -23,9 +24,25 @@ import { isDefined } from "../util/isDefined";
 @Controller("api/nextup")
 export class NextupController {
     private readonly logger: Logger;
+    private readonly apiConfig: {
+        NEXTUP_URL: string;
+        NEXTUP_API_TOKEN: string;
+        NEXTUP_USER_ID: string;
+    };
 
     constructor(private configService: ConfigService) {
         this.logger = new Logger(NextupController.name);
+        const NEXTUP_URL = this.configService.get<string>("NEXTUP_URL") || "";
+        // Create an API token in the Admin dashboard
+        const NEXTUP_API_TOKEN =
+            this.configService.get<string>("NEXTUP_API_TOKEN") || "";
+        const NEXTUP_USER_ID =
+            this.configService.get<string>("NEXTUP_USER_ID") || "";
+        this.apiConfig = {
+            NEXTUP_URL,
+            NEXTUP_USER_ID,
+            NEXTUP_API_TOKEN,
+        };
     }
 
     @UseGuards(JwtAuthGuard)
@@ -35,17 +52,10 @@ export class NextupController {
     ): Promise<GetNextUpResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/nextup`);
 
-        const NEXTUP_URL = this.configService.get<string>("NEXTUP_URL") || "";
-        // Create an API token in the Admin dashboard
-        const NEXTUP_API_TOKEN =
-            this.configService.get<string>("NEXTUP_API_TOKEN") || "";
-        const NEXTUP_USER_ID =
-            this.configService.get<string>("NEXTUP_USER_ID") || "";
+        const { NEXTUP_URL, NEXTUP_USER_ID, NEXTUP_API_TOKEN } = this.apiConfig;
 
         try {
-            // TODO *** DO NOT CHECKIN *** url contains parent ID
-            // TODO latest
-            const url = `${NEXTUP_URL}/Users/${NEXTUP_USER_ID}/Items/Latest?api_key=${NEXTUP_API_TOKEN}&userId=${NEXTUP_USER_ID}&IncludeItemTypes=Episode&Limit=30&Fields=PrimaryImageAspectRatio,BasicSyncInfo&ParentId=&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`;
+            const url = `${NEXTUP_URL}/Users/${NEXTUP_USER_ID}/Items/Latest?api_key=${NEXTUP_API_TOKEN}&userId=${NEXTUP_USER_ID}&IncludeItemTypes=Episode&Limit=30&Fields=PrimaryImageAspectRatio,BasicSyncInfo&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`;
             const response: UserLatestResponse = await got(url).json();
 
             const userLatestItems = response.map((userLatestItem) => {
@@ -60,7 +70,7 @@ export class NextupController {
             });
 
             const seriesNextupPromises = userLatestItems.map((element) => {
-                const tvShowNextUpUrl = `${NEXTUP_URL}/Shows/NextUp?api_key=${NEXTUP_API_TOKEN}&userId=${NEXTUP_USER_ID}&seriesId=${element.seriesId}&IncludeItemTypes=Episode&Limit=30&Fields=PrimaryImageAspectRatio,BasicSyncInfo&ParentId=&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`;
+                const tvShowNextUpUrl = `${NEXTUP_URL}/Shows/NextUp?api_key=${NEXTUP_API_TOKEN}&userId=${NEXTUP_USER_ID}&seriesId=${element.seriesId}&IncludeItemTypes=Episode&Limit=30&Fields=PrimaryImageAspectRatio,BasicSyncInfo&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`;
                 const response: Promise<ShowNextUpResponse> =
                     got(tvShowNextUpUrl).json();
                 return response;
@@ -68,21 +78,6 @@ export class NextupController {
             const seriesNextupResponses = await Promise.all(
                 seriesNextupPromises
             );
-            // seriesNextupResponses.map((item) => {
-            //     const {
-            //         SeriesName,
-            //         ParentIndexNumber,
-            //         IndexNumber,
-            //         Name,
-            //         ProductionYear,
-            //         CommunityRating,
-            //         ImageTags,
-            //     } = item?.Items[0] ?? {};
-            //     console.log(
-            //         `seriesNextupResults: ${SeriesName} ${ParentIndexNumber}x${IndexNumber} ${Name} (${ProductionYear}) ${CommunityRating}👍`,
-            //         ImageTags
-            //     );
-            // });
 
             const result = seriesNextupResponses
                 .map((response) => response.Items[0] ?? undefined)
@@ -93,6 +88,39 @@ export class NextupController {
             };
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @Get("thumbnail/:id")
+    async getThumbnail(
+        @Param("id") id: string,
+        @Query("imageTagsPrimary") imageTagsPrimary: string,
+        @Query("big") big: "on" | "off"
+    ): Promise<StreamableFile> {
+        this.logger.verbose("GET to /api/nextup/thumbnail/:id", id);
+
+        try {
+            const size =
+                big === "on" ? "maxWidth=1920" : "fillHeight=180&fillWidth=320";
+            const { NEXTUP_URL } = this.apiConfig;
+            const streamUrl = `${NEXTUP_URL}/Items/${id}/Images/Primary?${size}&quality=96&tag=${imageTagsPrimary}`;
+
+            if (!NEXTUP_URL) {
+                this.logger.error("missing configuration");
+                throw new HttpException(
+                    "failed to receive downstream data",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            }
+
+            const str = got.stream(streamUrl);
+            return new StreamableFile(str);
+        } catch (err) {
+            this.logger.error(err);
             throw new HttpException(
                 "failed to receive downstream data",
                 HttpStatus.INTERNAL_SERVER_ERROR
