@@ -43,7 +43,13 @@ const DockerInfo: FC<{ info: DockerContainerInfo }> = ({ info }) => {
 
     return (
         <>
-            <Alert severity={isUp ? "info" : "error"} onClick={handleClickOpen}>
+            <Alert
+                severity={isUp ? "info" : "error"}
+                onClick={handleClickOpen}
+                sx={{
+                    cursor: "pointer",
+                }}
+            >
                 {name} | {Status}
             </Alert>
             <Dialog
