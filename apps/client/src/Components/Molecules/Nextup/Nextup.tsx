@@ -11,11 +11,27 @@ import {
     ListItemText,
     Paper,
 } from "@mui/material";
+import { ShowNextUpItem } from "@homeremote/types";
 
-// TODO fix types
+const SelectedItemDialogContent: FC<{ item?: ShowNextUpItem }> = ({ item }) => {
+    if (!item) {
+        return null;
+    }
+    const { Name, Id, ImageTags } = item;
+    return (
+        <>
+            <DialogTitle>{Name}</DialogTitle>
+            <img
+                alt="TODO"
+                src={`${process.env.NX_BASE_URL}/api/nextup/thumbnail/${Id}?imageTagsPrimary=${ImageTags.Primary}`}
+            />
+        </>
+    );
+};
+
 // TODO reduce padding
 const Nextup: FC = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<ShowNextUpItem>();
     // TODO poll
     const { data } = useGetNextupQuery(undefined);
     if (!data) {
@@ -37,20 +53,14 @@ const Nextup: FC = () => {
                         ImageTags,
                     } = item;
                     return (
-                        <ListItem
-
-                        // style={{ flexDirection: "column" }}
-                        >
-                            {/* {item.seriesName} {item.seasonNr}x{item.epNr} {item.name} */}
-                            {/* {JSON.stringify(item)} */}
+                        <ListItem>
                             <ListItemButton
-                                onClick={() => setIsModalOpen(true)}
+                                onClick={() => setSelectedItem(item)}
                             >
                                 <ListItemAvatar>
                                     <Avatar
-                                        alt="TODO"
-                                        // TODO fix root path
-                                        src={`http:///Items/${Id}/Images/Primary?fillHeight=180&fillWidth=320&quality=96&tag=${ImageTags.Primary}`}
+                                        alt={`Screenshot for ${Name}`}
+                                        src={`${process.env.NX_BASE_URL}/api/nextup/thumbnail/${Id}?imageTagsPrimary=${ImageTags.Primary}`}
                                     />
                                 </ListItemAvatar>
                                 <ListItemText
@@ -73,9 +83,11 @@ const Nextup: FC = () => {
                     );
                 })}
             </List>
-            <Dialog open={isModalOpen} onClick={() => setIsModalOpen(false)}>
-                <DialogTitle>Set backup account</DialogTitle>
-                <img alt="TODO" src={`TODO`} />
+            <Dialog
+                open={Boolean(selectedItem)}
+                onClick={() => setSelectedItem(undefined)}
+            >
+                <SelectedItemDialogContent item={selectedItem} />
             </Dialog>
         </>
     );
