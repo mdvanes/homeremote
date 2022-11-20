@@ -10,6 +10,7 @@ import { dockerListApi } from "../Services/dockerListApi";
 import { downloadListApi } from "../Services/downloadListApi";
 import { jukeboxApi } from "../Services/jukeboxApi";
 import { monitApi } from "../Services/monitApi";
+import { nextupApi } from "../Services/nextupApi";
 import { scheduleApi } from "../Services/scheduleApi";
 import { serviceLinksApi } from "../Services/serviceLinksApi";
 import { urlToMusicApi } from "../Services/urlToMusicApi";
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
     [downloadListApi.reducerPath]: downloadListApi.reducer,
     [jukeboxApi.reducerPath]: jukeboxApi.reducer,
     [monitApi.reducerPath]: monitApi.reducer,
+    [nextupApi.reducerPath]: nextupApi.reducer,
     [scheduleApi.reducerPath]: scheduleApi.reducer,
     [serviceLinksApi.reducerPath]: serviceLinksApi.reducer,
     [urlToMusicApi.reducerPath]: urlToMusicApi.reducer,

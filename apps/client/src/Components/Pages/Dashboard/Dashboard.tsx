@@ -13,6 +13,7 @@ import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Jukebox from "../../Molecules/Jukebox/Jukebox";
 import Schedule from "../../Molecules/Schedule/Schedule";
+import Nextup from "../../Molecules/Nextup/Nextup";
 
 const useStyles = makeStyles()((theme) => ({
     container: {
@@ -31,6 +32,7 @@ const Dashboard: FC = () => {
     return (
         <Grid container spacing={2} className={classes.container}>
             <Grid item xs={12} md={3}>
+                {/* TODO distances between switches is too big */}
                 <SwitchBarList />
                 <UrlToMusic />
                 <LogCard />
@@ -46,6 +48,7 @@ const Dashboard: FC = () => {
                 <Docker />
                 <Schedule />
                 <DownloadList />
+                <Nextup />
                 <Monit />
             </Grid>
             <Grid item xs={12} md={2}></Grid>

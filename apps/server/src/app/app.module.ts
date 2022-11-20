@@ -10,6 +10,7 @@ import { JukeboxController } from "../jukebox/jukebox.controller";
 import { LoginController } from "../login/login.controller";
 import { LogoutController } from "../logout/logout.controller";
 import { MonitController } from "../monit/monit.controller";
+import { NextupController } from "../nextup/nextup.controller";
 import { NowplayingController } from "../nowplaying/nowplaying.controller";
 import { ProfileController } from "../profile/profile.controller";
 import { PwToHashController } from "../pw-to-hash/pw-to-hash.controller";
@@ -50,6 +51,7 @@ import { AppService } from "./app.service";
         LoginController,
         LogoutController,
         MonitController,
+        NextupController,
         NowplayingController,
         ProfileController,
         PwToHashController,
