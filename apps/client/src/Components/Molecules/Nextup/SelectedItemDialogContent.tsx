@@ -34,19 +34,27 @@ export const SelectedItemDialogContent: FC<{ item?: ShowNextUpItem }> = ({
     return (
         <>
             <DialogTitle>{Name}</DialogTitle>
-            <img
-                alt="TODO"
+            {/* <img
+                alt={`Screenshot for ${Name}`}
                 src={`${process.env.NX_BASE_URL}/api/nextup/thumbnail/${Id}?imageTagsPrimary=${ImageTags.Primary}&big=on`}
+            /> */}
+            <video
+                preload="metadata"
+                controls
+                src={`${process.env.NX_BASE_URL}/api/nextup/video/${Id}`}
+                width="100%"
             />
             <DialogContent>
                 <DialogContentText>
                     {ParentIndexNumber}x{IndexNumber}{" "}
                     <strong>{SeriesName} </strong>
                     {ProductionYear && ` (${ProductionYear}) `}
-                    <div>
-                        {CommunityRating && ` ${CommunityRating.toFixed(1)}👍`}
-                    </div>
                 </DialogContentText>
+                {CommunityRating && (
+                    <DialogContentText>
+                        {CommunityRating.toFixed(1)}👍
+                    </DialogContentText>
+                )}
             </DialogContent>
         </>
     );

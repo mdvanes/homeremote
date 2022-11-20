@@ -23,7 +23,7 @@ export const NextupListItem: FC<{
         ImageTags,
     } = item;
     return (
-        <ListItem>
+        <ListItem disableGutters>
             <ListItemButton onClick={() => setSelectedItem(item)}>
                 <ListItemAvatar>
                     <Avatar

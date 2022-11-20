@@ -95,13 +95,18 @@ export class NextupController {
         }
     }
 
+    // TODO stream the video itself. Needs ParentId?
+    @UseGuards(JwtAuthGuard)
     @Get("thumbnail/:id")
     async getThumbnail(
         @Param("id") id: string,
         @Query("imageTagsPrimary") imageTagsPrimary: string,
-        @Query("big") big: "on" | "off"
+        @Query("big") big: "on" | "off",
+        @Request() req: AuthenticatedRequest
     ): Promise<StreamableFile> {
-        this.logger.verbose("GET to /api/nextup/thumbnail/:id", id);
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/nextup/thumbnail/:id ${id}`
+        );
 
         try {
             const size =
@@ -110,7 +115,7 @@ export class NextupController {
             const streamUrl = `${NEXTUP_URL}/Items/${id}/Images/Primary?${size}&quality=96&tag=${imageTagsPrimary}`;
 
             if (!NEXTUP_URL) {
-                this.logger.error("missing configuration");
+                this.logger.error(`[${req.user.name}] missing configuration`);
                 throw new HttpException(
                     "failed to receive downstream data",
                     HttpStatus.INTERNAL_SERVER_ERROR
@@ -120,7 +125,40 @@ export class NextupController {
             const str = got.stream(streamUrl);
             return new StreamableFile(str);
         } catch (err) {
-            this.logger.error(err);
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("video/:id")
+    async getVideo(
+        @Param("id") id: string,
+        @Request() req: AuthenticatedRequest
+    ): Promise<StreamableFile> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/nextup/video/:id ${id}`
+        );
+
+        try {
+            const { NEXTUP_URL, NEXTUP_API_TOKEN } = this.apiConfig;
+            const streamUrl = `${NEXTUP_URL}/Videos/${id}/stream.mkv?api_key=${NEXTUP_API_TOKEN}`;
+
+            if (!NEXTUP_URL) {
+                this.logger.error(`[${req.user.name}] missing configuration`);
+                throw new HttpException(
+                    "failed to receive downstream data",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            }
+
+            const str = got.stream(streamUrl);
+            return new StreamableFile(str);
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(
                 "failed to receive downstream data",
                 HttpStatus.INTERNAL_SERVER_ERROR
