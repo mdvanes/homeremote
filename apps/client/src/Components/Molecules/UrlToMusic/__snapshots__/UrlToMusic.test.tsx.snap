@@ -55,6 +55,15 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           </span>
         </button>
       </form>
+      <div
+        style="width: 100%; height: auto;"
+      >
+        <video
+          preload="auto"
+          src="Some URL"
+          style="width: 100%; height: auto;"
+        />
+      </div>
       <form>
         <div
           class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
