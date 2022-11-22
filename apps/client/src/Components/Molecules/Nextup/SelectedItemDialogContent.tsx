@@ -1,5 +1,10 @@
 import { ShowNextUpItem } from "@homeremote/types";
-import { DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+    Alert,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+} from "@mui/material";
 import { FC, useState } from "react";
 import { styled } from "@mui/material/styles";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -36,6 +41,15 @@ const PreviewImg = styled(
 `
 );
 
+const isChrome = (): boolean => {
+    type ExtendedNavigator = typeof navigator & {
+        userAgentData?: { brands: { brand: string; version: string }[] };
+    };
+    const extendedNavigator = navigator as ExtendedNavigator;
+    const brands = extendedNavigator.userAgentData?.brands ?? [];
+    return brands.some((brand) => brand.brand === "Google Chrome");
+};
+
 export const SelectedItemDialogContent: FC<{ item?: ShowNextUpItem }> = ({
     item,
 }) => {
@@ -68,14 +82,22 @@ export const SelectedItemDialogContent: FC<{ item?: ShowNextUpItem }> = ({
                     <PlayArrowIcon />
                 </PreviewImg>
             )}
+
             {isVideoVisible && (
-                <video
-                    autoPlay
-                    controls
-                    preload="metadata"
-                    src={`${process.env.NX_BASE_URL}/api/nextup/video/${Id}`}
-                    width="100%"
-                />
+                <>
+                    {!isChrome() && (
+                        <Alert severity="warning">
+                            Video Codec only supported on Chrome
+                        </Alert>
+                    )}
+                    <video
+                        autoPlay
+                        controls
+                        preload="metadata"
+                        src={`${process.env.NX_BASE_URL}/api/nextup/video/${Id}`}
+                        width="100%"
+                    />
+                </>
             )}
             <DialogContent>
                 <DialogContentText>
