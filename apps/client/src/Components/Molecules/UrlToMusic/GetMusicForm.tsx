@@ -5,20 +5,19 @@ import {
 import {
     Alert,
     Button,
-    CardActionArea,
     CardActions,
     LinearProgress,
     TextField,
 } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
+import React, { FC, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../Reducers";
 import {
     useGetMusicProgressQuery,
     useGetMusicQuery,
 } from "../../../Services/urlToMusicApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
-import React, { FC, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
 import { FILL_IN_THIS_FIELD } from "./constants";
 import {
