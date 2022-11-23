@@ -3,6 +3,7 @@ import { FC } from "react";
 import { makeStyles } from "tss-react/mui";
 import DataLora from "../../Molecules/DataLora/DataLora";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
+import GasChart from "../../Molecules/GasChart/GasChart";
 import Jukebox from "../../Molecules/Jukebox/Jukebox";
 import LogCard from "../../Molecules/LogCard/LogCard";
 import Monit from "../../Molecules/Monit/Monit";
@@ -38,6 +39,7 @@ const Dashboard: FC = () => {
                 <div className="switch-bar-list-wrapper">
                     <SwitchBarList />
                 </div>
+                <GasChart />
                 <UrlToMusic />
                 <LogCard />
             </Grid>

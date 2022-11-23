@@ -1,6 +1,6 @@
 {
   "name": "homeremote",
-  "version": "3.3.11",
+  "version": "3.3.12",
   "license": "MIT",
   "scripts": {
     "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
@@ -48,6 +48,7 @@
     "@nestjs/swagger": "^6.1.2",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.19.0",
+    "chart.js": "^4.0.1",
     "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",
     "fast-xml-parser": "^4.0.11",
