@@ -1,17 +1,4 @@
 import {
-    Controller,
-    Get,
-    HttpException,
-    HttpStatus,
-    Logger,
-    Param,
-    Query,
-    Request,
-    UseGuards,
-} from "@nestjs/common";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { ConfigService } from "@nestjs/config";
-import {
     SearchResultItem,
     UrlToMusicGetInfoResponse,
     UrlToMusicGetMusicArgs,
@@ -23,17 +10,31 @@ import {
     UrlToMusicState,
     UrlToMusicYdlExecArgs,
 } from "@homeremote/types";
-import { chmodSync, chownSync, writeFileSync } from "fs";
+import {
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Logger,
+    Param,
+    Query,
+    Request,
+    UseGuards,
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { execFile } from "child_process";
+import { chmodSync, chownSync } from "fs";
+import got from "got";
 import nodeID3 from "node-id3";
 import youtubeDlExec, { YtFlags } from "youtube-dl-exec";
-import got from "got";
-import { execFile } from "child_process";
-import { Stream } from "stream";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
 
 // This is an untyped but exported object from youtube-dl-exec
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const youtubeDlConstants = require("youtube-dl-exec/src/constants");
+
+const NR_OF_SEARCH_RESULTS = 10;
 
 const getArtistTitle = (info: string) => {
     const td = ": Tiny Desk Concert";
@@ -73,9 +74,9 @@ const searchByTerms = async (terms: string, nrOfResults: number) => {
         {
             ...ydlFlags,
             dumpSingleJson: true,
-            // defaultSearch: "lebron",
             getId: true,
             getTitle: true,
+            // TODO also get description? it's not built-in
         }
     );
 
@@ -83,7 +84,6 @@ const searchByTerms = async (terms: string, nrOfResults: number) => {
     const searchLinesAll = (searchResult as unknown as string).split("\n");
     // For each search result, the first line is the title and the second line is the id
     const searchLines = searchLinesAll.slice(0, nrOfResults * 2);
-    // const searchResultNew = searchLines.map((line) => ({ title: line }));
     const searchResultNew = searchLines.reduce<SearchResultItem[]>(
         (acc, nextLine, index) => {
             if (index % 2 === 0) {
@@ -97,15 +97,10 @@ const searchByTerms = async (terms: string, nrOfResults: number) => {
                 acc[acc.length - 1].id = nextLine;
                 return acc;
             }
-            // return [...acc];
         },
         []
     );
-    console.log(searchResultNew);
 
-    // console.log("***" + JSON.stringify(searchResult));
-    // fsync.writ
-    // writeFileSync("test1.json", JSON.stringify(searchResult));
     return searchResultNew;
 };
 
@@ -367,30 +362,18 @@ export class UrltomusicController {
         this.logger.verbose(`[${req.user.name}] GET to /api/search/${terms}`);
         if (terms) {
             try {
-                // const terms = url;
-                const nrOfResults = 3; // TODO constant NR_OF_RESULTS
-                const searchResults = await searchByTerms(terms, nrOfResults);
-                this.logger.verbose(`[${req.user.name}] ${searchResults}`);
-                // const info = await getInfo(url);
-                // // TODO restore - const latestBinVersion = await getLatestBinVersion();
-                // const latestBinVersion = {};
+                const searchResults = await searchByTerms(
+                    terms,
+                    NR_OF_SEARCH_RESULTS
+                );
 
                 this.state = "downloading";
 
-                // this.logger.verbose(
-                //     `Current bin version: ${info.versionInfo} Latest bin version: ${latestBinVersion}`
-                // );
-                // if (info.versionInfo !== latestBinVersion) {
-                //     this.logger.verbose(`Update to latest bin version`);
-                //     this.updateBin();
-                // }
-                // return info;
                 return {
                     searchResults: searchResults,
                 };
             } catch (err) {
                 this.logger.verbose("getSearch failed: " + err);
-                // this.updateBin();
                 throw new HttpException(
                     "getSearch failed",
                     HttpStatus.INTERNAL_SERVER_ERROR
