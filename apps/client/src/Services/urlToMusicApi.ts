@@ -4,6 +4,8 @@ import {
     UrlToMusicGetMusicArgs,
     UrlToMusicGetMusicProgressResponse,
     UrlToMusicGetMusicResponse,
+    UrlToMusicGetSearchArgs,
+    UrlToMusicGetSearchResponse,
 } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { willAddCredentials } from "../devUtils";
@@ -15,6 +17,12 @@ export const urlToMusicApi = createApi({
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({
+        getSearch: builder.query<
+            UrlToMusicGetSearchResponse,
+            UrlToMusicGetSearchArgs
+        >({
+            query: ({ terms }) => `/getsearch/${terms}`,
+        }),
         getInfo: builder.query<
             UrlToMusicGetInfoResponse,
             UrlToMusicGetInfoArgs
@@ -37,5 +45,9 @@ export const urlToMusicApi = createApi({
     }),
 });
 
-export const { useGetInfoQuery, useGetMusicQuery, useGetMusicProgressQuery } =
-    urlToMusicApi;
+export const {
+    useGetInfoQuery,
+    useGetMusicQuery,
+    useGetMusicProgressQuery,
+    useGetSearchQuery,
+} = urlToMusicApi;

@@ -86,14 +86,6 @@ const GetInfoForm: FC = () => {
                     >
                         Get Info
                     </Button>
-                    <Button
-                        color="warning"
-                        onClick={() => {
-                            dispatch(resetAll());
-                        }}
-                    >
-                        reset
-                    </Button>
                 </CardActions>
             </form>
             {error && <Alert severity="error">{getErrorMessage(error)}</Alert>}
