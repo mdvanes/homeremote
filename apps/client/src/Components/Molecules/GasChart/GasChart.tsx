@@ -27,6 +27,7 @@ const GasChart: FC = () => {
         (name, index) => (
             <Line
                 key={name}
+                name={`avg ${name}`}
                 yAxisId="right"
                 type="monotone"
                 dataKey={`temp.${name}.avg`}
@@ -43,7 +44,7 @@ const GasChart: FC = () => {
                 {gasUsageResponse?.status === "OK" && (
                     <ComposedChart
                         width={380}
-                        // width="100%"
+                        // TODO width="100%"
                         height={200}
                         data={gasUsageResponse.result.slice(-7)}
                         margin={{
@@ -73,18 +74,27 @@ const GasChart: FC = () => {
                             unit="°"
                             orientation="right"
                             style={{ fontSize: "10px" }}
-                            // tickFormatter={(val) => val.toFixed(1)}
                         />
-                        {/* TODO truncate temps toFixed(1) */}
-                        <Tooltip labelFormatter={(val) => val} />
-                        {/* <Legend /> */}
+                        <Tooltip
+                            formatter={(val) => {
+                                // Temperature is number, gas usage is string
+                                if (typeof val === "number") {
+                                    return val.toFixed(1) + "°C";
+                                }
+                                return val + "m³";
+                            }}
+                            wrapperStyle={{
+                                border: "none",
+                            }}
+                            contentStyle={{
+                                border: "none",
+                                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            }}
+                        />
                         <Bar
                             yAxisId="left"
-                            // type="monotone"
                             // TODO stronger typing?
                             dataKey="used" // m3 on this day
-                            // stroke="#8884d8"
-                            // activeDot={{ r: 8 }}
                             fill="#2d6196"
                         />
                         {temperatureLines}
