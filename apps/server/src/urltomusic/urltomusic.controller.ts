@@ -6,25 +6,30 @@ import {
     Logger,
     Param,
     Query,
+    Request,
     UseGuards,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { ConfigService } from "@nestjs/config";
 import {
+    SearchResultItem,
     UrlToMusicGetInfoResponse,
     UrlToMusicGetMusicArgs,
     UrlToMusicGetMusicProgressResponse,
     UrlToMusicGetMusicResponse,
+    UrlToMusicGetSearchResponse,
     UrlToMusicSetMetadataArgs,
     UrlToMusicSetMetadataResponse,
     UrlToMusicState,
     UrlToMusicYdlExecArgs,
 } from "@homeremote/types";
-import { chmodSync, chownSync } from "fs";
+import { chmodSync, chownSync, writeFileSync } from "fs";
 import nodeID3 from "node-id3";
 import youtubeDlExec, { YtFlags } from "youtube-dl-exec";
 import got from "got";
 import { execFile } from "child_process";
+import { Stream } from "stream";
+import { AuthenticatedRequest } from "../login/LoginRequest.types";
 
 // This is an untyped but exported object from youtube-dl-exec
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -60,6 +65,48 @@ const getInfo = async (url: string): Promise<UrlToMusicGetInfoResponse> => {
         streamUrl: info.formats.map((f) => f.url),
         versionInfo: info["_version"].version,
     };
+};
+
+const searchByTerms = async (terms: string, nrOfResults: number) => {
+    const searchResult = await youtubeDlExec(
+        `ytsearch${nrOfResults}:${terms}`,
+        {
+            ...ydlFlags,
+            dumpSingleJson: true,
+            // defaultSearch: "lebron",
+            getId: true,
+            getTitle: true,
+        }
+    );
+
+    // NOTE: in this case the result type is a string, but this is not (yet) in the typings
+    const searchLinesAll = (searchResult as unknown as string).split("\n");
+    // For each search result, the first line is the title and the second line is the id
+    const searchLines = searchLinesAll.slice(0, nrOfResults * 2);
+    // const searchResultNew = searchLines.map((line) => ({ title: line }));
+    const searchResultNew = searchLines.reduce<SearchResultItem[]>(
+        (acc, nextLine, index) => {
+            if (index % 2 === 0) {
+                return [
+                    ...acc,
+                    {
+                        title: nextLine,
+                    },
+                ];
+            } else {
+                acc[acc.length - 1].id = nextLine;
+                return acc;
+            }
+            // return [...acc];
+        },
+        []
+    );
+    console.log(searchResultNew);
+
+    // console.log("***" + JSON.stringify(searchResult));
+    // fsync.writ
+    // writeFileSync("test1.json", JSON.stringify(searchResult));
+    return searchResultNew;
 };
 
 const getLatestBinVersion = async (): Promise<string> => {
@@ -309,5 +356,51 @@ export class UrltomusicController {
             state,
             path,
         };
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("getsearch/:terms")
+    async getSearch(
+        @Param("terms") terms: string,
+        @Request() req: AuthenticatedRequest
+    ): Promise<UrlToMusicGetSearchResponse> {
+        this.logger.verbose(`[${req.user.name}] GET to /api/search/${terms}`);
+        if (terms) {
+            try {
+                // const terms = url;
+                const nrOfResults = 3; // TODO constant NR_OF_RESULTS
+                const searchResults = await searchByTerms(terms, nrOfResults);
+                this.logger.verbose(`[${req.user.name}] ${searchResults}`);
+                // const info = await getInfo(url);
+                // // TODO restore - const latestBinVersion = await getLatestBinVersion();
+                // const latestBinVersion = {};
+
+                this.state = "downloading";
+
+                // this.logger.verbose(
+                //     `Current bin version: ${info.versionInfo} Latest bin version: ${latestBinVersion}`
+                // );
+                // if (info.versionInfo !== latestBinVersion) {
+                //     this.logger.verbose(`Update to latest bin version`);
+                //     this.updateBin();
+                // }
+                // return info;
+                return {
+                    searchResults: searchResults,
+                };
+            } catch (err) {
+                this.logger.verbose("getSearch failed: " + err);
+                // this.updateBin();
+                throw new HttpException(
+                    "getSearch failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            }
+        } else {
+            throw new HttpException(
+                "url is required",
+                HttpStatus.NOT_ACCEPTABLE
+            );
+        }
     }
 }
