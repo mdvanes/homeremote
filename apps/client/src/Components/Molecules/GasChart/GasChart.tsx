@@ -13,9 +13,27 @@ const GasChart: FC = () => {
         error,
     } = useGetGasUsageQuery(undefined);
 
-    if (error) {
-        return <Alert severity="error">{getErrorMessage(error)}</Alert>;
+    if (error || !gasUsageResponse) {
+        return (
+            <Alert severity="error">
+                {getErrorMessage(error ?? Error("empty response"))}
+            </Alert>
+        );
     }
+
+    const temperatureLineColors = ["#66bb6a", "#ff9100"];
+
+    const temperatureLines = Object.keys(gasUsageResponse.result[0].temp).map(
+        (name, index) => (
+            <Line
+                key={name}
+                yAxisId="right"
+                type="monotone"
+                dataKey={`temp.${name}.avg`}
+                stroke={temperatureLineColors[index]}
+            />
+        )
+    );
 
     return (
         <Card>
@@ -69,18 +87,7 @@ const GasChart: FC = () => {
                             // activeDot={{ r: 8 }}
                             fill="#2d6196"
                         />
-                        <Line
-                            yAxisId="right"
-                            type="monotone"
-                            dataKey="temp.tempInside1.avg"
-                            stroke="#66bb6a"
-                        />
-                        <Line
-                            yAxisId="right"
-                            type="monotone"
-                            dataKey="temp.tempOutside1.avg"
-                            stroke="#ff9100"
-                        />
+                        {temperatureLines}
                     </ComposedChart>
                 )}
             </CardContent>
