@@ -24,6 +24,7 @@ jest.mock("../../Molecules/Jukebox/Jukebox", () => "mock-jukebox");
 jest.mock("../../Molecules/Monit/Monit", () => "mock-monit");
 jest.mock("../../Molecules/Schedule/Schedule", () => "mock-schedule");
 jest.mock("../../Molecules/Nextup/Nextup", () => "mock-nextup");
+jest.mock("../../Molecules/GasChart/GasChart", () => "mock-gaschart");
 
 describe("Dashboard page", () => {
     it("contains all the control components", () => {

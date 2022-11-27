@@ -4,12 +4,17 @@ exports[`Dashboard page contains all the control components 1`] = `
 <body>
   <div>
     <div
-      class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-1nn7nf3-MuiGrid-root-container"
+      class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-1ru5qmv-MuiGrid-root-container"
     >
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-iv7vbz-MuiGrid-root"
       >
-        <mock-switch-bar-list />
+        <div
+          class="switch-bar-list-wrapper"
+        >
+          <mock-switch-bar-list />
+        </div>
+        <mock-gaschart />
         <mock-url-to-music />
         <mock-log-card />
       </div>
@@ -37,9 +42,6 @@ exports[`Dashboard page contains all the control components 1`] = `
         <mock-nextup />
         <mock-monit />
       </div>
-      <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-2 css-12xeub0-MuiGrid-root"
-      />
     </div>
   </div>
 </body>
