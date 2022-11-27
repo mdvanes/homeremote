@@ -95,7 +95,6 @@ export class NextupController {
         }
     }
 
-    // TODO stream the video itself. Needs ParentId?
     @UseGuards(JwtAuthGuard)
     @Get("thumbnail/:id")
     async getThumbnail(
@@ -145,6 +144,7 @@ export class NextupController {
 
         try {
             const { NEXTUP_URL, NEXTUP_API_TOKEN } = this.apiConfig;
+            // NOTE firefox does not support stream.mkv/.ogv/.mp4/.webm videoCodec=h264/mpeg4/theora/vp8 (webm+vp8 works a bit)
             const streamUrl = `${NEXTUP_URL}/Videos/${id}/stream.mkv?api_key=${NEXTUP_API_TOKEN}`;
 
             if (!NEXTUP_URL) {

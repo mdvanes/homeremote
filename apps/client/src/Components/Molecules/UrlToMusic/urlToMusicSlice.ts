@@ -59,6 +59,9 @@ const urlToMusicSlice = createSlice({
                 },
             };
         },
+        resetAll: () => {
+            return initialState;
+        },
         resetProgressLoading: (draft) => {
             draft.isLoading = false;
         },
@@ -108,7 +111,12 @@ const urlToMusicSlice = createSlice({
     },
 });
 
-export const { setFormField, setFormFieldError, reset, resetProgressLoading } =
-    urlToMusicSlice.actions;
+export const {
+    setFormField,
+    setFormFieldError,
+    reset,
+    resetAll,
+    resetProgressLoading,
+} = urlToMusicSlice.actions;
 
 export default urlToMusicSlice.reducer;

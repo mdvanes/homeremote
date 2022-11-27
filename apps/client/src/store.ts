@@ -6,6 +6,7 @@ import { activeConnectionsApi } from "./Services/activeConnectionsApi";
 import { dataloraApi } from "./Services/dataloraApi";
 import { dockerListApi } from "./Services/dockerListApi";
 import { downloadListApi } from "./Services/downloadListApi";
+import { energyUsageApi } from "./Services/energyUsageApi";
 import { jukeboxApi } from "./Services/jukeboxApi";
 import { monitApi } from "./Services/monitApi";
 import { nextupApi } from "./Services/nextupApi";
@@ -21,6 +22,7 @@ export const store = configureStore({
             dataloraApi.middleware,
             dockerListApi.middleware,
             downloadListApi.middleware,
+            energyUsageApi.middleware,
             jukeboxApi.middleware,
             monitApi.middleware,
             nextupApi.middleware,

@@ -34,26 +34,40 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             />
           </div>
         </div>
-        <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
-          data-testid="get-info"
-          tabindex="0"
-          type="button"
+        <div
+          class="MuiCardActions-root MuiCardActions-spacing css-1t6e9jv-MuiCardActions-root"
         >
-          Get Info
-          <span
-            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+            data-testid="get-info"
+            tabindex="0"
+            type="button"
           >
+            Get Info
             <span
-              class="css-y4cjyz-MuiTouchRipple-ripple MuiTouchRipple-ripple MuiTouchRipple-rippleVisible"
-              style="width: 2.8284271247461903px; height: 2.8284271247461903px; top: -1.4142135623730951px; left: -1.4142135623730951px;"
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
             >
               <span
-                class="MuiTouchRipple-child MuiTouchRipple-childLeaving"
-              />
+                class="css-y4cjyz-MuiTouchRipple-ripple MuiTouchRipple-ripple MuiTouchRipple-rippleVisible"
+                style="width: 2.8284271247461903px; height: 2.8284271247461903px; top: -1.4142135623730951px; left: -1.4142135623730951px;"
+              >
+                <span
+                  class="MuiTouchRipple-child MuiTouchRipple-childLeaving"
+                />
+              </span>
             </span>
-          </span>
-        </button>
+          </button>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium css-wjixpo-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            reset
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
       </form>
       <div
         style="width: 100%; height: auto;"
@@ -64,7 +78,9 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           style="width: 100%; height: auto;"
         />
       </div>
-      <form>
+      <form
+        style="margin-top: 16px;"
+      >
         <div
           class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
           data-testid="title"
@@ -139,14 +155,18 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             />
           </div>
         </div>
-        <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
-          data-testid="get-music"
-          tabindex="0"
-          type="button"
+        <div
+          class="MuiCardActions-root MuiCardActions-spacing css-1t6e9jv-MuiCardActions-root"
         >
-          Get Music
-        </button>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+            data-testid="get-music"
+            tabindex="0"
+            type="button"
+          >
+            Get Music
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -187,17 +207,31 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
             />
           </div>
         </div>
-        <button
-          class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
-          data-testid="get-info"
-          tabindex="0"
-          type="button"
+        <div
+          class="MuiCardActions-root MuiCardActions-spacing css-1t6e9jv-MuiCardActions-root"
         >
-          Get Info
-          <span
-            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-          />
-        </button>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+            data-testid="get-info"
+            tabindex="0"
+            type="button"
+          >
+            Get Info
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium css-wjixpo-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            reset
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
       </form>
     </div>
   </div>

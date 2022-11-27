@@ -1,6 +1,6 @@
 {
   "name": "homeremote",
-  "version": "3.3.11",
+  "version": "3.3.12",
   "license": "MIT",
   "scripts": {
     "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
@@ -61,6 +61,7 @@
     "react-is": "18.0.0",
     "react-player": "^2.11.0",
     "react-refresh": "^0.10.0",
+    "recharts": "^2.1.16",
     "reflect-metadata": "^0.1.13",
     "regenerator-runtime": "0.13.7",
     "rxjs": "^7.0.0",

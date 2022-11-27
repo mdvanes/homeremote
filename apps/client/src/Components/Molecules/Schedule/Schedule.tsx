@@ -1,7 +1,7 @@
-import { useGetScheduleQuery } from "../../../Services/scheduleApi";
-import { FC, ReactNode } from "react";
-import { List, ListItem, Paper } from "@mui/material";
 import { ScheduleItem } from "@homeremote/types";
+import { List, ListItem, ListItemText, Paper } from "@mui/material";
+import { FC, ReactNode } from "react";
+import { useGetScheduleQuery } from "../../../Services/scheduleApi";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
 // This barely updates once a day, so check once per hour
@@ -26,17 +26,25 @@ const scheduleItemToListItem =
         episode,
         season,
         ep_name,
+        indexerid,
     }: ScheduleItem): ReactNode =>
         (
             <ListItem
                 key={`${show_name}-${season}x${episode}`}
                 title={`${show_name} = ${show_status} | ${type}`}
-                sx={{
-                    color: typeToColor[type],
-                }}
             >
-                {airdate}&nbsp; <strong>{show_name}</strong>&nbsp; {season}x
-                {episode} "{ep_name}"
+                <ListItemText
+                    sx={{
+                        color: typeToColor[type],
+                        backgroundImage: `url(${process.env.NX_BASE_URL}/api/schedule/thumbnail/${indexerid})`,
+                        backgroundSize: "contain",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPositionX: "right",
+                    }}
+                >
+                    {airdate}&nbsp; <strong>{show_name}</strong>&nbsp; {season}x
+                    {episode} "{ep_name}"
+                </ListItemText>
             </ListItem>
         );
 
@@ -59,7 +67,7 @@ const Schedule: FC = () => {
     }
 
     return (
-        <List component={Paper}>
+        <List component={Paper} sx={{ gap: "10px" }}>
             <LoadingDot isLoading={isLoading || isFetching} />
             {missed.map(scheduleItemToListItem("missed"))}
             {snatched.map(scheduleItemToListItem("snatched"))}

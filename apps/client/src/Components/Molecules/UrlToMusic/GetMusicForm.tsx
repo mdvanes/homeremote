@@ -2,16 +2,22 @@ import {
     UrlToMusicGetInfoArgs,
     UrlToMusicGetMusicArgs,
 } from "@homeremote/types";
-import { Alert, Button, LinearProgress, TextField } from "@mui/material";
+import {
+    Alert,
+    Button,
+    CardActions,
+    LinearProgress,
+    TextField,
+} from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
+import React, { FC, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../Reducers";
 import {
     useGetMusicProgressQuery,
     useGetMusicQuery,
 } from "../../../Services/urlToMusicApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
-import React, { FC, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
 import { FILL_IN_THIS_FIELD } from "./constants";
 import {
@@ -74,7 +80,7 @@ const GetMusicForm: FC = () => {
     }, [error, progressError, dispatch]);
 
     return (
-        <form>
+        <form style={{ marginTop: 16 }}>
             <TextField
                 data-testid="title"
                 label="Title"
@@ -107,25 +113,27 @@ const GetMusicForm: FC = () => {
                 variant="standard"
                 onChange={handleMusicDataChange}
             />
-            <Button
-                data-testid="get-music"
-                color="primary"
-                onClick={() => {
-                    const isValid = validateGetMusic();
-                    if (isValid) {
-                        setQuery({
-                            url: encodeURIComponent(form.url.value),
-                            title: encodeURIComponent(form.title.value),
-                            artist: encodeURIComponent(form.artist.value),
-                            album: encodeURIComponent(form.album.value),
-                        });
-                        // To force ignoring cached value
-                        refetch();
-                    }
-                }}
-            >
-                Get Music
-            </Button>
+            <CardActions>
+                <Button
+                    data-testid="get-music"
+                    color="primary"
+                    onClick={() => {
+                        const isValid = validateGetMusic();
+                        if (isValid) {
+                            setQuery({
+                                url: encodeURIComponent(form.url.value),
+                                title: encodeURIComponent(form.title.value),
+                                artist: encodeURIComponent(form.artist.value),
+                                album: encodeURIComponent(form.album.value),
+                            });
+                            // To force ignoring cached value
+                            refetch();
+                        }
+                    }}
+                >
+                    Get Music
+                </Button>
+            </CardActions>
             {!isLoading && !isFetching && (
                 <>
                     {error && (

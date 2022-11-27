@@ -1,6 +1,7 @@
 export * from "./lib/datalora.types";
 export * from "./lib/dockerlist.types";
 export * from "./lib/downloadlist.types";
+export * from "./lib/energyusage.types";
 export * from "./lib/jukebox.types";
 export * from "./lib/monit.types";
 export * from "./lib/nextup.types";

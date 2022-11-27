@@ -1,5 +1,11 @@
 import { UrlToMusicGetInfoArgs } from "@homeremote/types";
-import { Alert, Button, CircularProgress, TextField } from "@mui/material";
+import {
+    Alert,
+    Button,
+    CardActions,
+    CircularProgress,
+    TextField,
+} from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import React, { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +16,7 @@ import { logError } from "../LogCard/logSlice";
 import { FILL_IN_THIS_FIELD } from "./constants";
 import {
     reset,
+    resetAll,
     setFormField,
     setFormFieldError,
     UrlToMusicState,
@@ -27,8 +34,7 @@ const GetInfoForm: FC = () => {
         ? { url: query }
         : skipToken;
 
-    const { isFetching, isLoading, error, refetch, data } =
-        useGetInfoQuery(args);
+    const { isFetching, isLoading, error, refetch } = useGetInfoQuery(args);
 
     const validateGetInfo = (): boolean => {
         if (form.url.value === "") {
@@ -64,24 +70,33 @@ const GetInfoForm: FC = () => {
                     variant="standard"
                     onChange={handleUrlChange}
                 />
-                <Button
-                    data-testid="get-info"
-                    color="primary"
-                    onClick={() => {
-                        const isValid = validateGetInfo();
-                        if (isValid) {
-                            dispatch(reset());
-                            setQuery(encodeURIComponent(form.url.value));
-                            // Always call refetch to ignore cache and overwrite the music info
-                            refetch();
-                        }
-                    }}
-                >
-                    Get Info
-                </Button>
+                <CardActions>
+                    <Button
+                        data-testid="get-info"
+                        color="primary"
+                        onClick={() => {
+                            const isValid = validateGetInfo();
+                            if (isValid) {
+                                dispatch(reset());
+                                setQuery(encodeURIComponent(form.url.value));
+                                // Always call refetch to ignore cache and overwrite the music info
+                                refetch();
+                            }
+                        }}
+                    >
+                        Get Info
+                    </Button>
+                    <Button
+                        color="warning"
+                        onClick={() => {
+                            dispatch(resetAll());
+                        }}
+                    >
+                        reset
+                    </Button>
+                </CardActions>
             </form>
             {error && <Alert severity="error">{getErrorMessage(error)}</Alert>}
-            {(isFetching || isLoading) && <CircularProgress />}
             {form.url.value && (
                 <ReactPlayer
                     style={{
@@ -91,6 +106,9 @@ const GetInfoForm: FC = () => {
                     width="100%"
                     url={form.url.value}
                 />
+            )}
+            {(isFetching || isLoading) && (
+                <CircularProgress sx={{ marginTop: 2 }} />
             )}
         </>
     );

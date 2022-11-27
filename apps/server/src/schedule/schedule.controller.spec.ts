@@ -47,21 +47,17 @@ const mockScheduleResponse = {
 
 describe("ScheduleController", () => {
     let controller: ScheduleController;
-    let configService: ConfigService;
+
     beforeEach(async () => {
+        const mockGet = jest.fn().mockReturnValue("http://someurl/api/key");
+
         const module: TestingModule = await Test.createTestingModule({
             controllers: [ScheduleController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: mockGet } }],
         }).compile();
-        configService = module.get<ConfigService>(ConfigService);
         controller = module.get<ScheduleController>(ScheduleController);
-
-        jest.spyOn(configService, "get").mockReturnValue(
-            "http://someurl/api/key"
-        );
     });
+
     it("returns schedule on /GET", async () => {
         mockGot.mockReturnValue({
             json: () => Promise.resolve(mockScheduleResponse),
