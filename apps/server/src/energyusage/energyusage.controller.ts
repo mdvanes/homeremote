@@ -1,8 +1,8 @@
 import {
-    GetGasUsageResponse,
-    GetNextUpResponse,
-    ShowNextUpResponse,
-    UserLatestResponse,
+    EnergyUsageGasItem,
+    EnergyUsageGetGasUsageResponse,
+    GotGasUsageResponse,
+    GotTempResponse,
 } from "@homeremote/types";
 import {
     Controller,
@@ -10,90 +10,134 @@ import {
     HttpException,
     HttpStatus,
     Logger,
-    Param,
-    Query,
     Request,
-    StreamableFile,
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
-import { isDefined } from "../util/isDefined";
+
+interface SensorConfig {
+    name: string;
+    type: string;
+    idx: string;
+}
+
+const strToConfigs = (sensorConfig: string): SensorConfig[] => {
+    const sensorStrings = sensorConfig.split(";");
+
+    const sensors = sensorStrings.map((str) => {
+        const [name, type, idx] = str.split(",");
+        return {
+            name,
+            type,
+            idx,
+        };
+    });
+    return sensors;
+};
 
 @Controller("api/energyusage")
 export class EnergyUsageController {
     private readonly logger: Logger;
-    // private readonly apiConfig: {
-    //     NEXTUP_URL: string;
-    //     NEXTUP_API_TOKEN: string;
-    //     NEXTUP_USER_ID: string;
-    // };
+    private readonly apiConfig: {
+        baseUrl: string;
+        sensors: SensorConfig[];
+    };
 
     constructor(private configService: ConfigService) {
         this.logger = new Logger(EnergyUsageController.name);
-        // const NEXTUP_URL = this.configService.get<string>("NEXTUP_URL") || "";
-        // // Create an API token in the Admin dashboard
-        // const NEXTUP_API_TOKEN =
-        //     this.configService.get<string>("NEXTUP_API_TOKEN") || "";
-        // const NEXTUP_USER_ID =
-        //     this.configService.get<string>("NEXTUP_USER_ID") || "";
-        // this.apiConfig = {
-        //     NEXTUP_URL,
-        //     NEXTUP_USER_ID,
-        //     NEXTUP_API_TOKEN,
-        // };
+        const baseUrl = this.configService.get<string>("DOMOTICZ_URI") || "";
+        const DOMOTICZ_SENSORS =
+            this.configService.get<string>("DOMOTICZ_SENSORS") || "";
+        // console.log(DOMOTICZ_SENSORS);
+        this.apiConfig = {
+            baseUrl,
+            sensors: strToConfigs(DOMOTICZ_SENSORS),
+        };
+    }
+
+    getAPI(sensorConfig: SensorConfig) {
+        return `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=${sensorConfig.type}&idx=${sensorConfig.idx}&range=month`;
     }
 
     @UseGuards(JwtAuthGuard)
     @Get("/gas")
     async getNextUp(
         @Request() req: AuthenticatedRequest
-    ): Promise<GetGasUsageResponse> {
-        this.logger.verbose(`[${req.user.name}] GET to /api/nextup`);
-
-        // const { NEXTUP_URL, NEXTUP_USER_ID, NEXTUP_API_TOKEN } = this.apiConfig;
+    ): Promise<EnergyUsageGetGasUsageResponse> {
+        this.logger.verbose(`[${req.user.name}] GET to /api/energyusage/gas`);
 
         try {
-            // const url = `${NEXTUP_URL}/Users/${NEXTUP_USER_ID}/Items/Latest?api_key=${NEXTUP_API_TOKEN}&userId=${NEXTUP_USER_ID}&IncludeItemTypes=Episode&Limit=30&Fields=PrimaryImageAspectRatio,BasicSyncInfo&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`;
-            // const response: UserLatestResponse = await got(url).json();
-            // const userLatestItems = response.map((userLatestItem) => {
-            //     return {
-            //         name: userLatestItem.Name,
-            //         seriesName: userLatestItem.SeriesName,
-            //         communityRating: userLatestItem.CommunityRating,
-            //         seasonNr: userLatestItem.ParentIndexNumber,
-            //         epNr: userLatestItem.IndexNumber,
-            //         seriesId: userLatestItem.SeriesId || userLatestItem.Id,
-            //     };
-            // });
-            // const seriesNextupPromises = userLatestItems.map((element) => {
-            //     const tvShowNextUpUrl = `${NEXTUP_URL}/Shows/NextUp?api_key=${NEXTUP_API_TOKEN}&userId=${NEXTUP_USER_ID}&seriesId=${element.seriesId}&IncludeItemTypes=Episode&Limit=30&Fields=PrimaryImageAspectRatio,BasicSyncInfo&ImageTypeLimit=1&EnableImageTypes=Primary,Backdrop,Thumb`;
-            //     const response: Promise<ShowNextUpResponse> =
-            //         got(tvShowNextUpUrl).json();
-            //     return response;
-            // });
-            // const seriesNextupResponses = await Promise.all(
-            //     seriesNextupPromises
-            // );
-            // const result = seriesNextupResponses
-            //     .map((response) => response.Items[0] ?? undefined)
-            //     .filter(isDefined);
-            // return {
-            //     items: result,
-            // };
-            return {
-                usage: [
-                    { day: "2010", m3: 10 },
-                    { day: "2011", m3: 20 },
-                    { day: "2012", m3: 15 },
-                    { day: "2013", m3: 25 },
-                    { day: "2014", m3: 22 },
-                    { day: "2015", m3: 30 },
-                    { day: "2016", m3: 28 },
-                ],
+            // const domoticzuri =
+            //     this.configService.get<string>("DOMOTICZ_URI") || "";
+            const domoticzuri = this.apiConfig.baseUrl;
+            console.log(this.apiConfig);
+
+            // NOTE: it's assumed that the first sensor is the baseline, the gas counter
+
+            const [gasSensor, ...temperatureSensors] = this.apiConfig.sensors;
+
+            const gasCounterResponse: GotGasUsageResponse = await got(
+                this.getAPI(gasSensor)
+            ).json();
+            // const gasPromise = temperaturePromises;
+
+            const temperaturePromises = temperatureSensors.map(
+                (sensor): Promise<GotTempResponse> => {
+                    return got(this.getAPI(sensor)).json();
+                }
+            );
+            // console.log(temperaturePromises);
+            const temperatureResponses = await Promise.all<GotTempResponse>(
+                temperaturePromises
+            );
+
+            /*
+            tempInside1Response
+            result[] -> {d (day), hu (humidity) string, (numbers:) ta (avg), te (high), tm (low)}
+            resultPrev
+            */
+            const aggregated: EnergyUsageGetGasUsageResponse = {
+                ...gasCounterResponse,
+                result: gasCounterResponse.result.map((entry, index) => {
+                    // const tempInside1Entry = tempInside1Response.result[index];
+                    const tempInside1Entry =
+                        temperatureResponses[0].result[index];
+                    if (tempInside1Entry.d !== entry.d) {
+                        throw new Error("days do not match");
+                    }
+                    // const tempOutside1Entry =
+                    //     tempOutside1Response.result[index];
+                    const tempOutside1Entry =
+                        temperatureResponses[1].result[index];
+                    if (tempOutside1Entry.d !== entry.d) {
+                        throw new Error("days do not match");
+                    }
+                    const result: EnergyUsageGasItem = {
+                        counter: entry.c,
+                        used: entry.v,
+                        day: entry.d,
+                        temp: {
+                            tempInside1: {
+                                avg: tempInside1Entry.ta,
+                                high: tempInside1Entry.te,
+                                low: tempInside1Entry.tm,
+                            },
+                            tempOutside1: {
+                                avg: tempOutside1Entry.ta,
+                                high: tempOutside1Entry.te,
+                                low: tempOutside1Entry.tm,
+                            },
+                        },
+                    };
+                    return result;
+                }),
             };
+            // console.log(aggregated);
+
+            return aggregated;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(
@@ -102,75 +146,4 @@ export class EnergyUsageController {
             );
         }
     }
-
-    // @UseGuards(JwtAuthGuard)
-    // @Get("thumbnail/:id")
-    // async getThumbnail(
-    //     @Param("id") id: string,
-    //     @Query("imageTagsPrimary") imageTagsPrimary: string,
-    //     @Query("big") big: "on" | "off",
-    //     @Request() req: AuthenticatedRequest
-    // ): Promise<StreamableFile> {
-    //     this.logger.verbose(
-    //         `[${req.user.name}] GET to /api/nextup/thumbnail/:id ${id}`
-    //     );
-
-    //     try {
-    //         const size =
-    //             big === "on" ? "maxWidth=1920" : "fillHeight=180&fillWidth=320";
-    //         const { NEXTUP_URL } = this.apiConfig;
-    //         const streamUrl = `${NEXTUP_URL}/Items/${id}/Images/Primary?${size}&quality=96&tag=${imageTagsPrimary}`;
-
-    //         if (!NEXTUP_URL) {
-    //             this.logger.error(`[${req.user.name}] missing configuration`);
-    //             throw new HttpException(
-    //                 "failed to receive downstream data",
-    //                 HttpStatus.INTERNAL_SERVER_ERROR
-    //             );
-    //         }
-
-    //         const str = got.stream(streamUrl);
-    //         return new StreamableFile(str);
-    //     } catch (err) {
-    //         this.logger.error(`[${req.user.name}] ${err}`);
-    //         throw new HttpException(
-    //             "failed to receive downstream data",
-    //             HttpStatus.INTERNAL_SERVER_ERROR
-    //         );
-    //     }
-    // }
-
-    // @UseGuards(JwtAuthGuard)
-    // @Get("video/:id")
-    // async getVideo(
-    //     @Param("id") id: string,
-    //     @Request() req: AuthenticatedRequest
-    // ): Promise<StreamableFile> {
-    //     this.logger.verbose(
-    //         `[${req.user.name}] GET to /api/nextup/video/:id ${id}`
-    //     );
-
-    //     try {
-    //         const { NEXTUP_URL, NEXTUP_API_TOKEN } = this.apiConfig;
-    //         // NOTE firefox does not support stream.mkv/.ogv/.mp4/.webm videoCodec=h264/mpeg4/theora/vp8 (webm+vp8 works a bit)
-    //         const streamUrl = `${NEXTUP_URL}/Videos/${id}/stream.mkv?api_key=${NEXTUP_API_TOKEN}`;
-
-    //         if (!NEXTUP_URL) {
-    //             this.logger.error(`[${req.user.name}] missing configuration`);
-    //             throw new HttpException(
-    //                 "failed to receive downstream data",
-    //                 HttpStatus.INTERNAL_SERVER_ERROR
-    //             );
-    //         }
-
-    //         const str = got.stream(streamUrl);
-    //         return new StreamableFile(str);
-    //     } catch (err) {
-    //         this.logger.error(`[${req.user.name}] ${err}`);
-    //         throw new HttpException(
-    //             "failed to receive downstream data",
-    //             HttpStatus.INTERNAL_SERVER_ERROR
-    //         );
-    //     }
-    // }
 }

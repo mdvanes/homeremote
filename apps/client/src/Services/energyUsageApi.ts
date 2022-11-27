@@ -1,4 +1,4 @@
-import { GetGasUsageResponse } from "@homeremote/types";
+import { EnergyUsageGetGasUsageResponse } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { willAddCredentials } from "../devUtils";
 
@@ -9,7 +9,7 @@ export const energyUsageApi = createApi({
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({
-        getGasUsage: builder.query<GetGasUsageResponse, undefined>({
+        getGasUsage: builder.query<EnergyUsageGetGasUsageResponse, undefined>({
             query: () => "/gas",
         }),
     }),
