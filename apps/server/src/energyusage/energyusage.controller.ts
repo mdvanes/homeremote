@@ -1,6 +1,7 @@
 import {
     EnergyUsageGasItem,
     EnergyUsageGetGasUsageResponse,
+    GasUsageItem,
     GotGasUsageResponse,
     GotTempResponse,
 } from "@homeremote/types";
@@ -38,21 +39,42 @@ const strToConfigs = (sensorConfig: string): SensorConfig[] => {
     return sensors;
 };
 
-// const temperatureResponseToEntry = (response, temperatureIndex) => {
-//     const sensor = temperatureSensors[temperatureIndex];
-//     const temperatureEntry = response.result[index];
-//     if (temperatureEntry.d !== temperatureEntry.d) {
-//         throw new Error("days do not match");
-//     }
-//     return [
-//         sensor.name,
-//         {
-//             avg: temperatureEntry.ta,
-//             high: temperatureEntry.te,
-//             low: temperatureEntry.tm,
-//         },
-//     ];
-// };
+const temperatureResponseToEntry =
+    (temperatureSensors: SensorConfig[], index: number) =>
+    (response: GotTempResponse, temperatureIndex: number) => {
+        const sensor = temperatureSensors[temperatureIndex];
+        const temperatureEntry = response.result[index];
+        if (temperatureEntry.d !== temperatureEntry.d) {
+            throw new Error("days do not match");
+        }
+        return [
+            sensor.name,
+            {
+                avg: temperatureEntry.ta,
+                high: temperatureEntry.te,
+                low: temperatureEntry.tm,
+            },
+        ];
+    };
+
+const sensorResultsToAggregated =
+    (
+        temperatureSensors: SensorConfig[],
+        temperatureResponses: GotTempResponse[]
+    ) =>
+    (gasEntry: GasUsageItem, index: number) => {
+        const temperatureEntries = temperatureResponses.map(
+            temperatureResponseToEntry(temperatureSensors, index)
+        );
+
+        const result: EnergyUsageGasItem = {
+            counter: gasEntry.c,
+            used: gasEntry.v,
+            day: gasEntry.d,
+            temp: Object.fromEntries(temperatureEntries),
+        };
+        return result;
+    };
 
 @Controller("api/energyusage")
 export class EnergyUsageController {
@@ -103,33 +125,12 @@ export class EnergyUsageController {
 
             const aggregated: EnergyUsageGetGasUsageResponse = {
                 ...gasCounterResponse,
-                result: gasCounterResponse.result.map((gasEntry, index) => {
-                    const temperatureEntries = temperatureResponses.map(
-                        (response, temperatureIndex) => {
-                            const sensor = temperatureSensors[temperatureIndex];
-                            const temperatureEntry = response.result[index];
-                            if (temperatureEntry.d !== temperatureEntry.d) {
-                                throw new Error("days do not match");
-                            }
-                            return [
-                                sensor.name,
-                                {
-                                    avg: temperatureEntry.ta,
-                                    high: temperatureEntry.te,
-                                    low: temperatureEntry.tm,
-                                },
-                            ];
-                        }
-                    );
-
-                    const result: EnergyUsageGasItem = {
-                        counter: gasEntry.c,
-                        used: gasEntry.v,
-                        day: gasEntry.d,
-                        temp: Object.fromEntries(temperatureEntries),
-                    };
-                    return result;
-                }),
+                result: gasCounterResponse.result.map(
+                    sensorResultsToAggregated(
+                        temperatureSensors,
+                        temperatureResponses
+                    )
+                ),
             };
 
             return aggregated;
