@@ -5,7 +5,7 @@ import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 const HomeAutomation: FC = () => (
     <>
         <SwitchBarList />
-        <GasChart />
+        <GasChart isBig />
     </>
 );
 
