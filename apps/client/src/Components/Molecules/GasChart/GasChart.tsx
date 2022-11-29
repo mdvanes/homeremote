@@ -43,12 +43,13 @@ const GasChart: FC = () => {
 
                 {gasUsageResponse?.status === "OK" && (
                     <ComposedChart
-                        width={380}
-                        // TODO width="100%"
+                        style={{ margin: "0 -10px" }}
+                        width={390}
+                        // TODO width="100%" _ use responsivecontainer helper
                         height={200}
                         data={gasUsageResponse.result.slice(-7)}
                         margin={{
-                            left: -25,
+                            left: -40,
                             right: -30,
                             // top: 5,
                             // right: 30,
@@ -65,10 +66,10 @@ const GasChart: FC = () => {
                         />
                         <YAxis
                             yAxisId="left"
-                            unit="m³"
+                            // unit="m³"
                             style={{ fontSize: "10px" }}
                         />
-                        {/* TODO needs offset */}
+                        {/* TODO needs offset_ */}
                         <YAxis
                             yAxisId="right"
                             unit="°"
@@ -76,6 +77,23 @@ const GasChart: FC = () => {
                             style={{ fontSize: "10px" }}
                         />
                         <Tooltip
+                            labelFormatter={(val) => {
+                                const [year, month, day] = val.split("-");
+                                const date = new Date();
+                                date.setFullYear(year);
+                                date.setMonth(month - 1);
+                                date.setDate(day);
+                                const formattedDate = date.toLocaleDateString(
+                                    "en-uk",
+                                    {
+                                        weekday: "short",
+                                        day: "numeric",
+                                        month: "2-digit",
+                                        year: "numeric",
+                                    }
+                                );
+                                return formattedDate;
+                            }}
                             formatter={(val) => {
                                 // Temperature is number, gas usage is string
                                 if (typeof val === "number") {
