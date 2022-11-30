@@ -11,13 +11,134 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
       <form>
         <div
           class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+          data-testid="terms"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink="false"
+            for=":r2:"
+            id=":r2:-label"
+          >
+            Search terms
+          </label>
+          <div
+            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-1a1fmpi-MuiInputBase-root-MuiInput-root"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+              id=":r2:"
+              name="terms"
+              type="text"
+              value=""
+            />
+            <div
+              class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="MusicNoteIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiCardActions-root MuiCardActions-spacing css-1t6e9jv-MuiCardActions-root"
+        >
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="SearchIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+            </span>
+            search
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="FormatQuoteIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"
+                />
+              </svg>
+            </span>
+            prefill
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium css-wjixpo-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="CloseIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                />
+              </svg>
+            </span>
+            reset
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </form>
+      <form>
+        <div
+          class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
           data-testid="url"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="true"
-            for=":r1:"
-            id=":r1:-label"
+            for=":r3:"
+            id=":r3:-label"
           >
             URL
           </label>
@@ -27,7 +148,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r1:"
+              id=":r3:"
               name="url"
               type="text"
               value="Some URL"
@@ -57,20 +178,10 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
               </span>
             </span>
           </button>
-          <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium css-wjixpo-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            reset
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
-          </button>
         </div>
       </form>
       <div
-        style="width: 100%; height: auto;"
+        style="max-width: 1100px; width: 100%; height: auto;"
       >
         <video
           preload="auto"
@@ -88,8 +199,8 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="true"
-            for=":r2:"
-            id=":r2:-label"
+            for=":r4:"
+            id=":r4:-label"
           >
             Title
           </label>
@@ -99,7 +210,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r2:"
+              id=":r4:"
               name="title"
               type="text"
               value="Some Title"
@@ -113,8 +224,8 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="true"
-            for=":r3:"
-            id=":r3:-label"
+            for=":r5:"
+            id=":r5:-label"
           >
             Artist
           </label>
@@ -124,7 +235,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r3:"
+              id=":r5:"
               name="artist"
               type="text"
               value="Some Artist"
@@ -137,8 +248,8 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="true"
-            for=":r4:"
-            id=":r4:-label"
+            for=":r6:"
+            id=":r6:-label"
           >
             Album
           </label>
@@ -148,7 +259,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r4:"
+              id=":r6:"
               name="album"
               type="text"
               value="Songs from 2022"
@@ -184,13 +295,134 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
       <form>
         <div
           class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
-          data-testid="url"
+          data-testid="terms"
         >
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
             for=":r0:"
             id=":r0:-label"
+          >
+            Search terms
+          </label>
+          <div
+            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-1a1fmpi-MuiInputBase-root-MuiInput-root"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
+              id=":r0:"
+              name="terms"
+              type="text"
+              value=""
+            />
+            <div
+              class="MuiInputAdornment-root MuiInputAdornment-positionEnd MuiInputAdornment-standard MuiInputAdornment-sizeMedium css-1laqsz7-MuiInputAdornment-root"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="MusicNoteIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="MuiCardActions-root MuiCardActions-spacing css-1t6e9jv-MuiCardActions-root"
+        >
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="SearchIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                />
+              </svg>
+            </span>
+            search
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium css-1e6y48t-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="FormatQuoteIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"
+                />
+              </svg>
+            </span>
+            prefill
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+          <button
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium css-wjixpo-MuiButtonBase-root-MuiButton-root"
+            tabindex="0"
+            type="button"
+          >
+            <span
+              class="MuiButton-startIcon MuiButton-iconSizeMedium css-1d6wzja-MuiButton-startIcon"
+            >
+              <svg
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+                data-testid="CloseIcon"
+                focusable="false"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                />
+              </svg>
+            </span>
+            reset
+            <span
+              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+            />
+          </button>
+        </div>
+      </form>
+      <form>
+        <div
+          class="MuiFormControl-root MuiFormControl-fullWidth MuiTextField-root css-wb57ya-MuiFormControl-root-MuiTextField-root"
+          data-testid="url"
+        >
+          <label
+            class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
+            data-shrink="false"
+            for=":r1:"
+            id=":r1:-label"
           >
             URL
           </label>
@@ -200,7 +432,7 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r0:"
+              id=":r1:"
               name="url"
               type="text"
               value=""
@@ -217,16 +449,6 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
             type="button"
           >
             Get Info
-            <span
-              class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-            />
-          </button>
-          <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium css-wjixpo-MuiButtonBase-root-MuiButton-root"
-            tabindex="0"
-            type="button"
-          >
-            reset
             <span
               class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
             />

@@ -78,7 +78,7 @@ describe("DataLora", () => {
         ).toBeVisible();
         expect(fetchMock).toBeCalledTimes(1);
         expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
-            "http://localhost/api/datalora/?type=24h"
+            "http://localhost/api/datalora?type=24h"
         );
     });
 
@@ -102,7 +102,7 @@ describe("DataLora", () => {
         ).toBeVisible();
         expect(fetchMock).toBeCalledTimes(1);
         expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
-            "http://localhost/api/datalora/?type=all"
+            "http://localhost/api/datalora?type=all"
         );
     });
 
@@ -126,7 +126,7 @@ describe("DataLora", () => {
         ).toBeVisible();
         expect(fetchMock).toBeCalledTimes(1);
         expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
-            "http://localhost/api/datalora/?type=24h"
+            "http://localhost/api/datalora?type=24h"
         );
     });
 });

@@ -1,5 +1,5 @@
-import { Grid } from "@mui/material";
-import { FC } from "react";
+import { Grid, IconButton } from "@mui/material";
+import { FC, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import DataLora from "../../Molecules/DataLora/DataLora";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
@@ -15,6 +15,7 @@ import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Docker from "../Docker/Docker";
+import AppsIcon from "@mui/icons-material/Apps";
 
 const useStyles = makeStyles()((theme) => ({
     container: {
@@ -33,6 +34,7 @@ const useStyles = makeStyles()((theme) => ({
 
 const Dashboard: FC = () => {
     const { classes } = useStyles();
+    const [isLiteMode, setIsLiteMode] = useState(false);
     return (
         <Grid container spacing={2} className={classes.container}>
             <Grid item xs={12} md={3}>
@@ -48,12 +50,21 @@ const Dashboard: FC = () => {
                 <Jukebox />
                 <VideoStream />
                 <DataLora />
+                <IconButton
+                    color="primary"
+                    onClick={() => {
+                        setIsLiteMode((prev) => !prev);
+                    }}
+                    title="Toggle light mode"
+                >
+                    <AppsIcon />
+                </IconButton>
             </Grid>
             <Grid item xs={12} md={5}>
                 <ServiceLinksBar />
                 <Docker />
-                <Schedule />
-                <DownloadList />
+                {!isLiteMode && <Schedule />}
+                {!isLiteMode && <DownloadList />}
                 <Nextup />
                 <Monit />
             </Grid>

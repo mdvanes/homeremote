@@ -40,6 +40,19 @@ export interface UrlToMusicSetMetadataArgs {
     album: string;
 }
 
+export interface SearchResultItem {
+    title?: string;
+    id?: string;
+}
+
+export interface UrlToMusicGetSearchResponse {
+    searchResults: SearchResultItem[];
+}
+
+export interface UrlToMusicGetSearchArgs {
+    terms: string;
+}
+
 export type UrlToMusicState = "idle" | "downloading" | "finished" | "error";
 
 export type UrlToMusicGetMusicProgressResponse =

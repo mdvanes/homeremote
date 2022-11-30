@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import React, { FC, useEffect, useState } from "react";
+import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { useGetInfoQuery } from "../../../Services/urlToMusicApi";
@@ -16,12 +17,10 @@ import { logError } from "../LogCard/logSlice";
 import { FILL_IN_THIS_FIELD } from "./constants";
 import {
     reset,
-    resetAll,
     setFormField,
     setFormFieldError,
     UrlToMusicState,
 } from "./urlToMusicSlice";
-import ReactPlayer from "react-player";
 
 const GetInfoForm: FC = () => {
     const dispatch = useDispatch();
@@ -80,19 +79,15 @@ const GetInfoForm: FC = () => {
                                 dispatch(reset());
                                 setQuery(encodeURIComponent(form.url.value));
                                 // Always call refetch to ignore cache and overwrite the music info
-                                refetch();
+                                try {
+                                    refetch();
+                                } catch (err) {
+                                    // ignore error when refetching on the first query
+                                }
                             }
                         }}
                     >
                         Get Info
-                    </Button>
-                    <Button
-                        color="warning"
-                        onClick={() => {
-                            dispatch(resetAll());
-                        }}
-                    >
-                        reset
                     </Button>
                 </CardActions>
             </form>
@@ -101,6 +96,7 @@ const GetInfoForm: FC = () => {
                 <ReactPlayer
                     style={{
                         aspectRatio: "16/9",
+                        maxWidth: "1100px",
                     }}
                     height="auto"
                     width="100%"

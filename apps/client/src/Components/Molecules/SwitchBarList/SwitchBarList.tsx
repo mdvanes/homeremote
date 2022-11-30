@@ -11,22 +11,23 @@ import {
 import { getSwitches } from "./getSwitchesThunk";
 import { RootState } from "../../../Reducers";
 import { logError } from "../LogCard/logSlice";
-import { HomeRemoteSwitch } from "@homeremote/types";
+import {
+    HomeRemoteSwitch,
+    DomoticzType,
+    DomoticzSendType,
+} from "@homeremote/types";
 import { useAppDispatch } from "../../../store";
+import {
+    DOMOTICZ_SELECTOR_STATES_OPTIONS,
+    isDomoticzSelectorStateCode,
+} from "./SwitchBarList.types";
 
-// TODO improve type
-const SELECTOR_STATES: Record<number, string> = {
-    0: "disconnected",
-    10: "disarmed",
-    20: "partarmed",
-    30: "armed",
-};
-
-// TODO stronger typing, return type can be only certain strings
 // Type is switchscene or switchlight
-const getType = (type: string): string => {
+const getType = (type: DomoticzType): DomoticzSendType => {
     switch (type) {
         case "Group":
+            return "switchscene";
+        case "Scene":
             return "switchscene";
         case "Selector":
             return "selector";
@@ -51,8 +52,8 @@ const getLabel = (
     dimLevel: number | null,
     type: string
 ): string => {
-    if (type === "selector" && dimLevel !== null) {
-        return `${name}: ${SELECTOR_STATES[dimLevel]}`;
+    if (type === "selector" && isDomoticzSelectorStateCode(dimLevel)) {
+        return `${name}: ${DOMOTICZ_SELECTOR_STATES_OPTIONS[dimLevel]}`;
     }
     return dimLevel !== null ? `${name} (${dimLevel}%)` : name;
 };

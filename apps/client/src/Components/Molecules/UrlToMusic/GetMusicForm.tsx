@@ -127,7 +127,11 @@ const GetMusicForm: FC = () => {
                                 album: encodeURIComponent(form.album.value),
                             });
                             // To force ignoring cached value
-                            refetch();
+                            try {
+                                refetch();
+                            } catch (err) {
+                                // ignore error when refetching on the first query
+                            }
                         }
                     }}
                 >

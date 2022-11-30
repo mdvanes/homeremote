@@ -12,10 +12,12 @@ import {
     Body,
     Param,
     UseGuards,
+    Request,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { AuthenticatedRequest } from "../login/LoginRequest.types";
 
 export interface DomoticzSwitch {
     idx: string;
@@ -170,7 +172,8 @@ export class SwitchesController {
     @Post(":switchId")
     async updateSwitch(
         @Param("switchId") switchId: string,
-        @Body() message: UpdateSwitchMessage
+        @Body() message: UpdateSwitchMessage,
+        @Request() req: AuthenticatedRequest
     ): Promise<{ status: "received" | "error" }> {
         const domoticzuri =
             this.configService.get<string>("DOMOTICZ_URI") || "";
@@ -178,7 +181,7 @@ export class SwitchesController {
         const newState = state === "on" ? "On" : "Off";
 
         this.logger.verbose(
-            `Call to /switch/${switchId} [state: ${newState} domoticzuri: ${domoticzuri}]`
+            `[${req.user.name}] Call to /switch/${switchId} {state: ${newState}, type: ${switchType}} domoticzuri: ${domoticzuri}]`
         );
         if (domoticzuri && domoticzuri.length > 0) {
             const targetUri = `${domoticzuri}/json.htm?type=command&param=${switchType}&idx=${switchId}&switchcmd=${newState}`;
