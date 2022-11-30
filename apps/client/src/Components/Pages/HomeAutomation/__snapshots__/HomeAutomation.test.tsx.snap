@@ -4,7 +4,9 @@ exports[`HomeAutomation page contains the SwitchBarList 1`] = `
 <body>
   <div>
     <mock-switch-bar-list />
-    <mock-gaschart />
+    <mock-gaschart
+      isbig="true"
+    />
   </div>
 </body>
 `;
