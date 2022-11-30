@@ -80,7 +80,11 @@ const GetInfoForm: FC = () => {
                                 dispatch(reset());
                                 setQuery(encodeURIComponent(form.url.value));
                                 // Always call refetch to ignore cache and overwrite the music info
-                                refetch();
+                                try {
+                                    refetch();
+                                } catch (err) {
+                                    // ignore error when refetching on the first query
+                                }
                             }
                         }}
                     >
@@ -93,6 +97,7 @@ const GetInfoForm: FC = () => {
                 <ReactPlayer
                     style={{
                         aspectRatio: "16/9",
+                        maxWidth: "1100px",
                     }}
                     height="auto"
                     width="100%"

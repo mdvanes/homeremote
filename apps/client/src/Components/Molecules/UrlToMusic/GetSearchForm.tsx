@@ -93,7 +93,6 @@ const GetSearchForm: FC = () => {
 
     return (
         <form>
-            {/* TODO: bug: search term, select first, do "get info", select second, do "get info". Request is not submitted. */}
             <TextField
                 data-testid="terms"
                 label="Search terms"
