@@ -1,12 +1,15 @@
 export const DomoticzTypeOptions = {
+    Dimmer: "Dimmer",
     Group: "Group",
     LightSwitch: "Light/Switch",
-    Dimmer: "Dimmer",
+    Scene: "Scene",
     Selector: "Selector",
 } as const;
 
 export type DomoticzType =
     typeof DomoticzTypeOptions[keyof typeof DomoticzTypeOptions];
+
+export type DomoticzSendType = "switchscene" | "switchlight" | "selector";
 
 export type DomoticzStatus = string;
 
