@@ -1,18 +1,30 @@
 import { UrlToMusicGetSearchArgs } from "@homeremote/types";
-import { Close as CloseIcon, Search as SearchIcon } from "@mui/icons-material";
 import {
+    Close as CloseIcon,
+    FormatQuote as FormatQuoteIcon,
+    MusicNote as MusicNoteIcon,
+    Search as SearchIcon,
+} from "@mui/icons-material";
+import {
+    Alert,
     Button,
     CardActions,
     CircularProgress,
+    InputAdornment,
     List,
     ListItemButton,
     ListItemText,
     TextField,
 } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useGetSearchQuery } from "../../../Services/urlToMusicApi";
+import {
+    urlToMusicApi,
+    useGetSearchQuery,
+} from "../../../Services/urlToMusicApi";
+import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { logError } from "../LogCard/logSlice";
 import { resetAll, setFormField } from "./urlToMusicSlice";
 
 const GetSearchForm: FC = () => {
@@ -24,10 +36,23 @@ const GetSearchForm: FC = () => {
         setTerms(event.target.value);
     };
 
+    const handlePrefill = async () => {
+        const nowplaying: { artist: string; title: string } = await fetch(
+            `${process.env.NX_BASE_URL}/api/nowplaying/radio2`
+        ).then((data) => data.json());
+        const newTerm = `${nowplaying.artist} ${nowplaying.title}`;
+        setTerms(newTerm);
+    };
+
     const args: UrlToMusicGetSearchArgs | typeof skipToken = query
         ? { terms: query }
         : skipToken;
-    const { data: result, isLoading, isFetching } = useGetSearchQuery(args);
+    const {
+        data: result,
+        isLoading,
+        isFetching,
+        error,
+    } = useGetSearchQuery(args);
 
     const resultElems = result?.searchResults ? (
         <List dense>
@@ -44,33 +69,47 @@ const GetSearchForm: FC = () => {
                         );
                     }}
                 >
-                    {/* <ReactPlayer
-                        style={{
-                            aspectRatio: "16/9",
-                        }}
-                        width="auto"
-                        // TODO height="auto"
-                        height={100}
-                        url={`https://youtube.com/watch?v=${item.id}`}
-                    /> */}
                     <ListItemText primary={item.title} />
                 </ListItemButton>
             ))}
         </List>
     ) : null;
 
-    // TODO handle error?
+    useEffect(() => {
+        if (error) {
+            dispatch(
+                logError(
+                    `GetSearchForm failure: ${getErrorMessage(
+                        error
+                    ).toString()}`
+                )
+            );
+        }
+    }, [dispatch, error]);
+
+    if (error) {
+        return <Alert severity="error">{getErrorMessage(error)}</Alert>;
+    }
 
     return (
         <form>
+            {/* TODO: bug: search term, select first, do "get info", select second, do "get info". Request is not submitted. */}
             <TextField
                 data-testid="terms"
                 label="Search terms"
                 name="terms"
                 fullWidth={true}
-                value={terms}
+                // preventing undefined will prevent overlapping the label with the input
+                value={terms ?? ""}
                 variant="standard"
                 onChange={handleTermsChange}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <MusicNoteIcon />
+                        </InputAdornment>
+                    ),
+                }}
             />
             {isLoading || isFetching ? (
                 <CircularProgress sx={{ marginTop: 2 }} />
@@ -88,12 +127,20 @@ const GetSearchForm: FC = () => {
                     search
                 </Button>
                 <Button
+                    startIcon={<FormatQuoteIcon />}
+                    color="primary"
+                    onClick={handlePrefill}
+                >
+                    prefill
+                </Button>
+                <Button
                     startIcon={<CloseIcon />}
                     color="warning"
                     onClick={() => {
                         setTerms("");
                         setQuery("");
                         dispatch(resetAll());
+                        urlToMusicApi.util.resetApiState();
                     }}
                 >
                     reset
