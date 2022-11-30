@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import React, { FC, useEffect, useState } from "react";
+import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { useGetInfoQuery } from "../../../Services/urlToMusicApi";
@@ -16,12 +17,10 @@ import { logError } from "../LogCard/logSlice";
 import { FILL_IN_THIS_FIELD } from "./constants";
 import {
     reset,
-    resetAll,
     setFormField,
     setFormFieldError,
     UrlToMusicState,
 } from "./urlToMusicSlice";
-import ReactPlayer from "react-player";
 
 const GetInfoForm: FC = () => {
     const dispatch = useDispatch();
