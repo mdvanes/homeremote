@@ -42,8 +42,13 @@ export class CarTwinController {
         @Request() req: AuthenticatedRequest,
         // @Query() query: { batteryToken: string; connectedToken: string }
         // @Req() req:
-        @Body() body: { batteryToken: string; connectedToken: string }
-    ): Promise<{ result: object; doors: object; car: object }> {
+        @Body() body: { energyToken: string; connectedToken: string }
+    ): Promise<{
+        result: object;
+        doors: object;
+        car: object;
+        energy: object | undefined;
+    }> {
         this.logger.verbose(`[${req.user.name}] GET to /api/cartwin`);
 
         try {
@@ -73,7 +78,7 @@ export class CarTwinController {
                     headers,
                 }
             ).json();
-            this.logger.debug(response);
+            // this.logger.debug(response);
 
             const response1: VolvoFooResponse = await got(
                 `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/doors`,
@@ -81,7 +86,7 @@ export class CarTwinController {
                     headers,
                 }
             ).json();
-            this.logger.debug(response1);
+            // this.logger.debug(response1);
 
             const response2: VolvoFooResponse = await got(
                 `${baseUrl}/connected-vehicle/v1/vehicles/${vin}`,
@@ -92,9 +97,29 @@ export class CarTwinController {
                     },
                 }
             ).json();
-            this.logger.debug(response2);
+            // this.logger.debug(response2);
 
-            return { result: response, doors: response1, car: response2 };
+            const energyResponse: VolvoFooResponse | undefined =
+                body.energyToken
+                    ? await got(
+                          `${baseUrl}/energy/v1/vehicles/${vin}/recharge-status`,
+                          {
+                              headers: {
+                                  ...headers,
+                                  authorization: `Bearer ${body.energyToken}`,
+                                  accept: "application/vnd.volvocars.api.energy.vehicledata.v1+json",
+                              },
+                          }
+                      ).json()
+                    : undefined;
+            this.logger.debug(body.energyToken, energyResponse);
+
+            return {
+                result: response,
+                doors: response1,
+                car: response2,
+                energy: energyResponse,
+            };
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

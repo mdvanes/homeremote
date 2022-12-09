@@ -4,6 +4,7 @@ import { willAddCredentials } from "../devUtils";
 
 export interface FooArgs {
     connectedToken: string;
+    energyToken: string;
 }
 
 // TODO generate this type with OpenAPI v3
@@ -56,6 +57,33 @@ export interface FooResponse {
             };
         };
     };
+    energy: {
+        data: {
+            batteryChargeLevel: {
+                value: string;
+                unit: string;
+                timestamp: string;
+            };
+            electricRange: {
+                value: string;
+                unit: string;
+                timestamp: string;
+            };
+            estimatedChargingTime: {
+                value: string;
+                unit: string;
+                timestamp: string;
+            };
+            chargingConnectionStatus: {
+                value: string;
+                timestamp: string;
+            };
+            chargingSystemStatus: {
+                value: string;
+                timestamp: string;
+            };
+        };
+    };
 }
 
 export const carTwinApi = createApi({
@@ -70,11 +98,12 @@ export const carTwinApi = createApi({
         //     query: ({ connectedToken }) => `/?connectedToken=${connectedToken}`,
         // }),
         getCarTwin: builder.mutation<FooResponse, FooArgs>({
-            query: ({ connectedToken }) => ({
+            query: ({ connectedToken, energyToken }) => ({
                 url: "/",
                 method: "POST",
                 body: {
                     connectedToken,
+                    energyToken,
                 },
             }),
         }),

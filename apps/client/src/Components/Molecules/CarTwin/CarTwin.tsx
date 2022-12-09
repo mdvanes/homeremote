@@ -3,7 +3,7 @@ import {
     FooResponse,
     useGetCarTwinMutation,
 } from "../../../Services/carTwinApi";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 
 const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
@@ -27,7 +27,23 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                 images: { exteriorDefaultUrl },
             },
         },
+        energy: {
+            data: {
+                batteryChargeLevel,
+                electricRange,
+                estimatedChargingTime,
+                chargingConnectionStatus,
+                chargingSystemStatus,
+            },
+        },
     } = data;
+
+    const rawMinutes = parseInt(estimatedChargingTime.value, 10);
+    const hours = Math.floor(rawMinutes / 60);
+    const days = Math.floor(hours / 24);
+    const hours1 = hours - days * 24;
+    const minutes = rawMinutes - hours1 * 60 - days * 24 * 60;
+
     return (
         <>
             <img alt="car exterior" src={exteriorDefaultUrl} width="300" />
@@ -42,6 +58,19 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                 <li>rearLeft: {rearLeft.value}</li>
                 <li>rearRight: {rearRight.value}</li>
                 <li>tailGate: {tailGate.value}</li>
+                <li>batteryChargeLevel: {batteryChargeLevel.value}%</li>
+                <li>
+                    electricRange: {electricRange.value} {electricRange.unit}
+                </li>
+                <li>
+                    estimatedChargingTime: {estimatedChargingTime.value}{" "}
+                    {estimatedChargingTime.unit} / {days} day(s) {hours1}{" "}
+                    hour(s) {minutes} minute(s)
+                </li>
+                <li>
+                    chargingConnectionStatus: {chargingConnectionStatus.value}
+                </li>
+                <li>chargingSystemStatus: {chargingSystemStatus.value}</li>
             </ul>
         </>
     );
@@ -49,6 +78,7 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
 
 export const CarTwinCard: FC = () => {
     const [connectedTokenVal, setConnectedTokenVal] = useState("");
+    const [energyTokenVal, setEnergyTokenVal] = useState("");
     // TODO rename formArg
     // const [formArg, setFormArg] = useState<FooArgs | undefined>();
     // const args: FooArgs | typeof skipToken = formArg ? formArg : skipToken;
@@ -59,6 +89,14 @@ export const CarTwinCard: FC = () => {
     // if (isLoading || isFetching) {
     //     return <div>loading...</div>;
     // }
+
+    useEffect(() => {
+        const connectedTokenVal1 =
+            localStorage.getItem("connectedTokenVal") ?? "";
+        const energyTokenVal1 = localStorage.getItem("energyTokenVal") ?? "";
+        setConnectedTokenVal(connectedTokenVal1);
+        setEnergyTokenVal(energyTokenVal1);
+    }, []);
 
     return (
         <div>
@@ -84,14 +122,28 @@ export const CarTwinCard: FC = () => {
                     setConnectedTokenVal(event.target.value);
                 }}
             ></textarea>
+            energyToken:
+            <textarea
+                name="energyToken"
+                value={energyTokenVal}
+                onChange={(event) => {
+                    setEnergyTokenVal(event.target.value);
+                }}
+            ></textarea>
             <button
                 onClick={async () => {
                     // setFormArg({
                     //     connectedToken: connectedTokenVal,
                     // });
                     try {
+                        localStorage.setItem(
+                            "connectedTokenVal",
+                            connectedTokenVal
+                        );
+                        localStorage.setItem("energyTokenVal", energyTokenVal);
                         const result = await getCarTwin({
                             connectedToken: connectedTokenVal,
+                            energyToken: energyTokenVal,
                         }).unwrap();
                         console.log(result);
                         setResult(result);
