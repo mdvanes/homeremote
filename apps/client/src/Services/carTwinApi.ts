@@ -57,6 +57,9 @@ export interface FooResponse {
             };
         };
     };
+    statistics: any;
+    diagnostics: any;
+    tyre: any;
     energy: {
         data: {
             batteryChargeLevel: {

@@ -27,6 +27,8 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                 images: { exteriorDefaultUrl },
             },
         },
+        statistics,
+        diagnostics,
         energy: {
             data: {
                 batteryChargeLevel,
@@ -51,6 +53,7 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                 <li>
                     odometer: {odometer.value} {odometer.unit}
                 </li>
+
                 <li>carLocked: {carLocked.value}</li>
                 <li>frontLeft: {frontLeft.value}</li>
                 <li>frontRight: {frontRight.value}</li>
@@ -58,6 +61,19 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                 <li>rearLeft: {rearLeft.value}</li>
                 <li>rearRight: {rearRight.value}</li>
                 <li>tailGate: {tailGate.value}</li>
+
+                <li>tripMeter1: {statistics.data.tripMeter1.value} km</li>
+                <li>tripMeter2: {statistics.data.tripMeter2.value} km</li>
+                <li>
+                    averageSpeed: {statistics.data.averageSpeed.value} km/hr
+                </li>
+
+                <li>
+                    engineHoursToService:{" "}
+                    {diagnostics.data.engineHoursToService.value} hours
+                </li>
+                <li>kmToService: {diagnostics.data.kmToService.value} km</li>
+
                 <li>batteryChargeLevel: {batteryChargeLevel.value}%</li>
                 <li>
                     electricRange: {electricRange.value} {electricRange.unit}

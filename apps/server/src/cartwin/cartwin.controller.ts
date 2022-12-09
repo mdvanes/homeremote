@@ -47,6 +47,9 @@ export class CarTwinController {
         result: object;
         doors: object;
         car: object;
+        statistics: object | undefined;
+        diagnostics: object | undefined;
+        tyre: object | undefined;
         energy: object | undefined;
     }> {
         this.logger.verbose(`[${req.user.name}] GET to /api/cartwin`);
@@ -99,6 +102,33 @@ export class CarTwinController {
             ).json();
             // this.logger.debug(response2);
 
+            const statisticsResponse: VolvoFooResponse = body.connectedToken
+                ? await got(
+                      `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/statistics`,
+                      {
+                          headers,
+                      }
+                  ).json()
+                : undefined;
+
+            const diagnosticsResponse: VolvoFooResponse = body.connectedToken
+                ? await got(
+                      `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/diagnostics`,
+                      {
+                          headers,
+                      }
+                  ).json()
+                : undefined;
+
+            const tyreResponse: VolvoFooResponse = body.connectedToken
+                ? await got(
+                      `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/tyres`,
+                      {
+                          headers,
+                      }
+                  ).json()
+                : undefined;
+
             const energyResponse: VolvoFooResponse | undefined =
                 body.energyToken
                     ? await got(
@@ -118,6 +148,9 @@ export class CarTwinController {
                 result: response,
                 doors: response1,
                 car: response2,
+                statistics: statisticsResponse,
+                diagnostics: diagnosticsResponse,
+                tyre: tyreResponse,
                 energy: energyResponse,
             };
         } catch (err) {
