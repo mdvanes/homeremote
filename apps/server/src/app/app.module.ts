@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { AuthModule } from "../auth/auth.module";
+import { CarTwinController } from "../cartwin/cartwin.controller";
 import { DataloraController } from "../datalora/datalora.controller";
 import { DockerlistController } from "../dockerlist/dockerlist.controller";
 import { DownloadlistController } from "../downloadlist/downloadlist.controller";
@@ -45,6 +46,7 @@ import { AppService } from "./app.service";
     ],
     controllers: [
         AppController,
+        CarTwinController,
         DataloraController,
         DockerlistController,
         DownloadlistController,

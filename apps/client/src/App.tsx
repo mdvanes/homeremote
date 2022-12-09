@@ -17,6 +17,7 @@ import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar
 import Jukebox from "./Components/Molecules/Jukebox/Jukebox";
 import { logUrgentInfo } from "./Components/Molecules/LogCard/logSlice";
 import UrlToMusic from "./Components/Molecules/UrlToMusic/UrlToMusic";
+import { CarTwinPage } from "./Components/Pages/CarTwin/CarTwinPage";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
 import DataLora from "./Components/Pages/DataLora/DataLora";
 import Docker from "./Components/Pages/Docker/Docker";
@@ -115,6 +116,10 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                     <Route
                                         path="/datalora"
                                         element={<DataLora />}
+                                    />
+                                    <Route
+                                        path="/cartwin"
+                                        element={<CarTwinPage />}
                                     />
                                     <Route path="/about" element={<Log />} />
                                 </Routes>
