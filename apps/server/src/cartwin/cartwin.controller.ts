@@ -6,6 +6,7 @@ import {
     Request,
     HttpException,
     HttpStatus,
+    Query,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import got from "got/dist/source";
@@ -38,7 +39,8 @@ export class CarTwinController {
     @UseGuards(JwtAuthGuard)
     @Get()
     async getNextUp(
-        @Request() req: AuthenticatedRequest
+        @Request() req: AuthenticatedRequest,
+        @Query() query: { batteryToken: string; connectedToken: string }
     ): Promise<{ result: object }> {
         this.logger.verbose(`[${req.user.name}] GET to /api/cartwin`);
 
@@ -50,10 +52,23 @@ export class CarTwinController {
                 foo: any;
             }
 
-            const gasCounterResponse: VolvoFooResponse = await got(
+            const baseUrl = "https://api.volvocars.com/";
+
+            const vin = this.configService.get<string>("CARTWIN_VIN") || "";
+            const vccApiKey =
+                this.configService.get<string>("CARTWIN_VCC_API_KEY") || "";
+
+            const response: VolvoFooResponse = await got(
                 // this.getAPI(gasSensor)
-                ""
+                `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/odometer`,
+                {
+                    headers: {
+                        "vcc-api-key": vccApiKey,
+                        authorization: `Bearer ${query.connectedToken}`,
+                    },
+                }
             ).json();
+            this.logger.debug(response);
             return { result: {} };
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);

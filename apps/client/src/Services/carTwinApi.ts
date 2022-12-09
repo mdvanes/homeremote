@@ -2,7 +2,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { willAddCredentials } from "../devUtils";
 
-interface Foo {
+export interface FooArgs {
+    connectedToken: string;
+}
+
+export interface FooResponse {
     result: any;
 }
 
@@ -13,8 +17,8 @@ export const carTwinApi = createApi({
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({
-        getCarTwin: builder.query<Foo, undefined>({
-            query: () => "/",
+        getCarTwin: builder.query<FooResponse, FooArgs>({
+            query: ({ connectedToken }) => `/?connectedToken=${connectedToken}`,
         }),
     }),
 });
