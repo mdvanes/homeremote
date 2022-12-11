@@ -51,7 +51,12 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
             <img alt="car exterior" src={exteriorDefaultUrl} width="300" />
             <ul>
                 <li>
-                    odometer: {odometer.value} {odometer.unit}
+                    odometer: {parseInt(odometer.value, 10) * 10}{" "}
+                    {odometer.unit}{" "}
+                    <div>
+                        NOTE: This number is multiplied by 10 as a correction,
+                        and should be accurate to 10 km instead 1 km.
+                    </div>
                 </li>
 
                 <li>carLocked: {carLocked.value}</li>
@@ -62,8 +67,15 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                 <li>rearRight: {rearRight.value}</li>
                 <li>tailGate: {tailGate.value}</li>
 
-                <li>tripMeter1: {statistics.data.tripMeter1.value} km</li>
-                <li>tripMeter2: {statistics.data.tripMeter2.value} km</li>
+                <li>
+                    tripMeter1 (Manual Trip):{" "}
+                    {parseInt(statistics.data.tripMeter1.value, 10) * 100} km{" "}
+                    <div>
+                        NOTE: This number is multiplied by 100 as a correction,
+                        and should be accurate to 100 km instead 1 km.
+                    </div>
+                </li>
+                {/* <li>tripMeter2: {statistics.data.tripMeter2.value} km</li> */}
                 <li>
                     averageSpeed: {statistics.data.averageSpeed.value} km/hr
                 </li>
@@ -95,6 +107,7 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
 export const CarTwinCard: FC = () => {
     const [connectedTokenVal, setConnectedTokenVal] = useState("");
     const [energyTokenVal, setEnergyTokenVal] = useState("");
+    const [extendedTokenVal, setExtendedTokenVal] = useState("");
     // TODO rename formArg
     // const [formArg, setFormArg] = useState<FooArgs | undefined>();
     // const args: FooArgs | typeof skipToken = formArg ? formArg : skipToken;
@@ -110,8 +123,11 @@ export const CarTwinCard: FC = () => {
         const connectedTokenVal1 =
             localStorage.getItem("connectedTokenVal") ?? "";
         const energyTokenVal1 = localStorage.getItem("energyTokenVal") ?? "";
+        const extendedTokenVal1 =
+            localStorage.getItem("extendedTokenVal") ?? "";
         setConnectedTokenVal(connectedTokenVal1);
         setEnergyTokenVal(energyTokenVal1);
+        setExtendedTokenVal(extendedTokenVal1);
     }, []);
 
     return (
@@ -146,6 +162,14 @@ export const CarTwinCard: FC = () => {
                     setEnergyTokenVal(event.target.value);
                 }}
             ></textarea>
+            extendedToken:
+            <textarea
+                name="extendedToken"
+                value={extendedTokenVal}
+                onChange={(event) => {
+                    setExtendedTokenVal(event.target.value);
+                }}
+            ></textarea>
             <button
                 onClick={async () => {
                     // setFormArg({
@@ -157,11 +181,16 @@ export const CarTwinCard: FC = () => {
                             connectedTokenVal
                         );
                         localStorage.setItem("energyTokenVal", energyTokenVal);
+                        localStorage.setItem(
+                            "extendedTokenVal",
+                            extendedTokenVal
+                        );
                         const result = await getCarTwin({
                             connectedToken: connectedTokenVal,
                             energyToken: energyTokenVal,
+                            extendedToken: extendedTokenVal,
                         }).unwrap();
-                        console.log(result);
+                        // console.log(result);
                         setResult(result);
                     } catch (err) {
                         console.log(err);

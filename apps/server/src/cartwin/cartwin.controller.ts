@@ -42,7 +42,12 @@ export class CarTwinController {
         @Request() req: AuthenticatedRequest,
         // @Query() query: { batteryToken: string; connectedToken: string }
         // @Req() req:
-        @Body() body: { energyToken: string; connectedToken: string }
+        @Body()
+        body: {
+            energyToken: string;
+            connectedToken: string;
+            extendedToken: string;
+        }
     ): Promise<{
         result: object;
         doors: object;
@@ -51,6 +56,7 @@ export class CarTwinController {
         diagnostics: object | undefined;
         tyre: object | undefined;
         energy: object | undefined;
+        frontLeftWindowOpen: object | undefined;
     }> {
         this.logger.verbose(`[${req.user.name}] GET to /api/cartwin`);
 
@@ -142,7 +148,29 @@ export class CarTwinController {
                           }
                       ).json()
                     : undefined;
-            this.logger.debug(body.energyToken, energyResponse);
+            // this.logger.debug(body.energyToken, energyResponse);
+
+            // TODO the extended vehicle API seems not to be available
+            try {
+                const frontLeftWindowOpenResponse:
+                    | VolvoFooResponse
+                    | undefined = body.extendedToken
+                    ? await got(
+                          `${baseUrl}/extended-vehicle/v1/vehicles/${vin}/resources`,
+                          //  `${baseUrl}/extended-vehicle/v1/vehicles/${vin}/resources/frontLeftWindowOpen`,
+                          {
+                              headers: {
+                                  ...headers,
+                                  authorization: `Bearer ${body.energyToken}`,
+                                  accept: "application/json",
+                              },
+                          }
+                      ).json()
+                    : undefined;
+                this.logger.debug(frontLeftWindowOpenResponse);
+            } catch (err) {
+                this.logger.error("frontLeftWindowOpen", err);
+            }
 
             return {
                 result: response,
@@ -152,6 +180,7 @@ export class CarTwinController {
                 diagnostics: diagnosticsResponse,
                 tyre: tyreResponse,
                 energy: energyResponse,
+                frontLeftWindowOpen: undefined, // frontLeftWindowOpenResponse,
             };
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);

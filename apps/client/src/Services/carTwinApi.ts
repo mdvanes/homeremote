@@ -5,6 +5,7 @@ import { willAddCredentials } from "../devUtils";
 export interface FooArgs {
     connectedToken: string;
     energyToken: string;
+    extendedToken: string;
 }
 
 // TODO generate this type with OpenAPI v3
@@ -101,12 +102,13 @@ export const carTwinApi = createApi({
         //     query: ({ connectedToken }) => `/?connectedToken=${connectedToken}`,
         // }),
         getCarTwin: builder.mutation<FooResponse, FooArgs>({
-            query: ({ connectedToken, energyToken }) => ({
+            query: ({ connectedToken, energyToken, extendedToken }) => ({
                 url: "/",
                 method: "POST",
                 body: {
                     connectedToken,
                     energyToken,
+                    extendedToken,
                 },
             }),
         }),
