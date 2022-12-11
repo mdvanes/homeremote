@@ -140,6 +140,11 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     // handle what happens on key press
     const handleKeyPress = useCallback(
         (event: KeyboardEvent) => {
+            // Do not intercept keypress from input elements, e.g. in forms
+            if ((event.target as HTMLElement).tagName === "INPUT") {
+                return;
+            }
+
             const hotKeyAction = hotKeyMap[event.key];
             if (hotKeyAction) {
                 hotKeyAction.fn();

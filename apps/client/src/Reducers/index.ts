@@ -5,6 +5,7 @@ import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBa
 import urlToMusicReducer from "../Components/Molecules/UrlToMusic/urlToMusicSlice";
 import authenticationReducer from "../Components/Providers/Authentication/authenticationSlice";
 import { activeConnectionsApi } from "../Services/activeConnectionsApi";
+import { carTwinApi } from "../Services/carTwinApi";
 import { dataloraApi } from "../Services/dataloraApi";
 import { dockerListApi } from "../Services/dockerListApi";
 import { downloadListApi } from "../Services/downloadListApi";
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
     switchesList: switchBarListReducer,
     urlToMusic: urlToMusicReducer,
     [activeConnectionsApi.reducerPath]: activeConnectionsApi.reducer,
+    [carTwinApi.reducerPath]: carTwinApi.reducer,
     [dataloraApi.reducerPath]: dataloraApi.reducer,
     [dockerListApi.reducerPath]: dockerListApi.reducer,
     [downloadListApi.reducerPath]: downloadListApi.reducer,

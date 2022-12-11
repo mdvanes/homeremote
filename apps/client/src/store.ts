@@ -3,6 +3,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { useDispatch } from "react-redux";
 import rootReducer from "./Reducers";
 import { activeConnectionsApi } from "./Services/activeConnectionsApi";
+import { carTwinApi } from "./Services/carTwinApi";
 import { dataloraApi } from "./Services/dataloraApi";
 import { dockerListApi } from "./Services/dockerListApi";
 import { downloadListApi } from "./Services/downloadListApi";
@@ -19,6 +20,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
             activeConnectionsApi.middleware,
+            carTwinApi.middleware,
             dataloraApi.middleware,
             dockerListApi.middleware,
             downloadListApi.middleware,
