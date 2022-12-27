@@ -80,6 +80,7 @@ export class CarTwinController {
                 accept: "application/vnd.volvocars.api.connected-vehicle.vehicledata.v1+json",
             };
 
+            // TODO handle when only Connected API fails or only Energy API fails.
             const response: VolvoFooResponse = await got(
                 // this.getAPI(gasSensor)
                 `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/odometer`,

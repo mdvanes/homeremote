@@ -6,6 +6,31 @@ import {
 import { FC, useEffect, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 
+const minutesToDaysHoursMinutes = (minutesString: string) => {
+    const rawMinutes = parseInt(minutesString, 10);
+    const hours = Math.floor(rawMinutes / 60);
+    const days = Math.floor(hours / 24);
+    const hours1 = hours - days * 24;
+    const minutes = rawMinutes - hours1 * 60 - days * 24 * 60;
+    return {
+        days,
+        hours: hours1,
+        minutes,
+    };
+};
+
+const hoursToDaysHours = (hoursString: string) => {
+    const hours = parseInt(hoursString, 10);
+    // const hours = Math.floor(rawMinutes / 60);
+    const days = Math.floor(hours / 24);
+    const hours1 = hours - days * 24;
+    // const minutes = rawMinutes - hours1 * 60 - days * 24 * 60;
+    return {
+        days,
+        hours: hours1,
+    };
+};
+
 const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
     const {
         result: {
@@ -40,11 +65,10 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
         },
     } = data;
 
-    const rawMinutes = parseInt(estimatedChargingTime.value, 10);
-    const hours = Math.floor(rawMinutes / 60);
-    const days = Math.floor(hours / 24);
-    const hours1 = hours - days * 24;
-    const minutes = rawMinutes - hours1 * 60 - days * 24 * 60;
+    const chargeTime = minutesToDaysHoursMinutes(estimatedChargingTime.value);
+    const toServiceTime = hoursToDaysHours(
+        diagnostics.data.engineHoursToService.value
+    );
 
     return (
         <>
@@ -81,8 +105,9 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                 </li>
 
                 <li>
-                    engineHoursToService:{" "}
-                    {diagnostics.data.engineHoursToService.value} hours
+                    engineHoursToService: {toServiceTime.days} day(s){" "}
+                    {toServiceTime.hours} hour(s) [RAW:{" "}
+                    {diagnostics.data.engineHoursToService.value} hours]
                 </li>
                 <li>kmToService: {diagnostics.data.kmToService.value} km</li>
 
@@ -91,9 +116,10 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                     electricRange: {electricRange.value} {electricRange.unit}
                 </li>
                 <li>
-                    estimatedChargingTime: {estimatedChargingTime.value}{" "}
-                    {estimatedChargingTime.unit} / {days} day(s) {hours1}{" "}
-                    hour(s) {minutes} minute(s)
+                    estimatedChargingTime: {chargeTime.days} day(s){" "}
+                    {chargeTime.hours} hour(s) {chargeTime.minutes} minute(s)
+                    [RAW: {estimatedChargingTime.value}{" "}
+                    {estimatedChargingTime.unit}]
                 </li>
                 <li>
                     chargingConnectionStatus: {chargingConnectionStatus.value}
