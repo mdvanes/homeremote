@@ -2,6 +2,7 @@ import {
     ISong,
     PlaylistResponse,
     PlaylistsResponse,
+    SongDirItem,
     SongDirResponse,
 } from "@homeremote/types";
 import {
@@ -27,6 +28,7 @@ export class JukeboxController {
     private readonly logger: Logger;
     private readonly baseUrl: string;
     private readonly apiConfig: string;
+    private readonly songDirId: string;
 
     constructor(private configService: ConfigService) {
         this.logger = new Logger(JukeboxController.name);
@@ -38,6 +40,10 @@ export class JukeboxController {
         const JUKEBOX_API_TOKEN =
             this.configService.get<string>("JUKEBOX_API_TOKEN") || "";
         this.apiConfig = `?u=${JUKEBOX_USERNAME}&t=${JUKEBOX_API_TOKEN}&s=${JUKEBOX_SALT}&v=1.16.0&c=${PLAYER_NAME}&f=json`;
+
+        const JUKEBOX_SONGDIR_ID =
+            this.configService.get<string>("JUKEBOX_SONGDIR_ID") || "";
+        this.songDirId = JUKEBOX_SONGDIR_ID;
     }
 
     getAPI(method: string, option = "") {
@@ -137,15 +143,43 @@ export class JukeboxController {
         this.logger.verbose("GET to /api/jukebox/songdir");
 
         try {
-            const SONGS_FROM_DIR_INDEX = 2619; // TODO extract
+            /*
+            * Keep this in case the ID of Various or the subdir changes
+            const url2 = this.getAPI("getIndexes");
+            const response2 = await got(url2).json();
+            const indexByFirstChar: any[] =
+                response2["subsonic-response"].indexes.index;
+            const vartists = indexByFirstChar.find((bar) => bar.name === "V");
+            vartists.artist.find((artist) => artist.name === "Various");
+            console.log(indexByFirstChar.find((bar) => bar.name === "V"));
+
+            const url1 = this.getAPI("getMusicDirectory", "&id=67");
+            const response1 = await got(url1).json();
+            console.log(
+                response1["subsonic-response"].directory.name,
+                response1["subsonic-response"].directory.child
+                    .filter((child) => child.isDir)
+                    .find((child) => child.title === "Songs from")
+            );
+            */
+
+            if (!this.songDirId || this.songDirId.length === 0) {
+                const message = "JUKEBOX_SONGDIR_ID is not set or invalid";
+                this.logger.error(message);
+                throw new HttpException(message, HttpStatus.NOT_ACCEPTABLE);
+            }
+
             const currentYear = new Date().getFullYear();
 
             const songDirUrl = this.getAPI(
                 "getMusicDirectory",
-                `&id=${SONGS_FROM_DIR_INDEX}`
+                `&id=${this.songDirId}`
             );
             const songDirResponse = await got(songDirUrl).json();
-            const songDir = songDirResponse["subsonic-response"].directory.child
+            const songDir = (
+                songDirResponse["subsonic-response"].directory
+                    .child as SongDirItem[]
+            )
                 .filter((child) => child.isDir)
                 .find((child) => child.title === `${currentYear}`);
 
@@ -154,9 +188,10 @@ export class JukeboxController {
                 `&id=${songDir.id}`
             );
             const songDirContent = await got(songDirContentUrl).json();
-            const content = songDirContent[
-                "subsonic-response"
-            ].directory.child.filter((child) => !child.isDir);
+            const content = (
+                songDirContent["subsonic-response"].directory
+                    .child as SongDirItem[]
+            ).filter((child) => !child.isDir);
 
             return { status: "received", dir: songDir, content };
         } catch (err) {
