@@ -43,7 +43,7 @@ WORKDIR /app
 RUN apk --no-cache add --virtual .builds-deps build-base python3 jq
 
 # Set a symlink because some deps need `python` to rebuild
-RUN ln -s /usr/bin/python3 /usr/bin/python
+# RUN ln -s /usr/bin/python3 /usr/bin/python # Suddenly, python is included in the image?
 
 # Copy the files needed before npm install
 COPY --from=build-env /home/node/code/package.json /home/node/code/package-lock.json ./
@@ -72,7 +72,7 @@ WORKDIR /app
 RUN apk add --no-cache curl python3 ffmpeg
 
 # Set a symlink because some deps need `python`
-RUN ln -s /usr/bin/python3 /usr/bin/python
+# RUN ln -s /usr/bin/python3 /usr/bin/python # Suddenly, python is included in the image?
 
 # Copy assets from the previous stage
 COPY --from=build-alpine-env /app/package.json ./package.json
