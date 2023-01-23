@@ -83,7 +83,6 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                                     // unit="m³"
                                     style={{ fontSize: "10px" }}
                                 />
-                                {/* TODO needs offset */}
                                 <YAxis
                                     yAxisId="right"
                                     unit="°"
@@ -94,10 +93,13 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                                     labelFormatter={(val) => {
                                         const [year, month, day] =
                                             val.split("-");
-                                        const date = new Date();
-                                        date.setFullYear(year);
-                                        date.setMonth(month - 1);
-                                        date.setDate(day);
+
+                                        const date = new Date(
+                                            year,
+                                            month - 1,
+                                            day
+                                        );
+
                                         const formattedDate =
                                             date.toLocaleDateString("en-uk", {
                                                 weekday: "short",
@@ -124,7 +126,6 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                                 />
                                 <Bar
                                     yAxisId="left"
-                                    // TODO stronger typing?
                                     dataKey="used" // m3 on this day
                                     fill="#2d6196"
                                 />
