@@ -1,4 +1,9 @@
-import { ISong, PlaylistResponse, PlaylistsResponse } from "@homeremote/types";
+import {
+    ISong,
+    PlaylistResponse,
+    PlaylistsResponse,
+    SongDirResponse,
+} from "@homeremote/types";
 import {
     Controller,
     Logger,
@@ -117,6 +122,43 @@ export class JukeboxController {
             const streamUrl = this.getAPI("stream", `&id=${id}`);
             const str = got.stream(streamUrl);
             return new StreamableFile(str);
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("songdir")
+    async getSongDir(): Promise<SongDirResponse> {
+        this.logger.verbose("GET to /api/jukebox/songdir");
+
+        try {
+            const SONGS_FROM_DIR_INDEX = 2619; // TODO extract
+            const currentYear = new Date().getFullYear();
+
+            const songDirUrl = this.getAPI(
+                "getMusicDirectory",
+                `&id=${SONGS_FROM_DIR_INDEX}`
+            );
+            const songDirResponse = await got(songDirUrl).json();
+            const songDir = songDirResponse["subsonic-response"].directory.child
+                .filter((child) => child.isDir)
+                .find((child) => child.title === `${currentYear}`);
+
+            const songDirContentUrl = this.getAPI(
+                "getMusicDirectory",
+                `&id=${songDir.id}`
+            );
+            const songDirContent = await got(songDirContentUrl).json();
+            const content = songDirContent[
+                "subsonic-response"
+            ].directory.child.filter((child) => !child.isDir);
+
+            return { status: "received", dir: songDir, content };
         } catch (err) {
             this.logger.error(err);
             throw new HttpException(
