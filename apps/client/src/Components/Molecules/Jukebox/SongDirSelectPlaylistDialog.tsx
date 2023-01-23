@@ -1,111 +1,106 @@
+import { IPlaylist, SongDirItem } from "@homeremote/types";
 import {
-    useGetPlaylistsQuery,
-    useGetSongDirQuery,
-} from "../../../Services/jukeboxApi";
-import { FC, useState } from "react";
-import {
-    Card,
-    CardContent,
-    CardHeader,
+    Alert,
     Dialog,
     DialogContent,
     DialogTitle,
-    IconButton,
     List,
     ListItem,
     ListItemButton,
     ListItemText,
-    Paper,
     Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
+import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { logError } from "../LogCard/logSlice";
 
 interface SongDirSelectPlaylistDialogProps {
     open: boolean;
-    selectedValue: string;
-    onClose: (value: string) => void;
+    selectedValue: SongDirItem;
+    onClose: () => void;
 }
 
 export function SongDirSelectPlaylistDialog(
     props: SongDirSelectPlaylistDialogProps
 ) {
-    const { data } = useGetPlaylistsQuery(undefined);
-
+    const dispatch = useDispatch();
     const { onClose, selectedValue, open } = props;
+    const { data, error } = useGetPlaylistsQuery(undefined);
 
     const handleClose = () => {
-        onClose(selectedValue);
+        onClose();
     };
 
-    const handleListItemClick = (value: string) => {
-        onClose(value);
+    const handleListItemClick = (playlist: IPlaylist) => {
+        console.log(selectedValue, playlist);
+        // TODO call api
+        // TODO toast error/success
+        onClose();
     };
 
-    if (!data || data.status === "error") {
-        return <>error</>; // TODO
+    useEffect(() => {
+        if (error) {
+            dispatch(
+                logError(
+                    `SongDirSelectPlaylistDialog failure: ${getErrorMessage(
+                        error
+                    ).toString()}`
+                )
+            );
+        }
+    }, [dispatch, error]);
+
+    if (error || !data || data?.status === "error") {
+        return (
+            <Dialog
+                onClose={onClose}
+                open={open}
+                scroll="paper"
+                maxWidth="md"
+                fullWidth
+            >
+                <DialogTitle>Select playlist</DialogTitle>
+
+                <DialogContent>
+                    {error ? (
+                        <Alert severity="error">{getErrorMessage(error)}</Alert>
+                    ) : (
+                        "No content"
+                    )}
+                </DialogContent>
+            </Dialog>
+        );
     }
 
     return (
-        <Dialog onClose={handleClose} open={open} scroll="paper">
+        <Dialog
+            onClose={handleClose}
+            open={open}
+            scroll="paper"
+            maxWidth="md"
+            fullWidth
+        >
             <DialogTitle>Select playlist</DialogTitle>
             <DialogTitle>
-                <Typography>to which ??? will be added</Typography>
+                <Typography>
+                    to which "{selectedValue.artist} - {selectedValue.title}"
+                    will be added:
+                </Typography>
             </DialogTitle>
             <DialogContent>
                 <List sx={{ pt: 0 }}>
                     {data.playlists.map((playlist) => (
                         <ListItem disableGutters>
                             <ListItemButton
-                                // onClick={() => handleListItemClick(email)}
+                                onClick={() => handleListItemClick(playlist)}
                                 key={playlist.id}
                             >
-                                {/* <ListItemAvatar>
-                                <Avatar
-                                    sx={{
-                                        bgcolor: blue[100],
-                                        color: blue[600],
-                                    }}
-                                >
-                                    <PersonIcon />
-                                </Avatar>
-                            </ListItemAvatar> */}
                                 <ListItemText primary={playlist.name} />
                             </ListItemButton>
                         </ListItem>
                     ))}
-                    {/* {emails.map((email) => (
-                    <ListItem disableGutters>
-                        <ListItemButton
-                            onClick={() => handleListItemClick(email)}
-                            key={email}
-                        >
-                            <ListItemAvatar>
-                                <Avatar
-                                    sx={{
-                                        bgcolor: blue[100],
-                                        color: blue[600],
-                                    }}
-                                >
-                                    <PersonIcon />
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText primary={email} />
-                        </ListItemButton>
-                    </ListItem>
-                ))} */}
-                    {/* <ListItem disableGutters>
-                    <ListItemButton
-                        autoFocus
-                        onClick={() => handleListItemClick("addAccount")}
-                    >
-                        <ListItemAvatar>
-                            <Avatar>
-                                <AddIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Add account" />
-                    </ListItemButton>
-                </ListItem> */}
                 </List>
             </DialogContent>
         </Dialog>
