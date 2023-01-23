@@ -12,9 +12,12 @@ import {
 } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
+import {
+    useAddSongToPlaylistMutation,
+    useGetPlaylistsQuery,
+} from "../../../Services/jukeboxApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
-import { logError } from "../LogCard/logSlice";
+import { logError, logUrgentInfo } from "../LogCard/logSlice";
 
 interface SongDirSelectPlaylistDialogProps {
     open: boolean;
@@ -28,15 +31,35 @@ export function SongDirSelectPlaylistDialog(
     const dispatch = useDispatch();
     const { onClose, selectedValue, open } = props;
     const { data, error } = useGetPlaylistsQuery(undefined);
+    const [addSongToPlaylist] = useAddSongToPlaylistMutation();
 
     const handleClose = () => {
         onClose();
     };
 
-    const handleListItemClick = (playlist: IPlaylist) => {
-        console.log(selectedValue, playlist);
-        // TODO call api
-        // TODO toast error/success
+    const handleListItemClick = async (playlist: IPlaylist) => {
+        try {
+            const response = await addSongToPlaylist({
+                playlistId: playlist.id,
+                songId: selectedValue.id,
+            }).unwrap();
+            if (response.status !== "received") {
+                throw Error("Error on adding song to playlist");
+            }
+            dispatch(
+                logUrgentInfo(
+                    `Song "${selectedValue.artist} - ${selectedValue.title}" added to playlist "${playlist.name}"`
+                )
+            );
+        } catch (err) {
+            dispatch(
+                logError(
+                    `SongDirSelectPlaylistDialog failure: ${getErrorMessage(
+                        err as Error
+                    ).toString()}`
+                )
+            );
+        }
         onClose();
     };
 
@@ -92,7 +115,7 @@ export function SongDirSelectPlaylistDialog(
             <DialogContent>
                 <List sx={{ pt: 0 }}>
                     {data.playlists.map((playlist) => (
-                        <ListItem disableGutters>
+                        <ListItem disableGutters key={playlist.id}>
                             <ListItemButton
                                 onClick={() => handleListItemClick(playlist)}
                                 key={playlist.id}

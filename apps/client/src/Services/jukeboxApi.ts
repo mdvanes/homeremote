@@ -1,4 +1,6 @@
 import {
+    AddSongArg,
+    AddSongResponse,
     PlaylistArgs,
     PlaylistResponse,
     PlaylistsResponse,
@@ -27,8 +29,22 @@ export const jukeboxApi = createApi({
             query: () => "/songdir",
             providesTags: ["Songdir"],
         }),
+        addSongToPlaylist: builder.mutation<AddSongResponse, AddSongArg>({
+            query: ({ playlistId, songId }) => {
+                return {
+                    url: "/addsongtoplaylist",
+                    method: "POST",
+                    body: { playlistId, songId },
+                };
+            },
+            invalidatesTags: ["Songs"],
+        }),
     }),
 });
 
-export const { useGetPlaylistsQuery, useGetPlaylistQuery, useGetSongDirQuery } =
-    jukeboxApi;
+export const {
+    useGetPlaylistsQuery,
+    useGetPlaylistQuery,
+    useGetSongDirQuery,
+    useAddSongToPlaylistMutation,
+} = jukeboxApi;

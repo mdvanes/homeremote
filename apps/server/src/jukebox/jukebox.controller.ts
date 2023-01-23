@@ -1,4 +1,6 @@
 import {
+    AddSongArg,
+    AddSongResponse,
     ISong,
     PlaylistResponse,
     PlaylistsResponse,
@@ -16,6 +18,8 @@ import {
     NotFoundException,
     HttpStatus,
     HttpException,
+    Post,
+    Body,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import got from "got";
@@ -80,16 +84,19 @@ export class JukeboxController {
             const url = this.getAPI("getPlaylist", `&id=${id}`);
             const response = await got(url).json();
             const playlist = response["subsonic-response"].playlist;
-            const songs = (playlist.entry as ISong[]).map(
-                ({ id, artist, title, duration }) => {
-                    return {
-                        id,
-                        artist,
-                        title,
-                        duration,
-                    };
-                }
-            );
+            const songs =
+                playlist.entry && playlist.entry.length > 0
+                    ? (playlist.entry as ISong[]).map(
+                          ({ id, artist, title, duration }) => {
+                              return {
+                                  id,
+                                  artist,
+                                  title,
+                                  duration,
+                              };
+                          }
+                      )
+                    : [];
 
             return { status: "received", songs };
         } catch (err) {
@@ -194,6 +201,46 @@ export class JukeboxController {
             ).filter((child) => !child.isDir);
 
             return { status: "received", dir: songDir, content };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post("addsongtoplaylist")
+    async addSongToPlaylist(
+        @Body()
+        body: AddSongArg
+    ): Promise<AddSongResponse> {
+        this.logger.verbose(
+            `GET to /api/jukebox/addsongtoplaylist ${JSON.stringify(body)}`
+        );
+
+        try {
+            const addUrl = this.getAPI(
+                "updatePlaylist",
+                `&playlistId=${body.playlistId}&songIdToAdd=${body.songId}`
+            );
+
+            const response = await got(addUrl).json();
+
+            console.log(addUrl, response);
+
+            if (
+                !response["subsonic-response"] ||
+                response["subsonic-response"].status === "failed"
+            ) {
+                throw new HttpException(
+                    "failed to add song to playlist",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            }
+
+            return { status: "received" };
         } catch (err) {
             this.logger.error(err);
             throw new HttpException(

@@ -69,3 +69,12 @@ export type SongDirResponse =
     | {
           status: "error";
       };
+
+export type AddSongArg = {
+    playlistId: string;
+    songId: string;
+};
+
+export type AddSongResponse = {
+    status: "received" | "error";
+};
