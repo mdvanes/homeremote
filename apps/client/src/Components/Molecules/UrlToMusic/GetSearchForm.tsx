@@ -92,7 +92,12 @@ const GetSearchForm: FC = () => {
     }
 
     return (
-        <form>
+        <form
+            onSubmit={(ev) => {
+                ev.preventDefault();
+                setQuery(terms);
+            }}
+        >
             <TextField
                 data-testid="terms"
                 label="Search terms"
