@@ -2,6 +2,7 @@ import {
     PlaylistArgs,
     PlaylistResponse,
     PlaylistsResponse,
+    SongDirResponse,
 } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { willAddCredentials } from "../devUtils";
@@ -12,7 +13,7 @@ export const jukeboxApi = createApi({
         baseUrl: `${process.env.NX_BASE_URL}/api/jukebox`,
         credentials: willAddCredentials(),
     }),
-    tagTypes: ["Playlists", "Songs"],
+    tagTypes: ["Playlists", "Songs", "Songdir"],
     endpoints: (builder) => ({
         getPlaylists: builder.query<PlaylistsResponse, undefined>({
             query: () => "/playlists",
@@ -22,7 +23,12 @@ export const jukeboxApi = createApi({
             query: ({ id }) => `/playlist/${id}`,
             providesTags: ["Songs"],
         }),
+        getSongDir: builder.query<SongDirResponse, undefined>({
+            query: () => "/songdir",
+            providesTags: ["Songdir"],
+        }),
     }),
 });
 
-export const { useGetPlaylistsQuery, useGetPlaylistQuery } = jukeboxApi;
+export const { useGetPlaylistsQuery, useGetPlaylistQuery, useGetSongDirQuery } =
+    jukeboxApi;
