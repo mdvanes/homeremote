@@ -1,19 +1,20 @@
 import { ISong, PlaylistArgs } from "@homeremote/types";
 import {
-    FastRewind as FastRewindIcon,
     FastForward as FastForwardIcon,
+    FastRewind as FastRewindIcon,
 } from "@mui/icons-material";
 import { IconButton, Stack, Typography } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { FC, RefObject, useCallback, useEffect } from "react";
 import {
     useGetPlaylistQuery,
     useGetPlaylistsQuery,
 } from "../../../Services/jukeboxApi";
-import { FC, RefObject, useCallback, useEffect } from "react";
+import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
+import { AddSongToPlaylistButton } from "./AddSongToPlaylistButton";
 import { getNextSong } from "./getNextSong";
 import { getPrevSong } from "./getPrevSong";
 import HotKeyCoach from "./HotKeyCoach";
-import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 
 interface IJukeboxPlayerProps {
     audioElemRef: RefObject<HTMLAudioElement>;
@@ -105,6 +106,7 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                     <FastForwardIcon />
                 </IconButton>
                 <HotKeyCoach />
+                <AddSongToPlaylistButton />
             </Stack>
         </div>
     );
