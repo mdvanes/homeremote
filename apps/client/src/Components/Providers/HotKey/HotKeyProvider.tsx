@@ -9,8 +9,13 @@ import React, {
     useMemo,
     useState,
 } from "react";
+import { useDispatch } from "react-redux";
+import { logUrgentInfo } from "../../Molecules/LogCard/logSlice";
 
 type HotKeyMap = Record<string, { description: string; fn: () => void }>;
+
+const SKIP_MINUTES = 10;
+const SKIP_TIME = SKIP_MINUTES * 60 * 1000;
 
 export interface HotKeyState {
     hotKeyMap: HotKeyMap;
@@ -48,6 +53,8 @@ export const HotKeyContext = React.createContext(initialState);
 
 export const useHotKeyContext = () => useContext(HotKeyContext);
 
+let fastForwardTimer: ReturnType<typeof setTimeout> | undefined;
+
 // NOTE: using Context API because ports and jukeboxElemRef are not serializable and can't be stored in Redux
 export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [isRadioPlaying, setIsRadioPlaying] = useState(false);
@@ -56,16 +63,27 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         useState<RefObject<HTMLAudioElement> | null>(null);
     const [handlePlayPrev, setHandlePlayPrev] = useState(() => noop);
     const [handlePlayNext, setHandlePlayNext] = useState(() => noop);
+    const dispatch = useDispatch();
+
+    const clearFastForward = useCallback(() => {
+        if (fastForwardTimer) {
+            clearTimeout(fastForwardTimer);
+            fastForwardTimer = undefined;
+            dispatch(logUrgentInfo("Fast forward cancelled"));
+        }
+    }, [dispatch]);
 
     const toggleRadio = useCallback(() => {
+        clearFastForward();
         if (ports?.receivePlayPauseStatusPort?.send) {
             ports.receivePlayPauseStatusPort.send(
                 isRadioPlaying ? "Pause" : "Play"
             );
         }
-    }, [ports, isRadioPlaying]);
+    }, [ports, isRadioPlaying, clearFastForward]);
 
     const toggleJukebox = useCallback(() => {
+        clearFastForward();
         if (jukeboxElem?.current) {
             if (jukeboxElem.current.paused) {
                 jukeboxElem.current.play();
@@ -73,9 +91,10 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 jukeboxElem.current.pause();
             }
         }
-    }, [jukeboxElem]);
+    }, [jukeboxElem, clearFastForward]);
 
     const toggleBetween = useCallback(() => {
+        clearFastForward();
         if (ports?.receivePlayPauseStatusPort?.send) {
             ports.receivePlayPauseStatusPort.send(
                 isRadioPlaying ? "Pause" : "Play"
@@ -88,7 +107,35 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 jukeboxElem.current.pause();
             }
         }
-    }, [ports, isRadioPlaying, jukeboxElem]);
+    }, [ports, isRadioPlaying, jukeboxElem, clearFastForward]);
+
+    const fastForward = useCallback(() => {
+        if (isRadioPlaying) {
+            clearFastForward();
+
+            if (ports?.receivePlayPauseStatusPort?.send) {
+                ports.receivePlayPauseStatusPort.send("Pause");
+            }
+            if (jukeboxElem?.current) {
+                jukeboxElem.current.play();
+            }
+
+            const resumeTimeString = new Date(
+                Date.now() + SKIP_TIME
+            ).toLocaleTimeString();
+
+            dispatch(logUrgentInfo(`Radio will resume at ${resumeTimeString}`));
+
+            fastForwardTimer = setTimeout(() => {
+                if (jukeboxElem?.current) {
+                    jukeboxElem.current.pause();
+                }
+                if (ports?.receivePlayPauseStatusPort?.send) {
+                    ports.receivePlayPauseStatusPort.send("Play");
+                }
+            }, SKIP_TIME);
+        }
+    }, [ports, isRadioPlaying, jukeboxElem, dispatch, clearFastForward]);
 
     const hotKeyMap: Record<string, { description: string; fn: () => void }> =
         useMemo(
@@ -113,6 +160,10 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                     description: "play next on jukebox",
                     fn: handlePlayNext,
                 },
+                f: {
+                    description: `ffwd radio ${SKIP_MINUTES} minutes`,
+                    fn: fastForward,
+                },
             }),
             [
                 handlePlayNext,
@@ -120,6 +171,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 toggleBetween,
                 toggleJukebox,
                 toggleRadio,
+                fastForward,
             ]
         );
 
