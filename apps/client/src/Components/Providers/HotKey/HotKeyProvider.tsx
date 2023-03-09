@@ -31,7 +31,6 @@ export interface HotKeyState {
     setHandlePlayNext: (_: () => void) => void;
     handleStartFastFwdTimer: () => void;
     isFastFwdTimerActive: boolean;
-    setIsFastFwdTimerActive: (_: boolean) => void;
 }
 
 const noop = () => {
@@ -52,7 +51,6 @@ const initialState: HotKeyState = {
     setHandlePlayNext: noop,
     handleStartFastFwdTimer: noop,
     isFastFwdTimerActive: false,
-    setIsFastFwdTimerActive: noop,
 };
 
 export const HotKeyContext = React.createContext(initialState);
@@ -198,7 +196,6 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setHandlePlayNext,
         handleStartFastFwdTimer: fastForward,
         isFastFwdTimerActive,
-        setIsFastFwdTimerActive,
     };
 
     // handle what happens on key press

@@ -11,6 +11,7 @@ import { energyUsageApi } from "./Services/energyUsageApi";
 import { jukeboxApi } from "./Services/jukeboxApi";
 import { monitApi } from "./Services/monitApi";
 import { nextupApi } from "./Services/nextupApi";
+import { nowplayingApi } from "./Services/nowplayingApi";
 import { scheduleApi } from "./Services/scheduleApi";
 import { serviceLinksApi } from "./Services/serviceLinksApi";
 import { urlToMusicApi } from "./Services/urlToMusicApi";
@@ -28,6 +29,7 @@ export const store = configureStore({
             jukeboxApi.middleware,
             monitApi.middleware,
             nextupApi.middleware,
+            nowplayingApi.middleware,
             scheduleApi.middleware,
             serviceLinksApi.middleware,
             urlToMusicApi.middleware

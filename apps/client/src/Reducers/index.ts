@@ -13,6 +13,7 @@ import { energyUsageApi } from "../Services/energyUsageApi";
 import { jukeboxApi } from "../Services/jukeboxApi";
 import { monitApi } from "../Services/monitApi";
 import { nextupApi } from "../Services/nextupApi";
+import { nowplayingApi } from "../Services/nowplayingApi";
 import { scheduleApi } from "../Services/scheduleApi";
 import { serviceLinksApi } from "../Services/serviceLinksApi";
 import { urlToMusicApi } from "../Services/urlToMusicApi";
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
     [jukeboxApi.reducerPath]: jukeboxApi.reducer,
     [monitApi.reducerPath]: monitApi.reducer,
     [nextupApi.reducerPath]: nextupApi.reducer,
+    [nowplayingApi.reducerPath]: nowplayingApi.reducer,
     [scheduleApi.reducerPath]: scheduleApi.reducer,
     [serviceLinksApi.reducerPath]: serviceLinksApi.reducer,
     [urlToMusicApi.reducerPath]: urlToMusicApi.reducer,
