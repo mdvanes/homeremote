@@ -2,6 +2,7 @@ import { ISong, PlaylistArgs } from "@homeremote/types";
 import {
     FastForward as FastForwardIcon,
     FastRewind as FastRewindIcon,
+    Forward10 as Forward10Icon,
 } from "@mui/icons-material";
 import { IconButton, Stack, Typography } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
@@ -32,7 +33,12 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
     playlistId,
     setCurrentSong,
 }) => {
-    const { setHandlePlayPrev, setHandlePlayNext } = useHotKeyContext();
+    const {
+        setHandlePlayPrev,
+        setHandlePlayNext,
+        handleStartFastFwdTimer,
+        isFastFwdTimerActive,
+    } = useHotKeyContext();
     const { data: playlists } = useGetPlaylistsQuery(undefined);
     const playlistArgs: PlaylistArgs | typeof skipToken = playlistId
         ? { id: playlistId }
@@ -102,10 +108,26 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                     src={`${process.env.NX_BASE_URL}/api/jukebox/song/${song.id}?hash=${hash}`}
                     onEnded={handlePlayNext}
                 />
+
                 <IconButton title="Next track (d)" onClick={handlePlayNext}>
                     <FastForwardIcon />
                 </IconButton>
+
+                {isFastFwdTimerActive ? (
+                    <IconButton title="Fast fwd for radio in progress!">
+                        <Forward10Icon color="secondary" />
+                    </IconButton>
+                ) : (
+                    <IconButton
+                        title="Fast fwd for radio"
+                        onClick={handleStartFastFwdTimer}
+                    >
+                        <Forward10Icon />
+                    </IconButton>
+                )}
+
                 <HotKeyCoach />
+
                 <AddSongToPlaylistButton />
             </Stack>
         </div>

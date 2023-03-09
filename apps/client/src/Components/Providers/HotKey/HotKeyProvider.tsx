@@ -29,6 +29,9 @@ export interface HotKeyState {
     setHandlePlayPrev: (_: () => void) => void;
     handlePlayNext: () => void;
     setHandlePlayNext: (_: () => void) => void;
+    handleStartFastFwdTimer: () => void;
+    isFastFwdTimerActive: boolean;
+    setIsFastFwdTimerActive: (_: boolean) => void;
 }
 
 const noop = () => {
@@ -47,6 +50,9 @@ const initialState: HotKeyState = {
     setHandlePlayPrev: noop,
     handlePlayNext: noop,
     setHandlePlayNext: noop,
+    handleStartFastFwdTimer: noop,
+    isFastFwdTimerActive: false,
+    setIsFastFwdTimerActive: noop,
 };
 
 export const HotKeyContext = React.createContext(initialState);
@@ -63,6 +69,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         useState<RefObject<HTMLAudioElement> | null>(null);
     const [handlePlayPrev, setHandlePlayPrev] = useState(() => noop);
     const [handlePlayNext, setHandlePlayNext] = useState(() => noop);
+    const [isFastFwdTimerActive, setIsFastFwdTimerActive] = useState(false);
     const dispatch = useDispatch();
 
     const clearFastForward = useCallback(() => {
@@ -112,6 +119,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const fastForward = useCallback(() => {
         if (isRadioPlaying) {
             clearFastForward();
+            setIsFastFwdTimerActive(true);
 
             if (ports?.receivePlayPauseStatusPort?.send) {
                 ports.receivePlayPauseStatusPort.send("Pause");
@@ -127,6 +135,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
             dispatch(logUrgentInfo(`Radio will resume at ${resumeTimeString}`));
 
             fastForwardTimer = setTimeout(() => {
+                setIsFastFwdTimerActive(false);
                 if (jukeboxElem?.current) {
                     jukeboxElem.current.pause();
                 }
@@ -187,6 +196,9 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setHandlePlayPrev,
         handlePlayNext,
         setHandlePlayNext,
+        handleStartFastFwdTimer: fastForward,
+        isFastFwdTimerActive,
+        setIsFastFwdTimerActive,
     };
 
     // handle what happens on key press
