@@ -1,7 +1,7 @@
 import HomeremoteStreamPlayer from "@mdworld/homeremote-stream-player";
 import { FC } from "react";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
-import { PreviouslyPlayedCard } from "../PreviouslyPlayedCard/PreviouslyPlayedCard";
+import PreviouslyPlayedCard from "../PreviouslyPlayedCard/PreviouslyPlayedCard";
 import StyledStreamPlayer from "./StyledStreamPlayer";
 
 const StreamContainer: FC = () => {

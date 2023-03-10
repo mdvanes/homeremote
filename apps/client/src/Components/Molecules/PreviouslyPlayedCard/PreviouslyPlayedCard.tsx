@@ -96,3 +96,5 @@ export const PreviouslyPlayedCard: FC = () => {
         </IconButton>
     );
 };
+
+export default PreviouslyPlayedCard;

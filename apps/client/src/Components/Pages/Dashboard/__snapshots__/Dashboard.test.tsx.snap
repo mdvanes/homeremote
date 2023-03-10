@@ -27,6 +27,7 @@ exports[`Dashboard page contains all the control components 1`] = `
           <mock-stream-player
             url="http://localhost"
           />
+          <mock-previously-played-card />
         </div>
         <mock-jukebox />
         <mock-video-stream />
