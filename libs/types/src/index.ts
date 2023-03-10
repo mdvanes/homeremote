@@ -5,6 +5,7 @@ export * from "./lib/energyusage.types";
 export * from "./lib/jukebox.types";
 export * from "./lib/monit.types";
 export * from "./lib/nextup.types";
+export * from "./lib/nowplaying.types";
 export * from "./lib/schedule.types";
 export * from "./lib/servicelinks.types";
 export * from "./lib/switches.types";

@@ -9,6 +9,27 @@ exports[`Streams page contains the stream player 1`] = `
       <mock-stream-player
         url="http://localhost"
       />
+      <button
+        aria-label="up"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-4s6wym-MuiButtonBase-root-MuiIconButton-root"
+        tabindex="0"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+          data-testid="ArrowDropDownIcon"
+          focusable="false"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="m7 10 5 5 5-5z"
+          />
+        </svg>
+        <span
+          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
+        />
+      </button>
     </div>
   </div>
 </body>

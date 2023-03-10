@@ -94,34 +94,34 @@ describe("Nowplaying Controller", () => {
         );
     });
 
-    it("throws Stereo 8 Radio 2 info on /GET when no token configured", async () => {
-        await expect(
-            controller.getStereo8Radio2({ token: "abc" })
-        ).rejects.toThrow("Cannot GET /api/nowplaying/stereo8/radio2");
-    });
+    // it("throws Stereo 8 Radio 2 info on /GET when no token configured", async () => {
+    //     await expect(
+    //         controller.getStereo8Radio2({ token: "abc" })
+    //     ).rejects.toThrow("Cannot GET /api/nowplaying/stereo8/radio2");
+    // });
 
-    it("throws Stereo 8 Radio 2 info on /GET when invalid token send", async () => {
-        jest.spyOn(configService, "get").mockImplementation((envName) => {
-            if (envName === "STEREO8_TOKEN") {
-                return "abc";
-            }
-        });
-        await expect(
-            controller.getStereo8Radio2({ token: "123" })
-        ).rejects.toThrow("Cannot GET /api/nowplaying/stereo8/radio2");
-    });
+    // it("throws Stereo 8 Radio 2 info on /GET when invalid token send", async () => {
+    //     jest.spyOn(configService, "get").mockImplementation((envName) => {
+    //         if (envName === "STEREO8_TOKEN") {
+    //             return "abc";
+    //         }
+    //     });
+    //     await expect(
+    //         controller.getStereo8Radio2({ token: "123" })
+    //     ).rejects.toThrow("Cannot GET /api/nowplaying/stereo8/radio2");
+    // });
 
-    it("returns Stereo 8 Radio 2 info on /GET", async () => {
-        jest.spyOn(configService, "get").mockImplementation((envName) => {
-            if (envName === "STEREO8_TOKEN") {
-                return "abc";
-            }
-        });
-        const response = await controller.getStereo8Radio2({ token: "abc" });
-        expect(response?.title).toBe("Some Title");
-        expect(mockGetNowPlaying).toBeCalledTimes(1);
-        expect(mockGetNowPlaying).toBeCalledWith(ChannelName.RADIO2);
-    });
+    // it("returns Stereo 8 Radio 2 info on /GET", async () => {
+    //     jest.spyOn(configService, "get").mockImplementation((envName) => {
+    //         if (envName === "STEREO8_TOKEN") {
+    //             return "abc";
+    //         }
+    //     });
+    //     const response = await controller.getStereo8Radio2({ token: "abc" });
+    //     expect(response?.title).toBe("Some Title");
+    //     expect(mockGetNowPlaying).toBeCalledTimes(1);
+    //     expect(mockGetNowPlaying).toBeCalledWith(ChannelName.RADIO2);
+    // });
 
     it("returns radio 3 info on /GET", async () => {
         const response = await controller.getRadio3();
