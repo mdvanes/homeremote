@@ -1,8 +1,10 @@
+import { PreviouslyResponse } from "@homeremote/types";
 import {
     ChannelName,
     getNowPlaying,
     NowPlayingResponse,
 } from "@mdworld/homeremote-stream-player-server";
+import { getRadioMetaData } from "@mdworld/radio-metadata";
 import {
     Controller,
     Get,
@@ -14,14 +16,6 @@ import {
 import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { getRadioMetaData } from "@mdworld/radio-metadata";
-import { RadioMetadata } from "@mdworld/radio-metadata/lib/radio-metadata.types";
-
-interface PreviouslyResponse extends NowPlayingResponse {
-    broadcast: RadioMetadata["broadcast"];
-    time: RadioMetadata["time"];
-    listenUrl: RadioMetadata["song"]["listenUrl"];
-}
 
 @Controller("api/nowplaying")
 export class NowplayingController {
@@ -108,7 +102,6 @@ export class NowplayingController {
         }
     }
 
-    // TODO remove "type": "module" from radio-metadata package.json
     @UseGuards(JwtAuthGuard)
     @Get("radio2previously")
     async getRadio2Previously(): Promise<PreviouslyResponse[] | undefined> {
