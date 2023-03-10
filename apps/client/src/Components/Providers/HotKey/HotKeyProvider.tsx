@@ -14,7 +14,20 @@ import { logUrgentInfo } from "../../Molecules/LogCard/logSlice";
 
 type HotKeyMap = Record<string, { description: string; fn: () => void }>;
 
-const SKIP_MINUTES = 10;
+const getSkipMinutes = (): number => {
+    const defaultSkipMinutes = 10;
+    const storedSkipMinutes = localStorage.getItem("SKIP_MINUTES");
+    if (!storedSkipMinutes) {
+        return defaultSkipMinutes;
+    }
+    const nr = parseInt(storedSkipMinutes);
+    if (isNaN(nr)) {
+        return defaultSkipMinutes;
+    }
+    return nr;
+};
+
+const SKIP_MINUTES = getSkipMinutes();
 const SKIP_TIME = SKIP_MINUTES * 60 * 1000;
 
 export interface HotKeyState {
@@ -29,8 +42,8 @@ export interface HotKeyState {
     setHandlePlayPrev: (_: () => void) => void;
     handlePlayNext: () => void;
     setHandlePlayNext: (_: () => void) => void;
-    handleStartFastFwdTimer: () => void;
-    isFastFwdTimerActive: boolean;
+    handleSkipRadio: () => void;
+    isSkipRadioActive: boolean;
 }
 
 const noop = () => {
@@ -49,15 +62,15 @@ const initialState: HotKeyState = {
     setHandlePlayPrev: noop,
     handlePlayNext: noop,
     setHandlePlayNext: noop,
-    handleStartFastFwdTimer: noop,
-    isFastFwdTimerActive: false,
+    handleSkipRadio: noop,
+    isSkipRadioActive: false,
 };
 
 export const HotKeyContext = React.createContext(initialState);
 
 export const useHotKeyContext = () => useContext(HotKeyContext);
 
-let fastForwardTimer: ReturnType<typeof setTimeout> | undefined;
+let skipRadioTimer: ReturnType<typeof setTimeout> | undefined;
 
 // NOTE: using Context API because ports and jukeboxElemRef are not serializable and can't be stored in Redux
 export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
@@ -67,28 +80,37 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         useState<RefObject<HTMLAudioElement> | null>(null);
     const [handlePlayPrev, setHandlePlayPrev] = useState(() => noop);
     const [handlePlayNext, setHandlePlayNext] = useState(() => noop);
-    const [isFastFwdTimerActive, setIsFastFwdTimerActive] = useState(false);
+    const [isSkipRadioActive, setIsSkipRadioActive] = useState(false);
     const dispatch = useDispatch();
 
-    const clearFastForward = useCallback(() => {
-        if (fastForwardTimer) {
-            clearTimeout(fastForwardTimer);
-            fastForwardTimer = undefined;
-            dispatch(logUrgentInfo("Fast forward cancelled"));
-        }
-    }, [dispatch]);
+    const clearSkipRadio = useCallback(
+        (finished = false) => {
+            if (skipRadioTimer) {
+                clearTimeout(skipRadioTimer);
+                skipRadioTimer = undefined;
+                dispatch(
+                    logUrgentInfo(
+                        finished
+                            ? "Skip radio finished"
+                            : "Skip radio cancelled"
+                    )
+                );
+            }
+        },
+        [dispatch]
+    );
 
     const toggleRadio = useCallback(() => {
-        clearFastForward();
+        clearSkipRadio();
         if (ports?.receivePlayPauseStatusPort?.send) {
             ports.receivePlayPauseStatusPort.send(
                 isRadioPlaying ? "Pause" : "Play"
             );
         }
-    }, [ports, isRadioPlaying, clearFastForward]);
+    }, [ports, isRadioPlaying, clearSkipRadio]);
 
     const toggleJukebox = useCallback(() => {
-        clearFastForward();
+        clearSkipRadio();
         if (jukeboxElem?.current) {
             if (jukeboxElem.current.paused) {
                 jukeboxElem.current.play();
@@ -96,10 +118,10 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 jukeboxElem.current.pause();
             }
         }
-    }, [jukeboxElem, clearFastForward]);
+    }, [jukeboxElem, clearSkipRadio]);
 
     const toggleBetween = useCallback(() => {
-        clearFastForward();
+        clearSkipRadio();
         if (ports?.receivePlayPauseStatusPort?.send) {
             ports.receivePlayPauseStatusPort.send(
                 isRadioPlaying ? "Pause" : "Play"
@@ -112,12 +134,12 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 jukeboxElem.current.pause();
             }
         }
-    }, [ports, isRadioPlaying, jukeboxElem, clearFastForward]);
+    }, [ports, isRadioPlaying, jukeboxElem, clearSkipRadio]);
 
-    const fastForward = useCallback(() => {
+    const handleSkipRadio = useCallback(() => {
         if (isRadioPlaying) {
-            clearFastForward();
-            setIsFastFwdTimerActive(true);
+            clearSkipRadio();
+            setIsSkipRadioActive(true);
 
             if (ports?.receivePlayPauseStatusPort?.send) {
                 ports.receivePlayPauseStatusPort.send("Pause");
@@ -132,8 +154,9 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
             dispatch(logUrgentInfo(`Radio will resume at ${resumeTimeString}`));
 
-            fastForwardTimer = setTimeout(() => {
-                setIsFastFwdTimerActive(false);
+            skipRadioTimer = setTimeout(() => {
+                clearSkipRadio(true);
+                setIsSkipRadioActive(false);
                 if (jukeboxElem?.current) {
                     jukeboxElem.current.pause();
                 }
@@ -142,7 +165,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 }
             }, SKIP_TIME);
         }
-    }, [ports, isRadioPlaying, jukeboxElem, dispatch, clearFastForward]);
+    }, [ports, isRadioPlaying, jukeboxElem, dispatch, clearSkipRadio]);
 
     const hotKeyMap: Record<string, { description: string; fn: () => void }> =
         useMemo(
@@ -168,8 +191,8 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                     fn: handlePlayNext,
                 },
                 f: {
-                    description: `ffwd radio ${SKIP_MINUTES} minutes`,
-                    fn: fastForward,
+                    description: `skip radio ${SKIP_MINUTES} minutes`,
+                    fn: handleSkipRadio,
                 },
             }),
             [
@@ -178,7 +201,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 toggleBetween,
                 toggleJukebox,
                 toggleRadio,
-                fastForward,
+                handleSkipRadio,
             ]
         );
 
@@ -194,8 +217,8 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setHandlePlayPrev,
         handlePlayNext,
         setHandlePlayNext,
-        handleStartFastFwdTimer: fastForward,
-        isFastFwdTimerActive,
+        handleSkipRadio,
+        isSkipRadioActive,
     };
 
     // handle what happens on key press

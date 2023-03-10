@@ -36,8 +36,8 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
     const {
         setHandlePlayPrev,
         setHandlePlayNext,
-        handleStartFastFwdTimer,
-        isFastFwdTimerActive,
+        handleSkipRadio,
+        isSkipRadioActive,
     } = useHotKeyContext();
     const { data: playlists } = useGetPlaylistsQuery(undefined);
     const playlistArgs: PlaylistArgs | typeof skipToken = playlistId
@@ -113,15 +113,12 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                     <FastForwardIcon />
                 </IconButton>
 
-                {isFastFwdTimerActive ? (
-                    <IconButton title="Fast fwd for radio in progress!">
+                {isSkipRadioActive ? (
+                    <IconButton title="Skip radio in progress!">
                         <Forward10Icon color="secondary" />
                     </IconButton>
                 ) : (
-                    <IconButton
-                        title="Fast fwd for radio"
-                        onClick={handleStartFastFwdTimer}
-                    >
+                    <IconButton title="Skip radio" onClick={handleSkipRadio}>
                         <Forward10Icon />
                     </IconButton>
                 )}
