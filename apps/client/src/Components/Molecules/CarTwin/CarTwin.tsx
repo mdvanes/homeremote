@@ -2,6 +2,7 @@ import { FooArgs, useGetCarTwinMutation } from "../../../Services/carTwinApi";
 import { FC, useEffect, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { CarTwinResponse } from "@homeremote/types";
+import { Speed as SpeedIcon } from "@mui/icons-material";
 
 const minutesToDaysHoursMinutes = (minutesString: string) => {
     const rawMinutes = parseInt(minutesString, 10);
@@ -49,7 +50,7 @@ const ListOfData: FC<{ data: CarTwinResponse }> = ({ data }) => {
         //         images: { exteriorDefaultUrl },
         //     },
         // },
-        statistics,
+        // statistics,
         diagnostics,
         // energy: {
         //     data: {
@@ -72,12 +73,22 @@ const ListOfData: FC<{ data: CarTwinResponse }> = ({ data }) => {
             {/* <img alt="car exterior" src={exteriorDefaultUrl} width="300" /> */}
             <ul>
                 <li>
-                    odometer: {parseInt(data.odometer?.value ?? "", 10) * 10}{" "}
-                    {data.odometer?.unit}{" "}
-                    <div>
-                        NOTE: This number is multiplied by 10 as a correction,
-                        and should be accurate to 10 km instead 1 km.
-                    </div>
+                    {!data.connected.odometer ||
+                    data.connected.odometer === "ERROR" ? (
+                        "Odometer failed: authenticate connected vehicle"
+                    ) : (
+                        <>
+                            <SpeedIcon /> odometer:{" "}
+                            {parseInt(data.connected.odometer.value ?? "", 10) *
+                                10}{" "}
+                            {data.connected.odometer.unit}{" "}
+                            <div>
+                                NOTE: This number is multiplied by 10 as a
+                                correction, and should be accurate to 10 km
+                                instead 1 km.
+                            </div>
+                        </>
+                    )}
                 </li>
 
                 {/* <li>carLocked: {carLocked.value}</li>
@@ -185,14 +196,14 @@ export const CarTwinCard: FC = () => {
                     setEnergyTokenVal(event.target.value);
                 }}
             ></textarea>
-            extendedToken:
+            {/* extendedToken:
             <textarea
                 name="extendedToken"
                 value={extendedTokenVal}
                 onChange={(event) => {
                     setExtendedTokenVal(event.target.value);
                 }}
-            ></textarea>
+            ></textarea> */}
             <button
                 onClick={async () => {
                     // setFormArg({

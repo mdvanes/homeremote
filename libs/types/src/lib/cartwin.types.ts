@@ -12,47 +12,49 @@ export interface CarTwinResponse {
     //         };
     //     };
     // };
-    odometer: components["schemas"]["Odometer"]["odometer"];
-    // doors: {
-    //     data: {
-    //         carLocked: {
-    //             value: string;
-    //             timestamp: string;
-    //         };
-    //         frontLeft: {
-    //             value: string;
-    //             timestamp: string;
-    //         };
-    //         frontRight: {
-    //             value: string;
-    //             timestamp: string;
-    //         };
-    //         hood: {
-    //             value: string;
-    //             timestamp: string;
-    //         };
-    //         rearLeft: {
-    //             value: string;
-    //             timestamp: string;
-    //         };
-    //         rearRight: {
-    //             value: string;
-    //             timestamp: string;
-    //         };
-    //         tailGate: {
-    //             value: string;
-    //             timestamp: string;
-    //         };
-    //     };
-    // };
-    // car: {
-    //     data: {
-    //         images: {
-    //             exteriorDefaultUrl: string;
-    //         };
-    //     };
-    // };
-    statistics: any;
+    connected: {
+        odometer: components["schemas"]["Odometer"]["odometer"] | "ERROR";
+        // doors: {
+        //     data: {
+        //         carLocked: {
+        //             value: string;
+        //             timestamp: string;
+        //         };
+        //         frontLeft: {
+        //             value: string;
+        //             timestamp: string;
+        //         };
+        //         frontRight: {
+        //             value: string;
+        //             timestamp: string;
+        //         };
+        //         hood: {
+        //             value: string;
+        //             timestamp: string;
+        //         };
+        //         rearLeft: {
+        //             value: string;
+        //             timestamp: string;
+        //         };
+        //         rearRight: {
+        //             value: string;
+        //             timestamp: string;
+        //         };
+        //         tailGate: {
+        //             value: string;
+        //             timestamp: string;
+        //         };
+        //     };
+        // };
+        // car: {
+        //     data: {
+        //         images: {
+        //             exteriorDefaultUrl: string;
+        //         };
+        //     };
+        // };
+        statistics: components["schemas"]["StatisticVals"] | "ERROR";
+    };
     diagnostics: any;
     tyre: any;
     // energy: {

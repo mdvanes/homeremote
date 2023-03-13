@@ -13,19 +13,26 @@ import got from "got/dist/source";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { CarTwinResponse, components, operations } from "@homeremote/types";
+import { volvocarsApiSdk } from "./volvocarsApiSdk";
 
 @Controller("api/cartwin")
 export class CarTwinController {
     private readonly logger: Logger;
     private readonly apiConfig: {
-        username: string;
+        vin: string;
+        vccApiKey: string;
     };
 
     constructor(private configService: ConfigService) {
         this.logger = new Logger(CarTwinController.name);
-        const username = this.configService.get<string>("VOLVO_USER") || "";
+
+        const vin = this.configService.get<string>("CARTWIN_VIN") || "";
+        const vccApiKey =
+            this.configService.get<string>("CARTWIN_VCC_API_KEY") || "";
+
         this.apiConfig = {
-            username,
+            vin,
+            vccApiKey,
         };
     }
 
@@ -54,6 +61,12 @@ export class CarTwinController {
 
         this.logger.verbose(`[${req.user.name}] GET to /api/cartwin`);
 
+        const volvo = volvocarsApiSdk(
+            this.apiConfig.vin,
+            this.apiConfig.vccApiKey,
+            body.connectedToken
+        );
+
         try {
             interface VolvoFooResponse {
                 foo: any;
@@ -61,25 +74,27 @@ export class CarTwinController {
 
             const baseUrl = "https://api.volvocars.com";
 
-            const vin = this.configService.get<string>("CARTWIN_VIN") || "";
-            const vccApiKey =
-                this.configService.get<string>("CARTWIN_VCC_API_KEY") || "";
+            // const vin = this.configService.get<string>("CARTWIN_VIN") || "";
+            // const vccApiKey =
+            //     this.configService.get<string>("CARTWIN_VCC_API_KEY") || "";
+
+            const { vin } = this.apiConfig;
 
             const headers = {
-                "vcc-api-key": vccApiKey,
+                "vcc-api-key": this.apiConfig.vccApiKey,
                 authorization: `Bearer ${body.connectedToken}`,
                 accept: "application/vnd.volvocars.api.connected-vehicle.vehicledata.v1+json",
             };
 
             // TODO handle when only Connected API fails or only Energy API fails.
-            const response: components["schemas"]["OdometerResponse"] =
-                await got(
-                    // this.getAPI(gasSensor)
-                    `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/odometer`,
-                    {
-                        headers,
-                    }
-                ).json();
+            // const response: components["schemas"]["OdometerResponse"] =
+            //     await got(
+            //         // this.getAPI(gasSensor)
+            //         `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/odometer`,
+            //         {
+            //             headers,
+            //         }
+            //     ).json();
             // this.logger.debug(response);
 
             const response1: VolvoFooResponse = await got(
@@ -128,49 +143,51 @@ export class CarTwinController {
                   ).json()
                 : undefined;
 
-            const energyResponse: VolvoFooResponse | undefined =
-                body.energyToken
-                    ? await got(
-                          `${baseUrl}/energy/v1/vehicles/${vin}/recharge-status`,
-                          {
-                              headers: {
-                                  ...headers,
-                                  authorization: `Bearer ${body.energyToken}`,
-                                  accept: "application/vnd.volvocars.api.energy.vehicledata.v1+json",
-                              },
-                          }
-                      ).json()
-                    : undefined;
-            // this.logger.debug(body.energyToken, energyResponse);
+            // const energyResponse: VolvoFooResponse | undefined =
+            //     body.energyToken
+            //         ? await got(
+            //               `${baseUrl}/energy/v1/vehicles/${vin}/recharge-status`,
+            //               {
+            //                   headers: {
+            //                       ...headers,
+            //                       authorization: `Bearer ${body.energyToken}`,
+            //                       accept: "application/vnd.volvocars.api.energy.vehicledata.v1+json",
+            //                   },
+            //               }
+            //           ).json()
+            //         : undefined;
+            // // this.logger.debug(body.energyToken, energyResponse);
 
             // TODO the extended vehicle API seems not to be available
-            try {
-                const frontLeftWindowOpenResponse:
-                    | VolvoFooResponse
-                    | undefined = body.extendedToken
-                    ? await got(
-                          `${baseUrl}/extended-vehicle/v1/vehicles/${vin}/resources`,
-                          //  `${baseUrl}/extended-vehicle/v1/vehicles/${vin}/resources/frontLeftWindowOpen`,
-                          {
-                              headers: {
-                                  ...headers,
-                                  authorization: `Bearer ${body.energyToken}`,
-                                  accept: "application/json",
-                              },
-                          }
-                      ).json()
-                    : undefined;
-                this.logger.debug(frontLeftWindowOpenResponse);
-            } catch (err) {
-                this.logger.error("frontLeftWindowOpen", err);
-            }
+            // try {
+            //     const frontLeftWindowOpenResponse:
+            //         | VolvoFooResponse
+            //         | undefined = body.extendedToken
+            //         ? await got(
+            //               `${baseUrl}/extended-vehicle/v1/vehicles/${vin}/resources`,
+            //               //  `${baseUrl}/extended-vehicle/v1/vehicles/${vin}/resources/frontLeftWindowOpen`,
+            //               {
+            //                   headers: {
+            //                       ...headers,
+            //                       authorization: `Bearer ${body.energyToken}`,
+            //                       accept: "application/json",
+            //                   },
+            //               }
+            //           ).json()
+            //         : undefined;
+            //     this.logger.debug(frontLeftWindowOpenResponse);
+            // } catch (err) {
+            //     this.logger.error("frontLeftWindowOpen", err);
+            // }
 
             return {
                 // result: response,
-                odometer: response.data.odometer,
+                // odometer: response.data.odometer,
+                connected: await volvo.getConnectedVehicle(),
+                // odometer: await volvo.connected.getOdometer(),
                 // doors: response1,
                 // car: response2,
-                statistics: statisticsResponse,
+                // statistics: statisticsResponse,
                 diagnostics: diagnosticsResponse,
                 tyre: tyreResponse,
                 // energy: energyResponse,
