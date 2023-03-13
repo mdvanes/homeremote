@@ -1,10 +1,7 @@
-import {
-    FooArgs,
-    FooResponse,
-    useGetCarTwinMutation,
-} from "../../../Services/carTwinApi";
+import { FooArgs, useGetCarTwinMutation } from "../../../Services/carTwinApi";
 import { FC, useEffect, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { CarTwinResponse } from "@homeremote/types";
 
 const minutesToDaysHoursMinutes = (minutesString: string) => {
     const rawMinutes = parseInt(minutesString, 10);
@@ -31,59 +28,59 @@ const hoursToDaysHours = (hoursString: string) => {
     };
 };
 
-const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
+const ListOfData: FC<{ data: CarTwinResponse }> = ({ data }) => {
     const {
-        result: {
-            data: { odometer },
-        },
-        doors: {
-            data: {
-                carLocked,
-                frontLeft,
-                frontRight,
-                hood,
-                rearLeft,
-                rearRight,
-                tailGate,
-            },
-        },
-        car: {
-            data: {
-                images: { exteriorDefaultUrl },
-            },
-        },
+        // result: {
+        //     data: { odometer },
+        // },
+        // doors: {
+        //     data: {
+        //         carLocked,
+        //         frontLeft,
+        //         frontRight,
+        //         hood,
+        //         rearLeft,
+        //         rearRight,
+        //         tailGate,
+        //     },
+        // },
+        // car: {
+        //     data: {
+        //         images: { exteriorDefaultUrl },
+        //     },
+        // },
         statistics,
         diagnostics,
-        energy: {
-            data: {
-                batteryChargeLevel,
-                electricRange,
-                estimatedChargingTime,
-                chargingConnectionStatus,
-                chargingSystemStatus,
-            },
-        },
+        // energy: {
+        //     data: {
+        //         batteryChargeLevel,
+        //         electricRange,
+        //         estimatedChargingTime,
+        //         chargingConnectionStatus,
+        //         chargingSystemStatus,
+        //     },
+        // },
     } = data;
 
-    const chargeTime = minutesToDaysHoursMinutes(estimatedChargingTime.value);
+    // const chargeTime = minutesToDaysHoursMinutes(estimatedChargingTime.value);
     const toServiceTime = hoursToDaysHours(
         diagnostics.data.engineHoursToService.value
     );
 
     return (
         <>
-            <img alt="car exterior" src={exteriorDefaultUrl} width="300" />
+            {/* <img alt="car exterior" src={exteriorDefaultUrl} width="300" /> */}
             <ul>
                 <li>
-                    odometer: {parseInt(odometer.value, 10) * 10}{" "}
-                    {odometer.unit}{" "}
+                    odometer: {parseInt(data.odometer?.value ?? "", 10) * 10}{" "}
+                    {data.odometer?.unit}{" "}
                     <div>
                         NOTE: This number is multiplied by 10 as a correction,
                         and should be accurate to 10 km instead 1 km.
                     </div>
                 </li>
 
-                <li>carLocked: {carLocked.value}</li>
+                {/* <li>carLocked: {carLocked.value}</li>
                 <li>frontLeft: {frontLeft.value}</li>
                 <li>frontRight: {frontRight.value}</li>
                 <li>hood: {hood.value}</li>
@@ -99,7 +96,7 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                         and should be accurate to 100 km instead 1 km.
                     </div>
                 </li>
-                {/* <li>tripMeter2: {statistics.data.tripMeter2.value} km</li> */}
+                {/ * <li>tripMeter2: {statistics.data.tripMeter2.value} km</li> * /}
                 <li>
                     averageSpeed: {statistics.data.averageSpeed.value} km/hr
                 </li>
@@ -124,7 +121,7 @@ const ListOfData: FC<{ data: FooResponse }> = ({ data }) => {
                 <li>
                     chargingConnectionStatus: {chargingConnectionStatus.value}
                 </li>
-                <li>chargingSystemStatus: {chargingSystemStatus.value}</li>
+                <li>chargingSystemStatus: {chargingSystemStatus.value}</li> */}
             </ul>
         </>
     );
@@ -139,7 +136,7 @@ export const CarTwinCard: FC = () => {
     // const args: FooArgs | typeof skipToken = formArg ? formArg : skipToken;
     // const { data, isLoading, isFetching, error } = useGetCarTwinQuery(args);
     const [getCarTwin] = useGetCarTwinMutation();
-    const [result, setResult] = useState<FooResponse | undefined>();
+    const [result, setResult] = useState<CarTwinResponse | undefined>();
 
     // if (isLoading || isFetching) {
     //     return <div>loading...</div>;

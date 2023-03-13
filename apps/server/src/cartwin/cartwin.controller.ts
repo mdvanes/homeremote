@@ -12,58 +12,49 @@ import { ConfigService } from "@nestjs/config";
 import got from "got/dist/source";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import { CarTwinResponse, components, operations } from "@homeremote/types";
 
 @Controller("api/cartwin")
 export class CarTwinController {
     private readonly logger: Logger;
-    // private readonly apiConfig: {
-    //     baseUrl: string;
-    //     sensors: SensorConfig[];
-    // };
+    private readonly apiConfig: {
+        username: string;
+    };
 
     constructor(private configService: ConfigService) {
         this.logger = new Logger(CarTwinController.name);
-        // const baseUrl = this.configService.get<string>("DOMOTICZ_URI") || "";
-        // const DOMOTICZ_SENSORS =
-        //     this.configService.get<string>("DOMOTICZ_SENSORS") || "";
-        // this.apiConfig = {
-        //     baseUrl,
-        //     sensors: strToConfigs(DOMOTICZ_SENSORS),
-        // };
+        const username = this.configService.get<string>("VOLVO_USER") || "";
+        this.apiConfig = {
+            username,
+        };
     }
-
-    // getAPI(sensorConfig: SensorConfig) {
-    //     return `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=${sensorConfig.type}&idx=${sensorConfig.idx}&range=month`;
-    // }
 
     @UseGuards(JwtAuthGuard)
     @Post()
-    async getNextUp(
+    async getCarTwin(
         @Request() req: AuthenticatedRequest,
-        // @Query() query: { batteryToken: string; connectedToken: string }
-        // @Req() req:
         @Body()
         body: {
             energyToken: string;
             connectedToken: string;
             extendedToken: string;
         }
-    ): Promise<{
-        result: object;
-        doors: object;
-        car: object;
-        statistics: object | undefined;
-        diagnostics: object | undefined;
-        tyre: object | undefined;
-        energy: object | undefined;
-        frontLeftWindowOpen: object | undefined;
-    }> {
+    ): Promise<CarTwinResponse> {
+        // Promise<{
+        //     result: object;
+        //     odometer: components["schemas"]["Odometer"]["odometer"];
+        //     doors: object;
+        //     car: object;
+        //     statistics: object | undefined;
+        //     diagnostics: object | undefined;
+        //     tyre: object | undefined;
+        //     energy: object | undefined;
+        //     frontLeftWindowOpen: object | undefined;
+        // }>
+
         this.logger.verbose(`[${req.user.name}] GET to /api/cartwin`);
 
         try {
-            // NOTE: it's assumed that the first sensor is the baseline, the gas counter
-            // const [gasSensor, ...temperatureSensors] = this.apiConfig.sensors;
-
             interface VolvoFooResponse {
                 foo: any;
             }
@@ -81,13 +72,14 @@ export class CarTwinController {
             };
 
             // TODO handle when only Connected API fails or only Energy API fails.
-            const response: VolvoFooResponse = await got(
-                // this.getAPI(gasSensor)
-                `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/odometer`,
-                {
-                    headers,
-                }
-            ).json();
+            const response: components["schemas"]["OdometerResponse"] =
+                await got(
+                    // this.getAPI(gasSensor)
+                    `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/odometer`,
+                    {
+                        headers,
+                    }
+                ).json();
             // this.logger.debug(response);
 
             const response1: VolvoFooResponse = await got(
@@ -174,14 +166,15 @@ export class CarTwinController {
             }
 
             return {
-                result: response,
-                doors: response1,
-                car: response2,
+                // result: response,
+                odometer: response.data.odometer,
+                // doors: response1,
+                // car: response2,
                 statistics: statisticsResponse,
                 diagnostics: diagnosticsResponse,
                 tyre: tyreResponse,
-                energy: energyResponse,
-                frontLeftWindowOpen: undefined, // frontLeftWindowOpenResponse,
+                // energy: energyResponse,
+                // frontLeftWindowOpen: undefined, // frontLeftWindowOpenResponse,
             };
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
