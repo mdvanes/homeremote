@@ -60,6 +60,14 @@ export const CarTwinCard: FC<{
     const { odometer, doors, statistics, diagnostics, vehicleMetadata, tyres } =
         data.connected;
 
+    if (!odometer || odometer === "ERROR") {
+        return (
+            <Alert severity="warning" onClick={handleAuthConnected}>
+                Authenticate Connected Vehicle
+            </Alert>
+        );
+    }
+
     return (
         <Card>
             <CardContent>

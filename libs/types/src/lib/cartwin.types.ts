@@ -4,16 +4,12 @@ import { components } from "./volvo/volvo.types";
 
 type VolvoSdkError = "ERROR";
 
+export interface CarTwinArgs {
+    connectedToken: string;
+    energyToken: string;
+}
+
 export interface CarTwinResponse {
-    // result: {
-    //     data: {
-    //         odometer: {
-    //             value?: string;
-    //             unit?: string;
-    //             timestamp?: string;
-    //         };
-    //     };
-    // };
     connected: {
         odometer: components["schemas"]["Odometer"]["odometer"] | VolvoSdkError;
         doors: components["schemas"]["DoorAndLockStatus"] | VolvoSdkError;

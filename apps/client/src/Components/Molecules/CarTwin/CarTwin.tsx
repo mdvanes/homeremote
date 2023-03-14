@@ -1,4 +1,4 @@
-import { FooArgs, useGetCarTwinMutation } from "../../../Services/carTwinApi";
+import { useGetCarTwinMutation } from "../../../Services/carTwinApi";
 import { FC, useEffect, useState } from "react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { CarTwinResponse } from "@homeremote/types";
@@ -11,39 +11,28 @@ import {
     Cancel as CancelIcon,
     Link as LinkIcon,
 } from "@mui/icons-material";
-import { InputAdornment, TextField, Tooltip } from "@mui/material";
+import { Grid, InputAdornment, TextField, Tooltip } from "@mui/material";
 import { Alert, Card, CardContent } from "@mui/material";
 import { CarTwinCard } from "./CarTwinCard";
 
-const minutesToDaysHoursMinutes = (minutesString: string) => {
-    const rawMinutes = parseInt(minutesString, 10);
-    const hours = Math.floor(rawMinutes / 60);
-    const days = Math.floor(hours / 24);
-    const hours1 = hours - days * 24;
-    const minutes = rawMinutes - hours1 * 60 - days * 24 * 60;
-    return {
-        days,
-        hours: hours1,
-        minutes,
-    };
-};
-
-const hoursToDaysHours = (hoursString: string) => {
-    const hours = parseInt(hoursString, 10);
-    // const hours = Math.floor(rawMinutes / 60);
-    const days = Math.floor(hours / 24);
-    const hours1 = hours - days * 24;
-    // const minutes = rawMinutes - hours1 * 60 - days * 24 * 60;
-    return {
-        days,
-        hours: hours1,
-    };
-};
+// const minutesToDaysHoursMinutes = (minutesString: string) => {
+//     const rawMinutes = parseInt(minutesString, 10);
+//     const hours = Math.floor(rawMinutes / 60);
+//     const days = Math.floor(hours / 24);
+//     const hours1 = hours - days * 24;
+//     const minutes = rawMinutes - hours1 * 60 - days * 24 * 60;
+//     return {
+//         days,
+//         hours: hours1,
+//         minutes,
+//     };
+// };
 
 export const CarTwinContainer: FC = () => {
+    // TODO show loading state by setting opacity or blur
     const [connectedTokenVal, setConnectedTokenVal] = useState("");
     const [energyTokenVal, setEnergyTokenVal] = useState("");
-    const [extendedTokenVal, setExtendedTokenVal] = useState("");
+    // const [extendedTokenVal, setExtendedTokenVal] = useState("");
     // TODO rename formArg
     // const [formArg, setFormArg] = useState<FooArgs | undefined>();
     // const args: FooArgs | typeof skipToken = formArg ? formArg : skipToken;
@@ -61,11 +50,11 @@ export const CarTwinContainer: FC = () => {
         const connectedTokenVal1 =
             localStorage.getItem("connectedTokenVal") ?? "";
         const energyTokenVal1 = localStorage.getItem("energyTokenVal") ?? "";
-        const extendedTokenVal1 =
-            localStorage.getItem("extendedTokenVal") ?? "";
+        // const extendedTokenVal1 =
+        //     localStorage.getItem("extendedTokenVal") ?? "";
         setConnectedTokenVal(connectedTokenVal1);
         setEnergyTokenVal(energyTokenVal1);
-        setExtendedTokenVal(extendedTokenVal1);
+        // setExtendedTokenVal(extendedTokenVal1);
 
         handleRefresh();
 
@@ -116,12 +105,11 @@ export const CarTwinContainer: FC = () => {
 
     return (
         <div>
-            <h1>cartwin</h1>
+            {/* <h1>cartwin</h1> */}
             {showConnected && (
-                <>
+                <Grid container gap={2} alignItems="baseline">
                     <TextField
                         label="Connected Vehicle Token"
-                        // fullWidth={true}
                         value={connectedTokenVal}
                         variant="standard"
                         onChange={(ev) => {
@@ -141,12 +129,36 @@ export const CarTwinContainer: FC = () => {
                             ),
                         }}
                     />
+                    <TextField
+                        label="Energy Token"
+                        value={energyTokenVal}
+                        variant="standard"
+                        onChange={(ev) => {
+                            setEnergyTokenVal(ev.target.value);
+                        }}
+                        onKeyDown={handleEnterSubmit}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment
+                                    position="end"
+                                    onClick={() => {
+                                        setEnergyTokenVal("");
+                                    }}
+                                >
+                                    <CancelIcon />
+                                </InputAdornment>
+                            ),
+                        }}
+                    />
                     <Tooltip title="open link to API in new tab">
-                        <a href="https://developer.volvocars.com/apis/docs/test-access-tokens/">
+                        <a
+                            style={{ color: "white" }}
+                            href="https://developer.volvocars.com/apis/docs/test-access-tokens/"
+                        >
                             <LinkIcon />
                         </a>
                     </Tooltip>
-                </>
+                </Grid>
             )}
             {/* {error && <div>error</div>}
             {data && JSON.stringify(data)} */}
