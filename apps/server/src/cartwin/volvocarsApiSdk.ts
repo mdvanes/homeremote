@@ -8,24 +8,52 @@ export const volvocarsApiSdk = (
     vccApiKey: string,
     connectedToken: string
 ) => {
-    const headers = {
+    const headers = (accept: string) => ({
         "vcc-api-key": vccApiKey,
         authorization: `Bearer ${connectedToken}`,
-        accept: "application/vnd.volvocars.api.connected-vehicle.vehicledata.v1+json",
+        // accept: "application/vnd.volvocars.api.connected-vehicle.vehicle.v1+json",
+        accept,
+    });
+
+    const connectedUrl = `${baseUrl}/connected-vehicle/v1/vehicles/${vin}`;
+
+    const gotConnected = async <T>(type: string): Promise<T> => {
+        return got(`${connectedUrl}${type}`, {
+            headers: headers(
+                "application/vnd.volvocars.api.connected-vehicle.vehicledata.v1+json"
+            ),
+        }).json();
+    };
+
+    const gotVehicle = async <T>(type: string): Promise<T> => {
+        return got(`${connectedUrl}${type}`, {
+            headers: headers(
+                "application/vnd.volvocars.api.connected-vehicle.vehicle.v1+json"
+            ),
+        }).json();
     };
 
     const getOdometer = async (): Promise<
         CarTwinResponse["connected"]["odometer"]
     > => {
         try {
-            const response: components["schemas"]["OdometerResponse"] =
-                await got(
-                    `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/odometer`,
-                    {
-                        headers,
-                    }
-                ).json();
+            const response = await gotConnected<
+                components["schemas"]["OdometerResponse"]
+            >("/odometer");
             return response.data.odometer;
+        } catch {
+            return "ERROR";
+        }
+    };
+
+    const getDoors = async (): Promise<
+        CarTwinResponse["connected"]["doors"]
+    > => {
+        try {
+            const response = await gotConnected<
+                components["schemas"]["DoorStatusResponse"]
+            >("/doors");
+            return response.data;
         } catch {
             return "ERROR";
         }
@@ -35,18 +63,26 @@ export const volvocarsApiSdk = (
         CarTwinResponse["connected"]["statistics"]
     > => {
         try {
-            const response: components["schemas"]["StatisticResponse"] =
-                await got(
-                    `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/statistics`,
-                    {
-                        headers,
-                    }
-                ).json();
+            const response = await gotConnected<
+                components["schemas"]["StatisticResponse"]
+            >("/statistics");
             return response.data;
         } catch {
             return "ERROR";
         }
-        return {};
+    };
+
+    const getVehicleMetadata = async (): Promise<
+        CarTwinResponse["connected"]["vehicleMetadata"]
+    > => {
+        try {
+            const response = await gotVehicle<
+                components["schemas"]["VehicleDetailResponse"]
+            >("");
+            return response.data;
+        } catch (err) {
+            return "ERROR";
+        }
     };
 
     const getConnectedVehicle = async (): Promise<
@@ -54,16 +90,13 @@ export const volvocarsApiSdk = (
     > => {
         return {
             odometer: await getOdometer(),
+            doors: await getDoors(),
+            vehicleMetadata: await getVehicleMetadata(),
             statistics: await getStatistics(),
         };
     };
 
     return {
         getConnectedVehicle,
-        // connected: {
-        //     // getOdometer,
-        //     // getStatistics,
-
-        // },
     };
 };

@@ -2,6 +2,8 @@ import { components } from "./volvo/volvo.types";
 
 // npx openapi-typescript libs/types/src/lib/volvo/connected-vehicle-c3-specification.json --output libs/types/src/lib/volvo/connected-vehicle-c3.schema.ts
 
+type VolvoSdkError = "ERROR";
+
 export interface CarTwinResponse {
     // result: {
     //     data: {
@@ -13,39 +15,11 @@ export interface CarTwinResponse {
     //     };
     // };
     connected: {
-        odometer: components["schemas"]["Odometer"]["odometer"] | "ERROR";
-        // doors: {
-        //     data: {
-        //         carLocked: {
-        //             value: string;
-        //             timestamp: string;
-        //         };
-        //         frontLeft: {
-        //             value: string;
-        //             timestamp: string;
-        //         };
-        //         frontRight: {
-        //             value: string;
-        //             timestamp: string;
-        //         };
-        //         hood: {
-        //             value: string;
-        //             timestamp: string;
-        //         };
-        //         rearLeft: {
-        //             value: string;
-        //             timestamp: string;
-        //         };
-        //         rearRight: {
-        //             value: string;
-        //             timestamp: string;
-        //         };
-        //         tailGate: {
-        //             value: string;
-        //             timestamp: string;
-        //         };
-        //     };
-        // };
+        odometer: components["schemas"]["Odometer"]["odometer"] | VolvoSdkError;
+        doors: components["schemas"]["DoorAndLockStatus"] | VolvoSdkError;
+        vehicleMetadata:
+            | components["schemas"]["VehicleMetadata"]
+            | VolvoSdkError;
         // car: {
         //     data: {
         //         images: {
@@ -53,10 +27,10 @@ export interface CarTwinResponse {
         //         };
         //     };
         // };
-        statistics: components["schemas"]["StatisticVals"] | "ERROR";
+        statistics: components["schemas"]["StatisticVals"] | VolvoSdkError;
     };
-    diagnostics: any;
-    tyre: any;
+    // diagnostics: any;
+    // tyre: any;
     // energy: {
     //     data: {
     //         batteryChargeLevel: {
