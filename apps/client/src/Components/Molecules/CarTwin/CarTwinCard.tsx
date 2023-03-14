@@ -18,10 +18,8 @@ import {
     Tooltip,
 } from "@mui/material";
 import { FC } from "react";
-import { AvgSpeedListItem } from "./AvgSpeedListItem";
 import { DoorsAndTyres } from "./DoorsAndTyres";
 import { OdoListItem } from "./OdoListItem";
-import { TripMeterListItem } from "./TripMeterListItem";
 import { StatisticsListItems } from "./StatisticsListItems";
 
 // const minutesToDaysHoursMinutes = (minutesString: string) => {
