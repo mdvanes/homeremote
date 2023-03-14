@@ -22,9 +22,7 @@ export interface CarTwinResponse {
             | VolvoSdkError;
 
         statistics: components["schemas"]["StatisticVals"] | VolvoSdkError;
-        diagnostics:
-            | components["schemas"]["EngineDiagnosticVals"]
-            | VolvoSdkError;
+        diagnostics: components["schemas"]["DiagnosticVals"] | VolvoSdkError;
         tyres: components["schemas"]["TyrePressure"] | VolvoSdkError;
     };
     // energy: {

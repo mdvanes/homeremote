@@ -90,7 +90,7 @@ export const volvocarsApiSdk = (
     > => {
         try {
             const response = await gotConnected<
-                components["schemas"]["EngineDiagnosticResponse"]
+                components["schemas"]["DiagnosticResponse"]
             >("/diagnostics");
             return response.data;
         } catch {

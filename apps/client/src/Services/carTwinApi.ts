@@ -3,10 +3,11 @@ import { CarTwinResponse, components } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { willAddCredentials } from "../devUtils";
 
+// TODO move type
 export interface FooArgs {
     connectedToken: string;
     energyToken: string;
-    extendedToken: string;
+    // extendedToken: string;
 }
 
 // TODO generate this type with OpenAPI v3
@@ -104,13 +105,13 @@ export const carTwinApi = createApi({
         //     query: ({ connectedToken }) => `/?connectedToken=${connectedToken}`,
         // }),
         getCarTwin: builder.mutation<CarTwinResponse, FooArgs>({
-            query: ({ connectedToken, energyToken, extendedToken }) => ({
+            query: ({ connectedToken, energyToken }) => ({
                 url: "/",
                 method: "POST",
                 body: {
                     connectedToken,
                     energyToken,
-                    extendedToken,
+                    // extendedToken,
                 },
             }),
         }),

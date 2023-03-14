@@ -68,6 +68,15 @@ export const CarTwinContainer: FC = () => {
         setExtendedTokenVal(extendedTokenVal1);
 
         handleRefresh();
+
+        // TODO clear interval when unauthenticated
+        const interval = setInterval(() => {
+            handleRefresh();
+        }, 30 * 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
     }, []);
 
     const authConnected = () => {
@@ -154,10 +163,10 @@ export const CarTwinContainer: FC = () => {
                     handleAuthConnected={authConnected}
                 />
             )}
-            <hr />
-            <pre>{result && JSON.stringify(result, null, 2)}</pre>
-            <hr />
-            connectedToken:
+            {/* <hr />
+            <pre>{result && JSON.stringify(result, null, 2)}</pre> */}
+            {/* <hr /> */}
+            {/* connectedToken:
             <textarea
                 name="connectedToken"
                 value={connectedTokenVal}
@@ -172,7 +181,7 @@ export const CarTwinContainer: FC = () => {
                 onChange={(event) => {
                     setEnergyTokenVal(event.target.value);
                 }}
-            ></textarea>
+            ></textarea> */}
             {/* extendedToken:
             <textarea
                 name="extendedToken"
@@ -181,7 +190,7 @@ export const CarTwinContainer: FC = () => {
                     setExtendedTokenVal(event.target.value);
                 }}
             ></textarea> */}
-            <button onClick={handleRefresh}>refresh</button>
+            {/* <button onClick={handleRefresh}>refresh</button> */}
         </div>
     );
 };

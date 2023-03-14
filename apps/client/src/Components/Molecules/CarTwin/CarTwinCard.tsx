@@ -20,6 +20,7 @@ import {
 import { FC } from "react";
 import { DoorsAndTyres } from "./DoorsAndTyres";
 import { OdoListItem } from "./OdoListItem";
+import { ServiceListItems } from "./ServiceListItems";
 import { StatisticsListItems } from "./StatisticsListItems";
 
 // const minutesToDaysHoursMinutes = (minutesString: string) => {
@@ -82,6 +83,19 @@ export const CarTwinCard: FC<{
                             />
                         )}
                     </Grid>
+                    <Grid item alignItems="flex-end">
+                        <DoorsAndTyres
+                            doors={doors}
+                            tyres={tyres}
+                            handleAuthConnected={handleAuthConnected}
+                        />
+                        <List dense>
+                            <ServiceListItems
+                                diagnostics={diagnostics}
+                                handleAuthConnected={handleAuthConnected}
+                            />
+                        </List>
+                    </Grid>
                     <Grid item>
                         <List dense>
                             <OdoListItem
@@ -116,19 +130,6 @@ export const CarTwinCard: FC<{
                     chargingConnectionStatus: {chargingConnectionStatus.value}
                 </li>
                 <li>chargingSystemStatus: {chargingSystemStatus.value}</li> */}
-                    </Grid>
-                    <Grid item>
-                        <DoorsAndTyres
-                            doors={doors}
-                            tyres={tyres}
-                            handleAuthConnected={handleAuthConnected}
-                        />
-                        <List dense>
-                            <OdoListItem
-                                odometer={odometer}
-                                handleAuthConnected={handleAuthConnected}
-                            />
-                        </List>
                     </Grid>
                 </Grid>
             </CardContent>
