@@ -25,31 +25,4 @@ export interface CarTwinResponse {
         tyres: VolvoConnectedSchemas["TyrePressure"] | VolvoSdkError;
     };
     energy: VolvoEnergySchemas["RechargeStatus"] | VolvoSdkError;
-    // energy: {
-    //     data: {
-    //         batteryChargeLevel: {
-    //             value: string;
-    //             unit: string;
-    //             timestamp: string;
-    //         };
-    //         electricRange: {
-    //             value: string;
-    //             unit: string;
-    //             timestamp: string;
-    //         };
-    //         estimatedChargingTime: {
-    //             value: string;
-    //             unit: string;
-    //             timestamp: string;
-    //         };
-    //         chargingConnectionStatus: {
-    //             value: string;
-    //             timestamp: string;
-    //         };
-    //         chargingSystemStatus: {
-    //             value: string;
-    //             timestamp: string;
-    //         };
-    //     };
-    // };
 }

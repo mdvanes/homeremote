@@ -1,7 +1,6 @@
 import { CarTwinResponse } from "@homeremote/types";
 import {
     Info as InfoIcon,
-    Tag as TagIcon,
     Opacity as OpacityIcon,
     CleaningServices as CleaningServicesIcon,
 } from "@mui/icons-material";

@@ -1,23 +1,5 @@
 import { CarTwinResponse } from "@homeremote/types";
-import {
-    Info as InfoIcon,
-    Lock as LockIcon,
-    Speed as SpeedIcon,
-    Tag as TagIcon,
-    Filter1 as Filter1Icon,
-    BatteryFull as BatteryFullIcon,
-} from "@mui/icons-material";
-import {
-    Alert,
-    Card,
-    CardContent,
-    Grid,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Tooltip,
-} from "@mui/material";
+import { Alert, Card, CardContent, Grid, List } from "@mui/material";
 import { FC } from "react";
 import { DoorsAndTyres } from "./DoorsAndTyres";
 import { EnergyListItems } from "./EnergyListItems";
@@ -84,11 +66,6 @@ export const CarTwinCard: FC<{
                     </List>
 
                     {/*<li>
-    engineHoursToService: {toServiceTime.days} day(s){" "}
-    {toServiceTime.hours} hour(s) [RAW:{" "}
-    {diagnostics.data.engineHoursToService.value} hours]
-</li>
-<li>kmToService: {diagnostics.data.kmToService.value} km</li>
 
 <li>batteryChargeLevel: {batteryChargeLevel.value}%</li>
 <li>
