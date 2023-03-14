@@ -3,6 +3,8 @@ import {
     Info as InfoIcon,
     Lock as LockIcon,
     Speed as SpeedIcon,
+    Tag as TagIcon,
+    Filter1 as Filter1Icon,
 } from "@mui/icons-material";
 import {
     Alert,
@@ -80,9 +82,12 @@ export const CarTwinCard: FC<{
                     </Grid>
                     <Grid item>
                         <List>
-                            <OdoListItem odometer={odometer} />
+                            <OdoListItem
+                                odometer={odometer}
+                                handleAuthConnected={handleAuthConnected}
+                            />
                         </List>
-                        <Grid container>
+                        {/* <Grid container>
                             <Grid item>
                                 <Alert severity="success">
                                     {!odometer || odometer === "ERROR" ? (
@@ -108,27 +113,29 @@ export const CarTwinCard: FC<{
                                     )}
                                 </Alert>
                             </Grid>
-                        </Grid>
+                        </Grid> */}
                         <ul>
                             {!statistics || statistics === "ERROR" ? (
                                 "Statistics failed: authenticate connected vehicle"
                             ) : (
                                 <>
                                     <li>
+                                        <Filter1Icon />
                                         tripMeter1 (Manual Trip):{" "}
                                         {parseInt(
                                             statistics.tripMeter1?.value ?? "",
                                             10
                                         ) * 100}{" "}
                                         km{" "}
-                                        <div>
+                                        {/* <div>
                                             NOTE: This number is multiplied by
                                             100 as a correction, and should be
                                             accurate to 100 km instead 1 km.
-                                        </div>
+                                        </div> */}
                                     </li>
                                     {/* <li>tripMeter2: {statistics.data.tripMeter2.value} km</li> */}
                                     <li>
+                                        <SpeedIcon />
                                         averageSpeed:{" "}
                                         {statistics.averageSpeed?.value} km/hr
                                     </li>

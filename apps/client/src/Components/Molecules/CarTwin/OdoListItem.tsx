@@ -3,6 +3,7 @@ import {
     Info as InfoIcon,
     Lock as LockIcon,
     Speed as SpeedIcon,
+    Tag as TagIcon,
 } from "@mui/icons-material";
 import {
     Alert,
@@ -45,11 +46,12 @@ import { Doors } from "./Doors";
 
 export const OdoListItem: FC<{
     odometer: CarTwinResponse["connected"]["odometer"];
-}> = ({ odometer }) => {
+    handleAuthConnected: () => void;
+}> = ({ odometer, handleAuthConnected }) => {
     return (
         <>
             {!odometer || odometer === "ERROR" ? (
-                <Alert severity="warning">
+                <Alert severity="warning" onClick={handleAuthConnected}>
                     Odometer failed: authenticate connected vehicle
                 </Alert>
             ) : (
@@ -66,7 +68,7 @@ export const OdoListItem: FC<{
                 >
                     <ListItemIcon>
                         <Tooltip title="odometer">
-                            <SpeedIcon />
+                            <TagIcon />
                         </Tooltip>
                     </ListItemIcon>
                     <ListItemText
