@@ -13,6 +13,7 @@ import {
 } from "@mui/icons-material";
 import { InputAdornment, TextField, Tooltip } from "@mui/material";
 import { Alert, Card, CardContent } from "@mui/material";
+import { CarTwinCard } from "./CarTwinCard";
 
 const minutesToDaysHoursMinutes = (minutesString: string) => {
     const rawMinutes = parseInt(minutesString, 10);
@@ -39,117 +40,7 @@ const hoursToDaysHours = (hoursString: string) => {
     };
 };
 
-const ListOfData: FC<{ data: CarTwinResponse; authConnected: any }> = ({
-    data,
-    authConnected,
-}) => {
-    // const chargeTime = minutesToDaysHoursMinutes(estimatedChargingTime.value);
-    // const toServiceTime = hoursToDaysHours(
-    //     diagnostics.data.engineHoursToService.value
-    // );
-
-    const { odometer, doors, statistics, vehicleMetadata } = data.connected;
-
-    return (
-        <>
-            {!vehicleMetadata || vehicleMetadata === "ERROR" ? (
-                <Alert severity="warning" onClick={authConnected}>
-                    Meta failed: authenticate connected vehicle
-                </Alert>
-            ) : (
-                <img
-                    alt="car exterior"
-                    src={vehicleMetadata.images?.exteriorDefaultUrl ?? ""}
-                    width="300"
-                />
-            )}
-            <ul>
-                <li>
-                    {!odometer || odometer === "ERROR" ? (
-                        "Odometer failed: authenticate connected vehicle"
-                    ) : (
-                        <>
-                            <SpeedIcon /> odometer:{" "}
-                            {parseInt(odometer.value ?? "", 10) * 10}{" "}
-                            {odometer.unit === "kilometers"
-                                ? "km"
-                                : odometer.unit}{" "}
-                            <Tooltip
-                                title="NOTE: This number is multiplied by 10 as a
-                                correction, and should be accurate to 10 km
-                                instead 1 km."
-                            >
-                                <InfoIcon />
-                            </Tooltip>
-                        </>
-                    )}
-                </li>
-
-                {!doors || doors === "ERROR" ? (
-                    "Doors failed: authenticate connected vehicle"
-                ) : (
-                    <>
-                        <li>
-                            {<LockIcon />} carLocked: {doors.carLocked?.value}
-                        </li>
-                        {/* <li>frontLeft: {frontLeft.value}</li>
-                        <li>frontRight: {frontRight.value}</li>
-                        <li>hood: {hood.value}</li>
-                        <li>rearLeft: {rearLeft.value}</li>
-                        <li>rearRight: {rearRight.value}</li>
-                        <li>tailGate: {tailGate.value}</li> */}
-                    </>
-                )}
-
-                {!statistics || statistics === "ERROR" ? (
-                    "Statistics failed: authenticate connected vehicle"
-                ) : (
-                    <>
-                        <li>
-                            tripMeter1 (Manual Trip):{" "}
-                            {parseInt(statistics.tripMeter1?.value ?? "", 10) *
-                                100}{" "}
-                            km{" "}
-                            <div>
-                                NOTE: This number is multiplied by 100 as a
-                                correction, and should be accurate to 100 km
-                                instead 1 km.
-                            </div>
-                        </li>
-                        {/* <li>tripMeter2: {statistics.data.tripMeter2.value} km</li> */}
-                        <li>
-                            averageSpeed: {statistics.averageSpeed?.value} km/hr
-                        </li>
-                    </>
-                )}
-
-                {/*<li>
-                    engineHoursToService: {toServiceTime.days} day(s){" "}
-                    {toServiceTime.hours} hour(s) [RAW:{" "}
-                    {diagnostics.data.engineHoursToService.value} hours]
-                </li>
-                <li>kmToService: {diagnostics.data.kmToService.value} km</li>
-
-                <li>batteryChargeLevel: {batteryChargeLevel.value}%</li>
-                <li>
-                    electricRange: {electricRange.value} {electricRange.unit}
-                </li>
-                <li>
-                    estimatedChargingTime: {chargeTime.days} day(s){" "}
-                    {chargeTime.hours} hour(s) {chargeTime.minutes} minute(s)
-                    [RAW: {estimatedChargingTime.value}{" "}
-                    {estimatedChargingTime.unit}]
-                </li>
-                <li>
-                    chargingConnectionStatus: {chargingConnectionStatus.value}
-                </li>
-                <li>chargingSystemStatus: {chargingSystemStatus.value}</li> */}
-            </ul>
-        </>
-    );
-};
-
-export const CarTwinCard: FC = () => {
+export const CarTwinContainer: FC = () => {
     const [connectedTokenVal, setConnectedTokenVal] = useState("");
     const [energyTokenVal, setEnergyTokenVal] = useState("");
     const [extendedTokenVal, setExtendedTokenVal] = useState("");
@@ -258,7 +149,10 @@ export const CarTwinCard: FC = () => {
                 </>
             )} */}
             {result && (
-                <ListOfData data={result} authConnected={authConnected} />
+                <CarTwinCard
+                    data={result}
+                    handleAuthConnected={authConnected}
+                />
             )}
             <hr />
             <pre>{result && JSON.stringify(result, null, 2)}</pre>

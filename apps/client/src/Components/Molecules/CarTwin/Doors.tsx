@@ -1,21 +1,17 @@
-import { FC } from "react";
 import { CarTwinResponse } from "@homeremote/types";
 import {
-    Info as InfoIcon,
     Lock as LockIcon,
     LockOpen as LockOpenIcon,
-    Speed as SpeedIcon,
 } from "@mui/icons-material";
-import { Alert, Card, CardContent, Grid, Tooltip } from "@mui/material";
+import { Alert, Grid, Tooltip } from "@mui/material";
+import { FC } from "react";
 import useStyles from "./Doors.styles";
 
 export const Doors: FC<{
     doors: CarTwinResponse["connected"]["doors"];
-}> = ({ doors }) => {
+    handleAuthConnected: () => void;
+}> = ({ doors, handleAuthConnected }) => {
     const { classes } = useStyles();
-    const handleAuthConnected = () => {
-        // TODO
-    };
 
     if (!doors || doors === "ERROR") {
         return (
@@ -36,7 +32,7 @@ export const Doors: FC<{
                 {doors.carLocked.value ? (
                     <LockIcon color="success" />
                 ) : (
-                    <LockOpenIcon />
+                    <LockOpenIcon color="error" />
                 )}
             </Tooltip>
         );
@@ -80,23 +76,12 @@ export const Doors: FC<{
                         <div className={getSegmentClass("rearRight")} />
                         <div className={getSegmentClass("rearLeft")} />
                     </div>
-                    <div className={getSegmentClass("tailGate")} />
+                    <div
+                        title="tailGate"
+                        className={getSegmentClass("tailGate")}
+                    />
                 </div>
             </Grid>
-
-            {/* {!doors ? (
-                "Doors failed: authenticate connected vehicle"
-            ) : (
-                <>
-                   
-                    {/* <li>frontLeft: {frontLeft.value}</li>
-                        <li>frontRight: {frontRight.value}</li>
-                        <li>hood: {hood.value}</li>
-                        <li>rearLeft: {rearLeft.value}</li>
-                        <li>rearRight: {rearRight.value}</li>
-                        <li>tailGate: {tailGate.value}</li> * /}
-                </>
-            )} */}
         </Grid>
     );
 };
