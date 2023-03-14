@@ -61,11 +61,14 @@ export class CarTwinController {
 
         this.logger.verbose(`[${req.user.name}] GET to /api/cartwin`);
 
-        const volvo = volvocarsApiSdk(
-            this.apiConfig.vin,
-            this.apiConfig.vccApiKey,
-            body.connectedToken
-        );
+        const { vin, vccApiKey } = this.apiConfig;
+        const { connectedToken, energyToken } = body;
+        const volvo = volvocarsApiSdk({
+            vin,
+            vccApiKey,
+            connectedToken,
+            energyToken,
+        });
 
         try {
             // const energyResponse: VolvoFooResponse | undefined =
@@ -107,8 +110,7 @@ export class CarTwinController {
 
             return {
                 connected: await volvo.getConnectedVehicle(),
-
-                // energy: energyResponse,
+                energy: await volvo.getEnergy(),
                 // frontLeftWindowOpen: undefined, // frontLeftWindowOpenResponse,
             };
         } catch (err) {

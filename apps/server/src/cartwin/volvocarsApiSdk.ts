@@ -1,17 +1,31 @@
-import { CarTwinResponse, components } from "@homeremote/types";
+import {
+    CarTwinResponse,
+    VolvoConnectedSchemas,
+    VolvoEnergySchemas,
+    VolvoSdkError,
+} from "@homeremote/types";
 import got from "got";
 
 const baseUrl = "https://api.volvocars.com";
 
-export const volvocarsApiSdk = (
-    vin: string,
-    vccApiKey: string,
-    connectedToken: string
-) => {
+interface VolvocarsApiSdkArgs {
+    vin: string;
+    vccApiKey: string;
+    connectedToken: string;
+    energyToken: string;
+}
+
+const ERROR: VolvoSdkError = "ERROR";
+
+export const volvocarsApiSdk = ({
+    vin,
+    vccApiKey,
+    connectedToken,
+    energyToken,
+}: VolvocarsApiSdkArgs) => {
     const headers = (accept: string) => ({
         "vcc-api-key": vccApiKey,
         authorization: `Bearer ${connectedToken}`,
-        // accept: "application/vnd.volvocars.api.connected-vehicle.vehicle.v1+json",
         accept,
     });
 
@@ -38,11 +52,11 @@ export const volvocarsApiSdk = (
     > => {
         try {
             const response = await gotConnected<
-                components["schemas"]["OdometerResponse"]
+                VolvoConnectedSchemas["OdometerResponse"]
             >("/odometer");
             return response.data.odometer;
         } catch {
-            return "ERROR";
+            return ERROR;
         }
     };
 
@@ -51,11 +65,11 @@ export const volvocarsApiSdk = (
     > => {
         try {
             const response = await gotConnected<
-                components["schemas"]["DoorStatusResponse"]
+                VolvoConnectedSchemas["DoorStatusResponse"]
             >("/doors");
             return response.data;
         } catch {
-            return "ERROR";
+            return ERROR;
         }
     };
 
@@ -64,11 +78,11 @@ export const volvocarsApiSdk = (
     > => {
         try {
             const response = await gotConnected<
-                components["schemas"]["StatisticResponse"]
+                VolvoConnectedSchemas["StatisticResponse"]
             >("/statistics");
             return response.data;
         } catch {
-            return "ERROR";
+            return ERROR;
         }
     };
 
@@ -77,11 +91,11 @@ export const volvocarsApiSdk = (
     > => {
         try {
             const response = await gotVehicle<
-                components["schemas"]["VehicleDetailResponse"]
+                VolvoConnectedSchemas["VehicleDetailResponse"]
             >("");
             return response.data;
         } catch (err) {
-            return "ERROR";
+            return ERROR;
         }
     };
 
@@ -90,11 +104,11 @@ export const volvocarsApiSdk = (
     > => {
         try {
             const response = await gotConnected<
-                components["schemas"]["DiagnosticResponse"]
+                VolvoConnectedSchemas["DiagnosticResponse"]
             >("/diagnostics");
             return response.data;
         } catch {
-            return "ERROR";
+            return ERROR;
         }
     };
 
@@ -103,11 +117,11 @@ export const volvocarsApiSdk = (
     > => {
         try {
             const response = await gotConnected<
-                components["schemas"]["TyrePressureResponse"]
+                VolvoConnectedSchemas["TyrePressureResponse"]
             >("/tyres");
             return response.data;
         } catch {
-            return "ERROR";
+            return ERROR;
         }
     };
 
@@ -124,7 +138,29 @@ export const volvocarsApiSdk = (
         };
     };
 
+    const gotEnergy = async <T>(): Promise<T> => {
+        return got(`${baseUrl}/energy/v1/vehicles/${vin}/recharge-status`, {
+            headers: {
+                "vcc-api-key": vccApiKey,
+                authorization: `Bearer ${energyToken}`,
+                accept: "application/vnd.volvocars.api.energy.vehicledata.v1+json",
+            },
+        }).json();
+    };
+
+    const getEnergy = async (): Promise<CarTwinResponse["energy"]> => {
+        try {
+            const response = await gotEnergy<
+                VolvoEnergySchemas["RechargeStatusResponse"]
+            >();
+            return response.data;
+        } catch {
+            return ERROR;
+        }
+    };
+
     return {
         getConnectedVehicle,
+        getEnergy,
     };
 };

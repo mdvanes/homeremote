@@ -1,8 +1,12 @@
-import { components } from "./volvo/volvo.types";
+import { components as ConnectedComponents } from "./volvo/connected-vehicle-c3.schema";
+import { components as EnergyComponents } from "./volvo/energy-api.schema";
 
 // npx openapi-typescript libs/types/src/lib/volvo/connected-vehicle-c3-specification.json --output libs/types/src/lib/volvo/connected-vehicle-c3.schema.ts
+// npx openapi-typescript libs/types/src/lib/volvo/energy-api-specification.json --output libs/types/src/lib/volvo/energy-api.schema.ts
 
-type VolvoSdkError = "ERROR";
+export type VolvoSdkError = "ERROR";
+export type VolvoConnectedSchemas = ConnectedComponents["schemas"];
+export type VolvoEnergySchemas = EnergyComponents["schemas"];
 
 export interface CarTwinArgs {
     connectedToken: string;
@@ -11,16 +15,16 @@ export interface CarTwinArgs {
 
 export interface CarTwinResponse {
     connected: {
-        odometer: components["schemas"]["Odometer"]["odometer"] | VolvoSdkError;
-        doors: components["schemas"]["DoorAndLockStatus"] | VolvoSdkError;
+        odometer: VolvoConnectedSchemas["Odometer"]["odometer"] | VolvoSdkError;
+        doors: VolvoConnectedSchemas["DoorAndLockStatus"] | VolvoSdkError;
         vehicleMetadata:
-            | components["schemas"]["VehicleMetadata"]
+            | VolvoConnectedSchemas["VehicleMetadata"]
             | VolvoSdkError;
-
-        statistics: components["schemas"]["StatisticVals"] | VolvoSdkError;
-        diagnostics: components["schemas"]["DiagnosticVals"] | VolvoSdkError;
-        tyres: components["schemas"]["TyrePressure"] | VolvoSdkError;
+        statistics: VolvoConnectedSchemas["StatisticVals"] | VolvoSdkError;
+        diagnostics: VolvoConnectedSchemas["DiagnosticVals"] | VolvoSdkError;
+        tyres: VolvoConnectedSchemas["TyrePressure"] | VolvoSdkError;
     };
+    energy: VolvoEnergySchemas["RechargeStatus"] | VolvoSdkError;
     // energy: {
     //     data: {
     //         batteryChargeLevel: {

@@ -78,11 +78,11 @@ export const CarTwinContainer: FC = () => {
         // });
         try {
             // localStorage.setItem("connectedTokenVal", connectedTokenVal);
-            localStorage.setItem("energyTokenVal", energyTokenVal);
+            // localStorage.setItem("energyTokenVal", energyTokenVal);
             // localStorage.setItem("extendedTokenVal", extendedTokenVal);
             const result = await getCarTwin({
                 connectedToken: localStorage.getItem("connectedTokenVal") ?? "",
-                energyToken: energyTokenVal,
+                energyToken: localStorage.getItem("energyTokenVal") ?? "",
                 // extendedToken: extendedTokenVal,
             }).unwrap();
             if (result.connected.odometer) {
@@ -97,8 +97,9 @@ export const CarTwinContainer: FC = () => {
 
     const handleEnterSubmit = (ev: React.KeyboardEvent<HTMLDivElement>) => {
         if (ev.key === "Enter") {
-            console.log(ev.key, connectedTokenVal);
+            // console.log(ev.key, connectedTokenVal);
             localStorage.setItem("connectedTokenVal", connectedTokenVal);
+            localStorage.setItem("energyTokenVal", energyTokenVal);
             handleRefresh();
         }
     };
