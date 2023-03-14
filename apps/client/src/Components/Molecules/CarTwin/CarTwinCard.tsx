@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 import { AvgSpeedListItem } from "./AvgSpeedListItem";
-import { Doors } from "./Doors";
+import { DoorsAndTyres } from "./DoorsAndTyres";
 import { OdoListItem } from "./OdoListItem";
 import { TripMeterListItem } from "./TripMeterListItem";
 import { StatisticsListItems } from "./StatisticsListItems";
@@ -58,7 +58,8 @@ export const CarTwinCard: FC<{
     //     diagnostics.data.engineHoursToService.value
     // );
 
-    const { odometer, doors, statistics, vehicleMetadata } = data.connected;
+    const { odometer, doors, statistics, diagnostics, vehicleMetadata, tyres } =
+        data.connected;
 
     return (
         <Card>
@@ -89,54 +90,14 @@ export const CarTwinCard: FC<{
                                 odometer={odometer}
                                 handleAuthConnected={handleAuthConnected}
                             />
-                            {/* TODO check statistics ERROR once */}
+
                             <StatisticsListItems
                                 statistics={statistics}
                                 handleAuthConnected={handleAuthConnected}
                             />
-                            {/* <TripMeterListItem
-                                statistics={statistics}
-                                handleAuthConnected={handleAuthConnected}
-                            />
-                            <TripMeterListItem
-                                statistics={statistics}
-                                handleAuthConnected={handleAuthConnected}
-                            />
-                            <AvgSpeedListItem
-                                statistics={statistics}
-                                handleAuthConnected={handleAuthConnected}
-                            /> */}
                         </List>
 
-                        <ul>
-                            {/* {!statistics || statistics === "ERROR" ? (
-                                "Statistics failed: authenticate connected vehicle"
-                            ) : (
-                                <>
-                                    {/ * <li>
-                                        <Filter1Icon />
-                                        tripMeter1 (Manual Trip):{" "}
-                                        {parseInt(
-                                            statistics.tripMeter1?.value ?? "",
-                                            10
-                                        ) * 100}{" "}
-                                        km{" "}
-                                        {/ * <div>
-                                            NOTE: This number is multiplied by
-                                            100 as a correction, and should be
-                                            accurate to 100 km instead 1 km.
-                                        </div> * /}
-                                    </li> * /}
-                                    {/ * <li>tripMeter2: {statistics.data.tripMeter2.value} km</li> * /}
-                                    <li>
-                                        <SpeedIcon />
-                                        averageSpeed:{" "}
-                                        {statistics.averageSpeed?.value} km/hr
-                                    </li>
-                                </>
-                            )} */}
-
-                            {/*<li>
+                        {/*<li>
                     engineHoursToService: {toServiceTime.days} day(s){" "}
                     {toServiceTime.hours} hour(s) [RAW:{" "}
                     {diagnostics.data.engineHoursToService.value} hours]
@@ -157,27 +118,19 @@ export const CarTwinCard: FC<{
                     chargingConnectionStatus: {chargingConnectionStatus.value}
                 </li>
                 <li>chargingSystemStatus: {chargingSystemStatus.value}</li> */}
-                        </ul>
                     </Grid>
                     <Grid item>
-                        <Doors
+                        <DoorsAndTyres
                             doors={doors}
+                            tyres={tyres}
                             handleAuthConnected={handleAuthConnected}
                         />
-                        {/* {!doors || doors === "ERROR" ? (
-                            "Doors failed: authenticate connected vehicle"
-                        ) : (
-                            <>
-                                <li>
-                                    {<LockIcon />} carLocked:{" "}
-                                    {doors.carLocked?.value}
-                                </li>
-                                {/* <li>frontLeft: {frontLeft.value}</li>
-                        <li>frontRight: {frontRight.value}</li>
-                        <li>hood: {hood.value}</li>
-                        <li>rearLeft: {rearLeft.value}</li>
-                        <li>rearRight: {rearRight.value}</li>
-                        <li>tailGate: {tailGate.value}</li> */}
+                        <List dense>
+                            <OdoListItem
+                                odometer={odometer}
+                                handleAuthConnected={handleAuthConnected}
+                            />
+                        </List>
                     </Grid>
                 </Grid>
             </CardContent>

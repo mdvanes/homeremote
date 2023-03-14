@@ -1,48 +1,13 @@
 import { CarTwinResponse } from "@homeremote/types";
-import {
-    Info as InfoIcon,
-    Lock as LockIcon,
-    Speed as SpeedIcon,
-    Tag as TagIcon,
-} from "@mui/icons-material";
+import { Info as InfoIcon, Tag as TagIcon } from "@mui/icons-material";
 import {
     Alert,
-    Card,
-    CardContent,
-    Grid,
-    List,
     ListItem,
     ListItemIcon,
     ListItemText,
     Tooltip,
 } from "@mui/material";
 import { FC } from "react";
-import { Doors } from "./Doors";
-
-// const minutesToDaysHoursMinutes = (minutesString: string) => {
-//     const rawMinutes = parseInt(minutesString, 10);
-//     const hours = Math.floor(rawMinutes / 60);
-//     const days = Math.floor(hours / 24);
-//     const hours1 = hours - days * 24;
-//     const minutes = rawMinutes - hours1 * 60 - days * 24 * 60;
-//     return {
-//         days,
-//         hours: hours1,
-//         minutes,
-//     };
-// };
-
-// const hoursToDaysHours = (hoursString: string) => {
-//     const hours = parseInt(hoursString, 10);
-//     // const hours = Math.floor(rawMinutes / 60);
-//     const days = Math.floor(hours / 24);
-//     const hours1 = hours - days * 24;
-//     // const minutes = rawMinutes - hours1 * 60 - days * 24 * 60;
-//     return {
-//         days,
-//         hours: hours1,
-//     };
-// };
 
 export const OdoListItem: FC<{
     odometer: CarTwinResponse["connected"]["odometer"];

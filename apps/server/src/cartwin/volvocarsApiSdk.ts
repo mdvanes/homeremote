@@ -85,6 +85,32 @@ export const volvocarsApiSdk = (
         }
     };
 
+    const getDiagnostics = async (): Promise<
+        CarTwinResponse["connected"]["diagnostics"]
+    > => {
+        try {
+            const response = await gotConnected<
+                components["schemas"]["EngineDiagnosticResponse"]
+            >("/diagnostics");
+            return response.data;
+        } catch {
+            return "ERROR";
+        }
+    };
+
+    const getTyres = async (): Promise<
+        CarTwinResponse["connected"]["tyres"]
+    > => {
+        try {
+            const response = await gotConnected<
+                components["schemas"]["TyrePressureResponse"]
+            >("/tyres");
+            return response.data;
+        } catch {
+            return "ERROR";
+        }
+    };
+
     const getConnectedVehicle = async (): Promise<
         CarTwinResponse["connected"]
     > => {
@@ -93,6 +119,8 @@ export const volvocarsApiSdk = (
             doors: await getDoors(),
             vehicleMetadata: await getVehicleMetadata(),
             statistics: await getStatistics(),
+            diagnostics: await getDiagnostics(),
+            tyres: await getTyres(),
         };
     };
 

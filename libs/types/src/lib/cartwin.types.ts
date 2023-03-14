@@ -20,17 +20,13 @@ export interface CarTwinResponse {
         vehicleMetadata:
             | components["schemas"]["VehicleMetadata"]
             | VolvoSdkError;
-        // car: {
-        //     data: {
-        //         images: {
-        //             exteriorDefaultUrl: string;
-        //         };
-        //     };
-        // };
+
         statistics: components["schemas"]["StatisticVals"] | VolvoSdkError;
+        diagnostics:
+            | components["schemas"]["EngineDiagnosticVals"]
+            | VolvoSdkError;
+        tyres: components["schemas"]["TyrePressure"] | VolvoSdkError;
     };
-    // diagnostics: any;
-    // tyre: any;
     // energy: {
     //     data: {
     //         batteryChargeLevel: {

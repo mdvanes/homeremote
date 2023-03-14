@@ -68,81 +68,6 @@ export class CarTwinController {
         );
 
         try {
-            interface VolvoFooResponse {
-                foo: any;
-            }
-
-            const baseUrl = "https://api.volvocars.com";
-
-            // const vin = this.configService.get<string>("CARTWIN_VIN") || "";
-            // const vccApiKey =
-            //     this.configService.get<string>("CARTWIN_VCC_API_KEY") || "";
-
-            const { vin } = this.apiConfig;
-
-            const headers = {
-                "vcc-api-key": this.apiConfig.vccApiKey,
-                authorization: `Bearer ${body.connectedToken}`,
-                accept: "application/vnd.volvocars.api.connected-vehicle.vehicledata.v1+json",
-            };
-
-            // TODO handle when only Connected API fails or only Energy API fails.
-            // const response: components["schemas"]["OdometerResponse"] =
-            //     await got(
-            //         // this.getAPI(gasSensor)
-            //         `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/odometer`,
-            //         {
-            //             headers,
-            //         }
-            //     ).json();
-            // this.logger.debug(response);
-
-            const response1: VolvoFooResponse = await got(
-                `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/doors`,
-                {
-                    headers,
-                }
-            ).json();
-            // this.logger.debug(response1);
-
-            const response2: VolvoFooResponse = await got(
-                `${baseUrl}/connected-vehicle/v1/vehicles/${vin}`,
-                {
-                    headers: {
-                        ...headers,
-                        accept: "application/vnd.volvocars.api.connected-vehicle.vehicle.v1+json",
-                    },
-                }
-            ).json();
-            // this.logger.debug(response2);
-
-            const statisticsResponse: VolvoFooResponse = body.connectedToken
-                ? await got(
-                      `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/statistics`,
-                      {
-                          headers,
-                      }
-                  ).json()
-                : undefined;
-
-            const diagnosticsResponse: VolvoFooResponse = body.connectedToken
-                ? await got(
-                      `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/diagnostics`,
-                      {
-                          headers,
-                      }
-                  ).json()
-                : undefined;
-
-            const tyreResponse: VolvoFooResponse = body.connectedToken
-                ? await got(
-                      `${baseUrl}/connected-vehicle/v1/vehicles/${vin}/tyres`,
-                      {
-                          headers,
-                      }
-                  ).json()
-                : undefined;
-
             // const energyResponse: VolvoFooResponse | undefined =
             //     body.energyToken
             //         ? await got(
@@ -181,15 +106,8 @@ export class CarTwinController {
             // }
 
             return {
-                // result: response,
-                // odometer: response.data.odometer,
                 connected: await volvo.getConnectedVehicle(),
-                // odometer: await volvo.connected.getOdometer(),
-                // doors: response1,
-                // car: response2,
-                // statistics: statisticsResponse,
-                diagnostics: diagnosticsResponse,
-                tyre: tyreResponse,
+
                 // energy: energyResponse,
                 // frontLeftWindowOpen: undefined, // frontLeftWindowOpenResponse,
             };

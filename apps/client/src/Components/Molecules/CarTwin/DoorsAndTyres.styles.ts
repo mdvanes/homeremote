@@ -7,14 +7,16 @@ const useStyles = makeStyles()(() => ({
         borderRadius: "4px",
         gap: 1,
         height: 40,
-        "& .segment": {
+        "& .segment, & .tyre": {
             backgroundColor: "grey",
             flex: 1,
-            // height: "20px",
             width: "20px",
         },
         "& .segment.locked": {
             backgroundColor: "green",
+        },
+        "& .segment.unlocked": {
+            backgroundColor: "red",
         },
         "& .segment.hood": {
             borderTopLeftRadius: "15px 8px",
@@ -23,6 +25,12 @@ const useStyles = makeStyles()(() => ({
         "& .segment.tailGate": {
             borderTopRightRadius: "4px",
             borderBottomRightRadius: "4px",
+        },
+        "& .tyre.ok": {
+            backgroundColor: "black",
+        },
+        "& .tyre.warn": {
+            backgroundColor: "yellow",
         },
     },
     container: {
