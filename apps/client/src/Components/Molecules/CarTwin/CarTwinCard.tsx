@@ -18,8 +18,11 @@ import {
     Tooltip,
 } from "@mui/material";
 import { FC } from "react";
+import { AvgSpeedListItem } from "./AvgSpeedListItem";
 import { Doors } from "./Doors";
 import { OdoListItem } from "./OdoListItem";
+import { TripMeterListItem } from "./TripMeterListItem";
+import { StatisticsListItems } from "./StatisticsListItems";
 
 // const minutesToDaysHoursMinutes = (minutesString: string) => {
 //     const rawMinutes = parseInt(minutesString, 10);
@@ -81,45 +84,36 @@ export const CarTwinCard: FC<{
                         )}
                     </Grid>
                     <Grid item>
-                        <List>
+                        <List dense>
                             <OdoListItem
                                 odometer={odometer}
                                 handleAuthConnected={handleAuthConnected}
                             />
+                            {/* TODO check statistics ERROR once */}
+                            <StatisticsListItems
+                                statistics={statistics}
+                                handleAuthConnected={handleAuthConnected}
+                            />
+                            {/* <TripMeterListItem
+                                statistics={statistics}
+                                handleAuthConnected={handleAuthConnected}
+                            />
+                            <TripMeterListItem
+                                statistics={statistics}
+                                handleAuthConnected={handleAuthConnected}
+                            />
+                            <AvgSpeedListItem
+                                statistics={statistics}
+                                handleAuthConnected={handleAuthConnected}
+                            /> */}
                         </List>
-                        {/* <Grid container>
-                            <Grid item>
-                                <Alert severity="success">
-                                    {!odometer || odometer === "ERROR" ? (
-                                        "Odometer failed: authenticate connected vehicle"
-                                    ) : (
-                                        <>
-                                            <SpeedIcon /> odometer:{" "}
-                                            {parseInt(
-                                                odometer.value ?? "",
-                                                10
-                                            ) * 10}{" "}
-                                            {odometer.unit === "kilometers"
-                                                ? "km"
-                                                : odometer.unit}{" "}
-                                            <Tooltip
-                                                title="NOTE: This number is multiplied by 10 as a
-                                correction, and should be accurate to 10 km
-                                instead 1 km."
-                                            >
-                                                <InfoIcon />
-                                            </Tooltip>
-                                        </>
-                                    )}
-                                </Alert>
-                            </Grid>
-                        </Grid> */}
+
                         <ul>
-                            {!statistics || statistics === "ERROR" ? (
+                            {/* {!statistics || statistics === "ERROR" ? (
                                 "Statistics failed: authenticate connected vehicle"
                             ) : (
                                 <>
-                                    <li>
+                                    {/ * <li>
                                         <Filter1Icon />
                                         tripMeter1 (Manual Trip):{" "}
                                         {parseInt(
@@ -127,20 +121,20 @@ export const CarTwinCard: FC<{
                                             10
                                         ) * 100}{" "}
                                         km{" "}
-                                        {/* <div>
+                                        {/ * <div>
                                             NOTE: This number is multiplied by
                                             100 as a correction, and should be
                                             accurate to 100 km instead 1 km.
-                                        </div> */}
-                                    </li>
-                                    {/* <li>tripMeter2: {statistics.data.tripMeter2.value} km</li> */}
+                                        </div> * /}
+                                    </li> * /}
+                                    {/ * <li>tripMeter2: {statistics.data.tripMeter2.value} km</li> * /}
                                     <li>
                                         <SpeedIcon />
                                         averageSpeed:{" "}
                                         {statistics.averageSpeed?.value} km/hr
                                     </li>
                                 </>
-                            )}
+                            )} */}
 
                             {/*<li>
                     engineHoursToService: {toServiceTime.days} day(s){" "}
