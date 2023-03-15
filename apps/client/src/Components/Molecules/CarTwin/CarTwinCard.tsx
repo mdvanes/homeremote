@@ -64,23 +64,6 @@ export const CarTwinCard: FC<{
                             handleAuthConnected={handleAuthConnected}
                         />
                     </List>
-
-                    {/*<li>
-
-<li>batteryChargeLevel: {batteryChargeLevel.value}%</li>
-<li>
-    electricRange: {electricRange.value} {electricRange.unit}
-</li>
-<li>
-    estimatedChargingTime: {chargeTime.days} day(s){" "}
-    {chargeTime.hours} hour(s) {chargeTime.minutes} minute(s)
-    [RAW: {estimatedChargingTime.value}{" "}
-    {estimatedChargingTime.unit}]
-</li>
-<li>
-    chargingConnectionStatus: {chargingConnectionStatus.value}
-</li>
-<li>chargingSystemStatus: {chargingSystemStatus.value}</li> */}
                 </Grid>
             </>
         );

@@ -35,6 +35,7 @@ export const EnergyListItems: FC<{
         estimatedChargingTime,
         batteryChargeLevel,
         chargingConnectionStatus,
+        chargingSystemStatus,
     } = energy;
 
     const isCharging = estimatedChargingTime?.value !== "0";
@@ -102,7 +103,17 @@ export const EnergyListItems: FC<{
                                 {chargingIcon()}
                             </Tooltip>
                         </ListItemIcon>
-                        <ListItemText primary={chargingLabel()} />
+                        <ListItemText
+                            primary={
+                                <>
+                                    {chargingLabel()}
+                                    chargingConnectionStatus:{" "}
+                                    {chargingConnectionStatus?.value}
+                                    chargingSystemStatus:{" "}
+                                    {chargingSystemStatus?.value}
+                                </>
+                            }
+                        />
                     </ListItem>
                 </Grid>
             )}
@@ -110,7 +121,9 @@ export const EnergyListItems: FC<{
                 <Grid item>
                     <ListItem>
                         <ListItemIcon>
-                            <Tooltip title="Charge">{chargeIcon()}</Tooltip>
+                            <Tooltip title="Remaining Charge">
+                                {chargeIcon()}
+                            </Tooltip>
                         </ListItemIcon>
                         <ListItemText
                             primary={`${batteryChargeLevel?.value}%`}

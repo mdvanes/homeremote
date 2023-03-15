@@ -48,3 +48,5 @@ lib/bs
 apps/client/src/Dummy.bs.js
 
 apps/client/src/gitinfo.json
+
+libs/types/src/lib/volvo/*.json
