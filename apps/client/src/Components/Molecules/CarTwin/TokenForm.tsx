@@ -1,5 +1,11 @@
 import { Cancel as CancelIcon, Link as LinkIcon } from "@mui/icons-material";
-import { Grid, InputAdornment, TextField, Tooltip } from "@mui/material";
+import {
+    Grid,
+    IconButton,
+    InputAdornment,
+    TextField,
+    Tooltip,
+} from "@mui/material";
 import { FC } from "react";
 
 interface TokenFormProps {
@@ -69,6 +75,14 @@ export const TokenForm: FC<TokenFormProps> = ({
                     <LinkIcon />
                 </a>
             </Tooltip>
+            <IconButton
+                onClick={() => {
+                    setConnectedTokenVal("");
+                    setEnergyTokenVal("");
+                }}
+            >
+                <CancelIcon />
+            </IconButton>
         </Grid>
     );
 };

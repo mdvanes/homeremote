@@ -1,106 +1,109 @@
 import { CarTwinResponse } from "@homeremote/types";
-import { Alert, Card, CardContent, Grid, List } from "@mui/material";
-import { FC } from "react";
+import { Card, CardContent } from "@mui/material";
+import { FC, useEffect, useState } from "react";
+import { useGetCarTwinMutation } from "../../../Services/carTwinApi";
+import { useAppDispatch } from "../../../store";
+import { logError } from "../LogCard/logSlice";
+import { CarTwinCardItems } from "./CarTwinCardItems";
 import { ERROR } from "./constants";
-import { DoorsAndTyres } from "./DoorsAndTyres";
-import { EnergyListItems } from "./EnergyListItems";
-import { OdoListItem } from "./OdoListItem";
-import { ServiceListItems } from "./ServiceListItems";
-import { StatisticsListItems } from "./StatisticsListItems";
+import { TokenForm } from "./TokenForm";
 
-export const CarTwinCard: FC<{
-    data: CarTwinResponse;
-    handleAuthConnected: () => void;
-    isLoading: boolean;
-}> = ({ data, handleAuthConnected, isLoading }) => {
-    const { odometer, doors, statistics, diagnostics, vehicleMetadata, tyres } =
-        data.connected;
+let updateInterval: ReturnType<typeof setInterval> | undefined = undefined;
 
-    const renderItems = () => {
-        const hasConnectedError = !odometer || odometer === ERROR;
-        const hasEnergyError = !data.energy || data.energy === ERROR;
-        if (hasConnectedError || hasEnergyError) {
-            return (
-                <>
-                    {hasConnectedError && (
-                        <Alert severity="warning" onClick={handleAuthConnected}>
-                            Authenticate Connected Vehicle
-                        </Alert>
-                    )}
-                    {hasEnergyError && (
-                        <Alert
-                            severity="warning"
-                            onClick={handleAuthConnected}
-                            sx={{ marginTop: 1 }}
-                        >
-                            Authenticate Energy
-                        </Alert>
-                    )}
-                </>
-            );
+const clearUpdateInterval = () => {
+    if (updateInterval) {
+        clearInterval(updateInterval);
+    }
+};
+
+export const CarTwinCard: FC = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const [connectedTokenVal, setConnectedTokenVal] = useState("");
+    const [energyTokenVal, setEnergyTokenVal] = useState("");
+    const [getCarTwin] = useGetCarTwinMutation();
+    const [result, setResult] = useState<CarTwinResponse | undefined>();
+    const [showTokenForm, setShowTokenForm] = useState(false);
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        const retrievedConnectedTokenVal =
+            localStorage.getItem("connectedTokenVal") ?? "";
+        const retrievedEnergyTokenVal =
+            localStorage.getItem("energyTokenVal") ?? "";
+
+        setConnectedTokenVal(retrievedConnectedTokenVal);
+        setEnergyTokenVal(retrievedEnergyTokenVal);
+
+        handleRefresh();
+
+        updateInterval = setInterval(() => {
+            handleRefresh();
+        }, 60 * 1000);
+
+        return () => {
+            clearUpdateInterval();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const authConnected = () => {
+        setShowTokenForm(true);
+    };
+
+    const handleRefresh = async () => {
+        console.log("calling handleRefresh");
+        try {
+            setIsLoading(true);
+            const result = await getCarTwin({
+                connectedToken: localStorage.getItem("connectedTokenVal") ?? "",
+                energyToken: localStorage.getItem("energyTokenVal") ?? "",
+            }).unwrap();
+            if (result.connected.odometer !== ERROR) {
+                setShowTokenForm(false);
+            }
+            if (
+                !result.connected.odometer ||
+                result.connected.odometer === ERROR ||
+                !result.energy ||
+                result.energy === ERROR
+            ) {
+                console.log("clear", result);
+                clearUpdateInterval();
+            }
+            setResult(result);
+            setIsLoading(false);
+        } catch (err) {
+            dispatch(logError(err));
         }
+    };
 
-        return (
-            <Grid container>
-                <Grid item>
-                    {!vehicleMetadata || vehicleMetadata === "ERROR" ? (
-                        <Alert severity="warning" onClick={handleAuthConnected}>
-                            Meta failed: authenticate connected vehicle
-                        </Alert>
-                    ) : (
-                        <>
-                            <img
-                                alt="car exterior"
-                                src={
-                                    vehicleMetadata.images
-                                        ?.exteriorDefaultUrl ?? ""
-                                }
-                                width="200"
-                                style={{
-                                    marginLeft: "-20px",
-                                    marginTop: "-20px",
-                                }}
-                            />
-                            {data.energy && data.energy !== ERROR && (
-                                <EnergyListItems energy={data.energy} />
-                            )}
-                        </>
-                    )}
-                </Grid>
-                <Grid item alignItems="flex-end">
-                    <DoorsAndTyres
-                        doors={doors}
-                        tyres={tyres}
-                        handleAuthConnected={handleAuthConnected}
-                    />
-                    <List dense>
-                        <ServiceListItems
-                            diagnostics={diagnostics}
-                            handleAuthConnected={handleAuthConnected}
-                        />
-                    </List>
-                </Grid>
-                <Grid item>
-                    <List dense>
-                        <OdoListItem
-                            odometer={odometer}
-                            handleAuthConnected={handleAuthConnected}
-                        />
-
-                        <StatisticsListItems
-                            statistics={statistics}
-                            handleAuthConnected={handleAuthConnected}
-                        />
-                    </List>
-                </Grid>
-            </Grid>
-        );
+    const handleEnterSubmit = (ev: React.KeyboardEvent<HTMLDivElement>) => {
+        if (ev.key === "Enter") {
+            localStorage.setItem("connectedTokenVal", connectedTokenVal);
+            localStorage.setItem("energyTokenVal", energyTokenVal);
+            handleRefresh();
+        }
     };
 
     return (
         <Card sx={{ marginBottom: 2 }}>
             <CardContent style={isLoading ? { filter: "blur(4px)" } : {}}>
-                {renderItems()}
+                {showTokenForm && (
+                    <TokenForm
+                        connectedTokenVal={connectedTokenVal}
+                        setConnectedTokenVal={setConnectedTokenVal}
+                        energyTokenVal={energyTokenVal}
+                        setEnergyTokenVal={setEnergyTokenVal}
+                        handleEnterSubmit={handleEnterSubmit}
+                    />
+                )}
+                {result && (
+                    <CarTwinCardItems
+                        isLoading={isLoading}
+                        data={result}
+                        handleAuthConnected={authConnected}
+                    />
+                )}
             </CardContent>
         </Card>
     );

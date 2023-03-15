@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { CarTwinContainer } from "../../Molecules/CarTwin/CarTwinContainer";
+import { CarTwinCard } from "../../Molecules/CarTwin/CarTwinCard";
 
 export const CarTwinPage: FC = () => {
-    return <CarTwinContainer />;
+    return <CarTwinCard />;
 };
