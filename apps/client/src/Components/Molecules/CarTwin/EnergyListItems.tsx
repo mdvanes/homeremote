@@ -5,13 +5,7 @@ import {
     BatteryChargingFull as BatteryChargingFullIcon,
     BatteryFull as BatteryFullIcon,
 } from "@mui/icons-material";
-import {
-    Grid,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Tooltip,
-} from "@mui/material";
+import { Grid, Tooltip } from "@mui/material";
 import { FC } from "react";
 
 const minutesToDaysHoursMinutes = (minutesString: string) => {
@@ -80,52 +74,40 @@ export const EnergyListItems: FC<{
     return (
         <Grid container>
             <Grid item>
-                <ListItem>
-                    <ListItemIcon>
-                        <Tooltip title="Range">
-                            <BatteryFullIcon />
-                        </Tooltip>
-                    </ListItemIcon>
-                    <ListItemText
-                        primary={`${electricRange?.value} ${electricRange?.unit}`}
-                    />
-                </ListItem>
+                <Tooltip title="Range">
+                    <BatteryFullIcon />
+                </Tooltip>
+            </Grid>
+            <Grid item>
+                {electricRange?.value}{" "}
+                {electricRange?.unit === "kilometers"
+                    ? "km"
+                    : electricRange?.unit}
             </Grid>
             {isCharging && (
-                <Grid item>
-                    <ListItem>
-                        <ListItemIcon>
-                            <Tooltip title="Estimated Charging Time">
-                                {chargingIcon()}
-                            </Tooltip>
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={
-                                <>
-                                    {chargingLabel()}
-                                    chargingConnectionStatus:{" "}
-                                    {chargingConnectionStatus?.value}
-                                    chargingSystemStatus:{" "}
-                                    {chargingSystemStatus?.value}
-                                </>
-                            }
-                        />
-                    </ListItem>
-                </Grid>
+                <>
+                    <Grid item>
+                        <Tooltip title="Estimated Charging Time">
+                            {chargingIcon()}
+                        </Tooltip>
+                    </Grid>
+                    <Grid item>
+                        {chargingLabel()}
+                        chargingConnectionStatus:{" "}
+                        {chargingConnectionStatus?.value}
+                        chargingSystemStatus: {chargingSystemStatus?.value}
+                    </Grid>
+                </>
             )}
             {!isCharging && (
-                <Grid item>
-                    <ListItem>
-                        <ListItemIcon>
-                            <Tooltip title="Remaining Charge">
-                                {chargeIcon()}
-                            </Tooltip>
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={`${batteryChargeLevel?.value}%`}
-                        />
-                    </ListItem>
-                </Grid>
+                <>
+                    <Grid item>
+                        <Tooltip title="Remaining Charge">
+                            {chargeIcon()}
+                        </Tooltip>
+                    </Grid>
+                    <Grid item>{batteryChargeLevel?.value}%</Grid>
+                </>
             )}
         </Grid>
     );

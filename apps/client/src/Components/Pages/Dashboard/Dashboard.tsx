@@ -16,6 +16,7 @@ import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Docker from "../Docker/Docker";
 import AppsIcon from "@mui/icons-material/Apps";
+import { CarTwinContainer } from "../../Molecules/CarTwin/CarTwinContainer";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -115,6 +116,7 @@ const Dashboard: FC = () => {
                 {!isLiteMode && <Schedule />}
                 {!isLiteMode && <DownloadList />}
                 <Nextup />
+                {!isLiteMode && <CarTwinContainer />}
                 <Monit />
             </Grid>
         </Grid>

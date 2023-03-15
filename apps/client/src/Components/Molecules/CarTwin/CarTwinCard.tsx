@@ -1,6 +1,7 @@
 import { CarTwinResponse } from "@homeremote/types";
 import { Alert, Card, CardContent, Grid, List } from "@mui/material";
 import { FC } from "react";
+import { ERROR } from "./constants";
 import { DoorsAndTyres } from "./DoorsAndTyres";
 import { EnergyListItems } from "./EnergyListItems";
 import { OdoListItem } from "./OdoListItem";
@@ -15,14 +16,30 @@ export const CarTwinCard: FC<{
     const { odometer, doors, statistics, diagnostics, vehicleMetadata, tyres } =
         data.connected;
 
-    const renderConnectedItems = () => {
-        if (!odometer || odometer === "ERROR") {
+    const renderItems = () => {
+        const hasConnectedError = !odometer || odometer === ERROR;
+        const hasEnergyError = !data.energy || data.energy === ERROR;
+        if (hasConnectedError || hasEnergyError) {
             return (
-                <Alert severity="warning" onClick={handleAuthConnected}>
-                    Authenticate Connected Vehicle
-                </Alert>
+                <>
+                    {hasConnectedError && (
+                        <Alert severity="warning" onClick={handleAuthConnected}>
+                            Authenticate Connected Vehicle
+                        </Alert>
+                    )}
+                    {hasEnergyError && (
+                        <Alert
+                            severity="warning"
+                            onClick={handleAuthConnected}
+                            sx={{ marginTop: 1 }}
+                        >
+                            Authenticate Energy
+                        </Alert>
+                    )}
+                </>
             );
         }
+
         return (
             <Grid container>
                 <Grid item>
@@ -31,13 +48,23 @@ export const CarTwinCard: FC<{
                             Meta failed: authenticate connected vehicle
                         </Alert>
                     ) : (
-                        <img
-                            alt="car exterior"
-                            src={
-                                vehicleMetadata.images?.exteriorDefaultUrl ?? ""
-                            }
-                            width="300"
-                        />
+                        <>
+                            <img
+                                alt="car exterior"
+                                src={
+                                    vehicleMetadata.images
+                                        ?.exteriorDefaultUrl ?? ""
+                                }
+                                width="200"
+                                style={{
+                                    marginLeft: "-20px",
+                                    marginTop: "-20px",
+                                }}
+                            />
+                            {data.energy && data.energy !== ERROR && (
+                                <EnergyListItems energy={data.energy} />
+                            )}
+                        </>
                     )}
                 </Grid>
                 <Grid item alignItems="flex-end">
@@ -70,27 +97,10 @@ export const CarTwinCard: FC<{
         );
     };
 
-    const renderEnergyItems = () => {
-        if (!data.energy || data.energy === "ERROR") {
-            return (
-                <Alert
-                    severity="warning"
-                    onClick={handleAuthConnected}
-                    sx={{ marginTop: 1 }}
-                >
-                    Authenticate Energy
-                </Alert>
-            );
-        }
-
-        return <EnergyListItems energy={data.energy} />;
-    };
-
     return (
-        <Card>
+        <Card sx={{ marginBottom: 2 }}>
             <CardContent style={isLoading ? { filter: "blur(4px)" } : {}}>
-                {renderConnectedItems()}
-                {renderEnergyItems()}
+                {renderItems()}
             </CardContent>
         </Card>
     );
