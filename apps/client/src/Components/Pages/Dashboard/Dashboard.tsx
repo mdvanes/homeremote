@@ -16,7 +16,7 @@ import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Docker from "../Docker/Docker";
 import AppsIcon from "@mui/icons-material/Apps";
-import { CarTwinContainer } from "../../Molecules/CarTwin/CarTwinContainer";
+import { CarTwinCard } from "../../Molecules/CarTwin/CarTwinCard";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -99,6 +99,7 @@ const Dashboard: FC = () => {
             <Grid item xs={12} md>
                 <DashboardStreamTabs />
                 <DataLora />
+                <Docker />
                 <LogCard />
                 <IconButton
                     color="primary"
@@ -112,11 +113,10 @@ const Dashboard: FC = () => {
             </Grid>
             <Grid item xs={12} md={5}>
                 <ServiceLinksBar />
-                <Docker />
                 {!isLiteMode && <Schedule />}
                 {!isLiteMode && <DownloadList />}
                 <Nextup />
-                {!isLiteMode && <CarTwinContainer />}
+                {!isLiteMode && <CarTwinCard />}
                 <Monit />
             </Grid>
         </Grid>

@@ -51,7 +51,6 @@ export const CarTwinCard: FC = () => {
     };
 
     const handleRefresh = async () => {
-        console.log("calling handleRefresh");
         try {
             setIsLoading(true);
             const result = await getCarTwin({
@@ -67,7 +66,6 @@ export const CarTwinCard: FC = () => {
                 !result.energy ||
                 result.energy === ERROR
             ) {
-                console.log("clear", result);
                 clearUpdateInterval();
             }
             setResult(result);
