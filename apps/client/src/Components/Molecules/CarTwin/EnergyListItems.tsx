@@ -54,10 +54,6 @@ export const EnergyListItems: FC<{
         if (!batteryChargeLevel?.value) {
             return <div />;
         }
-        console.log(
-            batteryChargeLevel.value,
-            parseFloat(batteryChargeLevel.value)
-        );
         const c = parseFloat(batteryChargeLevel.value);
         if (c >= 90) {
             return <BatteryFullIcon />;

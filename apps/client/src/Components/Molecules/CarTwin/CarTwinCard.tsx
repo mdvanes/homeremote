@@ -10,7 +10,8 @@ import { StatisticsListItems } from "./StatisticsListItems";
 export const CarTwinCard: FC<{
     data: CarTwinResponse;
     handleAuthConnected: () => void;
-}> = ({ data, handleAuthConnected }) => {
+    isLoading: boolean;
+}> = ({ data, handleAuthConnected, isLoading }) => {
     const { odometer, doors, statistics, diagnostics, vehicleMetadata, tyres } =
         data.connected;
 
@@ -23,7 +24,7 @@ export const CarTwinCard: FC<{
             );
         }
         return (
-            <>
+            <Grid container>
                 <Grid item>
                     {!vehicleMetadata || vehicleMetadata === "ERROR" ? (
                         <Alert severity="warning" onClick={handleAuthConnected}>
@@ -65,14 +66,18 @@ export const CarTwinCard: FC<{
                         />
                     </List>
                 </Grid>
-            </>
+            </Grid>
         );
     };
 
     const renderEnergyItems = () => {
         if (!data.energy || data.energy === "ERROR") {
             return (
-                <Alert severity="warning" onClick={handleAuthConnected}>
+                <Alert
+                    severity="warning"
+                    onClick={handleAuthConnected}
+                    sx={{ marginTop: 1 }}
+                >
                     Authenticate Energy
                 </Alert>
             );
@@ -83,8 +88,8 @@ export const CarTwinCard: FC<{
 
     return (
         <Card>
-            <CardContent>
-                <Grid container>{renderConnectedItems()}</Grid>
+            <CardContent style={isLoading ? { filter: "blur(4px)" } : {}}>
+                {renderConnectedItems()}
                 {renderEnergyItems()}
             </CardContent>
         </Card>

@@ -1,62 +1,80 @@
 import { CarTwinResponse } from "@homeremote/types";
 import { Cancel as CancelIcon, Link as LinkIcon } from "@mui/icons-material";
 import { Grid, InputAdornment, TextField, Tooltip } from "@mui/material";
+import { useAppDispatch } from "../../../store";
 import { FC, useEffect, useState } from "react";
 import { useGetCarTwinMutation } from "../../../Services/carTwinApi";
+import { logError } from "../LogCard/logSlice";
 import { CarTwinCard } from "./CarTwinCard";
+import { ERROR } from "./constants";
+
+let updateInterval: ReturnType<typeof setInterval> | undefined = undefined;
+
+const clearUpdateInterval = () => {
+    if (updateInterval) {
+        clearInterval(updateInterval);
+    }
+};
 
 export const CarTwinContainer: FC = () => {
-    // TODO show loading state by setting opacity or blur
+    const [isLoading, setIsLoading] = useState(false);
     const [connectedTokenVal, setConnectedTokenVal] = useState("");
     const [energyTokenVal, setEnergyTokenVal] = useState("");
-    // const [extendedTokenVal, setExtendedTokenVal] = useState("");
-    // TODO rename formArg
-    // const [formArg, setFormArg] = useState<FooArgs | undefined>();
-    // const args: FooArgs | typeof skipToken = formArg ? formArg : skipToken;
     const [getCarTwin] = useGetCarTwinMutation();
     const [result, setResult] = useState<CarTwinResponse | undefined>();
-    const [showConnected, setShowConnected] = useState(false);
-
-    // if (isLoading || isFetching) {
-    //     return <div>loading...</div>;
-    // }
+    const [showTokenForm, setShowTokenForm] = useState(false);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const connectedTokenVal1 =
+        const retrievedConnectedTokenVal =
             localStorage.getItem("connectedTokenVal") ?? "";
-        const energyTokenVal1 = localStorage.getItem("energyTokenVal") ?? "";
+        const retrievedEnergyTokenVal =
+            localStorage.getItem("energyTokenVal") ?? "";
 
-        setConnectedTokenVal(connectedTokenVal1);
-        setEnergyTokenVal(energyTokenVal1);
+        setConnectedTokenVal(retrievedConnectedTokenVal);
+        setEnergyTokenVal(retrievedEnergyTokenVal);
 
         handleRefresh();
 
         // TODO clear interval when unauthenticated
-        const interval = setInterval(() => {
+        updateInterval = setInterval(() => {
             handleRefresh();
         }, 30 * 1000);
 
         return () => {
-            clearInterval(interval);
+            clearUpdateInterval();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const authConnected = () => {
-        setShowConnected(true);
+        setShowTokenForm(true);
     };
 
     const handleRefresh = async () => {
+        console.log("calling handleRefresh");
         try {
+            setIsLoading(true);
             const result = await getCarTwin({
                 connectedToken: localStorage.getItem("connectedTokenVal") ?? "",
                 energyToken: localStorage.getItem("energyTokenVal") ?? "",
             }).unwrap();
-            if (result.connected.odometer) {
-                setShowConnected(false);
+            if (result.connected.odometer !== ERROR) {
+                setShowTokenForm(false);
+            }
+            if (
+                !result.connected.odometer ||
+                result.connected.odometer === ERROR ||
+                !result.energy ||
+                result.energy === ERROR
+            ) {
+                console.log("clear", result);
+                clearUpdateInterval();
             }
             setResult(result);
+            setIsLoading(false);
         } catch (err) {
-            console.log(err);
+            dispatch(logError(err));
         }
     };
 
@@ -70,7 +88,7 @@ export const CarTwinContainer: FC = () => {
 
     return (
         <div>
-            {showConnected && (
+            {showTokenForm && (
                 <Grid container gap={2} alignItems="baseline">
                     <TextField
                         label="Connected Vehicle Token"
@@ -124,15 +142,13 @@ export const CarTwinContainer: FC = () => {
                     </Tooltip>
                 </Grid>
             )}
-
             {result && (
                 <CarTwinCard
+                    isLoading={isLoading}
                     data={result}
                     handleAuthConnected={authConnected}
                 />
             )}
-
-            {/* TODO <pre>{result && JSON.stringify(result, null, 2)}</pre> */}
         </div>
     );
 };
