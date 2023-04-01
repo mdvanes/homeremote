@@ -6,6 +6,9 @@ import {
     PlaylistsResponse,
     SongDirItem,
     SongDirResponse,
+    SubsonicAlbum,
+    SubsonicGetMusicDirectoryResponse,
+    SubsonicGetStarredResponse,
 } from "@homeremote/types";
 import {
     Controller,
@@ -66,6 +69,48 @@ export class JukeboxController {
                 "subsonic-response"
             ].playlists.playlist.map(({ id, name }) => ({ id, name }));
             return { status: "received", playlists };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("starred")
+    async getStarred(): Promise<{
+        status: "received";
+        albums: SubsonicAlbum[];
+    }> {
+        this.logger.verbose("GET to /api/jukebox/starred");
+
+        try {
+            const url = this.getAPI("getStarred");
+            const response: SubsonicGetStarredResponse = await got(url).json();
+            console.log(response["subsonic-response"].starred.album);
+
+            if (response["subsonic-response"].starred.album.length > 0) {
+                const firstAlbum =
+                    response["subsonic-response"].starred.album[0];
+                const songDirUrl = this.getAPI(
+                    "getMusicDirectory",
+                    `&id=${firstAlbum.id}`
+                );
+                const songDirResponse: SubsonicGetMusicDirectoryResponse =
+                    await got(songDirUrl).json();
+                console.log(
+                    songDirResponse["subsonic-response"].directory.child.map(
+                        (album) => album.title
+                    )
+                );
+            }
+
+            return {
+                status: "received",
+                albums: response["subsonic-response"].starred.album,
+            };
         } catch (err) {
             this.logger.error(err);
             throw new HttpException(

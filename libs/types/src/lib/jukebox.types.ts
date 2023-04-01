@@ -7,14 +7,14 @@ export interface SubsonicDirectory {
     isDir: boolean;
     title?: string; // dir name, not album name
     track?: number;
-}
-
-export interface SubsonicAlbum extends SubsonicDirectory {
-    isDir: true;
     genre?: string;
     coverArt?: string;
     playCount?: number;
     created?: IsoDateString;
+}
+
+export interface SubsonicAlbum extends SubsonicDirectory {
+    isDir: true;
     starred?: IsoDateString;
 }
 
@@ -23,8 +23,13 @@ export interface SubsonicSong extends SubsonicDirectory {
     duration: number;
     img?: string;
     parent?: string;
-
-  
+    size?: number;
+    contentType?: "audio/flac" | "audio/mp3";
+    suffix?: string;
+    bitRate?: number;
+    path?: string;
+    albumId?: string;
+    type?: "music";
 }
 
 export interface SubsonicGetStarredResponse {
@@ -47,7 +52,7 @@ export interface SubsonicGetMusicDirectoryResponse {
             name?: string;
             starred?: IsoDateString;
             playCount: number;
-            child: any[];
+            child: Array<SubsonicAlbum | SubsonicSong>;
         };
     };
 }
