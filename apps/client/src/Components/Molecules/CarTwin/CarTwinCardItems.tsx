@@ -47,22 +47,27 @@ export const CarTwinCardItems: FC<{
                         Meta failed: authenticate connected vehicle
                     </Alert>
                 ) : (
-                    <>
-                        <img
-                            alt="car exterior"
-                            src={
-                                vehicleMetadata.images?.exteriorDefaultUrl ?? ""
-                            }
-                            width="200"
-                            style={{
-                                marginLeft: "-20px",
-                                marginTop: "-20px",
-                            }}
-                        />
+                    <Grid container flexDirection="row">
+                        <Grid item>
+                            <img
+                                alt="car exterior"
+                                src={
+                                    vehicleMetadata.images
+                                        ?.exteriorDefaultUrl ?? ""
+                                }
+                                width="200"
+                                style={{
+                                    marginLeft: "-20px",
+                                    marginTop: "-20px",
+                                }}
+                            />
+                        </Grid>
                         {data.energy && data.energy !== ERROR && (
-                            <EnergyListItems energy={data.energy} />
+                            <Grid item>
+                                <EnergyListItems energy={data.energy} />
+                            </Grid>
                         )}
-                    </>
+                    </Grid>
                 )}
             </Grid>
             <Grid item alignItems="flex-end">
