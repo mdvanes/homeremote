@@ -75,9 +75,10 @@ export class JukeboxController {
             const response = await got(url).json();
             const playlists = response[
                 "subsonic-response"
-            ].playlists.playlist.map(({ id, name }) => ({
+            ].playlists.playlist.map(({ id, name, coverArt }) => ({
                 id,
                 name,
+                coverArt,
                 type: "playlist",
             }));
 
@@ -87,9 +88,9 @@ export class JukeboxController {
             ).json();
             const starredAlbums: IPlaylist[] = starredResponse[
                 "subsonic-response"
-            ].starred.album.map(({ id, title, coverArt }) => ({
+            ].starred.album.map(({ id, album, coverArt }) => ({
                 id,
-                name: title,
+                name: album,
                 coverArt,
                 type: "album",
             }));
@@ -150,10 +151,11 @@ export class JukeboxController {
                     "subsonic-response"
                 ].directory.child
                     .filter(isSubsonicSong)
-                    .map(({ id, artist, title, duration }) => {
+                    .map(({ id, title, duration, track }) => {
                         return {
                             id,
-                            artist,
+                            /* NOTE: if album, show tracknr instead of song.artist */
+                            artist: `${track}`,
                             title,
                             duration,
                         };
@@ -259,8 +261,8 @@ export class JukeboxController {
 
     @Get("coverart/:id")
     async getCoverArt(
-        @Param("id") id: string,
-        @Query("hash") hash: string
+        @Param("id") id: string
+        // @Query("hash") hash: string
     ): Promise<StreamableFile> {
         this.logger.verbose("GET to /api/jukebox/coverart/:id");
         // const getSongUrl = this.getAPI("getCoverArt", `&id=${id}`);
