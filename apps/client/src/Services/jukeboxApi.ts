@@ -15,14 +15,14 @@ export const jukeboxApi = createApi({
         baseUrl: `${process.env.NX_BASE_URL}/api/jukebox`,
         credentials: willAddCredentials(),
     }),
-    tagTypes: ["Playlists", "Songs", "Songdir"],
+    tagTypes: ["Playlists", "Songs", "Songdir", "Starred"],
     endpoints: (builder) => ({
         getPlaylists: builder.query<PlaylistsResponse, undefined>({
             query: () => "/playlists",
             providesTags: ["Playlists"],
         }),
         getPlaylist: builder.query<PlaylistResponse, PlaylistArgs>({
-            query: ({ id }) => `/playlist/${id}`,
+            query: ({ id, type }) => `/playlist/${id}?type=${type}`,
             providesTags: ["Songs"],
         }),
         getSongDir: builder.query<SongDirResponse, undefined>({

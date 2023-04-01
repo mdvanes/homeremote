@@ -1,6 +1,7 @@
 import {
     AddSongArg,
     AddSongResponse,
+    IPlaylist,
     ISong,
     PlaylistResponse,
     PlaylistsResponse,
@@ -9,6 +10,7 @@ import {
     SubsonicAlbum,
     SubsonicGetMusicDirectoryResponse,
     SubsonicGetStarredResponse,
+    SubsonicSong,
 } from "@homeremote/types";
 import {
     Controller,
@@ -29,6 +31,12 @@ import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 const PLAYER_NAME = "HomeRemoteJukebox";
+
+const isSubsonicSong = (
+    item: SubsonicAlbum | SubsonicSong
+): item is SubsonicSong => {
+    return !item.isDir;
+};
 
 @Controller("api/jukebox")
 export class JukeboxController {
@@ -67,8 +75,28 @@ export class JukeboxController {
             const response = await got(url).json();
             const playlists = response[
                 "subsonic-response"
-            ].playlists.playlist.map(({ id, name }) => ({ id, name }));
-            return { status: "received", playlists };
+            ].playlists.playlist.map(({ id, name }) => ({
+                id,
+                name,
+                type: "playlist",
+            }));
+
+            const starredUrl = this.getAPI("getStarred");
+            const starredResponse: SubsonicGetStarredResponse = await got(
+                starredUrl
+            ).json();
+            const starredAlbums: IPlaylist[] = starredResponse[
+                "subsonic-response"
+            ].starred.album.map(({ id, title }) => ({
+                id,
+                name: title,
+                type: "album",
+            }));
+
+            return {
+                status: "received",
+                playlists: [...playlists, ...starredAlbums],
+            };
         } catch (err) {
             this.logger.error(err);
             throw new HttpException(
@@ -89,23 +117,6 @@ export class JukeboxController {
         try {
             const url = this.getAPI("getStarred");
             const response: SubsonicGetStarredResponse = await got(url).json();
-            console.log(response["subsonic-response"].starred.album);
-
-            if (response["subsonic-response"].starred.album.length > 0) {
-                const firstAlbum =
-                    response["subsonic-response"].starred.album[0];
-                const songDirUrl = this.getAPI(
-                    "getMusicDirectory",
-                    `&id=${firstAlbum.id}`
-                );
-                const songDirResponse: SubsonicGetMusicDirectoryResponse =
-                    await got(songDirUrl).json();
-                console.log(
-                    songDirResponse["subsonic-response"].directory.child.map(
-                        (album) => album.title
-                    )
-                );
-            }
 
             return {
                 status: "received",
@@ -122,10 +133,33 @@ export class JukeboxController {
 
     @UseGuards(JwtAuthGuard)
     @Get("playlist/:id")
-    async getPlaylist(@Param("id") id: string): Promise<PlaylistResponse> {
+    async getPlaylist(
+        @Param("id") id: string,
+        @Query("type") type: string
+    ): Promise<PlaylistResponse> {
         this.logger.verbose("GET to /api/jukebox/playlist/:id");
 
         try {
+            if (type === "album") {
+                const url = this.getAPI("getMusicDirectory", `&id=${id}`);
+                const response: SubsonicGetMusicDirectoryResponse = await got(
+                    url
+                ).json();
+                const songs: ISong[] = response[
+                    "subsonic-response"
+                ].directory.child
+                    .filter(isSubsonicSong)
+                    .map(({ id, artist, title, duration }) => {
+                        return {
+                            id,
+                            artist,
+                            title,
+                            duration,
+                        };
+                    });
+                return { status: "received", songs };
+            }
+
             const url = this.getAPI("getPlaylist", `&id=${id}`);
             const response = await got(url).json();
             const playlist = response["subsonic-response"].playlist;
@@ -142,6 +176,39 @@ export class JukeboxController {
                           }
                       )
                     : [];
+
+            return { status: "received", songs };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("musicdir/:id")
+    async getMusicDirectory(
+        @Param("id") id: string
+    ): Promise<PlaylistResponse> {
+        this.logger.verbose("GET to /api/jukebox/musicdir/:id");
+
+        try {
+            const url = this.getAPI("getMusicDirectory", `&id=${id}`);
+            const response: SubsonicGetMusicDirectoryResponse = await got(
+                url
+            ).json();
+            const songs: ISong[] = response["subsonic-response"].directory.child
+                .filter(isSubsonicSong)
+                .map(({ id, artist, title, duration }) => {
+                    return {
+                        id,
+                        artist,
+                        title,
+                        duration,
+                    };
+                });
 
             return { status: "received", songs };
         } catch (err) {

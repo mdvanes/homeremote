@@ -8,15 +8,13 @@ import {
     Typography,
 } from "@mui/material";
 import { FC, useEffect, useRef, useState } from "react";
-import {
-    useGetPlaylistsQuery,
-    useGetStarredQuery,
-} from "../../../Services/jukeboxApi";
+import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import JukeboxPlayer, { LAST_PLAYLIST_ID } from "./JukeboxPlayer";
 import JukeboxSongList from "./JukeboxSongList";
 import { useLocalStorage } from "./useLocalStorage";
+import { Star as StarIcon } from "@mui/icons-material";
 
 const Jukebox: FC = () => {
     const { setJukeboxElem } = useHotKeyContext();
@@ -25,8 +23,6 @@ const Jukebox: FC = () => {
     const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist>();
     const [currentSong, setCurrentSong] = useState<ISong>();
     const { data, isLoading, isFetching } = useGetPlaylistsQuery(undefined);
-    const { data: data1 } = useGetStarredQuery(undefined);
-    console.log(data1?.albums);
     useLocalStorage({ setCurrentPlaylist, setCurrentSong });
 
     useEffect(() => {
@@ -60,7 +56,7 @@ const Jukebox: FC = () => {
                         {!currentPlaylist && (
                             <List>
                                 {data.playlists.map((playlist) => {
-                                    const { id, name } = playlist;
+                                    const { id, name, type } = playlist;
                                     return (
                                         <ListItemButton
                                             key={id}
@@ -72,7 +68,12 @@ const Jukebox: FC = () => {
                                                 );
                                             }}
                                         >
-                                            <ListItemText>{name}</ListItemText>
+                                            <ListItemText>
+                                                {type === "album" && (
+                                                    <StarIcon fontSize="small" />
+                                                )}{" "}
+                                                {name}
+                                            </ListItemText>
                                         </ListItemButton>
                                     );
                                 })}

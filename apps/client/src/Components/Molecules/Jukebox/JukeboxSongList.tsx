@@ -2,6 +2,7 @@ import { IPlaylist, ISong, PlaylistArgs } from "@homeremote/types";
 import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
 import {
     List,
+    ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
@@ -25,7 +26,7 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
     audioElemRef,
 }) => {
     const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylist?.id
-        ? { id: currentPlaylist.id }
+        ? { id: currentPlaylist.id, type: currentPlaylist.type }
         : skipToken;
     const {
         data: playlist,
@@ -33,8 +34,30 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
         isFetching,
     } = useGetPlaylistQuery(playlistArgs);
 
-    if (playlist?.status !== "received" || !currentPlaylist?.id) {
+    const backButton = (
+        <ListItemButton
+            onClick={() => {
+                setCurrentPlaylist(undefined);
+            }}
+        >
+            <ListItemIcon>
+                <ArrowBackIcon />
+            </ListItemIcon>
+            <ListItemText>back</ListItemText>
+        </ListItemButton>
+    );
+
+    if (!currentPlaylist?.id) {
         return null;
+    }
+
+    if (playlist?.status !== "received") {
+        return (
+            <List>
+                {backButton}
+                <ListItem>empty</ListItem>
+            </List>
+        );
     }
 
     if (isLoading && isFetching) {
@@ -53,7 +76,7 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
                 </ListItemIcon>
                 <ListItemText>back</ListItemText>
             </ListItemButton>
-            {playlist.songs.map((song) => (
+            {playlist?.songs.map((song) => (
                 <ListItemButton
                     key={song.id}
                     onClick={() => {

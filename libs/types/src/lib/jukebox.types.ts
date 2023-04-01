@@ -60,6 +60,7 @@ export interface SubsonicGetMusicDirectoryResponse {
 export interface IPlaylist {
     id: string;
     name: string;
+    type?: "playlist" | "album";
 }
 
 export interface ISong {
@@ -88,7 +89,7 @@ export type PlaylistResponse =
           status: "error";
       };
 
-export type PlaylistArgs = { id: string };
+export type PlaylistArgs = { id: string; type?: "playlist" | "album" };
 
 export interface SongDirItem {
     id: string;
