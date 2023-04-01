@@ -18,29 +18,6 @@ import Docker from "../Docker/Docker";
 import AppsIcon from "@mui/icons-material/Apps";
 import { CarTwinCard } from "../../Molecules/CarTwin/CarTwinCard";
 
-interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            style={{ marginBottom: 20 }}
-            {...other}
-        >
-            {value === index && children}
-        </div>
-    );
-}
-
 const useStyles = makeStyles()((theme) => ({
     container: {
         "& .card-dashboard-height": {
@@ -56,33 +33,6 @@ const useStyles = makeStyles()((theme) => ({
     },
 }));
 
-const DashboardStreamTabs = () => {
-    const [activeTab, setActiveTab] = useState(0);
-
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setActiveTab(newValue);
-    };
-
-    return (
-        <>
-            <Tabs value={activeTab} onChange={handleChange}>
-                <Tab label="radio" />
-                <Tab label="jukebox" />
-                <Tab label="video" />
-            </Tabs>
-            <TabPanel value={activeTab} index={0}>
-                <StreamContainer />
-            </TabPanel>
-            <TabPanel value={activeTab} index={1}>
-                <Jukebox />
-            </TabPanel>
-            <TabPanel value={activeTab} index={2}>
-                <VideoStream />
-            </TabPanel>
-        </>
-    );
-};
-
 const Dashboard: FC = () => {
     const { classes } = useStyles();
     const [isLiteMode, setIsLiteMode] = useState(false);
@@ -95,12 +45,13 @@ const Dashboard: FC = () => {
                 </div>
                 <GasChart />
                 <UrlToMusic />
+                <LogCard />
             </Grid>
             <Grid item xs={12} md>
-                <DashboardStreamTabs />
+                <StreamContainer />
+                <Jukebox />
+                <VideoStream />
                 <DataLora />
-                <Docker />
-                <LogCard />
                 <IconButton
                     color="primary"
                     onClick={() => {
@@ -113,10 +64,10 @@ const Dashboard: FC = () => {
             </Grid>
             <Grid item xs={12} md={5}>
                 <ServiceLinksBar />
+                <Docker />
                 {!isLiteMode && <Schedule />}
                 {!isLiteMode && <DownloadList />}
                 <Nextup />
-                {!isLiteMode && <CarTwinCard />}
                 <Monit />
             </Grid>
         </Grid>
