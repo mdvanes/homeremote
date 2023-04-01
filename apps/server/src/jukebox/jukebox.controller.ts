@@ -87,9 +87,10 @@ export class JukeboxController {
             ).json();
             const starredAlbums: IPlaylist[] = starredResponse[
                 "subsonic-response"
-            ].starred.album.map(({ id, title }) => ({
+            ].starred.album.map(({ id, title, coverArt }) => ({
                 id,
                 name: title,
+                coverArt,
                 type: "album",
             }));
 
@@ -245,6 +246,41 @@ export class JukeboxController {
 
             // const coverArtResponse = await got(getCoverArtUrl).text();
             const streamUrl = this.getAPI("stream", `&id=${id}`);
+            const str = got.stream(streamUrl);
+            return new StreamableFile(str);
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @Get("coverart/:id")
+    async getCoverArt(
+        @Param("id") id: string,
+        @Query("hash") hash: string
+    ): Promise<StreamableFile> {
+        this.logger.verbose("GET to /api/jukebox/coverart/:id");
+        // const getSongUrl = this.getAPI("getCoverArt", `&id=${id}`);
+
+        try {
+            // const songResponse = await got(getSongUrl).json();
+
+            // TODO - NOTE: when getting stream, validate the song id and the artist+title hash
+            // const { artist, title } = songResponse["subsonic-response"]
+            //     .song as ISong;
+            // const artistTitle = `${artist} - ${title}`;
+            // const retrievedHash = btoa(artistTitle);
+
+            // if (hash !== retrievedHash) {
+            //     this.logger.error("hashes do not match");
+            //     throw new NotFoundException(HttpStatus.NOT_FOUND);
+            // }
+
+            // const coverArtResponse = await got(getCoverArtUrl).text();
+            const streamUrl = this.getAPI("getCoverArt", `&id=${id}`);
             const str = got.stream(streamUrl);
             return new StreamableFile(str);
         } catch (err) {

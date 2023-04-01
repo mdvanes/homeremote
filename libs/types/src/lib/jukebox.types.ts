@@ -61,6 +61,7 @@ export interface IPlaylist {
     id: string;
     name: string;
     type?: "playlist" | "album";
+    coverArt?: string;
 }
 
 export interface ISong {

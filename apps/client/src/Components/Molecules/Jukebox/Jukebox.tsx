@@ -1,8 +1,11 @@
 import { IPlaylist, ISong } from "@homeremote/types";
 import {
+    Avatar,
     Card,
     CardContent,
     List,
+    ListItem,
+    ListItemAvatar,
     ListItemButton,
     ListItemText,
     Typography,
@@ -56,25 +59,40 @@ const Jukebox: FC = () => {
                         {!currentPlaylist && (
                             <List>
                                 {data.playlists.map((playlist) => {
-                                    const { id, name, type } = playlist;
+                                    const { id, name, type, coverArt } =
+                                        playlist;
                                     return (
-                                        <ListItemButton
+                                        <ListItem
                                             key={id}
-                                            onClick={() => {
-                                                setCurrentPlaylist(playlist);
-                                                localStorage.setItem(
-                                                    LAST_PLAYLIST,
-                                                    JSON.stringify(playlist)
-                                                );
-                                            }}
+                                            disableGutters
+                                            disablePadding
                                         >
-                                            <ListItemText>
-                                                {type === "album" && (
-                                                    <StarIcon fontSize="small" />
-                                                )}{" "}
-                                                {name}
-                                            </ListItemText>
-                                        </ListItemButton>
+                                            <ListItemButton
+                                                onClick={() => {
+                                                    setCurrentPlaylist(
+                                                        playlist
+                                                    );
+                                                    localStorage.setItem(
+                                                        LAST_PLAYLIST,
+                                                        JSON.stringify(playlist)
+                                                    );
+                                                }}
+                                            >
+                                                {coverArt && (
+                                                    <ListItemAvatar>
+                                                        <Avatar
+                                                            src={`${process.env.NX_BASE_URL}/api/jukebox/coverart/${coverArt}?hash=123`}
+                                                        />
+                                                    </ListItemAvatar>
+                                                )}
+                                                <ListItemText primary={name} />
+                                                <div>
+                                                    {type === "album" && (
+                                                        <StarIcon fontSize="small" />
+                                                    )}
+                                                </div>
+                                            </ListItemButton>
+                                        </ListItem>
                                     );
                                 })}
                             </List>

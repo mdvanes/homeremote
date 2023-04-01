@@ -126,7 +126,6 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                 <HotKeyCoach />
 
                 <AddSongToPlaylistButton />
-
             </Stack>
         </div>
     );
