@@ -1,6 +1,6 @@
 import { IPlaylist, ISong } from "@homeremote/types";
 import { useEffect } from "react";
-import { LAST_PLAYLIST_ID, LAST_SONG } from "./JukeboxPlayer";
+import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
 import { useDispatch } from "react-redux";
 import { logError } from "../LogCard/logSlice";
 
@@ -33,9 +33,10 @@ export const useLocalStorage = ({
 
     useEffect(() => {
         try {
-            const lastPlaylistId = localStorage.getItem(LAST_PLAYLIST_ID);
-            if (lastPlaylistId) {
-                setCurrentPlaylist({ id: lastPlaylistId, name: "" });
+            const lastPlaylistStr = localStorage.getItem(LAST_PLAYLIST);
+            if (lastPlaylistStr) {
+                const lastPlaylist: IPlaylist = JSON.parse(lastPlaylistStr);
+                setCurrentPlaylist(lastPlaylist);
             }
         } catch (err) {
             dispatch(

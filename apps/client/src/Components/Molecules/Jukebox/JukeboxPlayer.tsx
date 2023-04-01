@@ -24,7 +24,7 @@ interface IJukeboxPlayerProps {
     setCurrentSong: (song: ISong) => void;
 }
 
-export const LAST_PLAYLIST_ID = "LAST_PLAYLIST_ID";
+export const LAST_PLAYLIST = "LAST_PLAYLIST";
 export const LAST_SONG = "LAST_SONG";
 
 const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
@@ -126,6 +126,7 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                 <HotKeyCoach />
 
                 <AddSongToPlaylistButton />
+
             </Stack>
         </div>
     );

@@ -11,7 +11,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import JukeboxPlayer, { LAST_PLAYLIST_ID } from "./JukeboxPlayer";
+import JukeboxPlayer, { LAST_PLAYLIST } from "./JukeboxPlayer";
 import JukeboxSongList from "./JukeboxSongList";
 import { useLocalStorage } from "./useLocalStorage";
 import { Star as StarIcon } from "@mui/icons-material";
@@ -63,8 +63,8 @@ const Jukebox: FC = () => {
                                             onClick={() => {
                                                 setCurrentPlaylist(playlist);
                                                 localStorage.setItem(
-                                                    LAST_PLAYLIST_ID,
-                                                    id
+                                                    LAST_PLAYLIST,
+                                                    JSON.stringify(playlist)
                                                 );
                                             }}
                                         >
