@@ -1,4 +1,4 @@
-import { ISong, PlaylistArgs } from "@homeremote/types";
+import { IPlaylist, ISong, PlaylistArgs } from "@homeremote/types";
 import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
 import {
     List,
@@ -12,20 +12,20 @@ import { useGetPlaylistQuery } from "../../../Services/jukeboxApi";
 import { LAST_SONG } from "./JukeboxPlayer";
 
 interface IJukeboxSongListProps {
-    currentPlaylistId: string | undefined;
-    setCurrentPlaylistId: (playlistId: string | undefined) => void;
+    currentPlaylist: IPlaylist | undefined;
+    setCurrentPlaylist: (playlist: IPlaylist | undefined) => void;
     setCurrentSong: (song: ISong) => void;
     audioElemRef: RefObject<HTMLAudioElement>;
 }
 
 const JukeboxSongList: FC<IJukeboxSongListProps> = ({
-    currentPlaylistId,
-    setCurrentPlaylistId,
+    currentPlaylist,
+    setCurrentPlaylist,
     setCurrentSong,
     audioElemRef,
 }) => {
-    const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
-        ? { id: currentPlaylistId }
+    const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylist?.id
+        ? { id: currentPlaylist.id }
         : skipToken;
     const {
         data: playlist,
@@ -33,7 +33,7 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
         isFetching,
     } = useGetPlaylistQuery(playlistArgs);
 
-    if (playlist?.status !== "received" || !currentPlaylistId) {
+    if (playlist?.status !== "received" || !currentPlaylist?.id) {
         return null;
     }
 
@@ -45,7 +45,7 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
         <List>
             <ListItemButton
                 onClick={() => {
-                    setCurrentPlaylistId(undefined);
+                    setCurrentPlaylist(undefined);
                 }}
             >
                 <ListItemIcon>
