@@ -1,8 +1,11 @@
-import { ISong } from "@homeremote/types";
+import { IPlaylist, ISong } from "@homeremote/types";
 import {
+    Avatar,
     Card,
     CardContent,
     List,
+    ListItem,
+    ListItemAvatar,
     ListItemButton,
     ListItemText,
     Typography,
@@ -11,18 +14,19 @@ import { FC, useEffect, useRef, useState } from "react";
 import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import JukeboxPlayer, { LAST_PLAYLIST_ID } from "./JukeboxPlayer";
+import JukeboxPlayer, { LAST_PLAYLIST } from "./JukeboxPlayer";
 import JukeboxSongList from "./JukeboxSongList";
 import { useLocalStorage } from "./useLocalStorage";
+import { Star as StarIcon } from "@mui/icons-material";
 
 const Jukebox: FC = () => {
     const { setJukeboxElem } = useHotKeyContext();
     const audioElemRef = useRef<HTMLAudioElement>(null);
     const [isOpen, setIsOpen] = useState(false);
-    const [currentPlaylistId, setCurrentPlaylistId] = useState<string>();
+    const [currentPlaylist, setCurrentPlaylist] = useState<IPlaylist>();
     const [currentSong, setCurrentSong] = useState<ISong>();
     const { data, isLoading, isFetching } = useGetPlaylistsQuery(undefined);
-    useLocalStorage({ setCurrentPlaylistId, setCurrentSong });
+    useLocalStorage({ setCurrentPlaylist, setCurrentSong });
 
     useEffect(() => {
         setJukeboxElem(audioElemRef);
@@ -42,7 +46,7 @@ const Jukebox: FC = () => {
                 {currentSong ? (
                     <JukeboxPlayer
                         audioElemRef={audioElemRef}
-                        playlistId={currentPlaylistId}
+                        playlistId={currentPlaylist?.id}
                         song={currentSong}
                         setCurrentSong={setCurrentSong}
                     />
@@ -52,29 +56,52 @@ const Jukebox: FC = () => {
 
                 {isOpen && (
                     <>
-                        {!currentPlaylistId && (
+                        {!currentPlaylist && (
                             <List>
-                                {data.playlists.map(({ id, name }) => (
-                                    <ListItemButton
-                                        key={id}
-                                        onClick={() => {
-                                            setCurrentPlaylistId(id);
-                                            localStorage.setItem(
-                                                LAST_PLAYLIST_ID,
-                                                id
-                                            );
-                                        }}
-                                    >
-                                        <ListItemText>{name}</ListItemText>
-                                    </ListItemButton>
-                                ))}
+                                {data.playlists.map((playlist) => {
+                                    const { id, name, type, coverArt } =
+                                        playlist;
+                                    return (
+                                        <ListItem
+                                            key={id}
+                                            disableGutters
+                                            disablePadding
+                                        >
+                                            <ListItemButton
+                                                onClick={() => {
+                                                    setCurrentPlaylist(
+                                                        playlist
+                                                    );
+                                                    localStorage.setItem(
+                                                        LAST_PLAYLIST,
+                                                        JSON.stringify(playlist)
+                                                    );
+                                                }}
+                                            >
+                                                {coverArt && (
+                                                    <ListItemAvatar>
+                                                        <Avatar
+                                                            src={`${process.env.NX_BASE_URL}/api/jukebox/coverart/${coverArt}?hash=123`}
+                                                        />
+                                                    </ListItemAvatar>
+                                                )}
+                                                <ListItemText primary={name} />
+                                                <div>
+                                                    {type === "album" && (
+                                                        <StarIcon fontSize="small" />
+                                                    )}
+                                                </div>
+                                            </ListItemButton>
+                                        </ListItem>
+                                    );
+                                })}
                             </List>
                         )}
 
                         <JukeboxSongList
                             audioElemRef={audioElemRef}
-                            currentPlaylistId={currentPlaylistId}
-                            setCurrentPlaylistId={setCurrentPlaylistId}
+                            currentPlaylist={currentPlaylist}
+                            setCurrentPlaylist={setCurrentPlaylist}
                             setCurrentSong={setCurrentSong}
                         />
                     </>

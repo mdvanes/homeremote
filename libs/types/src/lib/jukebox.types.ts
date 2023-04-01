@@ -1,6 +1,67 @@
+type IsoDateString = string; // '2023-01-28T11:29:06.000Z',
+
+export interface SubsonicDirectory {
+    id: string;
+    artist: string;
+    album?: string;
+    isDir: boolean;
+    title?: string; // dir name, not album name
+    track?: number;
+    genre?: string;
+    coverArt?: string;
+    playCount?: number;
+    created?: IsoDateString;
+}
+
+export interface SubsonicAlbum extends SubsonicDirectory {
+    isDir: true;
+    starred?: IsoDateString;
+}
+
+export interface SubsonicSong extends SubsonicDirectory {
+    isDir: false;
+    duration: number;
+    img?: string;
+    parent?: string;
+    size?: number;
+    contentType?: "audio/flac" | "audio/mp3";
+    suffix?: string;
+    bitRate?: number;
+    path?: string;
+    albumId?: string;
+    type?: "music";
+}
+
+export interface SubsonicGetStarredResponse {
+    "subsonic-response"?: {
+        status: "ok";
+        version: string;
+        starred?: {
+            artist?: SubsonicSong[];
+            album?: SubsonicAlbum[];
+        };
+    };
+}
+
+export interface SubsonicGetMusicDirectoryResponse {
+    "subsonic-response"?: {
+        status: "ok";
+        version: string;
+        directory?: {
+            id?: string;
+            name?: string;
+            starred?: IsoDateString;
+            playCount: number;
+            child: Array<SubsonicAlbum | SubsonicSong>;
+        };
+    };
+}
+
 export interface IPlaylist {
     id: string;
     name: string;
+    type?: "playlist" | "album";
+    coverArt?: string;
 }
 
 export interface ISong {
@@ -29,7 +90,7 @@ export type PlaylistResponse =
           status: "error";
       };
 
-export type PlaylistArgs = { id: string };
+export type PlaylistArgs = { id: string; type?: "playlist" | "album" };
 
 export interface SongDirItem {
     id: string;

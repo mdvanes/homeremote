@@ -35,6 +35,13 @@ export const PreviouslyPlayedCard: FC = () => {
                 lineHeight: "3px",
             }}
         >
+            <IconButton
+                aria-label="up"
+                size="small"
+                onClick={() => setIsOpen(false)}
+            >
+                <ArrowDropUp />
+            </IconButton>
             <LoadingDot isLoading={isLoading || isFetching} />
             {data?.map((track) => {
                 const primary = `${track.artist} - ${track.title}`;
@@ -71,13 +78,6 @@ export const PreviouslyPlayedCard: FC = () => {
                     </ListItem>
                 );
             })}
-            <IconButton
-                aria-label="up"
-                size="small"
-                onClick={() => setIsOpen(false)}
-            >
-                <ArrowDropUp />
-            </IconButton>
         </List>
     ) : (
         <IconButton

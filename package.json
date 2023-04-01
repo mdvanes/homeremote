@@ -1,6 +1,6 @@
 {
     "name": "homeremote",
-    "version": "3.3.17",
+    "version": "3.4.0",
     "license": "MIT",
     "scripts": {
         "writeGitInfo": "ts-node --project ./tsconfig.node.json writeGitInfo.ts",
@@ -35,7 +35,7 @@
         "@emotion/styled": "11.10.4",
         "@influxdata/influxdb-client": "^1.21.0",
         "@mdworld/homeremote-stream-player-server": "^1.9.0",
-        "@mdworld/radio-metadata": "^1.2.0",
+        "@mdworld/radio-metadata": "^1.4.0",
         "@mui/icons-material": "^5.10.6",
         "@mui/lab": "^5.0.0-alpha.102",
         "@mui/material": "^5.10.8",

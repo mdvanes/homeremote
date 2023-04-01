@@ -1,7 +1,8 @@
+import AppsIcon from "@mui/icons-material/Apps";
 import { Grid, IconButton } from "@mui/material";
 import { FC, useState } from "react";
 import { makeStyles } from "tss-react/mui";
-import DataLora from "../../Molecules/DataLora/DataLora";
+import { CarTabs } from "../../Molecules/CarTabs/CarTabs";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import GasChart from "../../Molecules/GasChart/GasChart";
 import Jukebox from "../../Molecules/Jukebox/Jukebox";
@@ -15,7 +16,6 @@ import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Docker from "../Docker/Docker";
-import AppsIcon from "@mui/icons-material/Apps";
 
 const useStyles = makeStyles()((theme) => ({
     container: {
@@ -35,6 +35,7 @@ const useStyles = makeStyles()((theme) => ({
 const Dashboard: FC = () => {
     const { classes } = useStyles();
     const [isLiteMode, setIsLiteMode] = useState(false);
+
     return (
         <Grid container spacing={2} className={classes.container}>
             <Grid item xs={12} md={3}>
@@ -49,7 +50,7 @@ const Dashboard: FC = () => {
                 <StreamContainer />
                 <Jukebox />
                 <VideoStream />
-                <DataLora />
+                <CarTabs />
                 <IconButton
                     color="primary"
                     onClick={() => {

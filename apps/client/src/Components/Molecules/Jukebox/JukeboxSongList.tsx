@@ -1,7 +1,8 @@
-import { ISong, PlaylistArgs } from "@homeremote/types";
+import { IPlaylist, ISong, PlaylistArgs } from "@homeremote/types";
 import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
 import {
     List,
+    ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
@@ -12,20 +13,20 @@ import { useGetPlaylistQuery } from "../../../Services/jukeboxApi";
 import { LAST_SONG } from "./JukeboxPlayer";
 
 interface IJukeboxSongListProps {
-    currentPlaylistId: string | undefined;
-    setCurrentPlaylistId: (playlistId: string | undefined) => void;
+    currentPlaylist: IPlaylist | undefined;
+    setCurrentPlaylist: (playlist: IPlaylist | undefined) => void;
     setCurrentSong: (song: ISong) => void;
     audioElemRef: RefObject<HTMLAudioElement>;
 }
 
 const JukeboxSongList: FC<IJukeboxSongListProps> = ({
-    currentPlaylistId,
-    setCurrentPlaylistId,
+    currentPlaylist,
+    setCurrentPlaylist,
     setCurrentSong,
     audioElemRef,
 }) => {
-    const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylistId
-        ? { id: currentPlaylistId }
+    const playlistArgs: PlaylistArgs | typeof skipToken = currentPlaylist?.id
+        ? { id: currentPlaylist.id, type: currentPlaylist.type }
         : skipToken;
     const {
         data: playlist,
@@ -33,8 +34,30 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
         isFetching,
     } = useGetPlaylistQuery(playlistArgs);
 
-    if (playlist?.status !== "received" || !currentPlaylistId) {
+    const backButton = (
+        <ListItemButton
+            onClick={() => {
+                setCurrentPlaylist(undefined);
+            }}
+        >
+            <ListItemIcon>
+                <ArrowBackIcon />
+            </ListItemIcon>
+            <ListItemText>back</ListItemText>
+        </ListItemButton>
+    );
+
+    if (!currentPlaylist?.id) {
         return null;
+    }
+
+    if (playlist?.status !== "received") {
+        return (
+            <List>
+                {backButton}
+                <ListItem>empty</ListItem>
+            </List>
+        );
     }
 
     if (isLoading && isFetching) {
@@ -45,7 +68,7 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
         <List>
             <ListItemButton
                 onClick={() => {
-                    setCurrentPlaylistId(undefined);
+                    setCurrentPlaylist(undefined);
                 }}
             >
                 <ListItemIcon>
@@ -53,7 +76,7 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
                 </ListItemIcon>
                 <ListItemText>back</ListItemText>
             </ListItemButton>
-            {playlist.songs.map((song) => (
+            {playlist?.songs.map((song) => (
                 <ListItemButton
                     key={song.id}
                     onClick={() => {
