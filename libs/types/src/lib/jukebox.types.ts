@@ -1,3 +1,57 @@
+type IsoDateString = string; // '2023-01-28T11:29:06.000Z',
+
+export interface SubsonicDirectory {
+    id: string;
+    artist: string;
+    album?: string;
+    isDir: boolean;
+    title?: string; // dir name, not album name
+    track?: number;
+}
+
+export interface SubsonicAlbum extends SubsonicDirectory {
+    isDir: true;
+    genre?: string;
+    coverArt?: string;
+    playCount?: number;
+    created?: IsoDateString;
+    starred?: IsoDateString;
+}
+
+export interface SubsonicSong extends SubsonicDirectory {
+    isDir: false;
+    duration: number;
+    img?: string;
+    parent?: string;
+
+  
+}
+
+export interface SubsonicGetStarredResponse {
+    "subsonic-response"?: {
+        status: "ok";
+        version: string;
+        starred?: {
+            artist?: SubsonicSong[];
+            album?: SubsonicAlbum[];
+        };
+    };
+}
+
+export interface SubsonicGetMusicDirectoryResponse {
+    "subsonic-response"?: {
+        status: "ok";
+        version: string;
+        directory?: {
+            id?: string;
+            name?: string;
+            starred?: IsoDateString;
+            playCount: number;
+            child: any[];
+        };
+    };
+}
+
 export interface IPlaylist {
     id: string;
     name: string;
