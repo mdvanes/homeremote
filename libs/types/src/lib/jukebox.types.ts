@@ -70,6 +70,7 @@ export interface ISong {
     title: string;
     duration: number;
     album?: string;
+    track?: number;
 }
 
 export type PlaylistsResponse =
