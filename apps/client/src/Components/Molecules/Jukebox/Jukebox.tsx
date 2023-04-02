@@ -59,8 +59,7 @@ const Jukebox: FC = () => {
                         {!currentPlaylist && (
                             <List>
                                 {data.playlists.map((playlist) => {
-                                    const { id, name, type, coverArt } =
-                                        playlist;
+                                    const { id, name, type } = playlist;
                                     return (
                                         <ListItem
                                             key={id}
@@ -78,13 +77,16 @@ const Jukebox: FC = () => {
                                                     );
                                                 }}
                                             >
-                                                {coverArt && (
-                                                    <ListItemAvatar>
-                                                        <Avatar
-                                                            src={`${process.env.NX_BASE_URL}/api/jukebox/coverart/${coverArt}?hash=123`}
-                                                        />
-                                                    </ListItemAvatar>
-                                                )}
+                                                <ListItemAvatar>
+                                                    <Avatar
+                                                        src={`${
+                                                            process.env
+                                                                .NX_BASE_URL
+                                                        }/api/jukebox/coverart/${id}?type=${type}&hash=${encodeURIComponent(
+                                                            name
+                                                        )}`}
+                                                    />
+                                                </ListItemAvatar>
                                                 <ListItemText primary={name} />
                                                 <div>
                                                     {type === "album" && (

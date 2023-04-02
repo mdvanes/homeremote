@@ -88,9 +88,9 @@ export class JukeboxController {
             ).json();
             const starredAlbums: IPlaylist[] = starredResponse[
                 "subsonic-response"
-            ].starred.album.map(({ id, album, coverArt }) => ({
+            ].starred.album.map(({ id, title, coverArt }) => ({
                 id,
-                name: album,
+                name: title,
                 coverArt,
                 type: "album",
             }));
@@ -139,7 +139,7 @@ export class JukeboxController {
         @Param("id") id: string,
         @Query("type") type: string
     ): Promise<PlaylistResponse> {
-        this.logger.verbose("GET to /api/jukebox/playlist/:id");
+        this.logger.verbose(`GET to /api/jukebox/playlist/:id ${id} ${type}`);
 
         try {
             if (type === "album") {
@@ -151,11 +151,11 @@ export class JukeboxController {
                     "subsonic-response"
                 ].directory.child
                     .filter(isSubsonicSong)
-                    .map(({ id, title, duration, track }) => {
+                    .map(({ id, artist, title, duration, track }) => {
                         return {
                             id,
-                            /* NOTE: if album, show tracknr instead of song.artist */
-                            artist: `${track}`,
+                            artist,
+                            track,
                             title,
                             duration,
                         };
@@ -167,7 +167,7 @@ export class JukeboxController {
             const response = await got(url).json();
             const playlist = response["subsonic-response"].playlist;
             const songs =
-                playlist.entry && playlist.entry.length > 0
+                playlist?.entry && playlist.entry.length > 0
                     ? (playlist.entry as ISong[]).map(
                           ({ id, artist, title, duration }) => {
                               return {
@@ -230,7 +230,6 @@ export class JukeboxController {
     ): Promise<StreamableFile> {
         this.logger.verbose("GET to /api/jukebox/song/:id");
         const getSongUrl = this.getAPI("getSong", `&id=${id}`);
-        // const getCoverArtUrl = this.getAPI("getCoverArt", `&id=${id}`);
 
         try {
             const songResponse = await got(getSongUrl).json();
@@ -239,14 +238,12 @@ export class JukeboxController {
             const { artist, title } = songResponse["subsonic-response"]
                 .song as ISong;
             const artistTitle = `${artist} - ${title}`;
-            const retrievedHash = btoa(artistTitle);
 
-            if (hash !== retrievedHash) {
+            if (hash !== artistTitle) {
                 this.logger.error("hashes do not match");
                 throw new NotFoundException(HttpStatus.NOT_FOUND);
             }
 
-            // const coverArtResponse = await got(getCoverArtUrl).text();
             const streamUrl = this.getAPI("stream", `&id=${id}`);
             const str = got.stream(streamUrl);
             return new StreamableFile(str);
@@ -261,28 +258,44 @@ export class JukeboxController {
 
     @Get("coverart/:id")
     async getCoverArt(
-        @Param("id") id: string
-        // @Query("hash") hash: string
+        @Param("id") id: string,
+        @Query("type") type: "song" | "album" | "playlist",
+        @Query("hash") hash: string
     ): Promise<StreamableFile> {
-        this.logger.verbose("GET to /api/jukebox/coverart/:id");
-        // const getSongUrl = this.getAPI("getCoverArt", `&id=${id}`);
+        this.logger.verbose(
+            `GET to /api/jukebox/coverart/:id ${id} ${type} ${hash}`
+        );
 
         try {
-            // const songResponse = await got(getSongUrl).json();
+            const { retrievedHash, coverArtId } = await (async () => {
+                if (type === "album") {
+                    const url = this.getAPI("getStarred");
+                    const response: SubsonicGetStarredResponse = await got(
+                        url
+                    ).json();
+                    const { title, coverArt } = response[
+                        "subsonic-response"
+                    ].starred.album.find((album) => album.id === id);
+                    return {
+                        retrievedHash: title,
+                        coverArtId: coverArt,
+                    };
+                }
+                const url = this.getAPI("getPlaylist", `&id=${id}`);
+                const response = await got(url).json();
+                const playlist = response["subsonic-response"].playlist;
+                return {
+                    retrievedHash: playlist.name,
+                    coverArtId: playlist.coverArt,
+                };
+            })();
 
-            // TODO - NOTE: when getting stream, validate the song id and the artist+title hash
-            // const { artist, title } = songResponse["subsonic-response"]
-            //     .song as ISong;
-            // const artistTitle = `${artist} - ${title}`;
-            // const retrievedHash = btoa(artistTitle);
+            if (hash !== retrievedHash) {
+                this.logger.error("hashes do not match");
+                throw new NotFoundException(HttpStatus.NOT_FOUND);
+            }
 
-            // if (hash !== retrievedHash) {
-            //     this.logger.error("hashes do not match");
-            //     throw new NotFoundException(HttpStatus.NOT_FOUND);
-            // }
-
-            // const coverArtResponse = await got(getCoverArtUrl).text();
-            const streamUrl = this.getAPI("getCoverArt", `&id=${id}`);
+            const streamUrl = this.getAPI("getCoverArt", `&id=${coverArtId}`);
             const str = got.stream(streamUrl);
             return new StreamableFile(str);
         } catch (err) {
@@ -377,8 +390,6 @@ export class JukeboxController {
             );
 
             const response = await got(addUrl).json();
-
-            console.log(addUrl, response);
 
             if (
                 !response["subsonic-response"] ||

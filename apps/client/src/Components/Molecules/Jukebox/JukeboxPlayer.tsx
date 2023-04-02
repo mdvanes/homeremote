@@ -44,7 +44,9 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
         ? { id: playlistId }
         : skipToken;
     const { data: playlist } = useGetPlaylistQuery(playlistArgs);
-    const hash = song ? btoa(`${song.artist} - ${song.title}`) : "";
+    const hash = song
+        ? encodeURIComponent(`${song.artist} - ${song.title}`)
+        : "";
 
     const playlistName =
         playlists?.status === "received"

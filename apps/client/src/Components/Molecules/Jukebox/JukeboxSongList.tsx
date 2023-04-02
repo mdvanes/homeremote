@@ -90,7 +90,14 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
                         }, 100);
                     }}
                 >
-                    <ListItemText>
+                    <ListItemText
+                        primary={
+                            song.track
+                                ? /* NOTE: for now API only returns tracknr for albums */
+                                  `${song.track}. ${song.title}`
+                                : `${song.artist} - ${song.title}`
+                        }
+                    >
                         {song.artist} - {song.title}
                     </ListItemText>
                 </ListItemButton>
