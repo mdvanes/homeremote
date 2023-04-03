@@ -88,6 +88,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
             if (skipRadioTimer) {
                 clearTimeout(skipRadioTimer);
                 skipRadioTimer = undefined;
+                setIsSkipRadioActive(false);
                 dispatch(
                     logUrgentInfo(
                         finished

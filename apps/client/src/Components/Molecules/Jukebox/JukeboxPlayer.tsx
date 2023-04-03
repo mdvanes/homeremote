@@ -1,4 +1,4 @@
-import { ISong, PlaylistArgs } from "@homeremote/types";
+import { IPlaylist, ISong, PlaylistArgs } from "@homeremote/types";
 import {
     FastForward as FastForwardIcon,
     FastRewind as FastRewindIcon,
@@ -20,7 +20,7 @@ import HotKeyCoach from "./HotKeyCoach";
 interface IJukeboxPlayerProps {
     audioElemRef: RefObject<HTMLAudioElement>;
     song: ISong;
-    playlistId: string | undefined;
+    currentPlaylist: IPlaylist | undefined;
     setCurrentSong: (song: ISong) => void;
 }
 
@@ -30,7 +30,7 @@ export const LAST_SONG = "LAST_SONG";
 const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
     audioElemRef,
     song,
-    playlistId,
+    currentPlaylist,
     setCurrentSong,
 }) => {
     const {
@@ -40,8 +40,9 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
         isSkipRadioActive,
     } = useHotKeyContext();
     const { data: playlists } = useGetPlaylistsQuery(undefined);
+    const playlistId = currentPlaylist?.id;
     const playlistArgs: PlaylistArgs | typeof skipToken = playlistId
-        ? { id: playlistId }
+        ? { id: playlistId, type: currentPlaylist?.type }
         : skipToken;
     const { data: playlist } = useGetPlaylistQuery(playlistArgs);
     const hash = song
