@@ -46,7 +46,7 @@ const Jukebox: FC = () => {
                 {currentSong ? (
                     <JukeboxPlayer
                         audioElemRef={audioElemRef}
-                        playlistId={currentPlaylist?.id}
+                        currentPlaylist={currentPlaylist}
                         song={currentSong}
                         setCurrentSong={setCurrentSong}
                     />
