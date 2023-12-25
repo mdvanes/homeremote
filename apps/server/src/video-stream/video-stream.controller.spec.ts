@@ -1,11 +1,10 @@
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
-import got, { CancelableRequest, Response } from "got";
-import { mocked } from "jest-mock";
+import got from "got";
 import { VideoStreamController } from "./video-stream.controller";
 
 jest.mock("got");
-const mockGot = mocked(got);
+const gotHeadSpy = jest.spyOn(got, "head");
 
 describe("VideoStreamController Controller", () => {
     let controller: VideoStreamController;
@@ -30,24 +29,18 @@ describe("VideoStreamController Controller", () => {
                 return "http://localhost:123/";
             }
         });
-        // jest.spyOn(configService, "get").mockReturnValueOnce("http://some_url");
-        // jest.spyOn(configService, "get").mockReturnValueOnce("some_username");
     });
 
     afterAll(() => {
-        mockGot.mockRestore();
+        gotHeadSpy.mockRestore();
     });
 
     it("returns video stream hash on /GET", async () => {
-        // TODO
-        // mockGot.mockReturnValue({
-        //     json: () => Promise.resolve(""),
-        //     statusCode: 200,
-        // } as any); // CancelableRequest<Response>);
-        // mockGot.head.mockReturnValue();
-        // mockGot.mockResolvedValue({ statusCode: 200 } as any);
-        // const response = await controller.getHash();
-        // expect(response).toBe("https://start-player.npo.nl/embed/foo");
+        const gotHeadSpy = jest.spyOn(got, "head");
+        gotHeadSpy.mockResolvedValue({ statusCode: 200 });
+
+        const response = await controller.getHash();
+        expect(response).toEqual({ hash: "abc" });
     });
 
     // it("returns radio 2 embed fallback on /GET when unrecognized format", async () => {
