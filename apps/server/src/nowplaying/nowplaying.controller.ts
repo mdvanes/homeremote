@@ -8,9 +8,13 @@ import { getRadioMetaData } from "@mdworld/radio-metadata";
 import {
     Controller,
     Get,
+    Head,
     HttpException,
     HttpStatus,
+    InternalServerErrorException,
     Logger,
+    Query,
+    StreamableFile,
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
@@ -80,27 +84,44 @@ export class NowplayingController {
         }
     } */
 
-    @UseGuards(JwtAuthGuard)
-    @Get("radio2embed")
-    async getRadio2Embed(): Promise<string | undefined> {
-        try {
-            const r = await got("https://www.nporadio2.nl/live").text();
-            const match = r.match(
-                /https:\/\/start-player\.npo\.nl\/embed\/([^']*)'/
-            );
-            if (match) {
-                const videoStreamEmbedUrl = `https://start-player.npo.nl/embed/${match[1]}`;
-                return videoStreamEmbedUrl;
-            }
-            return "no-response";
-        } catch (error) {
-            this.logger.error(error);
-            throw new HttpException(
-                error as Error,
-                HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
-    }
+    // @UseGuards(JwtAuthGuard)
+    // @Head("radio2embed")
+    // async getRadio2EmbedHead(): Promise<string> {
+    //     this.logger.verbose("HEAD to /api/nowplaying/radio2embed");
+
+    //     try {
+    //         const headResponse = await got.head("http://localhost:52998/");
+    //         if (headResponse.statusCode !== 200) {
+    //             throw new InternalServerErrorException(
+    //                 HttpStatus.INTERNAL_SERVER_ERROR
+    //             );
+    //         }
+    //         return "OK";
+    //     } catch (error) {
+    //         this.logger.error(error);
+    //         throw new HttpException(
+    //             error as Error,
+    //             HttpStatus.INTERNAL_SERVER_ERROR
+    //         );
+    //     }
+    // }
+
+    // // TODO @UseGuards(JwtAuthGuard) see jukebox.controller.ts getSong()
+    // @Get("radio2embed")
+    // async getRadio2Embed(@Query("hash") hash: string): Promise<StreamableFile> {
+    //     this.logger.verbose("GET to /api/nowplaying/radio2embed");
+
+    //     try {
+    //         const stream$ = got.stream("http://localhost:52998/");
+    //         return new StreamableFile(stream$);
+    //     } catch (error) {
+    //         this.logger.error(error);
+    //         throw new HttpException(
+    //             error as Error,
+    //             HttpStatus.INTERNAL_SERVER_ERROR
+    //         );
+    //     }
+    // }
 
     @UseGuards(JwtAuthGuard)
     @Get("radio2previously")

@@ -1,18 +1,40 @@
-import React, { FC, useEffect, useState } from "react";
-import { Paper, Typography } from "@mui/material";
-import { willAddCredentials } from "../../../devUtils";
+import { FC, useEffect, useState } from "react";
+import { LinearProgress, Paper, Typography } from "@mui/material";
+
+const URL = `${process.env.NX_BASE_URL}/api/video-stream`;
 
 const VideoStream: FC = () => {
-    const [embedSrc, setEmbedSrc] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [hasError, setHasError] = useState(false);
+    const [hash, setHash] = useState("");
+
     useEffect(() => {
-        fetch(`${process.env.NX_BASE_URL}/api/nowplaying/radio2embed`, {
-            credentials: willAddCredentials(),
-        })
-            .then((url) => url.text())
-            .then((url: string) => setEmbedSrc(url));
+        (async () => {
+            setIsLoading(true);
+            try {
+                const response = await fetch(`${URL}/hash`);
+                if (response.status !== 200) {
+                    setHasError(true);
+                }
+                const data = await response.json();
+                setHash(data["hash"]);
+            } catch (err) {
+                setHasError(true);
+            }
+            setIsLoading(false);
+        })();
     }, []);
 
-    if (embedSrc === "no-response") {
+    if (isLoading) {
+        return (
+            <Typography variant="body1" textAlign="center">
+                VideoStream is loading
+                <LinearProgress color="primary" variant="indeterminate" />
+            </Typography>
+        );
+    }
+
+    if (hasError) {
         return (
             <Typography variant="body1" textAlign="center">
                 VideoStream failed to load
@@ -22,20 +44,7 @@ const VideoStream: FC = () => {
 
     return (
         <Paper style={{ aspectRatio: "16/9", overflow: "clip" }}>
-            {/* TODO also see https://github.com/streamlink/streamlink/pull/1084 */}
-            <iframe
-                id="videostream"
-                src={embedSrc}
-                allowFullScreen={true}
-                allow="encrypted-media; autoplay; fullscreen"
-                frameBorder="0"
-                title="embedded_video_stream"
-                style={{
-                    width: "calc(100% + 16px)",
-                    height: "100%",
-                    marginBottom: "-5px",
-                }}
-            ></iframe>
+            <video width="100%" controls src={`${URL}?hash=${hash}`} />
         </Paper>
     );
 };

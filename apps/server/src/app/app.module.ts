@@ -21,6 +21,7 @@ import { ServiceLinksController } from "../service-links/service-links.controlle
 import { StatusController } from "../status/status.controller";
 import { SwitchesController } from "../switches/switches.controller";
 import { UrltomusicController } from "../urltomusic/urltomusic.controller";
+import { VideoStreamController } from "../video-stream/video-stream.controller";
 import { UsersModule } from "../users/users.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -64,6 +65,7 @@ import { AppService } from "./app.service";
         StatusController,
         SwitchesController,
         UrltomusicController,
+        VideoStreamController,
     ],
     providers: [AppService],
 })
