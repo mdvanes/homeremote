@@ -92,7 +92,7 @@ export class NowplayingController {
                 const videoStreamEmbedUrl = `https://start-player.npo.nl/embed/${match[1]}`;
                 return videoStreamEmbedUrl;
             }
-            return "no-reponse";
+            return "no-response";
         } catch (error) {
             this.logger.error(error);
             throw new HttpException(

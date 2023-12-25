@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { Paper } from "@mui/material";
+import { Paper, Typography } from "@mui/material";
 import { willAddCredentials } from "../../../devUtils";
 
 const VideoStream: FC = () => {
@@ -11,6 +11,14 @@ const VideoStream: FC = () => {
             .then((url) => url.text())
             .then((url: string) => setEmbedSrc(url));
     }, []);
+
+    if (embedSrc === "no-response") {
+        return (
+            <Typography variant="body1" textAlign="center">
+                VideoStream failed to load
+            </Typography>
+        );
+    }
 
     return (
         <Paper style={{ aspectRatio: "16/9", overflow: "clip" }}>
