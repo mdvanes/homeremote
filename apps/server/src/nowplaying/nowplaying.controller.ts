@@ -81,28 +81,6 @@ export class NowplayingController {
     } */
 
     @UseGuards(JwtAuthGuard)
-    @Get("radio2embed")
-    async getRadio2Embed(): Promise<string | undefined> {
-        try {
-            const r = await got("https://www.nporadio2.nl/live").text();
-            const match = r.match(
-                /https:\/\/start-player\.npo\.nl\/embed\/([^']*)'/
-            );
-            if (match) {
-                const videoStreamEmbedUrl = `https://start-player.npo.nl/embed/${match[1]}`;
-                return videoStreamEmbedUrl;
-            }
-            return "no-reponse";
-        } catch (error) {
-            this.logger.error(error);
-            throw new HttpException(
-                error as Error,
-                HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
-    }
-
-    @UseGuards(JwtAuthGuard)
     @Get("radio2previously")
     async getRadio2Previously(): Promise<PreviouslyResponse[] | undefined> {
         const origFetch = global.fetch;

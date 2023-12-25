@@ -6,7 +6,7 @@ import {
 import { Test, TestingModule } from "@nestjs/testing";
 import { mocked } from "jest-mock";
 import { NowplayingController } from "./nowplaying.controller";
-import got, { Response, CancelableRequest } from "got";
+import got from "got";
 import { ConfigService } from "@nestjs/config";
 
 jest.mock("@mdworld/homeremote-stream-player-server");
@@ -57,39 +57,6 @@ describe("Nowplaying Controller", () => {
     it("throws error on /GET radio 2 info failure", async () => {
         mockGetNowPlaying.mockRejectedValue(new Error("mock server error"));
         await expect(controller.getRadio2()).rejects.toThrow(
-            "mock server error"
-        );
-    });
-
-    it("returns radio 2 embed info on /GET", async () => {
-        mockGot.mockReturnValue({
-            text: () =>
-                Promise.resolve(
-                    "prefix='https://start-player.npo.nl/embed/foo'&suffix"
-                ),
-        } as CancelableRequest<Response>);
-
-        const response = await controller.getRadio2Embed();
-        expect(response).toBe("https://start-player.npo.nl/embed/foo");
-    });
-
-    it("returns radio 2 embed fallback on /GET when unrecognized format", async () => {
-        mockGot.mockReturnValue({
-            text: () =>
-                Promise.resolve(
-                    "prefix='https://start-FOOBAR-player.npo.nl/embed/foo'&suffix"
-                ),
-        } as CancelableRequest<Response>);
-
-        const response = await controller.getRadio2Embed();
-        expect(response).toBe("no-reponse");
-    });
-
-    it("throws error on /GET radio 2 embed failure", async () => {
-        mockGot.mockReturnValue({
-            text: () => Promise.reject("mock server error"),
-        } as CancelableRequest<Response>);
-        await expect(controller.getRadio2Embed()).rejects.toThrow(
             "mock server error"
         );
     });
