@@ -30,7 +30,6 @@ exports[`Dashboard page contains all the control components 1`] = `
           <mock-previously-played-card />
         </div>
         <mock-jukebox />
-        <mock-video-stream />
         <div
           class="MuiTabs-root css-1ujnqem-MuiTabs-root"
         >
