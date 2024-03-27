@@ -262,7 +262,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
               id=":r6:"
               name="album"
               type="text"
-              value="Songs from 2023"
+              value="Songs from 2024"
             />
           </div>
         </div>

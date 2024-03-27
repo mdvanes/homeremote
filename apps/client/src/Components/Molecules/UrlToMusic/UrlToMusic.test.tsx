@@ -161,7 +161,7 @@ describe("UrlToMusic", () => {
 
         expect(fetchMock).toBeCalledTimes(2);
         expect(getCalledUrl(0)).toBe(
-            "http://localhost/api/urltomusic/getmusic/Some%20URL?artist=Some%20Artist&title=Some%20Other%20Title&album=Songs%20from%202023"
+            "http://localhost/api/urltomusic/getmusic/Some%20URL?artist=Some%20Artist&title=Some%20Other%20Title&album=Songs%20from%202024"
         );
         expect(getCalledUrl(1)).toBe(
             "http://localhost/api/urltomusic/getmusic/Some%20URL/progress"
