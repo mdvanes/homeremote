@@ -44,6 +44,16 @@ const temperatureResponseToEntry =
     (response: GotTempResponse, temperatureIndex: number) => {
         const sensor = temperatureSensors[temperatureIndex];
         const temperatureEntry = response.result[index];
+        if (!temperatureEntry) {
+            return [
+                sensor.name,
+                {
+                    avg: undefined,
+                    high: undefined,
+                    low: undefined,
+                },
+            ];
+        }
         if (temperatureEntry.d !== temperatureEntry.d) {
             throw new Error("days do not match");
         }

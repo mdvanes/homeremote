@@ -49,7 +49,9 @@ const Dashboard: FC = () => {
             <Grid item xs={12} md>
                 <StreamContainer />
                 <Jukebox />
-                <VideoStream />
+                {(localStorage.getItem("showVideoStream") ?? "") === "true" ? (
+                    <VideoStream />
+                ) : undefined}
                 <CarTabs />
                 <IconButton
                     color="primary"
