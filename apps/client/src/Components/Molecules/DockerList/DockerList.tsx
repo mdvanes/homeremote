@@ -21,21 +21,29 @@ interface DockerListProps {
 
 const DockerList: FC<DockerListProps> = ({ onError }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const { data, isLoading, isFetching, error } = useGetDockerListQuery(
         undefined,
         {
-            pollingInterval: UPDATE_INTERVAL_MS,
+            pollingInterval: isSkippingBecauseError
+                ? undefined
+                : UPDATE_INTERVAL_MS,
         }
     );
 
     useEffect(() => {
         if (error) {
+            setIsSkippingBecauseError(true);
             onError(getErrorMessage(error));
         }
     }, [error, onError]);
 
     if (error) {
-        return <Alert severity="error">{getErrorMessage(error)}</Alert>;
+        return (
+            <Box mx={-2}>
+                <Alert severity="error">{getErrorMessage(error)}</Alert>
+            </Box>
+        );
     }
 
     if (data?.status !== "received") {

@@ -11,18 +11,22 @@ const UPDATE_INTERVAL_MS = 30000;
 
 const DownloadList: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const dispatch = useAppDispatch();
 
     const { data, error, isLoading, isFetching } = useGetDownloadListQuery(
         undefined,
         {
-            pollingInterval: UPDATE_INTERVAL_MS,
+            pollingInterval: isSkippingBecauseError
+                ? undefined
+                : UPDATE_INTERVAL_MS,
         }
     );
     const [listItems, setListItems] = useState<JSX.Element[]>([]);
 
     useEffect(() => {
         if (error) {
+            setIsSkippingBecauseError(true);
             dispatch(logError("GetDownloadList failed"));
         }
     }, [dispatch, error]);
