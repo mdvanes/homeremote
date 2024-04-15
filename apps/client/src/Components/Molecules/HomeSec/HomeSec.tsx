@@ -1,15 +1,17 @@
-import { FC } from "react";
-import { useGetHomesecStatusQuery } from "../../../Services/homesecApi";
+import { HomesecStatusResponse, TypeF } from "@homeremote/types";
 import {
+    Icon,
     List,
     ListItem,
     ListItemAvatar,
     ListItemButton,
     ListItemText,
     Paper,
-    Icon,
+    Tooltip,
 } from "@mui/material";
-import { HomesecStatusResponse, TypeF } from "@homeremote/types";
+import { FC } from "react";
+import { useGetHomesecStatusQuery } from "../../../Services/homesecApi";
+import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import SimpleHomeSecListItem from "./SimpleHomeSecListItem";
 
@@ -31,63 +33,71 @@ export const HomeSec: FC = () => {
     const { data, isLoading, isFetching, isError, refetch } =
         useGetHomesecStatusQuery(undefined);
 
+    const hasNoDevices =
+        !isError &&
+        !isLoading &&
+        !isFetching &&
+        (!data?.devices || data?.devices.length === 0);
+
     return (
-        <List
-            component={Paper}
-            style={{
-                borderWidth: 1,
-                borderStyle: "solid",
-                borderColor: statusClass[data?.status ?? "Error"],
-            }}
-        >
-            <LoadingDot isLoading={isLoading || isFetching} />
-            {isError ? (
-                <SimpleHomeSecListItem
-                    title="Error retrieving devices"
-                    onClick={() => refetch()}
-                />
-            ) : (
-                ""
-            )}
-            {!data?.devices || data?.devices.length === 0 ? (
-                <SimpleHomeSecListItem
-                    title="No devices found"
-                    onClick={() => refetch()}
-                />
-            ) : (
-                ""
-            )}
-            {data?.devices?.map((sensor) => (
-                <ListItem key={sensor.id} disableGutters disablePadding dense>
-                    <ListItemButton>
-                        <ListItemAvatar>
-                            <Icon>{typeIcon[sensor.type_f]}</Icon>
-                        </ListItemAvatar>
-                        <ListItemText
-                            primary={
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                    }}
-                                >
-                                    <div>{sensor.name}</div>
+        <Tooltip title={`HomeSec status: ${data?.status ?? "Error"}`}>
+            <List
+                component={Paper}
+                style={{
+                    borderWidth: 1,
+                    borderStyle: "solid",
+                    borderColor: statusClass[data?.status ?? "Error"],
+                }}
+            >
+                <LoadingDot isLoading={isLoading || isFetching} />
+                {isError && (
+                    <ErrorRetry marginate retry={() => refetch()}>
+                        HomeSec could not load
+                    </ErrorRetry>
+                )}
+                {hasNoDevices && (
+                    <SimpleHomeSecListItem
+                        title="No HomeSec devices found"
+                        onClick={() => refetch()}
+                    />
+                )}
+                {data?.devices?.map((sensor) => (
+                    <ListItem
+                        key={sensor.id}
+                        disableGutters
+                        disablePadding
+                        dense
+                    >
+                        <ListItemButton>
+                            <ListItemAvatar>
+                                <Icon>{typeIcon[sensor.type_f]}</Icon>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={
                                     <div
                                         style={{
                                             display: "flex",
-                                            gap: "16px",
+                                            justifyContent: "space-between",
                                         }}
                                     >
-                                        <div>{sensor.status}</div>
-                                        <div>{sensor.rssi}</div>
+                                        <div>{sensor.name}</div>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                gap: "16px",
+                                            }}
+                                        >
+                                            <div>{sensor.status}</div>
+                                            <div>{sensor.rssi}</div>
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                        />
-                    </ListItemButton>
-                </ListItem>
-            ))}
-        </List>
+                                }
+                            />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+        </Tooltip>
     );
 };
 
