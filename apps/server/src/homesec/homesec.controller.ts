@@ -14,6 +14,7 @@ import got from "got";
 import {
     HomesecDevicesResponse,
     HomesecPanelResponse,
+    HomesecStatusResponse,
 } from "@homeremote/types";
 
 @Controller("api/homesec")
@@ -33,30 +34,50 @@ export class HomesecController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get("devices")
+    @Get("status")
     async getDevices(
         @Request() req: AuthenticatedRequest
-    ): Promise<HomesecDevicesResponse> {
+    ): Promise<HomesecStatusResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/homesec/devices`);
 
         try {
-            const url = `${this.baseUrl}/action/deviceListGet`;
-
-            const response1: HomesecPanelResponse = await got(
+            const panelResponse: HomesecPanelResponse = await got(
                 `${this.baseUrl}/action/panelCondGet`,
                 {
                     username: this.username,
                     password: this.password,
                 }
             ).json();
-            this.logger.log(response1);
+            this.logger.log(panelResponse);
 
-            const response: HomesecDevicesResponse = await got(url, {
-                username: this.username,
-                password: this.password,
-            }).json();
-            // TODO this.logger.log(response);
-            return response;
+            try {
+                const devicesResponse: HomesecDevicesResponse = await got(
+                    `${this.baseUrl}/action/deviceListGet`,
+                    {
+                        username: this.username,
+                        password: this.password,
+                    }
+                ).json();
+                this.logger.log(devicesResponse);
+                return {
+                    status: panelResponse.updates.mode_a1,
+                    devices: devicesResponse.senrows.map(
+                        ({ id, name, type_f, status, rssi }) => ({
+                            id,
+                            name,
+                            type_f,
+                            status,
+                            rssi,
+                        })
+                    ),
+                };
+            } catch (err) {
+                this.logger.error("deviceListGet:", err);
+                return {
+                    status: panelResponse.updates.mode_a1,
+                    devices: [],
+                };
+            }
         } catch (err) {
             this.logger.error(err);
             throw new HttpException(

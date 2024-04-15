@@ -1,17 +1,18 @@
 import { FC } from "react";
-import { useGetHomesecDeviceListQuery } from "../../../Services/homesecApi";
+import { useGetHomesecStatusQuery } from "../../../Services/homesecApi";
 
 export const HomeSec: FC = () => {
     // TODO handle error/loading
-    const { data: devices } = useGetHomesecDeviceListQuery(undefined);
+    const { data } = useGetHomesecStatusQuery(undefined);
 
-    console.log(devices);
+    console.log(data?.status);
 
     return (
         <div>
-            {devices?.senrows.map((sensor) => (
+            {data?.status}
+            {data?.devices?.map((sensor) => (
                 <div key={sensor.id}>
-                    {sensor.name}: {sensor.status}
+                    {sensor.name}: {sensor.status} {sensor.type_f} {sensor.rssi}
                 </div>
             ))}
         </div>

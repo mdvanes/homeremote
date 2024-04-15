@@ -1,4 +1,4 @@
-import { HomesecDevicesResponse } from "@homeremote/types";
+import { HomesecStatusResponse } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { willAddCredentials } from "../devUtils";
 
@@ -9,10 +9,10 @@ export const homesecApi = createApi({
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({
-        getHomesecDeviceList: builder.query<HomesecDevicesResponse, undefined>({
-            query: () => "/devices",
+        getHomesecStatus: builder.query<HomesecStatusResponse, undefined>({
+            query: () => "/status",
         }),
     }),
 });
 
-export const { useGetHomesecDeviceListQuery } = homesecApi;
+export const { useGetHomesecStatusQuery } = homesecApi;

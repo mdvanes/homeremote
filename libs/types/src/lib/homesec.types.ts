@@ -27,10 +27,17 @@ export interface HomesecDevicesResponse {
     senrows: SensorRow[];
 }
 
+type Modes = "Disarm" | "Home Arm 1";
+
+export enum PcondformModes {
+    Disarm = "0",
+    HomeArm = "2",
+}
+
 export interface HomesecPanelResponse {
     updates: {
-        mode_a1: "Disarm";
-        mode_a2: "Disarm";
+        mode_a1: Modes;
+        mode_a2: Modes;
         battery_ok: "1";
         battery: "Normal";
         tamper_ok: "1";
@@ -46,12 +53,17 @@ export interface HomesecPanelResponse {
     };
     forms: {
         pcondform1: {
-            mode: "0";
+            mode: PcondformModes;
             f_arm: "0";
         };
         pcondform2: {
-            mode: "0";
+            mode: PcondformModes;
             f_arm: "0";
         };
     };
+}
+
+export interface HomesecStatusResponse {
+    status: Modes;
+    devices: Pick<SensorRow, "id" | "name" | "type_f" | "status" | "rssi">[];
 }
