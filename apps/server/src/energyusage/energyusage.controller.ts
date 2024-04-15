@@ -40,47 +40,37 @@ const strToConfigs = (sensorConfig: string): SensorConfig[] => {
 };
 
 const temperatureResponseToEntry =
-    (temperatureSensors: SensorConfig[], index: number) =>
+    (temperatureSensors: SensorConfig[], date: string) =>
     (response: GotTempResponse, temperatureIndex: number) => {
         const sensor = temperatureSensors[temperatureIndex];
-        const temperatureEntry = response.result[index];
-        if (!temperatureEntry) {
-            return [
-                sensor.name,
-                {
-                    avg: undefined,
-                    high: undefined,
-                    low: undefined,
-                },
-            ];
-        }
-        if (temperatureEntry.d !== temperatureEntry.d) {
-            throw new Error("days do not match");
-        }
+        const temperatureEntry = response.result.find((r) => r.d === date);
         return [
             sensor.name,
             {
-                avg: temperatureEntry.ta,
-                high: temperatureEntry.te,
-                low: temperatureEntry.tm,
+                avg: temperatureEntry?.ta ?? "",
+                high: temperatureEntry?.te ?? "",
+                low: temperatureEntry?.tm ?? "",
             },
         ];
     };
 
 const sensorResultsToAggregated =
     (
+        gasEntries: GasUsageItem[],
         temperatureSensors: SensorConfig[],
         temperatureResponses: GotTempResponse[]
     ) =>
-    (gasEntry: GasUsageItem, index: number) => {
+    (date: string) => {
         const temperatureEntries = temperatureResponses.map(
-            temperatureResponseToEntry(temperatureSensors, index)
+            temperatureResponseToEntry(temperatureSensors, date)
         );
+        const gasEntry = gasEntries.find((r) => r.d === date);
 
         const result: EnergyUsageGasItem = {
-            counter: gasEntry.c,
-            used: gasEntry.v,
-            day: gasEntry.d,
+            day: date,
+            counter: gasEntry?.c ?? "",
+            used: gasEntry?.v ?? "",
+
             temp: Object.fromEntries(temperatureEntries),
         };
         return result;
@@ -133,10 +123,23 @@ export class EnergyUsageController {
                 temperaturePromises
             );
 
+            const now = Date.now();
+            const NR_OF_DAYS = 31;
+            const lastMonth = new Date(now - 1000 * 60 * 60 * 24 * NR_OF_DAYS);
+            const dateRange = new Array(NR_OF_DAYS)
+                .fill(0)
+                .map((n, index) =>
+                    new Date(
+                        lastMonth.getTime() + 1000 * 60 * 60 * 24 * (index + 1)
+                    )
+                        .toISOString()
+                        .slice(0, 10)
+                );
             const aggregated: EnergyUsageGetGasUsageResponse = {
                 ...gasCounterResponse,
-                result: gasCounterResponse.result.map(
+                result: dateRange.map(
                     sensorResultsToAggregated(
+                        gasCounterResponse.result,
                         temperatureSensors,
                         temperatureResponses
                     )
