@@ -36,7 +36,7 @@ export class HomesecController {
 
     @UseGuards(JwtAuthGuard)
     @Get("status")
-    async getDevices(
+    async getStatus(
         @Request() req: AuthenticatedRequest
     ): Promise<HomesecStatusResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/homesec/devices`);
@@ -49,6 +49,7 @@ export class HomesecController {
                     password: this.password,
                 }
             ).json();
+            const status = panelResponse.updates.mode_a1;
 
             try {
                 await wait(5000);
@@ -61,7 +62,7 @@ export class HomesecController {
                 ).json();
 
                 return {
-                    status: panelResponse.updates.mode_a1,
+                    status,
                     devices: devicesResponse.senrows.map(
                         ({ id, name, type_f, status, rssi }) => ({
                             id,
@@ -75,7 +76,7 @@ export class HomesecController {
             } catch (err) {
                 this.logger.error("deviceListGet:", err);
                 return {
-                    status: panelResponse.updates.mode_a1,
+                    status,
                     devices: [],
                 };
             }

@@ -58,7 +58,7 @@ export const HomeSec: FC = () => {
                 ""
             )}
             {data?.devices?.map((sensor) => (
-                <ListItem disableGutters disablePadding dense>
+                <ListItem key={sensor.id} disableGutters disablePadding dense>
                     <ListItemButton>
                         <ListItemAvatar>
                             <Icon>{typeIcon[sensor.type_f]}</Icon>
