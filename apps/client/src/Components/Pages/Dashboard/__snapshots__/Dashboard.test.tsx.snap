@@ -15,6 +15,7 @@ exports[`Dashboard page contains all the control components 1`] = `
           <mock-switch-bar-list />
         </div>
         <mock-gaschart />
+        <mock-homesec />
         <mock-url-to-music />
         <mock-log-card />
       </div>

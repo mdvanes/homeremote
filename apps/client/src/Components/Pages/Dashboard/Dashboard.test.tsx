@@ -30,6 +30,7 @@ jest.mock(
     () => "mock-previously-played-card"
 );
 jest.mock("../../Molecules/CarTwin/CarTwinCard", () => "mock-cartwin-card");
+jest.mock("../../Molecules/HomeSec/HomeSec", () => "mock-homesec");
 
 describe("Dashboard page", () => {
     it("contains all the control components", () => {
