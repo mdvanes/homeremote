@@ -1,11 +1,10 @@
+import { HomesecStatusResponse } from "@homeremote/types";
 import { render, screen } from "@testing-library/react";
-import { jukeboxApi } from "../../../Services/jukeboxApi";
-import { MockStoreProvider } from "../../../testHelpers";
-import { FC, ReactNode } from "react";
-import HomeSec from "./HomeSec";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
-import { HomesecStatusResponse, PlaylistsResponse } from "@homeremote/types";
+import { FC, ReactNode } from "react";
 import { homesecApi } from "../../../Services/homesecApi";
+import { MockStoreProvider } from "../../../testHelpers";
+import HomeSec from "./HomeSec";
 
 enableFetchMocks();
 
