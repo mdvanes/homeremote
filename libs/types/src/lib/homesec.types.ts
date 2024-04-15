@@ -1,13 +1,15 @@
+export type TypeF =
+    | "Door Contact"
+    | "Smoke Detector"
+    | "Keypad"
+    | "IR"
+    | "Remote Controller";
+
 interface SensorRow {
     area: number;
     zone: number;
     type: number;
-    type_f:
-        | "Door Contact"
-        | "Smoke Detector"
-        | "Keypad"
-        | "IR"
-        | "Remote Controller";
+    type_f: TypeF;
     name: string;
     cond: "";
     cond_ok: "0" | "1";

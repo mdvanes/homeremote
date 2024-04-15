@@ -16,6 +16,7 @@ import {
     HomesecPanelResponse,
     HomesecStatusResponse,
 } from "@homeremote/types";
+import { wait } from "../util/wait";
 
 @Controller("api/homesec")
 export class HomesecController {
@@ -48,9 +49,9 @@ export class HomesecController {
                     password: this.password,
                 }
             ).json();
-            this.logger.log(panelResponse);
 
             try {
+                await wait(5000);
                 const devicesResponse: HomesecDevicesResponse = await got(
                     `${this.baseUrl}/action/deviceListGet`,
                     {
@@ -58,7 +59,7 @@ export class HomesecController {
                         password: this.password,
                     }
                 ).json();
-                this.logger.log(devicesResponse);
+
                 return {
                     status: panelResponse.updates.mode_a1,
                     devices: devicesResponse.senrows.map(
