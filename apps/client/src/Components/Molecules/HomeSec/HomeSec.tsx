@@ -9,10 +9,13 @@ import {
     Paper,
     Tooltip,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useGetHomesecStatusQuery } from "../../../Services/homesecApi";
+import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { useAppDispatch } from "../../../store";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
+import { logError } from "../LogCard/logSlice";
 import SimpleHomeSecListItem from "./SimpleHomeSecListItem";
 
 const statusClass: Record<HomesecStatusResponse["status"] | "Error", string> = {
@@ -29,9 +32,24 @@ const typeIcon: Record<TypeF, string> = {
     "Remote Controller": "settings_remote",
 };
 
+const UPDATE_INTERVAL_MS = 120000;
+
 export const HomeSec: FC = () => {
-    const { data, isLoading, isFetching, isError, refetch } =
-        useGetHomesecStatusQuery(undefined);
+    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
+    const dispatch = useAppDispatch();
+    const { data, isLoading, isFetching, isError, error, refetch } =
+        useGetHomesecStatusQuery(undefined, {
+            pollingInterval: isSkippingBecauseError
+                ? undefined
+                : UPDATE_INTERVAL_MS,
+        });
+
+    useEffect(() => {
+        if (error) {
+            setIsSkippingBecauseError(true);
+            dispatch(logError(`HomeSec failed: ${getErrorMessage(error)}`));
+        }
+    }, [dispatch, error]);
 
     const hasNoDevices =
         !isError &&
@@ -49,7 +67,10 @@ export const HomeSec: FC = () => {
                     borderColor: statusClass[data?.status ?? "Error"],
                 }}
             >
-                <LoadingDot isLoading={isLoading || isFetching} />
+                <LoadingDot
+                    isLoading={isLoading || isFetching}
+                    slowUpdateMs={6000}
+                />
                 {isError && (
                     <ErrorRetry marginate retry={() => refetch()}>
                         HomeSec could not load
