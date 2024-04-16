@@ -29,7 +29,7 @@ export interface HomesecDevicesResponse {
     senrows: SensorRow[];
 }
 
-type Modes = "Disarm" | "Home Arm 1";
+type Modes = "Disarm" | "Home Arm 1" | "Arm";
 
 export enum PcondformModes {
     Disarm = "0",

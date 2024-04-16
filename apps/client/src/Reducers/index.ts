@@ -17,6 +17,7 @@ import { nextupApi } from "../Services/nextupApi";
 import { nowplayingApi } from "../Services/nowplayingApi";
 import { scheduleApi } from "../Services/scheduleApi";
 import { serviceLinksApi } from "../Services/serviceLinksApi";
+import { stacksApi } from "../Services/stacksApi";
 import { urlToMusicApi } from "../Services/urlToMusicApi";
 
 const rootReducer = combineReducers({
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
     [nowplayingApi.reducerPath]: nowplayingApi.reducer,
     [scheduleApi.reducerPath]: scheduleApi.reducer,
     [serviceLinksApi.reducerPath]: serviceLinksApi.reducer,
+    [stacksApi.reducerPath]: stacksApi.reducer,
     [urlToMusicApi.reducerPath]: urlToMusicApi.reducer,
 });
 

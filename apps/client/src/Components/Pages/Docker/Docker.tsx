@@ -3,10 +3,26 @@ import { FC } from "react";
 // import { DockerListMod } from "@mdworld/homeremote-dockerlist";
 import { Card, CardContent } from "@mui/material";
 import { useDispatch } from "react-redux";
+import { useGetStacksQuery } from "../../../Services/stacksApi";
 import DockerList from "../../Molecules/DockerList/DockerList";
 import { logError } from "../../Molecules/LogCard/logSlice";
 
 // const DockerList = DockerListMod.make;
+
+const DockerStackList: FC = () => {
+    const { data } = useGetStacksQuery(undefined);
+
+    return (
+        <div>
+            docker stack list{" "}
+            <ul>
+                {(data ?? []).map((stack) => (
+                    <li>{stack.Name}</li>
+                ))}
+            </ul>
+        </div>
+    );
+};
 
 const Docker: FC = () => {
     const dispatch = useDispatch();
@@ -21,6 +37,7 @@ const Docker: FC = () => {
                         )
                     }
                 />
+                <DockerStackList />
             </CardContent>
             {/* <DockerList
                     url={process.env.NX_BASE_URL || ""}

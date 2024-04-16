@@ -26,6 +26,7 @@ import { VideoStreamController } from "../video-stream/video-stream.controller";
 import { UsersModule } from "../users/users.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { StacksController } from "../stacks/stacks.controller";
 
 @Module({
     imports: [
@@ -65,6 +66,7 @@ import { AppService } from "./app.service";
         ScheduleController,
         ServiceLinksController,
         StatusController,
+        StacksController,
         SwitchesController,
         UrltomusicController,
         VideoStreamController,
