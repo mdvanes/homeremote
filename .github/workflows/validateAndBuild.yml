@@ -23,20 +23,18 @@ jobs:
           npm i --legacy-peer-deps
           # Workaround for missing binary
           npm i @swc/core-linux-x64-gnu --legacy-peer-deps
+      - name: writeGitInfo ✍️
+        run: npm run writeGitInfo --if-present
       - name: Typecheck 🤙
-        run: |
-          npm run typecheck --if-present
+        run: npm run typecheck --if-present
       - name: Lint 👌
-        run: |
-          npm run lint --if-present
+        run: npm run lint --if-present
       - name: Test 🧪
-        run: |
-          npm run test:ci --if-present
+        run: npm run test:ci --if-present
         env:
           CI: false # true -> fails on warning
       - name: Build components 🔧
-        run: |
-          npm run build --ignore-scripts --if-present
+        run: npm run build --ignore-scripts --if-present
       - name: Build docker image 💿
         if: ${{ github.ref == 'main' }}
         run: |
