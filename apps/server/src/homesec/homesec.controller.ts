@@ -64,12 +64,13 @@ export class HomesecController {
                 return {
                     status,
                     devices: devicesResponse.senrows.map(
-                        ({ id, name, type_f, status, rssi }) => ({
+                        ({ id, name, type_f, status, rssi, cond_ok }) => ({
                             id,
                             name,
                             type_f,
                             status,
                             rssi,
+                            cond_ok,
                         })
                     ),
                 };

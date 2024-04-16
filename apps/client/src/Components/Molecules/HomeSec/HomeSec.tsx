@@ -116,18 +116,29 @@ export const HomeSec: FC = () => {
                                         <div
                                             style={{
                                                 display: "flex",
-                                                gap: "16px",
+                                                gap: "8px",
                                             }}
                                         >
+                                            <div>{sensor.status}</div>
                                             <div>
-                                                {sensor.status}
-
                                                 {sensor.cond_ok === "1" ? (
-                                                    <Icon color="success">
+                                                    <Icon
+                                                        color="success"
+                                                        sx={{
+                                                            marginTop:
+                                                                "-0.1rem",
+                                                        }}
+                                                    >
                                                         check_circle_outline
                                                     </Icon>
                                                 ) : (
-                                                    <Icon color="error">
+                                                    <Icon
+                                                        color="error"
+                                                        sx={{
+                                                            marginTop:
+                                                                "-0.1rem",
+                                                        }}
+                                                    >
                                                         error_outline
                                                     </Icon>
                                                 )}

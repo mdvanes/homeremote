@@ -18,11 +18,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install and Build components 🔧
+      - name: Install dependencies 🔧
         run: |
           npm i --legacy-peer-deps
           # Workaround for missing binary
           npm i @swc/core-linux-x64-gnu --legacy-peer-deps
+      - name: Build components 🔧
+        run: |
           npm run build --if-present
         env:
           CI: false # true -> fails on warning
