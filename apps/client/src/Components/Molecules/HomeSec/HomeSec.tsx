@@ -13,6 +13,7 @@ import { FC, useEffect, useState } from "react";
 import { useGetHomesecStatusQuery } from "../../../Services/homesecApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
+import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import { logError } from "../LogCard/logSlice";
@@ -35,6 +36,7 @@ const typeIcon: Record<TypeF, string> = {
 const UPDATE_INTERVAL_MS = 120000;
 
 export const HomeSec: FC = () => {
+    const [isOpen, setIsOpen] = useState(false);
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const dispatch = useAppDispatch();
     const { data, isLoading, isFetching, isError, error, refetch } =
@@ -56,6 +58,13 @@ export const HomeSec: FC = () => {
         !isLoading &&
         !isFetching &&
         (!data?.devices || data?.devices.length === 0);
+
+    const devices = data?.devices ?? [];
+
+    // By default, only show doors
+    const shownDevices = isOpen
+        ? devices
+        : devices.filter(({ type_f }) => type_f === "Door Contact");
 
     return (
         <Tooltip title={`HomeSec status: ${data?.status ?? "Error"}`}>
@@ -82,7 +91,7 @@ export const HomeSec: FC = () => {
                         onClick={() => refetch()}
                     />
                 )}
-                {data?.devices?.map((sensor) => (
+                {shownDevices.map((sensor) => (
                     <ListItem
                         key={sensor.id}
                         disableGutters
@@ -91,7 +100,9 @@ export const HomeSec: FC = () => {
                     >
                         <ListItemButton>
                             <ListItemAvatar>
-                                <Icon>{typeIcon[sensor.type_f]}</Icon>
+                                <Tooltip title={sensor.type_f}>
+                                    <Icon>{typeIcon[sensor.type_f]}</Icon>
+                                </Tooltip>
                             </ListItemAvatar>
                             <ListItemText
                                 primary={
@@ -108,7 +119,19 @@ export const HomeSec: FC = () => {
                                                 gap: "16px",
                                             }}
                                         >
-                                            <div>{sensor.status}</div>
+                                            <div>
+                                                {sensor.status}
+
+                                                {sensor.cond_ok === "1" ? (
+                                                    <Icon color="success">
+                                                        check_circle_outline
+                                                    </Icon>
+                                                ) : (
+                                                    <Icon color="error">
+                                                        error_outline
+                                                    </Icon>
+                                                )}
+                                            </div>
                                             <div>{sensor.rssi}</div>
                                         </div>
                                     </div>
@@ -117,6 +140,15 @@ export const HomeSec: FC = () => {
                         </ListItemButton>
                     </ListItem>
                 ))}
+                {devices.length > 0 && (
+                    <CardExpandBar
+                        isOpen={isOpen}
+                        setIsOpen={setIsOpen}
+                        hint={`and ${
+                            devices.length - shownDevices.length
+                        } more`}
+                    />
+                )}
             </List>
         </Tooltip>
     );

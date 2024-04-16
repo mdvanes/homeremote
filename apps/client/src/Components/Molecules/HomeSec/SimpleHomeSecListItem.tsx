@@ -20,7 +20,14 @@ const SimpleHomeSecListItem: FC<{ title: string; onClick: () => void }> = ({
                     primary={
                         <>
                             {title}
-                            <IconButton onClick={onClick}>
+                            <IconButton
+                                sx={{
+                                    ".MuiSvgIcon-root": {
+                                        marginTop: "-0.2rem",
+                                    },
+                                }}
+                                onClick={onClick}
+                            >
                                 <RestartAltIcon />
                             </IconButton>
                         </>

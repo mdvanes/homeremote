@@ -67,5 +67,8 @@ export interface HomesecPanelResponse {
 
 export interface HomesecStatusResponse {
     status: Modes;
-    devices: Pick<SensorRow, "id" | "name" | "type_f" | "status" | "rssi">[];
+    devices: Pick<
+        SensorRow,
+        "id" | "name" | "type_f" | "status" | "rssi" | "cond_ok"
+    >[];
 }
