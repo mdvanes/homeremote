@@ -25,6 +25,7 @@ describe("HomeSec", () => {
                     status: "Door Close",
                     rssi: "Strong, 9",
                     type_f: "Door Contact",
+                    cond_ok: "1",
                 },
             ],
         };
