@@ -1,3 +1,4 @@
+import { DockerContainerInfo } from "@homeremote/types";
 import {
     Alert,
     Button,
@@ -10,7 +11,6 @@ import {
 } from "@mui/material";
 import { FC, useState } from "react";
 import {
-    DockerContainerInfo,
     useStartDockerMutation,
     useStopDockerMutation,
 } from "../../../Services/dockerListApi";
@@ -18,7 +18,7 @@ import {
 const DockerInfo: FC<{ info: DockerContainerInfo }> = ({ info }) => {
     const [startDocker] = useStartDockerMutation();
     const [stopDocker] = useStopDockerMutation();
-    const { Names, Status, Id, State } = info;
+    const { Names, Status, Id, State, Labels } = info;
     const isUp = Status.indexOf("Up") === 0;
 
     const toggleContainer = () => {
@@ -50,7 +50,11 @@ const DockerInfo: FC<{ info: DockerContainerInfo }> = ({ info }) => {
                     cursor: "pointer",
                 }}
             >
-                {name} | {Status}
+                {name}{" "}
+                {Labels["com.docker.compose.project"]
+                    ? `(${Labels["com.docker.compose.project"]})`
+                    : ""}{" "}
+                | {Status}
             </Alert>
             <Dialog
                 open={open}

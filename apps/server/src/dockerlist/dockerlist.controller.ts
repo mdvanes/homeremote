@@ -1,26 +1,35 @@
 import {
-    Controller,
-    Logger,
-    UseGuards,
-    Get,
-    Param,
-    HttpException,
-    HttpStatus,
-} from "@nestjs/common";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import got from "got";
-import {
-    DockerContainerInfo,
     AllResponse,
+    DockerContainerInfo,
     DockerListResponse,
 } from "@homeremote/types";
+import {
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Logger,
+    Param,
+    UseGuards,
+} from "@nestjs/common";
+import got from "got";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 const pickAndMapContainerProps = ({
     Id,
     Names,
     State,
     Status,
-}: DockerContainerInfo): DockerContainerInfo => ({ Id, Names, State, Status });
+    Labels,
+}: DockerContainerInfo): DockerContainerInfo => ({
+    Id,
+    Names,
+    State,
+    Status,
+    Labels: {
+        "com.docker.compose.project": Labels["com.docker.compose.project"],
+    },
+});
 
 // Using Docker Engine API: curl --unix-socket /var/run/docker.sock http://v1.24/containers/json?all=true
 // These urls also work: http://localhost/v1.24/containers/json?all=true or v1.24/containers/json?all=true
@@ -44,6 +53,9 @@ export class DockerlistController {
             const result = await got(`${ROOT_URL}/json?all=true`, {
                 socketPath: SOCKET_PATH,
             }).json<AllResponse>();
+            this.logger.verbose(
+                result.map((r) => r.Labels["com.docker.compose.project"])
+            );
             return {
                 status: "received",
                 containers: result.map(pickAndMapContainerProps),

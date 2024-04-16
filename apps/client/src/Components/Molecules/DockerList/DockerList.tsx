@@ -1,10 +1,8 @@
+import { DockerContainerInfo } from "@homeremote/types";
 import { Box, Grid } from "@mui/material";
 import { Stack } from "@mui/system";
 import { FC, useEffect, useState } from "react";
-import {
-    DockerContainerInfo,
-    useGetDockerListQuery,
-} from "../../../Services/dockerListApi";
+import { useGetDockerListQuery } from "../../../Services/dockerListApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import DockerInfo from "../DockerInfo/DockerInfo";

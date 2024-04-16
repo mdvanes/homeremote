@@ -1,6 +1,6 @@
+import { DockerContainerInfo } from "@homeremote/types";
 import { Box } from "@mui/material";
 import { FC } from "react";
-import { DockerContainerInfo } from "../../../Services/dockerListApi";
 
 const ContainerDot: FC<{ info: DockerContainerInfo }> = ({ info }) => (
     <Box
