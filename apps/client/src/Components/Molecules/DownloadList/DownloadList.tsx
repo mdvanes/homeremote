@@ -1,11 +1,13 @@
+import { List, Paper } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import { Alert, List, Paper } from "@mui/material";
-import { useAppDispatch } from "../../../store";
-import DownloadListItem from "./DownloadListItem";
-import { logError } from "../LogCard/logSlice";
 import { useGetDownloadListQuery } from "../../../Services/downloadListApi";
+import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { useAppDispatch } from "../../../store";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
+import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
+import { logError } from "../LogCard/logSlice";
+import DownloadListItem from "./DownloadListItem";
 
 const UPDATE_INTERVAL_MS = 30000;
 
@@ -14,20 +16,20 @@ const DownloadList: FC = () => {
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const dispatch = useAppDispatch();
 
-    const { data, error, isLoading, isFetching } = useGetDownloadListQuery(
-        undefined,
-        {
+    const { data, error, isLoading, isFetching, refetch } =
+        useGetDownloadListQuery(undefined, {
             pollingInterval: isSkippingBecauseError
                 ? undefined
                 : UPDATE_INTERVAL_MS,
-        }
-    );
+        });
     const [listItems, setListItems] = useState<JSX.Element[]>([]);
 
     useEffect(() => {
         if (error) {
             setIsSkippingBecauseError(true);
-            dispatch(logError("GetDownloadList failed"));
+            dispatch(
+                logError(`GetDownloadList failed: ${getErrorMessage(error)}`)
+            );
         }
     }, [dispatch, error]);
 
@@ -50,9 +52,9 @@ const DownloadList: FC = () => {
         <List component={Paper}>
             <LoadingDot isLoading={isLoading || isFetching} />
             {error && (
-                <Alert severity="error">
-                    There is an error, data may be stale
-                </Alert>
+                <ErrorRetry marginate retry={() => refetch()}>
+                    DL could not load
+                </ErrorRetry>
             )}
             {listItems}
             <CardExpandBar

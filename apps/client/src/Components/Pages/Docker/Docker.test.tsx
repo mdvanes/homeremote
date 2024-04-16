@@ -24,12 +24,18 @@ const mockDockerListResponse: DockerListResponse = {
             Names: ["/some-name"],
             State: "running",
             Status: "Up 5 days",
+            Labels: {
+                "com.docker.compose.project": null,
+            },
         },
         {
             Id: "124",
             Names: ["/some-stopped"],
             State: "stopped",
             Status: "Exited 5 days ago",
+            Labels: {
+                "com.docker.compose.project": null,
+            },
         },
     ],
 };

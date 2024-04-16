@@ -1,17 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { willAddCredentials } from "../devUtils";
-
-export interface DockerContainerInfo {
-    Id: string;
-    Names: string[];
-    State: string;
-    Status: string;
-}
-
-interface DockerListResponse {
-    status: "received" | "error";
-    containers?: DockerContainerInfo[];
-}
+import { DockerListResponse } from "@homeremote/types";
 
 interface ToggleArgs {
     id: string;

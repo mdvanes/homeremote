@@ -1,13 +1,12 @@
-import { Alert, Box, Grid } from "@mui/material";
+import { DockerContainerInfo } from "@homeremote/types";
+import { Box, Grid } from "@mui/material";
 import { Stack } from "@mui/system";
 import { FC, useEffect, useState } from "react";
-import {
-    DockerContainerInfo,
-    useGetDockerListQuery,
-} from "../../../Services/dockerListApi";
+import { useGetDockerListQuery } from "../../../Services/dockerListApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import DockerInfo from "../DockerInfo/DockerInfo";
+import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import ContainerDot from "./ContainerDot";
 
@@ -22,14 +21,12 @@ interface DockerListProps {
 const DockerList: FC<DockerListProps> = ({ onError }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
-    const { data, isLoading, isFetching, error } = useGetDockerListQuery(
-        undefined,
-        {
+    const { data, isLoading, isFetching, error, refetch } =
+        useGetDockerListQuery(undefined, {
             pollingInterval: isSkippingBecauseError
                 ? undefined
                 : UPDATE_INTERVAL_MS,
-        }
-    );
+        });
 
     useEffect(() => {
         if (error) {
@@ -40,9 +37,9 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
 
     if (error) {
         return (
-            <Box mx={-2}>
-                <Alert severity="error">{getErrorMessage(error)}</Alert>
-            </Box>
+            <ErrorRetry retry={() => refetch()}>
+                DockerList could not load
+            </ErrorRetry>
         );
     }
 

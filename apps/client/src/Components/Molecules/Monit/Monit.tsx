@@ -1,23 +1,39 @@
-import { Alert, Card, CardContent } from "@mui/material";
-import { FC } from "react";
+import { Card, CardContent } from "@mui/material";
+import { FC, useEffect, useState } from "react";
 import { useGetMonitStatusQuery } from "../../../Services/monitApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { useAppDispatch } from "../../../store";
+import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
+import { logError } from "../LogCard/logSlice";
 import MonitInstance from "./MonitInstance";
 
 // Monit only updates once per minute on the backend
 const UPDATE_INTERVAL_MS = 60 * 1000;
 
 const Monit: FC = () => {
-    const { data, isLoading, isFetching, error } = useGetMonitStatusQuery(
-        undefined,
-        {
-            pollingInterval: UPDATE_INTERVAL_MS,
+    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
+    const dispatch = useAppDispatch();
+    const { data, isLoading, isFetching, error, refetch } =
+        useGetMonitStatusQuery(undefined, {
+            pollingInterval: isSkippingBecauseError
+                ? undefined
+                : UPDATE_INTERVAL_MS,
+        });
+
+    useEffect(() => {
+        if (error) {
+            setIsSkippingBecauseError(true);
+            dispatch(logError(`Monit failed: ${getErrorMessage(error)}`));
         }
-    );
+    }, [dispatch, error]);
 
     if (error) {
-        return <Alert severity="error">{getErrorMessage(error)}</Alert>;
+        return (
+            <ErrorRetry marginate retry={() => refetch()}>
+                Monit could not load
+            </ErrorRetry>
+        );
     }
 
     return (

@@ -3,6 +3,9 @@ export interface DockerContainerInfo {
     Names: string[];
     State: string;
     Status: string;
+    Labels: {
+        "com.docker.compose.project": string | null;
+    };
 }
 
 export type AllResponse = DockerContainerInfo[];

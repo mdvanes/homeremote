@@ -3,10 +3,11 @@ import { FC, useEffect, useState } from "react";
 
 const SLOW_UPDATE_MS = 1000; // if the response takes longer than 1000ms, it is considered slow and the full progress bar is shown
 
-const LoadingDot: FC<{ isLoading: boolean; noMargin?: boolean }> = ({
-    isLoading,
-    noMargin = false,
-}) => {
+const LoadingDot: FC<{
+    isLoading: boolean;
+    noMargin?: boolean;
+    slowUpdateMs?: number;
+}> = ({ isLoading, noMargin = false, slowUpdateMs = SLOW_UPDATE_MS }) => {
     const [isSlow, setIsSlow] = useState(false);
 
     useEffect(() => {
@@ -16,14 +17,14 @@ const LoadingDot: FC<{ isLoading: boolean; noMargin?: boolean }> = ({
             setIsSlow(false);
             timer = setTimeout(() => {
                 setIsSlow(true);
-            }, SLOW_UPDATE_MS);
+            }, slowUpdateMs);
         }
         return () => {
             if (timer) {
                 clearTimeout(timer);
             }
         };
-    }, [isLoading]);
+    }, [isLoading, slowUpdateMs]);
 
     return (
         <Box

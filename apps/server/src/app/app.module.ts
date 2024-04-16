@@ -8,6 +8,7 @@ import { DataloraController } from "../datalora/datalora.controller";
 import { DockerlistController } from "../dockerlist/dockerlist.controller";
 import { DownloadlistController } from "../downloadlist/downloadlist.controller";
 import { EnergyUsageController } from "../energyusage/energyusage.controller";
+import { HomesecController } from "../homesec/homesec.controller";
 import { JukeboxController } from "../jukebox/jukebox.controller";
 import { LoginController } from "../login/login.controller";
 import { LogoutController } from "../logout/logout.controller";
@@ -52,6 +53,7 @@ import { AppService } from "./app.service";
         DockerlistController,
         DownloadlistController,
         EnergyUsageController,
+        HomesecController,
         JukeboxController,
         LoginController,
         LogoutController,

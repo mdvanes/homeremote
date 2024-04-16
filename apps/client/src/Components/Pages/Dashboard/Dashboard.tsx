@@ -15,6 +15,7 @@ import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
+import HomeSec from "../../Molecules/HomeSec/HomeSec";
 import Docker from "../Docker/Docker";
 
 const useStyles = makeStyles()((theme) => ({
@@ -43,6 +44,7 @@ const Dashboard: FC = () => {
                     <SwitchBarList />
                 </div>
                 <GasChart />
+                <HomeSec />
                 <UrlToMusic />
                 <LogCard />
             </Grid>

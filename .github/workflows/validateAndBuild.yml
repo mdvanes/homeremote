@@ -9,24 +9,33 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [20.x]
 
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install and Build components 🔧
+      - name: Install dependencies ⚙️
         run: |
           npm i --legacy-peer-deps
           # Workaround for missing binary
           npm i @swc/core-linux-x64-gnu --legacy-peer-deps
-          npm run build --if-present
+      - name: writeGitInfo ✍️
+        run: npm run writeGitInfo --if-present
+      - name: Typecheck 🤙
+        run: npm run typecheck --if-present
+      - name: Lint 👌
+        run: npm run lint --if-present
+      - name: Test 🧪
+        run: npm run test:ci --if-present
         env:
           CI: false # true -> fails on warning
-      - name: Build docker image
+      - name: Build components 🔧
+        run: npm run build --ignore-scripts --if-present
+      - name: Build docker image 💿
         if: ${{ github.ref == 'main' }}
         run: |
           docker build . -t mdworld/homeremote:latest
