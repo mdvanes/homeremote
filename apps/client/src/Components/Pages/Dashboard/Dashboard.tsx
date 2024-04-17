@@ -17,6 +17,7 @@ import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import HomeSec from "../../Molecules/HomeSec/HomeSec";
 import Docker from "../Docker/Docker";
+import DockerStackListCard from "../../Molecules/DockerStackList/DockerStackListCard";
 
 const useStyles = makeStyles()((theme) => ({
     container: {
@@ -55,6 +56,7 @@ const Dashboard: FC = () => {
                     <VideoStream />
                 ) : undefined}
                 <CarTabs />
+                <DockerStackListCard />
                 <IconButton
                     color="primary"
                     onClick={() => {

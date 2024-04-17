@@ -1,17 +1,21 @@
+import { StackItem } from "@homeremote/types";
+import { Alert, Grid, Stack } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useGetStacksQuery } from "../../../Services/stacksApi";
-import { useAppDispatch } from "../../../store";
-import LoadingDot from "../LoadingDot/LoadingDot";
-import { Alert, Grid, Stack } from "@mui/material";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
-import { logError } from "../LogCard/logSlice";
+import { useAppDispatch } from "../../../store";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
-import CardExpandBar from "../CardExpandBar/CardExpandBar";
+import LoadingDot from "../LoadingDot/LoadingDot";
+import { logError } from "../LogCard/logSlice";
 
 const UPDATE_INTERVAL_MS = 30000;
 
+const mapStack = (stack: StackItem): JSX.Element => (
+    <Alert severity={stack.Status === 1 ? "info" : "error"}>{stack.Name}</Alert>
+);
+
 export const DockerStackList: FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    // const [isOpen, setIsOpen] = useState(false);
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const dispatch = useAppDispatch();
     const { data, isLoading, isFetching, isError, error, refetch } =
@@ -36,43 +40,31 @@ export const DockerStackList: FC = () => {
         );
     }
 
+    const stacks = data ?? [];
+    const stacks1 = stacks.slice(0, Math.ceil(stacks.length / 2));
+    const stacks2 = stacks.slice(Math.ceil(stacks.length / 2));
+
     return (
         <>
             <LoadingDot isLoading={isLoading || isFetching} noMargin />
             <Grid container gap={0.5}>
                 <Grid item xs>
                     {data && (
-                        <Stack spacing={0.5}>
-                            {data.map((stack) => (
-                                <Alert
-                                    severity={
-                                        stack.Status === 0 ? "info" : "error"
-                                    }
-                                >
-                                    {stack.Name}
-                                </Alert>
-                            ))}
-                        </Stack>
+                        <Stack spacing={0.5}>{stacks1.map(mapStack)}</Stack>
                     )}
                 </Grid>
                 <Grid item xs>
-                    {/* <Stack spacing={0.5}>
-                        {containers2.map(mapInfo)}
-                        {!isOpen && <div>{containerDots}</div>}
-                    </Stack> */}
+                    <Stack spacing={0.5}>
+                        {stacks2.map(mapStack)}
+                        {/* {!isOpen && <div>{containerDots}</div>} */}
+                    </Stack>
                 </Grid>
             </Grid>
-            {/* docker stack list{" "}
-            <ul>
-                {(data ?? []).map((stack) => (
-                    <li>{stack.Name}</li>
-                ))}
-            </ul> */}
-            <CardExpandBar
+            {/* <CardExpandBar
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
                 hint={`and ??? more`}
-            />
+            /> */}
         </>
     );
 };
