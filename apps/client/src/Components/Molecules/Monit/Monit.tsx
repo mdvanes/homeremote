@@ -30,7 +30,7 @@ const Monit: FC = () => {
 
     if (error) {
         return (
-            <ErrorRetry marginate retry={() => refetch()}>
+            <ErrorRetry retry={() => refetch()}>
                 Monit could not load
             </ErrorRetry>
         );

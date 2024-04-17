@@ -30,7 +30,7 @@ export const DockerStackList: FC = () => {
 
     if (isError) {
         return (
-            <ErrorRetry retry={() => refetch()}>
+            <ErrorRetry noMargin retry={() => refetch()}>
                 DockerStacks could not load
             </ErrorRetry>
         );

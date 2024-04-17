@@ -52,7 +52,7 @@ const DownloadList: FC = () => {
         <List component={Paper}>
             <LoadingDot isLoading={isLoading || isFetching} />
             {error && (
-                <ErrorRetry marginate retry={() => refetch()}>
+                <ErrorRetry retry={() => refetch()}>
                     DL could not load
                 </ErrorRetry>
             )}

@@ -87,7 +87,7 @@ export const HomeSec: FC = () => {
                     slowUpdateMs={6000}
                 />
                 {isError && (
-                    <ErrorRetry marginate retry={() => refetch()}>
+                    <ErrorRetry retry={() => refetch()}>
                         HomeSec could not load
                     </ErrorRetry>
                 )}

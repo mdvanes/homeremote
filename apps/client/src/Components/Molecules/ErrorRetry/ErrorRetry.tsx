@@ -3,18 +3,18 @@ import { Alert, Box, IconButton, Tooltip } from "@mui/material";
 import { FC, PropsWithChildren } from "react";
 
 interface Props extends PropsWithChildren {
-    marginate?: boolean;
+    noMargin?: boolean;
     retry: () => void;
 }
 
 export const ErrorRetry: FC<Props> = ({
-    marginate = false,
+    noMargin = false,
     children,
     retry,
 }) => {
     return (
         <Box
-            mx={marginate ? undefined : -2}
+            mx={noMargin ? -2 : undefined}
             component={Alert}
             severity="error"
             square
