@@ -1,5 +1,4 @@
-import { StackItem } from "@homeremote/types";
-import { Alert, Grid, Stack } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { useGetStacksQuery } from "../../../Services/stacksApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
@@ -7,12 +6,9 @@ import { useAppDispatch } from "../../../store";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import { logError } from "../LogCard/logSlice";
+import DockerStackItem from "./DockerStackItem";
 
 const UPDATE_INTERVAL_MS = 30000;
-
-const mapStack = (stack: StackItem): JSX.Element => (
-    <Alert severity={stack.Status === 1 ? "info" : "error"}>{stack.Name}</Alert>
-);
 
 export const DockerStackList: FC = () => {
     // const [isOpen, setIsOpen] = useState(false);
@@ -50,12 +46,18 @@ export const DockerStackList: FC = () => {
             <Grid container gap={0.5}>
                 <Grid item xs>
                     {data && (
-                        <Stack spacing={0.5}>{stacks1.map(mapStack)}</Stack>
+                        <Stack spacing={0.5}>
+                            {stacks1.map((stack) => (
+                                <DockerStackItem stack={stack} />
+                            ))}
+                        </Stack>
                     )}
                 </Grid>
                 <Grid item xs>
                     <Stack spacing={0.5}>
-                        {stacks2.map(mapStack)}
+                        {stacks2.map((stack) => (
+                            <DockerStackItem stack={stack} />
+                        ))}
                         {/* {!isOpen && <div>{containerDots}</div>} */}
                     </Stack>
                 </Grid>
