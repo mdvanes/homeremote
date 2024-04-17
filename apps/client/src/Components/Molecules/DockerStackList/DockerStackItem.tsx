@@ -1,7 +1,9 @@
 import { StackItem } from "@homeremote/types";
 import {
     Alert,
+    Box,
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -21,6 +23,7 @@ interface DockerStackItemProps {
 }
 
 export const DockerStackItem: FC<DockerStackItemProps> = ({ stack }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [startStack] = useStartStackMutation();
     const [stopStack] = useStopStackMutation();
     const [open, setOpen] = useState(false);
@@ -28,17 +31,19 @@ export const DockerStackItem: FC<DockerStackItemProps> = ({ stack }) => {
     const isUp = Status === 1;
     const state = isUp ? "started" : "stopped";
 
-    const toggleStack = () => {
+    const toggleStack = async () => {
+        setIsLoading(true);
         const args: ToggleArgs = {
             id: Id.toString(),
             endpointId: EndpointId.toString(),
         };
 
         if (isUp) {
-            stopStack(args);
+            await stopStack(args);
         } else {
-            startStack(args);
+            await startStack(args);
         }
+        setIsLoading(false);
     };
 
     const handleClose = () => {
@@ -54,7 +59,15 @@ export const DockerStackItem: FC<DockerStackItemProps> = ({ stack }) => {
                     cursor: "pointer",
                 }}
             >
-                {Name}
+                <Box display="flex">
+                    {isLoading && (
+                        <CircularProgress
+                            size={18}
+                            sx={{ width: 10, marginRight: 1 }}
+                        />
+                    )}
+                    {Name}
+                </Box>
             </Alert>
             <Dialog
                 open={open}
@@ -67,7 +80,6 @@ export const DockerStackItem: FC<DockerStackItemProps> = ({ stack }) => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        {/* {state} */}
                         <Typography>
                             Do you want to {isUp ? "stop" : "start"} {Name} ?
                         </Typography>
