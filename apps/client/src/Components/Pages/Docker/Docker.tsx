@@ -3,43 +3,30 @@ import { FC } from "react";
 // import { DockerListMod } from "@mdworld/homeremote-dockerlist";
 import { Card, CardContent } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { useGetStacksQuery } from "../../../Services/stacksApi";
 import DockerList from "../../Molecules/DockerList/DockerList";
 import { logError } from "../../Molecules/LogCard/logSlice";
+import DockerStackList from "../../Molecules/DockerStackList/DockerStackList";
 
 // const DockerList = DockerListMod.make;
-
-const DockerStackList: FC = () => {
-    const { data } = useGetStacksQuery(undefined);
-
-    return (
-        <div>
-            docker stack list{" "}
-            <ul>
-                {(data ?? []).map((stack) => (
-                    <li>{stack.Name}</li>
-                ))}
-            </ul>
-        </div>
-    );
-};
 
 const Docker: FC = () => {
     const dispatch = useDispatch();
 
     return (
-        <Card>
-            <CardContent>
-                <DockerList
-                    onError={(err: string) =>
-                        dispatch(
-                            logError(`Dockerlist failure: ${err.toString()}`)
-                        )
-                    }
-                />
-                <DockerStackList />
-            </CardContent>
-            {/* <DockerList
+        <>
+            <Card>
+                <CardContent>
+                    <DockerList
+                        onError={(err: string) =>
+                            dispatch(
+                                logError(
+                                    `Dockerlist failure: ${err.toString()}`
+                                )
+                            )
+                        }
+                    />
+                </CardContent>
+                {/* <DockerList
                     url={process.env.NX_BASE_URL || ""}
                     onError={(err: string) =>
                         dispatch(
@@ -47,7 +34,13 @@ const Docker: FC = () => {
                         )
                     }
                 /> */}
-        </Card>
+            </Card>
+            <Card>
+                <CardContent>
+                    <DockerStackList />
+                </CardContent>
+            </Card>
+        </>
     );
 };
 
