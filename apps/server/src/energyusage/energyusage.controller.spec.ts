@@ -32,6 +32,9 @@ describe("EnergyUsage Controller", () => {
     });
 
     it("returns stacks on /GET", async () => {
+        Object.defineProperty(global, "performance", {
+            writable: true,
+        });
         jest.useFakeTimers().setSystemTime(new Date("2024-04-25"));
 
         const mockWaterResponse: EnergyUsageGetWaterResponse = [
