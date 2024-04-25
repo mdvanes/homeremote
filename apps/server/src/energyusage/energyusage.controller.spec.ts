@@ -1,21 +1,13 @@
+import { EnergyUsageGetWaterResponse } from "@homeremote/types";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import got, { CancelableRequest } from "got";
 import { mocked } from "jest-mock";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import { mockAuthenticatedRequest } from "../util/test-helpers/mockAuthenticatedRequest";
 import { EnergyUsageController } from "./energyusage.controller";
-import {
-    EnergyUsageGetWaterResponse,
-    PortainerStack,
-    PortainerStacksResponse,
-} from "@homeremote/types";
 
 jest.mock("got");
 const mockGot = mocked(got);
-
-const mockAuthenticatedRequest = {
-    user: { name: "someuser", id: 1 },
-} as AuthenticatedRequest;
 
 describe("EnergyUsage Controller", () => {
     let controller: EnergyUsageController;

@@ -88,6 +88,7 @@ exports[`Dashboard page contains all the control components 1`] = `
           role="tabpanel"
           style="margin-bottom: 20px;"
         />
+        <mock-dockerstacklist-card />
         <button
           class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root"
           tabindex="0"

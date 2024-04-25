@@ -1,4 +1,3 @@
-import React from "react";
 import { render } from "@testing-library/react";
 import Dashboard from "./Dashboard";
 
@@ -31,6 +30,10 @@ jest.mock(
 );
 jest.mock("../../Molecules/CarTwin/CarTwinCard", () => "mock-cartwin-card");
 jest.mock("../../Molecules/HomeSec/HomeSec", () => "mock-homesec");
+jest.mock(
+    "../../Molecules/DockerStackList/DockerStackListCard",
+    () => "mock-dockerstacklist-card"
+);
 
 describe("Dashboard page", () => {
     it("contains all the control components", () => {
