@@ -13,6 +13,7 @@ import {
     Request,
     UseGuards,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
@@ -36,14 +37,18 @@ const pickAndMapContainerProps = ({
 // Using Docker Engine API: curl --unix-socket /var/run/docker.sock http://v1.24/containers/json?all=true
 // These urls also work: http://localhost/v1.24/containers/json?all=true or v1.24/containers/json?all=true
 const ROOT_URL = "http://docker/v1.41/containers";
-const SOCKET_PATH = "/var/run/docker.sock";
+const DEFAULT_SOCKET_PATH = "/var/run/docker.sock";
 
 @Controller("api/dockerlist")
 export class DockerlistController {
     private readonly logger: Logger;
+    private readonly socketPath: string;
 
-    constructor() {
+    constructor(private configService: ConfigService) {
         this.logger = new Logger(DockerlistController.name);
+        this.socketPath =
+            this.configService.get<string>("DOCKER_SOCKET_PATH") ||
+            DEFAULT_SOCKET_PATH;
     }
 
     @UseGuards(JwtAuthGuard)
@@ -55,7 +60,7 @@ export class DockerlistController {
 
         try {
             const result = await got(`${ROOT_URL}/json?all=true`, {
-                socketPath: SOCKET_PATH,
+                socketPath: this.socketPath,
             }).json<AllResponse>();
             return {
                 status: "received",
@@ -78,7 +83,7 @@ export class DockerlistController {
         try {
             await got(`${ROOT_URL}/${id}/start`, {
                 method: "POST",
-                socketPath: SOCKET_PATH,
+                socketPath: this.socketPath,
             }).json<unknown>();
             return {
                 status: "received",
@@ -100,7 +105,7 @@ export class DockerlistController {
         try {
             await got(`${ROOT_URL}/${id}/stop`, {
                 method: "POST",
-                socketPath: SOCKET_PATH,
+                socketPath: this.socketPath,
             }).json<unknown>();
             return {
                 status: "received",

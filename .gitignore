@@ -19,7 +19,6 @@
 
 # IDE - VSCode
 .vscode/*
-!.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
@@ -50,3 +49,5 @@ apps/client/src/Dummy.bs.js
 apps/client/src/gitinfo.json
 
 libs/types/src/lib/volvo/*.json
+
+NOTES.md

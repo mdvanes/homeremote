@@ -1,3 +1,4 @@
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import got, { CancelableRequest, Response } from "got";
 import { mocked } from "jest-mock";
@@ -9,13 +10,22 @@ const mockGot = mocked(got);
 
 describe("DockerList Controller", () => {
     let controller: DockerlistController;
+    let configService: ConfigService;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [DockerlistController],
+            providers: [
+                { provide: ConfigService, useValue: { get: jest.fn() } },
+            ],
         }).compile();
 
+        configService = module.get<ConfigService>(ConfigService);
         controller = module.get<DockerlistController>(DockerlistController);
+
+        jest.spyOn(configService, "get").mockImplementation(
+            () => "/MOCK_SOCKET_PATH"
+        );
 
         mockGot.mockReset();
     });
