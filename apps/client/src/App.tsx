@@ -27,6 +27,7 @@ import Streams from "./Components/Pages/Streams/Streams";
 import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
 import HotKeyProvider from "./Components/Providers/HotKey/HotKeyProvider";
 import createThemeWithMode from "./theme";
+import Energy from "./Components/Pages/Energy/Energy";
 
 export interface AppProps {
     swCallbacks: {
@@ -120,6 +121,10 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                     <Route
                                         path="/cartwin"
                                         element={<CarTwinPage />}
+                                    />
+                                    <Route
+                                        path="/energy"
+                                        element={<Energy />}
                                     />
                                     <Route path="/about" element={<Log />} />
                                 </Routes>

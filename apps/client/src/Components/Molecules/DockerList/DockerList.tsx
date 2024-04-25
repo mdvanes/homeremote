@@ -37,7 +37,7 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
 
     if (error) {
         return (
-            <ErrorRetry retry={() => refetch()}>
+            <ErrorRetry noMargin retry={() => refetch()}>
                 DockerList could not load
             </ErrorRetry>
         );

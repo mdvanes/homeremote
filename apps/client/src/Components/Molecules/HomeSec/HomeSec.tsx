@@ -16,13 +16,14 @@ import { useAppDispatch } from "../../../store";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
-import { logError } from "../LogCard/logSlice";
+import { logError, logInfo } from "../LogCard/logSlice";
 import SimpleHomeSecListItem from "./SimpleHomeSecListItem";
 
 const statusClass: Record<HomesecStatusResponse["status"] | "Error", string> = {
     Error: "black",
     Disarm: "green",
     "Home Arm 1": "yellow",
+    Arm: "red",
 };
 
 const typeIcon: Record<TypeF, string> = {
@@ -53,6 +54,11 @@ export const HomeSec: FC = () => {
         }
     }, [dispatch, error]);
 
+    // TODO logInfo when data.status changes. Does this work?
+    useEffect(() => {
+        dispatch(logInfo(`HomeSec status: ${data?.status}`));
+    }, [data?.status, dispatch]);
+
     const hasNoDevices =
         !isError &&
         !isLoading &&
@@ -69,6 +75,9 @@ export const HomeSec: FC = () => {
     return (
         <Tooltip title={`HomeSec status: ${data?.status ?? "Error"}`}>
             <List
+                onClick={() => {
+                    refetch();
+                }}
                 component={Paper}
                 style={{
                     borderWidth: 1,
@@ -81,7 +90,7 @@ export const HomeSec: FC = () => {
                     slowUpdateMs={6000}
                 />
                 {isError && (
-                    <ErrorRetry marginate retry={() => refetch()}>
+                    <ErrorRetry retry={() => refetch()}>
                         HomeSec could not load
                     </ErrorRetry>
                 )}

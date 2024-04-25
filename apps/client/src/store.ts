@@ -15,6 +15,7 @@ import { nextupApi } from "./Services/nextupApi";
 import { nowplayingApi } from "./Services/nowplayingApi";
 import { scheduleApi } from "./Services/scheduleApi";
 import { serviceLinksApi } from "./Services/serviceLinksApi";
+import { stacksApi } from "./Services/stacksApi";
 import { urlToMusicApi } from "./Services/urlToMusicApi";
 
 export const store = configureStore({
@@ -34,6 +35,7 @@ export const store = configureStore({
             nowplayingApi.middleware,
             scheduleApi.middleware,
             serviceLinksApi.middleware,
+            stacksApi.middleware,
             urlToMusicApi.middleware
         ),
 });

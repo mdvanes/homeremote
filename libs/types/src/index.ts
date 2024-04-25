@@ -10,6 +10,7 @@ export * from "./lib/nextup.types";
 export * from "./lib/nowplaying.types";
 export * from "./lib/schedule.types";
 export * from "./lib/servicelinks.types";
+export * from "./lib/stacks.types";
 export * from "./lib/switches.types";
 export * from "./lib/urltomusic.types";
 export * from "./lib/volvo/volvo.types";

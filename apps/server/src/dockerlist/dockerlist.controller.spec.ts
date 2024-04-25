@@ -1,7 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { DockerlistController } from "./dockerlist.controller";
+import got, { CancelableRequest, Response } from "got";
 import { mocked } from "jest-mock";
-import got, { Response, CancelableRequest } from "got";
+import { mockAuthenticatedRequest } from "../util/test-helpers/mockAuthenticatedRequest";
+import { DockerlistController } from "./dockerlist.controller";
 
 jest.mock("got");
 const mockGot = mocked(got);
@@ -24,7 +25,9 @@ describe("DockerList Controller", () => {
             mockGot.mockReturnValue({
                 json: () => Promise.resolve([]),
             } as CancelableRequest<Response>);
-            const result = await controller.getDockerList();
+            const result = await controller.getDockerList(
+                mockAuthenticatedRequest
+            );
             expect(mockGot).toBeCalledWith(
                 "http://docker/v1.41/containers/json?all=true",
                 {
@@ -43,9 +46,9 @@ describe("DockerList Controller", () => {
                 json: () => Promise.reject("some error"),
             } as CancelableRequest<Response>);
 
-            await expect(controller.getDockerList()).rejects.toThrow(
-                "failed to receive downstream data"
-            );
+            await expect(
+                controller.getDockerList(mockAuthenticatedRequest)
+            ).rejects.toThrow("failed to receive downstream data");
             expect(mockGot).toBeCalledWith(
                 "http://docker/v1.41/containers/json?all=true",
                 {

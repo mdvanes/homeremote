@@ -10,10 +10,12 @@ import {
     HttpStatus,
     Logger,
     Param,
+    Request,
     UseGuards,
 } from "@nestjs/common";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { AuthenticatedRequest } from "../login/LoginRequest.types";
 
 const pickAndMapContainerProps = ({
     Id,
@@ -46,16 +48,15 @@ export class DockerlistController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getDockerList(): Promise<DockerListResponse> {
-        this.logger.verbose("GET to /api/dockerlist");
+    async getDockerList(
+        @Request() req: AuthenticatedRequest
+    ): Promise<DockerListResponse> {
+        this.logger.verbose(`[${req.user.name}] GET to /api/dockerlist`);
 
         try {
             const result = await got(`${ROOT_URL}/json?all=true`, {
                 socketPath: SOCKET_PATH,
             }).json<AllResponse>();
-            this.logger.verbose(
-                result.map((r) => r.Labels["com.docker.compose.project"])
-            );
             return {
                 status: "received",
                 containers: result.map(pickAndMapContainerProps),
