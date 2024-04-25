@@ -196,8 +196,6 @@ export class EnergyUsageController {
                 },
             }).json<EnergyUsageGetTemperatureResponse>();
 
-            console.log(result);
-
             return result;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
@@ -224,8 +222,6 @@ export class EnergyUsageController {
                     Authorization: `Bearer ${this.haApiConfig.token}`,
                 },
             }).json<EnergyUsageGetWaterResponse>();
-
-            console.log(result);
 
             return result;
         } catch (err) {
