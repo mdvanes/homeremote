@@ -1,5 +1,5 @@
 #### BUILD AND VALIDATE STAGE ####
-FROM node:16 AS build-env
+FROM node:20 AS build-env
 
 ARG INSTALL_TIMEOUT
 
@@ -33,7 +33,7 @@ RUN npm run build
 RUN rm apps/server/auth.json
 
 #### INSTALL DEPS FOR ALPINE STAGE ####
-FROM node:16-alpine AS build-alpine-env
+FROM node:20-alpine AS build-alpine-env
 
 ARG INSTALL_TIMEOUT
 
@@ -64,7 +64,7 @@ RUN npm ci $INSTALL_TIMEOUT
 RUN apk del jq
 
 #### RUNTIME STAGE ####
-FROM node:16-alpine
+FROM node:20-alpine
 
 WORKDIR /app
 
