@@ -75,6 +75,9 @@ export const HomeSec: FC = () => {
     return (
         <Tooltip title={`HomeSec status: ${data?.status ?? "Error"}`}>
             <List
+                onClick={() => {
+                    refetch();
+                }}
                 component={Paper}
                 style={{
                     borderWidth: 1,
