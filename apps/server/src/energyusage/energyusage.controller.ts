@@ -1,6 +1,8 @@
 import {
     EnergyUsageGasItem,
     EnergyUsageGetGasUsageResponse,
+    EnergyUsageGetTemperatureResponse,
+    EnergyUsageGetWaterResponse,
     GasUsageItem,
     GotGasUsageResponse,
     GotTempResponse,
@@ -83,6 +85,12 @@ export class EnergyUsageController {
         baseUrl: string;
         sensors: SensorConfig[];
     };
+    private readonly haApiConfig: {
+        baseUrl: string;
+        token: string;
+        temperatureSensorId: string;
+        waterSensorId: string;
+    };
 
     constructor(private configService: ConfigService) {
         this.logger = new Logger(EnergyUsageController.name);
@@ -93,6 +101,19 @@ export class EnergyUsageController {
             baseUrl,
             sensors: strToConfigs(DOMOTICZ_SENSORS),
         };
+        this.haApiConfig = {
+            baseUrl:
+                this.configService.get<string>("HOMEASSISTANT_BASE_URL") || "",
+            token: this.configService.get<string>("HOMEASSISTANT_TOKEN") || "",
+            temperatureSensorId:
+                this.configService.get<string>(
+                    "HOMEASSISTANT_TEMPERATURE_SENSOR_ID"
+                ) || "",
+            waterSensorId:
+                this.configService.get<string>(
+                    "HOMEASSISTANT_WATER_SENSOR_ID"
+                ) || "",
+        };
     }
 
     getAPI(sensorConfig: SensorConfig) {
@@ -101,7 +122,7 @@ export class EnergyUsageController {
 
     @UseGuards(JwtAuthGuard)
     @Get("/gas")
-    async getNextUp(
+    async getGas(
         @Request() req: AuthenticatedRequest
     ): Promise<EnergyUsageGetGasUsageResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/energyusage/gas`);
@@ -147,6 +168,66 @@ export class EnergyUsageController {
             };
 
             return aggregated;
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("/temperature")
+    async getTemperature(
+        @Request() req: AuthenticatedRequest
+    ): Promise<EnergyUsageGetTemperatureResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/energyusage/temperature`
+        );
+
+        try {
+            const date = new Date().toISOString().slice(0, 10);
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${date}T00:00:00Z?filter_entity_id=${this.haApiConfig.temperatureSensorId}`;
+
+            const result = await got(url, {
+                headers: {
+                    Authorization: `Bearer ${this.haApiConfig.token}`,
+                },
+            }).json<EnergyUsageGetTemperatureResponse>();
+
+            console.log(result);
+
+            return result;
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("/water")
+    async getWater(
+        @Request() req: AuthenticatedRequest
+    ): Promise<EnergyUsageGetWaterResponse> {
+        this.logger.verbose(`[${req.user.name}] GET to /api/energyusage/water`);
+
+        try {
+            const date = new Date().toISOString().slice(0, 10);
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${date}T00:00:00Z?filter_entity_id=${this.haApiConfig.waterSensorId}`;
+
+            const result = await got(url, {
+                headers: {
+                    Authorization: `Bearer ${this.haApiConfig.token}`,
+                },
+            }).json<EnergyUsageGetWaterResponse>();
+
+            console.log(result);
+
+            return result;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

@@ -85,3 +85,17 @@ export interface EnergyUsageGetGasUsageResponse {
     status: string;
     title: string;
 }
+
+export interface HomeAssistantEntry {
+    entity_id: string;
+    state: string;
+    attributes: object;
+    last_changed: string;
+    last_updated: string;
+}
+
+export type HomeAssistantSensor = HomeAssistantEntry[];
+
+export type EnergyUsageGetTemperatureResponse = HomeAssistantSensor[];
+
+export type EnergyUsageGetWaterResponse = HomeAssistantSensor[];
