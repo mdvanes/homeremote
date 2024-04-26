@@ -3,7 +3,8 @@ export type TypeF =
     | "Smoke Detector"
     | "Keypad"
     | "IR"
-    | "Remote Controller";
+    | "Remote Controller"
+    | "Siren";
 
 interface SensorRow {
     area: number;
