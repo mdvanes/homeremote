@@ -11,6 +11,7 @@ const useStyles = makeStyles()(() => ({
     spacedBetween: {
         display: "flex",
         justifyContent: "space-between",
+        flexWrap: "wrap",
     },
 }));
 
