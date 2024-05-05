@@ -5,7 +5,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { ChartClimate } from "./ChartClimate";
+import { ClimateChart } from "./charts/ClimateChart";
 
 export const Energy: FC = () => {
     const { data: waterData } = useGetWaterQuery(undefined);
@@ -34,7 +34,7 @@ export const Energy: FC = () => {
                     </TabList>
                 </Box>
                 <TabPanel value="1">
-                    <ChartClimate />
+                    <ClimateChart />
                 </TabPanel>
                 <TabPanel value="2">Item Two</TabPanel>
                 <TabPanel value="3">Item Three</TabPanel>
