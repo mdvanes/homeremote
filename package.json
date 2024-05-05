@@ -24,7 +24,10 @@
         "typecheck:server": "tsc --noEmit --pretty -p apps/server/tsconfig.app.json",
         "validate": "npm run typecheck && npm run lint && npm run test:ci",
         "prebuild": "npm run writeGitInfo && npm run validate",
-        "codegen:third-party": "npx @openapitools/openapi-generator-cli generate -i petstore.yaml -g typescript-node -o ./tmp/test/",
+        "codegen:externalNode": "TS_POST_PROCESS_FILE=\"npx eslint --fix --ext .tsx,.ts\" npx @openapitools/openapi-generator-cli generate --enable-post-process-file -i ./libs/types/definitions/external/homeAssistant.yml -g typescript-node -o ./apps/server/src/api/generated/ --additional-properties=supportsES6=true",
+        "codegen:external1": "TS_POST_PROCESS_FILE=\"npx eslint --fix --ext .tsx,.ts\" npx @openapitools/openapi-generator-cli generate --enable-post-process-file -i ./libs/types/definitions/external/homeAssistant.yml -g typescript -o ./apps/server/src/api/generated/ --additional-properties=supportsES6=true,platform=node",
+        "codegen:external2": "openapi --input ./libs/types/definitions/external/homeAssistant.yml --output ./apps/server/src/api/generated/",
+        "codegen:external": "openapi-typescript ./libs/types/definitions/external/*.yml -o ./apps/server/src/api/generated/ && npx eslint --fix --ext .tsx,.ts ./apps/server/src/api/generated/",
         "codegen:nest": "echo 'use https://openapistack.co/docs/openapi-backend/intro/'",
         "codegen:rtkq": "npx rtk-query-codegen-openapi openapi-config.ts"
     },
