@@ -1,10 +1,10 @@
 import { Chip, Stack } from "@mui/material";
 import { FC } from "react";
-import { useGetTemperatureQuery } from "../../../../Services/energyUsageApi";
+import { useGetWaterQuery } from "../../../../Services/energyUsageApi";
 import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
 
-export const ClimateChart: FC = () => {
-    const { data, isLoading, isFetching } = useGetTemperatureQuery(undefined);
+export const WaterChart: FC = () => {
+    const { data, isLoading, isFetching } = useGetWaterQuery(undefined);
 
     return (
         <>
@@ -19,27 +19,20 @@ export const ClimateChart: FC = () => {
                     ))}
             </Stack>
             <EnergyChart
-                data={data?.[0].map((item, index) => ({
+                data={data?.[0].map((item) => ({
                     day: item.last_changed,
-                    temperature: item.state,
-                    humidity: data?.[1]?.[index]?.state,
+                    liters: item.state,
                 }))}
                 config={{
                     lines: [
                         {
-                            dataKey: "temperature",
+                            dataKey: "liters",
                             stroke: "#66bb6a",
-                            unit: "°C",
-                        },
-                        {
-                            dataKey: "humidity",
-                            stroke: "#ff9100",
-                            unit: "%",
-                            yAxisId: "left",
+                            unit: "l",
                         },
                     ],
-                    leftUnit: "%",
-                    rightUnit: "°",
+
+                    rightUnit: "l",
                 }}
                 isLoading={isLoading || isFetching}
             />

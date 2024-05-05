@@ -1,15 +1,13 @@
-import { useGetWaterQuery } from "../../../Services/energyUsageApi";
-import { FC, useState } from "react";
-import Box from "@mui/material/Box";
-import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import { FC, useState } from "react";
 import { ClimateChart } from "./charts/ClimateChart";
+import { WaterChart } from "./charts/WaterChart";
 
 export const Energy: FC = () => {
-    const { data: waterData } = useGetWaterQuery(undefined);
-
     const [value, setValue] = useState("1");
 
     const handleTabChange = (
@@ -39,21 +37,7 @@ export const Energy: FC = () => {
                 <TabPanel value="2">Item Two</TabPanel>
                 <TabPanel value="3">Item Three</TabPanel>
                 <TabPanel value="4">
-                    <div>
-                        water:
-                        {waterData &&
-                            waterData.length &&
-                            waterData.map((sensors) => (
-                                <ul>
-                                    {sensors.map((entry) => (
-                                        <li>
-                                            {entry.last_changed}{" "}
-                                            {entry.entity_id} {entry.state}
-                                        </li>
-                                    ))}
-                                </ul>
-                            ))}
-                    </div>
+                    <WaterChart />
                 </TabPanel>
             </TabContext>
         </Box>
