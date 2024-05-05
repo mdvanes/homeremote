@@ -6,6 +6,20 @@ import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
 export const ClimateChart: FC = () => {
     const { data, isLoading, isFetching } = useGetTemperatureQuery(undefined);
 
+    const temps: { time: number; temperature?: string; humidity?: string }[] =
+        data?.[0].map((item, index) => ({
+            time: new Date(item.last_changed).getTime(),
+            temperature: item.state,
+        })) ?? [];
+
+    const humids: { time: number; temperature?: string; humidity?: string }[] =
+        data?.[1].map((item, index) => ({
+            time: new Date(item.last_changed).getTime(),
+            humidity: item.state,
+        })) ?? [];
+
+    const vals = temps.concat(humids);
+
     return (
         <>
             <Stack direction="row" spacing={1} marginBottom={1}>
@@ -19,11 +33,7 @@ export const ClimateChart: FC = () => {
                     ))}
             </Stack>
             <EnergyChart
-                data={data?.[0].map((item, index) => ({
-                    day: item.last_changed,
-                    temperature: item.state,
-                    humidity: data?.[1]?.[index]?.state,
-                }))}
+                data={vals}
                 config={{
                     lines: [
                         {
@@ -38,8 +48,12 @@ export const ClimateChart: FC = () => {
                             yAxisId: "left",
                         },
                     ],
-                    leftUnit: "%",
-                    rightUnit: "°",
+                    leftYAxis: {
+                        unit: "%",
+                    },
+                    rightYAxis: {
+                        unit: "°",
+                    },
                 }}
                 isLoading={isLoading || isFetching}
             />

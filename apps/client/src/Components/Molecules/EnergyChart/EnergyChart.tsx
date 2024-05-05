@@ -10,32 +10,22 @@ import {
     XAxis,
     YAxis,
     type BarProps,
+    YAxisProps,
 } from "recharts";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
 interface SensorItem {
-    day: string; // "2024-05-30"
+    time: number;
 }
 
 interface SensorConfig {
     lines?: Omit<LineProps, "ref">[];
     bars?: Omit<BarProps, "ref">[];
-    leftUnit?: string;
-    rightUnit?: string;
+    leftYAxis?: YAxisProps;
+    rightYAxis?: YAxisProps;
 }
 
 const dateTimeFormat = (val: string): string => {
-    // const [year, month, day] = val
-    //     .slice(0, 10)
-    //     .split("-");
-    // console.log(year, month, day);
-
-    // const date = new Date(
-    //     year,
-    //     month - 1,
-    //     day
-    // );
-
     const date = new Date(val);
 
     const formattedDate = date.toLocaleString("en-uk", {
@@ -43,7 +33,6 @@ const dateTimeFormat = (val: string): string => {
         day: "numeric",
         month: "2-digit",
         year: "numeric",
-        // timeStyle: "short",
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
@@ -89,22 +78,26 @@ export const EnergyChart: FC<{
                                 }}
                             >
                                 <XAxis
-                                    dataKey="day"
+                                    dataKey="time"
                                     angle={-25}
                                     interval={0}
                                     style={{ fontSize: "10px" }}
                                     tickFormatter={dateTimeFormat}
+                                    type="number"
+                                    domain={["auto", "auto"]}
                                 />
                                 <YAxis
                                     yAxisId="left"
-                                    unit={config.leftUnit}
                                     style={{ fontSize: "10px" }}
+                                    domain={["auto", "auto"]}
+                                    {...config.leftYAxis}
                                 />
                                 <YAxis
                                     yAxisId="right"
-                                    unit={config.rightUnit}
                                     orientation="right"
                                     style={{ fontSize: "10px" }}
+                                    domain={["auto", "auto"]}
+                                    {...config.rightYAxis}
                                 />
                                 <Tooltip
                                     labelFormatter={dateTimeFormat}

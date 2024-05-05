@@ -20,7 +20,7 @@ export const WaterChart: FC = () => {
             </Stack>
             <EnergyChart
                 data={data?.[0].map((item) => ({
-                    day: item.last_changed,
+                    time: new Date(item.last_changed).getTime() ?? 1,
                     liters: item.state,
                 }))}
                 config={{
@@ -31,8 +31,9 @@ export const WaterChart: FC = () => {
                             unit: "l",
                         },
                     ],
-
-                    rightUnit: "l",
+                    rightYAxis: {
+                        unit: "l",
+                    },
                 }}
                 isLoading={isLoading || isFetching}
             />
