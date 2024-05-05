@@ -23,7 +23,7 @@ const statusClass: Record<HomesecStatusResponse["status"] | "Error", string> = {
     Error: "black",
     Disarm: "green",
     "Home Arm 1": "yellow",
-    Arm: "red",
+    "Full Arm": "red",
 };
 
 const typeIcon: Record<TypeF, string> = {
