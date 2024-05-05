@@ -1,20 +1,20 @@
 import { Chip, Stack } from "@mui/material";
 import { FC } from "react";
-import { useGetTemperatureQuery } from "../../../../Services/energyUsageApi";
+import { useGetTemperaturesQuery } from "../../../../Services/generated/energyUsageApi";
 import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
 
 export const ClimateChart: FC = () => {
-    const { data, isLoading, isFetching } = useGetTemperatureQuery(undefined);
+    const { data, isLoading, isFetching } = useGetTemperaturesQuery();
 
     const temps: { time: number; temperature?: string; humidity?: string }[] =
         data?.[0].map((item, index) => ({
-            time: new Date(item.last_changed).getTime(),
+            time: new Date(item?.last_changed ?? 0).getTime(),
             temperature: item.state,
         })) ?? [];
 
     const humids: { time: number; temperature?: string; humidity?: string }[] =
         data?.[1].map((item, index) => ({
-            time: new Date(item.last_changed).getTime(),
+            time: new Date(item?.last_changed ?? 0).getTime(),
             humidity: item.state,
         })) ?? [];
 
