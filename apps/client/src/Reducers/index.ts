@@ -10,6 +10,7 @@ import { dataloraApi } from "../Services/dataloraApi";
 import { dockerListApi } from "../Services/dockerListApi";
 import { downloadListApi } from "../Services/downloadListApi";
 import { energyUsageApi } from "../Services/energyUsageApi";
+import { energyUsageApi as newEnergyUsageApi } from "../Services/generated/energyUsageApi";
 import { homesecApi } from "../Services/homesecApi";
 import { jukeboxApi } from "../Services/jukeboxApi";
 import { monitApi } from "../Services/monitApi";
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
     [dockerListApi.reducerPath]: dockerListApi.reducer,
     [downloadListApi.reducerPath]: downloadListApi.reducer,
     [energyUsageApi.reducerPath]: energyUsageApi.reducer,
+    [newEnergyUsageApi.reducerPath]: newEnergyUsageApi.reducer,
     [homesecApi.reducerPath]: homesecApi.reducer,
     [jukeboxApi.reducerPath]: jukeboxApi.reducer,
     [monitApi.reducerPath]: monitApi.reducer,
