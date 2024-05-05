@@ -4,49 +4,68 @@ import {
     Bar,
     ComposedChart,
     Line,
+    type LineProps,
     ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis,
+    type BarProps,
 } from "recharts";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
 interface SensorItem {
     day: string; // "2024-05-30"
-    // value: string; // 2.11
-}
-
-interface SensorConfigItem {
-    dataKey: string;
-    color: string;
 }
 
 interface SensorConfig {
-    lines?: SensorConfigItem[];
-    bars?: SensorConfigItem[];
+    lines?: Omit<LineProps, "ref">[];
+    bars?: Omit<BarProps, "ref">[];
+    leftUnit?: string;
+    rightUnit?: string;
 }
+
+const dateTimeFormat = (val: string): string => {
+    // const [year, month, day] = val
+    //     .slice(0, 10)
+    //     .split("-");
+    // console.log(year, month, day);
+
+    // const date = new Date(
+    //     year,
+    //     month - 1,
+    //     day
+    // );
+
+    const date = new Date(val);
+
+    const formattedDate = date.toLocaleString("en-uk", {
+        weekday: "short",
+        day: "numeric",
+        month: "2-digit",
+        year: "numeric",
+        // timeStyle: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+    });
+    return formattedDate;
+};
 
 export const EnergyChart: FC<{
     isLoading: boolean;
     data: SensorItem[] | undefined;
     config: SensorConfig;
 }> = ({ isLoading, data, config }) => {
-    const chartLines = config.lines?.map(({ dataKey, color }) => (
+    const chartLines = config.lines?.map((config) => (
         <Line
-            key={dataKey}
-            name={`avg ${dataKey}`}
+            key={config.dataKey?.toString()}
             yAxisId="right"
             type="monotone"
-            dataKey={dataKey}
-            stroke={color}
+            {...config}
         />
     ));
-    const chartBars = config.bars?.map(({ dataKey }) => (
-        <Bar
-            yAxisId="left"
-            dataKey={dataKey} // m3 on this day
-            fill="#2d6196"
-        />
+    const chartBars = config.bars?.map((config) => (
+        <Bar yAxisId="left" {...config} />
     ));
 
     return (
@@ -74,45 +93,21 @@ export const EnergyChart: FC<{
                                     angle={-25}
                                     interval={0}
                                     style={{ fontSize: "10px" }}
+                                    tickFormatter={dateTimeFormat}
                                 />
                                 <YAxis
                                     yAxisId="left"
-                                    // unit="m³"
+                                    unit={config.leftUnit}
                                     style={{ fontSize: "10px" }}
                                 />
                                 <YAxis
                                     yAxisId="right"
-                                    unit="°"
+                                    unit={config.rightUnit}
                                     orientation="right"
                                     style={{ fontSize: "10px" }}
                                 />
                                 <Tooltip
-                                    labelFormatter={(val) => {
-                                        const [year, month, day] =
-                                            val.split("-");
-
-                                        const date = new Date(
-                                            year,
-                                            month - 1,
-                                            day
-                                        );
-
-                                        const formattedDate =
-                                            date.toLocaleDateString("en-uk", {
-                                                weekday: "short",
-                                                day: "numeric",
-                                                month: "2-digit",
-                                                year: "numeric",
-                                            });
-                                        return formattedDate;
-                                    }}
-                                    formatter={(val) => {
-                                        // Temperature is number, gas usage is string
-                                        if (typeof val === "number") {
-                                            return val.toFixed(1) + "°C";
-                                        }
-                                        return val + "m³";
-                                    }}
+                                    labelFormatter={dateTimeFormat}
                                     wrapperStyle={{
                                         border: "none",
                                     }}
