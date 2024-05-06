@@ -24,6 +24,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/energyusage/water": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get water
+         * @description Get water
+         */
+        get: operations["getWater"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -86,6 +106,48 @@ export interface components {
                 user_id?: string;
             };
         }[][];
+        GetWaterResponse: {
+            /** @example sensor.liters */
+            entity_id?: string;
+            /**
+             * Format: date
+             * @example 3201
+             */
+            state?: string;
+            attributes?: {
+                /** @example total */
+                state_class?: string;
+                /** @example L */
+                unit_of_measurement?: string;
+                /** @example water */
+                device_class?: string;
+                /** @example liters */
+                friendly_name?: string;
+            };
+            /**
+             * Format: date-time
+             * @example 2024-05-06T00:00:00+00:00
+             */
+            last_changed?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-06T00:00:00+00:00
+             */
+            last_reported?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-06T00:00:00+00:00
+             */
+            last_updated?: string;
+            context?: {
+                /** @example 01HWQC2MBD01BVZJP660G9JKXA */
+                id?: string;
+                /** Format: nullable */
+                parent_id?: string;
+                /** Format: nullable */
+                user_id?: string;
+            };
+        }[][];
     };
     responses: never;
     parameters: never;
@@ -111,6 +173,44 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetTemperaturesResponse"];
+                };
+            };
+            /** @description Bad request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getWater: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Water */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetWaterResponse"];
                 };
             };
             /** @description Bad request. */

@@ -1,10 +1,10 @@
 import { Chip, Stack } from "@mui/material";
 import { FC } from "react";
-import { useGetWaterQuery } from "../../../../Services/energyUsageApi";
+import { useGetWaterQuery } from "../../../../Services/generated/energyUsageApi";
 import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
 
 export const WaterChart: FC = () => {
-    const { data, isLoading, isFetching } = useGetWaterQuery(undefined);
+    const { data, isLoading, isFetching } = useGetWaterQuery();
 
     return (
         <>
@@ -14,7 +14,7 @@ export const WaterChart: FC = () => {
                     data.map((sensor) => (
                         <Chip
                             key={sensor[0].entity_id}
-                            label={sensor[0].entity_id}
+                            label={sensor[0].attributes?.friendly_name}
                         />
                     ))}
             </Stack>

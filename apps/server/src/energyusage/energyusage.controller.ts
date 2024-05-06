@@ -223,7 +223,7 @@ export class EnergyUsageController {
                 headers: {
                     Authorization: `Bearer ${this.haApiConfig.token}`,
                 },
-            }).json<EnergyUsageGetWaterResponse>();
+            }).json<GetHaSensorHistoryResponse>();
 
             return result;
         } catch (err) {

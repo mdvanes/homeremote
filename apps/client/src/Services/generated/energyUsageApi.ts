@@ -1,5 +1,5 @@
 import { emptySplitApi as api } from "../emptyApi";
-export const addTagTypes = ["temperature"] as const;
+export const addTagTypes = ["temperature", "water"] as const;
 const injectedRtkApi = api
     .enhanceEndpoints({
         addTagTypes,
@@ -13,6 +13,10 @@ const injectedRtkApi = api
                 query: () => ({ url: `/api/energyusage/temperature` }),
                 providesTags: ["temperature"],
             }),
+            getWater: build.query<GetWaterApiResponse, GetWaterApiArg>({
+                query: () => ({ url: `/api/energyusage/water` }),
+                providesTags: ["water"],
+            }),
         }),
         overrideExisting: false,
     });
@@ -20,6 +24,8 @@ export { injectedRtkApi as energyUsageApi };
 export type GetTemperaturesApiResponse =
     /** status 200 Temperatures */ GetTemperaturesResponse;
 export type GetTemperaturesApiArg = void;
+export type GetWaterApiResponse = /** status 200 Water */ GetWaterResponse;
+export type GetWaterApiArg = void;
 export type GetTemperaturesResponse = {
     entity_id?: string;
     state?: string;
@@ -50,4 +56,22 @@ export type ErrorResponse = {
     /** Code of the error */
     code?: number;
 };
-export const { useGetTemperaturesQuery } = injectedRtkApi;
+export type GetWaterResponse = {
+    entity_id?: string;
+    state?: string;
+    attributes?: {
+        state_class?: string;
+        unit_of_measurement?: string;
+        device_class?: string;
+        friendly_name?: string;
+    };
+    last_changed?: string;
+    last_reported?: string;
+    last_updated?: string;
+    context?: {
+        id?: string;
+        parent_id?: string;
+        user_id?: string;
+    };
+}[][];
+export const { useGetTemperaturesQuery, useGetWaterQuery } = injectedRtkApi;

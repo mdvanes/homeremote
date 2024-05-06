@@ -113,6 +113,16 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 8. Update the version in docker-compose.yml
 9. On the target server: `docker-compose up -d`
 
+## Generate types
+
+- Intercept a JSON to the intended endpoint, e.g. with cURL
+- Save the JSON in `./libs/types/examples`. The `internal` subdir is for endpoints in this repo, the `external` subdir is for endpoints outside this repo, e.g. from third parties if they don't provide their own OpenApi descriptions.
+- Run `npx mock-to-openapi ./libs/types/examples`
+- Copy the generated snippet from `./libs/types/examples` to the appropriate schema in `./libs/types/definitions`
+- If there is no schema yet, this can be helpful to build one: https://editor.swagger.io/
+- Run `npm run codegen`
+- Types should be generated for the server and hooks for the client.
+
 ## Notes
 
 -   "noPropertyAccessFromIndexSignature": was turned to false when migrating, also see https://www.typescriptlang.org/tsconfig#noPropertyAccessFromIndexSignature

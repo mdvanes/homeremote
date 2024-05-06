@@ -6,46 +6,44 @@ import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
 export const ClimateChart: FC = () => {
     const { data, isLoading, isFetching } = useGetTemperaturesQuery();
 
-    const temps: { time: number; temperature?: string; humidity?: string }[] =
-        data?.[0].map((item, index) => ({
-            time: new Date(item?.last_changed ?? 0).getTime(),
-            temperature: item.state,
-        })) ?? [];
+    const sensors = data?.flatMap((sensor) => sensor[0]) ?? [];
 
-    const humids: { time: number; temperature?: string; humidity?: string }[] =
-        data?.[1].map((item, index) => ({
-            time: new Date(item?.last_changed ?? 0).getTime(),
-            humidity: item.state,
-        })) ?? [];
-
-    const vals = temps.concat(humids);
+    const vals =
+        data?.flatMap((sensor) =>
+            sensor.map((item) => ({
+                time: new Date(item?.last_changed ?? 0).getTime(),
+                [`${item.attributes?.friendly_name}`]: item.state,
+            }))
+        ) ?? [];
 
     return (
         <>
             <Stack direction="row" spacing={1} marginBottom={1}>
-                {data &&
-                    data.length &&
-                    data.map((sensor) => (
-                        <Chip
-                            key={sensor[0].entity_id}
-                            label={sensor[0].entity_id}
-                        />
-                    ))}
+                {sensors.map((sensor) => (
+                    <Chip
+                        key={sensor.entity_id}
+                        label={sensor.attributes?.friendly_name}
+                    />
+                ))}
             </Stack>
             <EnergyChart
                 data={vals}
                 config={{
                     lines: [
                         {
-                            dataKey: "temperature",
+                            dataKey: sensors[0]?.attributes?.friendly_name,
                             stroke: "#66bb6a",
                             unit: "°C",
                         },
                         {
-                            dataKey: "humidity",
+                            dataKey: sensors[1]?.attributes?.friendly_name,
                             stroke: "#ff9100",
                             unit: "%",
                             yAxisId: "left",
+                        },
+                        {
+                            dataKey: sensors[2]?.attributes?.friendly_name,
+                            unit: "°C",
                         },
                     ],
                     leftYAxis: {

@@ -36,6 +36,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /api/energyusage/water:
+    get:
+      tags:
+        - water
+      summary: Get water
+      description: Get water
+      operationId: getWater
+      responses:
+        '200':
+          description: Water
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWaterResponse'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'                
 components:
   schemas:
     ErrorResponse:
@@ -99,6 +125,59 @@ components:
               type: string
               format: date-time
               example: 2024-05-05T00:00:00+00:00
+            context:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 01HWQC2MBD01BVZJP660G9JKXA
+                parent_id:
+                  type: string
+                  format: nullable
+                user_id:
+                  type: string
+                  format: nullable
+    GetWaterResponse:
+      type: array
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            entity_id:
+              type: string
+              example: sensor.liters
+            state:
+              type: string
+              format: date
+              example: "3201"
+            attributes:
+              type: object
+              properties:
+                state_class:
+                  type: string
+                  example: total
+                unit_of_measurement:
+                  type: string
+                  example: L
+                device_class:
+                  type: string
+                  example: water
+                friendly_name:
+                  type: string
+                  example: liters
+            last_changed:
+              type: string
+              format: date-time
+              example: 2024-05-06T00:00:00+00:00
+            last_reported:
+              type: string
+              format: date-time
+              example: 2024-05-06T00:00:00+00:00
+            last_updated:
+              type: string
+              format: date-time
+              example: 2024-05-06T00:00:00+00:00
             context:
               type: object
               properties:
