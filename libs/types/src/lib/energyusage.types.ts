@@ -98,9 +98,7 @@ export interface HomeAssistantEntry {
 
 export type HomeAssistantSensor = HomeAssistantEntry[];
 
-export type EnergyUsageGetTemperatureResponse = HomeAssistantSensor[];
-
 export type EnergyUsageGetWaterResponse = HomeAssistantSensor[];
 
-export type EnergyUsageGetTemperatureResponse1 =
+export type EnergyUsageGetTemperatureResponse =
     operations["getTemperatures"]["responses"]["200"]["content"]["application/json"];

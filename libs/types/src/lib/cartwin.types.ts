@@ -1,5 +1,5 @@
-import { components as ConnectedComponents } from "./volvo/connected-vehicle-c3.schema";
-import { components as EnergyComponents } from "./volvo/energy-api.schema";
+import { components as ConnectedComponents } from "./external/volvo/connected-vehicle-c3.schema";
+import { components as EnergyComponents } from "./external/volvo/energy-api.schema";
 
 // npx openapi-typescript libs/types/src/lib/volvo/connected-vehicle-c3-specification.json --output libs/types/src/lib/volvo/connected-vehicle-c3.schema.ts
 // npx openapi-typescript libs/types/src/lib/volvo/energy-api-specification.json --output libs/types/src/lib/volvo/energy-api.schema.ts
