@@ -1,10 +1,11 @@
 {
+    "name": "client",
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "apps/client/src",
     "projectType": "application",
     "targets": {
         "build": {
-            "executor": "@nrwl/webpack:webpack",
+            "executor": "@nx/webpack:webpack",
             "outputs": ["{options.outputPath}"],
             "defaultConfiguration": "production",
             "options": {
@@ -24,7 +25,8 @@
                 ],
                 "styles": ["apps/client/src/styles.css"],
                 "scripts": [],
-                "webpackConfig": "@nrwl/react/plugins/webpack"
+                "webpackConfig": "apps/client/webpack.config.js",
+                "isolatedConfig": true
             },
             "configurations": {
                 "production": {
@@ -50,7 +52,7 @@
             }
         },
         "serve": {
-            "executor": "@nrwl/webpack:dev-server",
+            "executor": "@nx/webpack:dev-server",
             "options": {
                 "port": 4202,
                 "buildTarget": "client:build",
@@ -69,14 +71,14 @@
             "defaultConfiguration": "development"
         },
         "lint": {
-            "executor": "@nrwl/linter:eslint",
+            "executor": "@nx/linter:eslint",
             "outputs": ["{options.outputFile}"],
             "options": {
                 "lintFilePatterns": ["apps/client/**/*.{ts,tsx,js,jsx}"]
             }
         },
         "test": {
-            "executor": "@nrwl/jest:jest",
+            "executor": "@nx/jest:jest",
             "outputs": ["{workspaceRoot}/coverage/apps/client"],
             "options": {
                 "jestConfig": "apps/client/jest.config.ts",

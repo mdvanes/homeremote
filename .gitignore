@@ -52,3 +52,5 @@ libs/types/src/lib/volvo/*.json
 libs/types/examples/
 
 NOTES.md
+
+.nx/cache
