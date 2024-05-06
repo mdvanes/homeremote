@@ -44,7 +44,7 @@ jest.mock("@ctrl/transmission", () => {
     };
 });
 
-const MockTransmission = mocked(Transmission, true); // not to have: Transmission as unknown as jest.Mock<Logger>;
+const MockTransmission = mocked(Transmission, { shallow: true }); // not to have: Transmission as unknown as jest.Mock<Logger>;
 
 describe("Downloadlist Controller", () => {
     let controller: DownloadlistController;
