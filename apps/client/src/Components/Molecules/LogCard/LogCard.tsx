@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import packageJson from "../../../../../../package.json";
 import { RootState } from "../../../Reducers";
 import gitinfoJson from "../../../gitinfo.json";
