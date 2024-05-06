@@ -6,10 +6,10 @@ import {
 } from "@homeremote/types";
 import { Grid, Theme, Typography, useMediaQuery } from "@mui/material";
 import { FC } from "react";
-import { sortByName } from "./monit-utils";
 import MonitFilesystemServiceInstance from "./MonitFilesystemServiceInstance";
 import MonitHostServiceInstance from "./MonitHostServiceInstance";
 import MonitStatusAlert from "./MonitStatusAlert";
+import { sortByName } from "./monit-utils";
 
 const isFilesystemService = (
     service: MonitService

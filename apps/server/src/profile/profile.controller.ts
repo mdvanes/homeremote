@@ -6,9 +6,9 @@ import {
     UnauthorizedException,
     UseGuards,
 } from "@nestjs/common";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { User, UsersService } from "../users/users.service";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 @Controller("api/profile")
 export class ProfileController {

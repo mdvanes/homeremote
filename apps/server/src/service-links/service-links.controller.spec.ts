@@ -1,6 +1,6 @@
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ServiceLinksController } from "./service-links.controller";
-import { ConfigService } from "@nestjs/config";
 
 describe("ServiceLinksController", () => {
     let controller: ServiceLinksController;

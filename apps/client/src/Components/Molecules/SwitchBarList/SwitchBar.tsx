@@ -1,5 +1,5 @@
-import React, { FC, ReactElement } from "react";
-import { Icon, Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Icon, Typography } from "@mui/material";
+import { FC, ReactElement } from "react";
 import useStyles from "./SwitchBar.styles";
 
 const getIconElem = (icon: string | false): ReactElement => {

@@ -1,6 +1,6 @@
+import { TrackerItem, TrackerQueryType } from "@homeremote/types";
 import { useState } from "react";
 import { useGetCoordsQuery } from "../../../Services/dataloraApi";
-import { TrackerItem, TrackerQueryType } from "@homeremote/types";
 
 const UPDATE_INTERVAL_MS = 1000 * 60 * 60; // 1000 ms / 60 seconds / 60 minutes = 1x per hour
 

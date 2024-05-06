@@ -1,13 +1,13 @@
 import { ShowNextUpItem } from "@homeremote/types";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import {
     Alert,
     DialogContent,
     DialogContentText,
     DialogTitle,
 } from "@mui/material";
-import { FC, useState } from "react";
 import { styled } from "@mui/material/styles";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { FC, useState } from "react";
 
 const PreviewImg = styled(
     "div",

@@ -1,4 +1,5 @@
-import React, { FC } from "react";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 import {
     IconButton,
     List,
@@ -6,14 +7,13 @@ import {
     ListItemText,
     PaletteMode,
 } from "@mui/material";
+import { FC } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import {
-    fetchAuth,
-    FetchAuthType,
-} from "../../Providers/Authentication/authenticationSlice";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
 import { useAppDispatch } from "../../../store";
+import {
+    FetchAuthType,
+    fetchAuth,
+} from "../../Providers/Authentication/authenticationSlice";
 
 interface Props {
     closeDrawer: () => void;

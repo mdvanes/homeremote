@@ -1,7 +1,6 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
-import VideoStream from "./VideoStream";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
+import VideoStream from "./VideoStream";
 
 enableFetchMocks();
 

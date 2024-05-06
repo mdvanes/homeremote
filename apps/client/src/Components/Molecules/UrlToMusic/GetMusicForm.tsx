@@ -21,10 +21,10 @@ import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { logError } from "../LogCard/logSlice";
 import { FILL_IN_THIS_FIELD } from "./constants";
 import {
+    UrlToMusicState,
     resetProgressLoading,
     setFormField,
     setFormFieldError,
-    UrlToMusicState,
 } from "./urlToMusicSlice";
 
 const UPDATE_INTERVAL_MS = 5 * 1000;

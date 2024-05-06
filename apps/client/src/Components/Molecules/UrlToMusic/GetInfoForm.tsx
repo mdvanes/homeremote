@@ -16,10 +16,10 @@ import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { logError } from "../LogCard/logSlice";
 import { FILL_IN_THIS_FIELD } from "./constants";
 import {
+    UrlToMusicState,
     reset,
     setFormField,
     setFormFieldError,
-    UrlToMusicState,
 } from "./urlToMusicSlice";
 
 const GetInfoForm: FC = () => {

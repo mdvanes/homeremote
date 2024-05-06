@@ -21,13 +21,13 @@ import { CarTwinPage } from "./Components/Pages/CarTwin/CarTwinPage";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
 import DataLora from "./Components/Pages/DataLora/DataLora";
 import Docker from "./Components/Pages/Docker/Docker";
+import Energy from "./Components/Pages/Energy/Energy";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import Log from "./Components/Pages/Log/Log";
 import Streams from "./Components/Pages/Streams/Streams";
 import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
 import HotKeyProvider from "./Components/Providers/HotKey/HotKeyProvider";
 import createThemeWithMode from "./theme";
-import Energy from "./Components/Pages/Energy/Energy";
 
 export interface AppProps {
     swCallbacks: {

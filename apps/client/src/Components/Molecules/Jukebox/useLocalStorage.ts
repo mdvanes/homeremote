@@ -1,8 +1,8 @@
 import { IPlaylist, ISong } from "@homeremote/types";
 import { useEffect } from "react";
-import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
 import { useDispatch } from "react-redux";
 import { logError } from "../LogCard/logSlice";
+import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
 
 interface UseLocalStorageArgs {
     setCurrentPlaylist: (playlistId: IPlaylist | undefined) => void;

@@ -1,5 +1,5 @@
-import { FC, useEffect, useState } from "react";
 import { LinearProgress, Paper, Typography } from "@mui/material";
+import { FC, useEffect, useState } from "react";
 
 const URL = `${process.env.NX_BASE_URL}/api/video-stream`;
 

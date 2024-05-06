@@ -1,8 +1,8 @@
+import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
+import { Transmission } from "@ctrl/transmission";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
-import { Transmission } from "@ctrl/transmission";
 import { mocked } from "jest-mock";
-import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
 import { DownloadlistController } from "./downloadlist.controller";
 
 const mockResponse: Partial<NormalizedTorrent>[] = [

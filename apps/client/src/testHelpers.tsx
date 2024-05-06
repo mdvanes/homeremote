@@ -1,15 +1,15 @@
-import React, { FC, ReactElement, ReactNode } from "react";
-import { render, RenderResult, RenderOptions } from "@testing-library/react";
-import { Provider } from "react-redux";
 import {
-    combineReducers,
-    configureStore,
     Middleware,
     Reducer,
     Store,
+    combineReducers,
+    configureStore,
 } from "@reduxjs/toolkit";
-import { RootState } from "./Reducers";
+import { RenderOptions, RenderResult, render } from "@testing-library/react";
 import { FetchMock } from "jest-fetch-mock";
+import { FC, ReactElement, ReactNode } from "react";
+import { Provider } from "react-redux";
+import { RootState } from "./Reducers";
 
 interface RenderWithProvidersOptions extends RenderOptions {
     initialState: Partial<RootState>;

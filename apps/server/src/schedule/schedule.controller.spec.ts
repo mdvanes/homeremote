@@ -1,10 +1,10 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { ScheduleController } from "./schedule.controller";
-import { ConfigService } from "@nestjs/config";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
-import got, { Response, CancelableRequest } from "got";
-import { mocked } from "jest-mock";
 import { GetScheduleResponse, ScheduleItem } from "@homeremote/types";
+import { ConfigService } from "@nestjs/config";
+import { Test, TestingModule } from "@nestjs/testing";
+import got, { CancelableRequest, Response } from "got";
+import { mocked } from "jest-mock";
+import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import { ScheduleController } from "./schedule.controller";
 
 jest.mock("got");
 const mockGot = mocked(got);

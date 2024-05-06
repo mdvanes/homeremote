@@ -1,9 +1,9 @@
-import { fireEvent } from "@testing-library/react";
-import SwitchBarList from "./SwitchBarList";
-import { RootState } from "../../../Reducers";
-import * as Slice from "./switchBarListSlice";
-import { renderWithProviders } from "../../../testHelpers";
 import { DomoticzTypeOptions } from "@homeremote/types";
+import { fireEvent } from "@testing-library/react";
+import { RootState } from "../../../Reducers";
+import { renderWithProviders } from "../../../testHelpers";
+import SwitchBarList from "./SwitchBarList";
+import * as Slice from "./switchBarListSlice";
 
 type MockRootState = Pick<RootState, "switchesList">;
 

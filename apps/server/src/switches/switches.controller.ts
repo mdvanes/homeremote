@@ -5,14 +5,14 @@ import {
     SwitchesResponse,
 } from "@homeremote/types";
 import {
-    Controller,
-    Logger,
-    Get,
-    Post,
     Body,
+    Controller,
+    Get,
+    Logger,
     Param,
-    UseGuards,
+    Post,
     Request,
+    UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import got from "got";

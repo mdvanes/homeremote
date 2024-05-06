@@ -1,9 +1,8 @@
-import React from "react";
 import { fireEvent } from "@testing-library/react";
-import DrawerMenu from "./DrawerMenu";
-import authenticationReducer from "../../Providers/Authentication/authenticationSlice";
-import { renderWithProviders } from "../../../testHelpers";
 import { RootState } from "../../../Reducers";
+import { renderWithProviders } from "../../../testHelpers";
+import authenticationReducer from "../../Providers/Authentication/authenticationSlice";
+import DrawerMenu from "./DrawerMenu";
 
 type MockRootState = Pick<RootState, "authentication">;
 

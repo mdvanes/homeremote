@@ -4,13 +4,13 @@ import {
     Bar,
     ComposedChart,
     Line,
-    type LineProps,
     ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis,
-    type BarProps,
     YAxisProps,
+    type BarProps,
+    type LineProps,
 } from "recharts";
 import LoadingDot from "../LoadingDot/LoadingDot";
 

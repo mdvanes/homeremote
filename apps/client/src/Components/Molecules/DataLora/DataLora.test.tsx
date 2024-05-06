@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { FC, ReactNode } from "react";
-import DataLora from "./DataLora";
-import { dataloraApi } from "../../../Services/dataloraApi";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
-import { MockStoreProvider } from "../../../testHelpers";
+import { FC, ReactNode } from "react";
 import { PolylineProps } from "react-leaflet";
+import { dataloraApi } from "../../../Services/dataloraApi";
+import { MockStoreProvider } from "../../../testHelpers";
+import DataLora from "./DataLora";
 
 // Also see: DownloadList.test.tsx
 // Also see: https://medium.com/@johnmcdowell0801/testing-rtk-query-with-jest-cdfa5aaf3dc1

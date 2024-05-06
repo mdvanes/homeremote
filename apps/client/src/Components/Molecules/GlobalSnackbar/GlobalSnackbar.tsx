@@ -1,8 +1,8 @@
-import React, { FC, useState, useEffect } from "react";
-import { Snackbar, Grid, IconButton } from "@mui/material";
-import { makeStyles } from "tss-react/mui";
-import { Warning, Close } from "@mui/icons-material";
+import { Close, Warning } from "@mui/icons-material";
+import { Grid, IconButton, Snackbar } from "@mui/material";
+import { FC, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { makeStyles } from "tss-react/mui";
 import { RootState } from "../../../Reducers";
 import { LogState, Severity } from "../LogCard/logSlice";
 

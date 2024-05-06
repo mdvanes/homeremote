@@ -1,10 +1,10 @@
 import logSliceReducer, {
-    initialState,
-    logInfo,
-    logUrgentInfo,
-    logError,
     Severity,
     clearLog,
+    initialState,
+    logError,
+    logInfo,
+    logUrgentInfo,
 } from "./logSlice";
 
 describe("logSlice", () => {

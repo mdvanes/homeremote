@@ -1,4 +1,4 @@
-import { PlaylistResponse, ISong } from "@homeremote/types";
+import { ISong, PlaylistResponse } from "@homeremote/types";
 
 export const getNextSong = (
     response: PlaylistResponse | undefined,

@@ -1,8 +1,8 @@
-import { FC } from "react";
 import { Theme, useMediaQuery } from "@mui/material";
-import { ServiceLink } from "./ServiceLink";
-import { useGetServiceLinksQuery } from "../../../Services/serviceLinksApi";
+import { FC } from "react";
 import { makeStyles } from "tss-react/mui";
+import { useGetServiceLinksQuery } from "../../../Services/serviceLinksApi";
+import { ServiceLink } from "./ServiceLink";
 
 const useStyles = makeStyles()(() => ({
     contained: {

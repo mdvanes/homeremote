@@ -13,9 +13,9 @@ import {
 } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import { AddSongToPlaylistButton } from "./AddSongToPlaylistButton";
+import HotKeyCoach from "./HotKeyCoach";
 import { getNextSong } from "./getNextSong";
 import { getPrevSong } from "./getPrevSong";
-import HotKeyCoach from "./HotKeyCoach";
 
 interface IJukeboxPlayerProps {
     audioElemRef: RefObject<HTMLAudioElement>;

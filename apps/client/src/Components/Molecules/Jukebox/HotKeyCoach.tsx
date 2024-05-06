@@ -1,13 +1,13 @@
-import {
-    IconButton,
-    Popper,
-    Box,
-    ListItemText,
-    ListItem,
-    List,
-    ListItemAvatar,
-} from "@mui/material";
 import { Help as HelpIcon } from "@mui/icons-material";
+import {
+    Box,
+    IconButton,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Popper,
+} from "@mui/material";
 import { useState } from "react";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 

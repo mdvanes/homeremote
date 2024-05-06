@@ -1,9 +1,9 @@
+import * as GetSwitchesThunk from "./getSwitchesThunk";
 import switchBarListReducer, {
     initialState,
-    toggleExpandScene,
     sendSwitchState,
+    toggleExpandScene,
 } from "./switchBarListSlice";
-import * as GetSwitchesThunk from "./getSwitchesThunk";
 
 describe("switchBarListSlice", () => {
     describe("sendSwitchState", () => {

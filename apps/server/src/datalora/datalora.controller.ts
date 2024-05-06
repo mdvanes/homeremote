@@ -1,3 +1,5 @@
+import { TrackerItem, TrackerQueryType } from "@homeremote/types";
+import { FluxTableMetaData, InfluxDB } from "@influxdata/influxdb-client";
 import {
     Controller,
     Get,
@@ -7,10 +9,8 @@ import {
     Query,
     UseGuards,
 } from "@nestjs/common";
-import { FluxTableMetaData, InfluxDB } from "@influxdata/influxdb-client";
 import { ConfigService } from "@nestjs/config";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { TrackerItem, TrackerQueryType } from "@homeremote/types";
 
 const createFluxQuery = (queryType: TrackerQueryType): string =>
     `from(bucket:"iot") 

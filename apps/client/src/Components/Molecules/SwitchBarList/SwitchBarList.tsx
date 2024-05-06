@@ -1,26 +1,26 @@
-import React, { FC, Fragment, ReactElement, useEffect } from "react";
+import {
+    DomoticzSendType,
+    DomoticzType,
+    HomeRemoteSwitch,
+} from "@homeremote/types";
+import { LinearProgress } from "@mui/material";
+import { FC, Fragment, ReactElement, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Reducers";
+import { useAppDispatch } from "../../../store";
+import { logError } from "../LogCard/logSlice";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
-import { useSelector } from "react-redux";
-import { LinearProgress } from "@mui/material";
-import {
-    sendSwitchState,
-    SwitchBarListState,
-    toggleExpandScene,
-} from "./switchBarListSlice";
-import { getSwitches } from "./getSwitchesThunk";
-import { RootState } from "../../../Reducers";
-import { logError } from "../LogCard/logSlice";
-import {
-    HomeRemoteSwitch,
-    DomoticzType,
-    DomoticzSendType,
-} from "@homeremote/types";
-import { useAppDispatch } from "../../../store";
 import {
     DOMOTICZ_SELECTOR_STATES_OPTIONS,
     isDomoticzSelectorStateCode,
 } from "./SwitchBarList.types";
+import { getSwitches } from "./getSwitchesThunk";
+import {
+    SwitchBarListState,
+    sendSwitchState,
+    toggleExpandScene,
+} from "./switchBarListSlice";
 
 // Type is switchscene or switchlight
 const getType = (type: DomoticzType): DomoticzSendType => {
