@@ -1,12 +1,15 @@
-import {
+import type {
     EnergyUsageGasItem,
     EnergyUsageGetGasUsageResponse,
-    EnergyUsageGetTemperatureResponse,
     EnergyUsageGetWaterResponse,
     GasUsageItem,
     GotGasUsageResponse,
     GotTempResponse,
+    // TODO
+    EnergyUsageGetTemperatureResponse1,
 } from "@homeremote/types";
+// import { HomeAssistantService } from "../api/generated/";
+// import { operations } from "../api/generated/libs/types/definitions/external/homeAssistant";
 import {
     Controller,
     Get,
@@ -20,6 +23,7 @@ import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import { operations } from "../api/generated/homeAssistant";
 
 interface SensorConfig {
     name: string;
@@ -181,20 +185,37 @@ export class EnergyUsageController {
     @Get("/temperature")
     async getTemperature(
         @Request() req: AuthenticatedRequest
-    ): Promise<EnergyUsageGetTemperatureResponse> {
+    ): Promise<EnergyUsageGetTemperatureResponse1> {
         this.logger.verbose(
             `[${req.user.name}] GET to /api/energyusage/temperature`
         );
 
         try {
+            // const testApi = new HomeAssistantApi(`${this.haApiConfig.baseUrl}`);
+            // // testApi.setApiKey();
+            // const testApiResponse = await testApi.getHaSensorHistory();
+            // const f = testApiResponse.body;
+            // console.log("generated API response:", f);
+            // HomeAssistantService.s
+            // const r = await HomeAssistantService.getHaSensorHistory();
+
+            type GetHaSensorHistoryResponse =
+                operations["getHaSensorHistory"]["responses"]["200"]["content"]["application/json"];
+
             const date = new Date().toISOString().slice(0, 10);
             const url = `${this.haApiConfig.baseUrl}/api/history/period/${date}T00:00:00Z?filter_entity_id=${this.haApiConfig.temperatureSensorId}`;
 
+            // const result = await got(url, {
+            //     headers: {
+            //         Authorization: `Bearer ${this.haApiConfig.token}`,
+            //     },
+            // }).json<EnergyUsageGetTemperatureResponse>();
             const result = await got(url, {
                 headers: {
                     Authorization: `Bearer ${this.haApiConfig.token}`,
                 },
-            }).json<EnergyUsageGetTemperatureResponse>();
+            }).json<GetHaSensorHistoryResponse>();
+            console.log(JSON.stringify(result.slice(0, 2), null, 2));
 
             return result;
         } catch (err) {

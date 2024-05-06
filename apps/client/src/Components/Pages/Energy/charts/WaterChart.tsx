@@ -20,7 +20,7 @@ export const WaterChart: FC = () => {
             </Stack>
             <EnergyChart
                 data={data?.[0].map((item) => ({
-                    time: new Date(item.last_changed).getTime() ?? 1,
+                    time: new Date(item.last_changed ?? "0").getTime() ?? 1,
                     liters: item.state,
                 }))}
                 config={{
