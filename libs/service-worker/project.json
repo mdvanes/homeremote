@@ -3,6 +3,7 @@
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "libs/service-worker/src",
     "projectType": "library",
+    "tags": [],
     "targets": {
         "build": {
             "executor": "@nx/webpack:webpack",
@@ -14,7 +15,8 @@
                 "tsConfig": "libs/service-worker/tsconfig.lib.json",
                 "packageJson": "libs/service-worker/package.json",
                 "main": "libs/service-worker/src/service-worker.ts",
-                "generateIndexHtml": false
+                "generateIndexHtml": false,
+                "webpackConfig": "libs/service-worker/webpack.config.js"
             },
             "configurations": {
                 "production": {
@@ -36,19 +38,14 @@
         },
         "lint": {
             "executor": "@nx/eslint:lint",
-            "outputs": ["{options.outputFile}"],
-            "options": {
-                "lintFilePatterns": ["libs/service-worker/**/*.ts"]
-            }
+            "outputs": ["{options.outputFile}"]
         },
         "test": {
             "executor": "@nx/jest:jest",
             "outputs": ["{workspaceRoot}/coverage/libs/service-worker"],
             "options": {
-                "jestConfig": "libs/service-worker/jest.config.ts",
-                "passWithNoTests": true
+                "jestConfig": "libs/service-worker/jest.config.ts"
             }
         }
-    },
-    "tags": []
+    }
 }

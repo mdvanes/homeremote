@@ -3,6 +3,7 @@
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "apps/client/src",
     "projectType": "application",
+    "tags": [],
     "targets": {
         "build": {
             "executor": "@nx/webpack:webpack",
@@ -72,19 +73,14 @@
         },
         "lint": {
             "executor": "@nx/eslint:lint",
-            "outputs": ["{options.outputFile}"],
-            "options": {
-                "lintFilePatterns": ["apps/client/**/*.{ts,tsx,js,jsx}"]
-            }
+            "outputs": ["{options.outputFile}"]
         },
         "test": {
             "executor": "@nx/jest:jest",
             "outputs": ["{workspaceRoot}/coverage/apps/client"],
             "options": {
-                "jestConfig": "apps/client/jest.config.ts",
-                "passWithNoTests": true
+                "jestConfig": "apps/client/jest.config.ts"
             }
         }
-    },
-    "tags": []
+    }
 }
