@@ -14,6 +14,7 @@ import {
     HttpException,
     HttpStatus,
     Logger,
+    Query,
     Request,
     UseGuards,
 } from "@nestjs/common";
@@ -210,13 +211,33 @@ export class EnergyUsageController {
     @UseGuards(JwtAuthGuard)
     @Get("/water")
     async getWater(
-        @Request() req: AuthenticatedRequest
+        @Request() req: AuthenticatedRequest,
+        @Query("range") range: "day" | "month"
     ): Promise<EnergyUsageGetWaterResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/energyusage/water`);
 
+        // const mode: "day" | "month" = "month".toString() as "day" | "month";
+
+        // See https://developers.home-assistant.io/docs/api/rest/
         try {
-            const date = new Date().toISOString().slice(0, 10);
-            const url = `${this.haApiConfig.baseUrl}/api/history/period/${date}T00:00:00Z?filter_entity_id=${this.haApiConfig.waterSensorId}`;
+            // crashes
+            // const date = new Date("2024-04-29").toISOString().slice(0, 10);
+            // earliest date that works, but show only 24 hours
+            // const date = new Date("2024-04-30").toISOString().slice(0, 10);
+            const startDate = new Date(
+                range === "month" ? "2024-05-01" : Date.now()
+            )
+                .toISOString()
+                .slice(0, 10);
+            this.logger.verbose(startDate);
+            const tomorrow = new Date(Date.now() + 1000 * 60 * 60 * 24)
+                .toISOString()
+                .slice(0, 10);
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startDate}T00:00:00Z?end_time=${tomorrow}T00:00:00Z&filter_entity_id=${this.haApiConfig.waterSensorId}&minimal_response`;
+
+            // Default: 1 day from the selected date
+            // const date = new Date().toISOString().slice(0, 10);
+            // const url = `${this.haApiConfig.baseUrl}/api/history/period/${date}T00:00:00Z?filter_entity_id=${this.haApiConfig.waterSensorId}`;
 
             const result = await got(url, {
                 headers: {

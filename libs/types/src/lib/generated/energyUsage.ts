@@ -197,7 +197,9 @@ export interface operations {
     };
     getWater: {
         parameters: {
-            query?: never;
+            query?: {
+                range?: "day" | "month";
+            };
             header?: never;
             path?: never;
             cookie?: never;

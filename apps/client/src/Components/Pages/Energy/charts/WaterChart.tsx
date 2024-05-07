@@ -1,5 +1,5 @@
 import { Chip, Stack } from "@mui/material";
-import { FC } from "react";
+import { FC, useState } from "react";
 import {
     useGetWaterQuery,
     type GetWaterResponse,
@@ -11,19 +11,26 @@ type WaterSensorItem = GetWaterResponse[0][0] & {
     liters?: number;
 };
 
-const INTERVAL = 1000 * 60 * 5;
+// const INTERVAL = 1000 * 60 * 5;
+const INTERVAL = 1000 * 60 * 60 * 24;
+
+// TODO show last day, week, month
 
 export const WaterChart: FC = () => {
-    const { data, isLoading, isFetching } = useGetWaterQuery();
+    const [mode, setMode] = useState<"day" | "month">("day");
+    // const mode: "day" | "month" = "day".toString() as "day" | "month";
+    const { data, isLoading, isFetching } = useGetWaterQuery({ range: mode });
 
     const sensorEntries: WaterSensorItem[] = data?.[0] ?? [];
+
+    const interval = mode === "month" ? 1000 * 60 * 60 * 24 : 1000 * 60 * 5;
 
     const dataAggregatedBy5Mins = sensorEntries.reduce<WaterSensorItem[]>(
         (acc, next) => {
             const prevEntry = acc.at(-1) ?? next;
             const prevTime = new Date(prevEntry.last_changed ?? "0").getTime();
             const nextTime = new Date(next.last_changed ?? "0").getTime();
-            if (nextTime <= prevTime + INTERVAL) {
+            if (nextTime <= prevTime + interval) {
                 return [
                     ...acc.slice(0, -1),
                     { ...prevEntry, liters: (prevEntry.liters ?? 0) + 1 },
@@ -36,6 +43,20 @@ export const WaterChart: FC = () => {
 
     return (
         <>
+            <button
+                onClick={() => {
+                    setMode("day");
+                }}
+            >
+                day
+            </button>
+            <button
+                onClick={() => {
+                    setMode("month");
+                }}
+            >
+                month
+            </button>
             <Stack direction="row" spacing={1} marginBottom={1}>
                 {data &&
                     data.length &&
