@@ -71,7 +71,7 @@ Building / Run in production:
 -   `docker-compose up -d --build`. Build duration: ca. 4 minutes
 -   On Mac with colima use
     -   `colima start --network-address`
-    -   `DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose -f docker-compose.override.yml up --build`. Real docker-compose automatically finds docker-compose.yml and docker-compose.override.yml.
+    -   `DOCKER_DEFAULT_PLATFORM=linux/amd64 docker compose -f docker-compose.override.yml up --build`. Real docker-compose automatically finds docker-compose.yml and docker-compose.override.yml.
     -   If docker.sock does not work, maybe this will help https://github.com/abiosoft/colima/blob/main/docs/FAQ.md#cannot-connect-to-the-docker-daemon-at-unixvarrundockersock-is-the-docker-daemon-running
         -   `export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"`
         -   `sudo ln -sf $HOME/.colima/default/docker.sock /var/run/docker.sock`

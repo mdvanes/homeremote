@@ -27,7 +27,10 @@ export class PwToHashController {
     // - http://localhost:4200/api/pw-to-hash/?password=test
     @Get()
     async getHash(@Query() query: { password: string }): Promise<string> {
-        if (process.env.NODE_ENV.toUpperCase() === "DEVELOPMENT") {
+        if (
+            (process.env.NODE_ENV ?? "production").toUpperCase() ===
+            "DEVELOPMENT"
+        ) {
             try {
                 if (query.password && query.password.length > 0) {
                     return generateHash(query.password);

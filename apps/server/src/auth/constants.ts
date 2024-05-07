@@ -3,7 +3,7 @@ import { join } from "path";
 
 export const getAuthConfig = () => {
     const jsonPath =
-        process.env.NODE_ENV.toUpperCase() === "DEVELOPMENT"
+        (process.env.NODE_ENV ?? "production").toUpperCase() === "DEVELOPMENT"
             ? join(__dirname, "../../../apps/server/auth.json")
             : join(__dirname, "../../auth.json");
     const jsonString = readFileSync(jsonPath, "utf8");

@@ -36,7 +36,9 @@ async function bootstrap() {
         module.hot.dispose(() => app.close());
     }
     Logger.log(
-        `🚀 Application is running on: http://localhost:${port}/${globalPrefix} in ${process.env.NODE_ENV} mode`
+        `🚀 Application is running on: http://localhost:${port}/${globalPrefix} in ${
+            process.env.NODE_ENV ?? "production"
+        } mode`
     );
 }
 
