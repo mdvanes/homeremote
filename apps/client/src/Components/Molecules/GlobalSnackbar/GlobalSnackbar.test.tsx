@@ -1,6 +1,5 @@
-import React from "react";
-import * as ReactRedux from "react-redux";
 import { fireEvent, render, waitFor } from "@testing-library/react";
+import * as ReactRedux from "react-redux";
 import GlobalSnackbar from "./GlobalSnackbar";
 
 jest.mock("react-redux", () => ({

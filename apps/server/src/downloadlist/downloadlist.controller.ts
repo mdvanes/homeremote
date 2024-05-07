@@ -1,3 +1,6 @@
+import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
+import { Transmission } from "@ctrl/transmission";
+import { DownloadItem, SimpleDownloadState } from "@homeremote/types";
 import {
     Controller,
     Get,
@@ -9,12 +12,9 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Transmission } from "@ctrl/transmission";
-import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
 import prettyBytes from "pretty-bytes";
 import prettyMs from "pretty-ms";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { DownloadItem, SimpleDownloadState } from "@homeremote/types";
 import { wait } from "../util/wait";
 
 type DownloadListResponse =

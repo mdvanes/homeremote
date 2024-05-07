@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import GasChart from "../../Molecules/GasChart/GasChart";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
 

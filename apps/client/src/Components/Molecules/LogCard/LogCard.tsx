@@ -1,18 +1,19 @@
-import React, { FC } from "react";
+import { InfoOutlined, Warning } from "@mui/icons-material";
 import {
-    Card,
-    CardContent,
-    CardActions,
-    Typography,
     Button,
+    Card,
+    CardActions,
+    CardContent,
+    Typography,
 } from "@mui/material";
-import { Warning, InfoOutlined } from "@mui/icons-material";
-import gitinfoJson from "../../../gitinfo.json";
+import { FC } from "react";
+import { useDispatch, useSelector } from "react-redux";
+// eslint-disable-next-line @nx/enforce-module-boundaries
 import packageJson from "../../../../../../package.json";
-import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../Reducers";
-import { LogState, clearLog, Severity } from "./logSlice";
+import gitinfoJson from "../../../gitinfo.json";
 import useStyles from "./LogCard.styles";
+import { LogState, Severity, clearLog } from "./logSlice";
 
 const SeverityIcons = {
     [Severity.INFO]: (

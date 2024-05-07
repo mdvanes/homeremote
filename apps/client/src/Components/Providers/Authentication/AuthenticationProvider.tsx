@@ -1,15 +1,15 @@
-import React, { FC, FormEvent, ReactNode, useEffect, useState } from "react";
-import { Button, Container, TextField } from "@mui/material";
 import { Alert, AlertTitle } from "@mui/lab";
+import { Button, Container, TextField } from "@mui/material";
+import { FC, FormEvent, ReactNode, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { RootState } from "../../../Reducers";
+import { useAppDispatch } from "../../../store";
+import AppSkeleton from "../../Molecules/AppSkeleton/AppSkeleton";
 import {
     AuthenticationState,
-    fetchAuth,
     FetchAuthType,
+    fetchAuth,
 } from "./authenticationSlice";
-import { RootState } from "../../../Reducers";
-import AppSkeleton from "../../Molecules/AppSkeleton/AppSkeleton";
-import { useAppDispatch } from "../../../store";
 
 const LOGIN_ENDPOINT = "/auth/login";
 const UNAUTHORIZED_MESSAGE = `${LOGIN_ENDPOINT} Unauthorized`;

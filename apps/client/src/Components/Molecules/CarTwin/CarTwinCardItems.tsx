@@ -1,12 +1,12 @@
 import { CarTwinResponse } from "@homeremote/types";
 import { Alert, Grid, List } from "@mui/material";
 import { FC } from "react";
-import { ERROR } from "./constants";
 import { DoorsAndTyres } from "./DoorsAndTyres";
 import { EnergyListItems } from "./EnergyListItems";
 import { OdoListItem } from "./OdoListItem";
 import { ServiceListItems } from "./ServiceListItems";
 import { StatisticsListItems } from "./StatisticsListItems";
+import { ERROR } from "./constants";
 
 export const CarTwinCardItems: FC<{
     data: CarTwinResponse;

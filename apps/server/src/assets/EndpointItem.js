@@ -1,4 +1,4 @@
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = `
 <style>
   main {
@@ -19,35 +19,36 @@ template.innerHTML = `
 </main>`;
 
 const getSome = (name, resultElem) => () => {
-  fetch(`/api/${name}`, {
-    method: 'GET',
-  })
-    .then((data) => data.text())
-    .then((data) => {
-      console.log(data);
-      resultElem.innerHTML = data;
-    });
+    fetch(`/api/${name}`, {
+        method: "GET",
+    })
+        .then((data) => data.text())
+        .then((data) => {
+            console.log(data);
+            resultElem.innerHTML = data;
+        });
 };
 
 class EndpointItem extends HTMLElement {
-  constructor() {
-    super();
-    const shadowRoot = this.attachShadow({ mode: 'open' });
-    const node = template.content.cloneNode(true);
+    constructor() {
+        super();
+        const shadowRoot = this.attachShadow({ mode: "open" });
+        const node = template.content.cloneNode(true);
 
-    const name = this.getAttribute('name');
+        const name = this.getAttribute("name");
 
-    node.querySelector('a').innerHTML = `/api/${name}`;
-    node.querySelector('a').href = `/api/${name}`;
+        node.querySelector("a").innerHTML = `/api/${name}`;
+        node.querySelector("a").href = `/api/${name}`;
 
-    node
-      .querySelector('button')
-      .addEventListener('click', getSome(name, node.getElementById('result')));
+        node.querySelector("button").addEventListener(
+            "click",
+            getSome(name, node.getElementById("result"))
+        );
 
-    shadowRoot.appendChild(node);
-  }
+        shadowRoot.appendChild(node);
+    }
 }
 
-customElements.define('endpoint-item', EndpointItem);
+customElements.define("endpoint-item", EndpointItem);
 
 export default EndpointItem;

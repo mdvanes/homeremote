@@ -1,9 +1,10 @@
-import {
+import type {
     EnergyUsageGasItem,
     EnergyUsageGetGasUsageResponse,
     EnergyUsageGetTemperatureResponse,
     EnergyUsageGetWaterResponse,
     GasUsageItem,
+    GetHaSensorHistoryResponse,
     GotGasUsageResponse,
     GotTempResponse,
 } from "@homeremote/types";
@@ -194,7 +195,7 @@ export class EnergyUsageController {
                 headers: {
                     Authorization: `Bearer ${this.haApiConfig.token}`,
                 },
-            }).json<EnergyUsageGetTemperatureResponse>();
+            }).json<GetHaSensorHistoryResponse>();
 
             return result;
         } catch (err) {
@@ -221,7 +222,7 @@ export class EnergyUsageController {
                 headers: {
                     Authorization: `Bearer ${this.haApiConfig.token}`,
                 },
-            }).json<EnergyUsageGetWaterResponse>();
+            }).json<GetHaSensorHistoryResponse>();
 
             return result;
         } catch (err) {

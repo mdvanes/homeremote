@@ -1,14 +1,14 @@
+import { DownloadItem } from "@homeremote/types";
 import {
     render,
     screen,
     waitForElementToBeRemoved,
 } from "@testing-library/react";
-import { DownloadItem } from "@homeremote/types";
-import DownloadList from "./DownloadList";
-import { downloadListApi } from "../../../Services/downloadListApi";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
-import { createGetCalledUrl, MockStoreProvider } from "../../../testHelpers";
 import userEvent from "@testing-library/user-event";
+import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
+import { downloadListApi } from "../../../Services/downloadListApi";
+import { MockStoreProvider, createGetCalledUrl } from "../../../testHelpers";
+import DownloadList from "./DownloadList";
 
 const getCalledUrl = (callNr: number) => createGetCalledUrl(fetchMock)(callNr);
 

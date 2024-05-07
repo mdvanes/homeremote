@@ -1,0 +1,9 @@
+apis:
+    homeAssistant@v1:
+        root: ./libs/types/definitions/external/homeAssistant.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/homeAssistant.ts
+    external@v1:
+        root: ./libs/types/definitions/internal/energyUsage.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/generated/energyUsage.ts

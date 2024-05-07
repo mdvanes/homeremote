@@ -1,9 +1,9 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { CookieOptions } from "express";
-import { User } from "../users/users.service";
 import { AuthService } from "../auth/auth.service";
-import { LoginController } from "./login.controller";
+import { User } from "../users/users.service";
 import { LoginRequest } from "./LoginRequest.types";
+import { LoginController } from "./login.controller";
 
 describe("Login Controller", () => {
     let controller: LoginController;

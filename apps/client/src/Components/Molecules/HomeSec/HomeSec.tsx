@@ -23,7 +23,7 @@ const statusClass: Record<HomesecStatusResponse["status"] | "Error", string> = {
     Error: "black",
     Disarm: "green",
     "Home Arm 1": "yellow",
-    Arm: "red",
+    "Full Arm": "red",
 };
 
 const typeIcon: Record<TypeF, string> = {
@@ -32,6 +32,7 @@ const typeIcon: Record<TypeF, string> = {
     Keypad: "keyboard",
     IR: "animation",
     "Remote Controller": "settings_remote",
+    Siren: "notifications",
 };
 
 const UPDATE_INTERVAL_MS = 120000;
@@ -121,7 +122,12 @@ export const HomeSec: FC = () => {
                                             justifyContent: "space-between",
                                         }}
                                     >
-                                        <div>{sensor.name}</div>
+                                        <div>
+                                            {sensor.name === "" &&
+                                            sensor.type_f === "Siren"
+                                                ? "Sirene"
+                                                : sensor.name}
+                                        </div>
                                         <div
                                             style={{
                                                 display: "flex",

@@ -1,5 +1,5 @@
-import { FC } from "react";
 import { Paper } from "@mui/material";
+import { FC } from "react";
 import Map from "../../Molecules/DataLora/Map";
 import useStyles from "../../Molecules/DataLora/Map.styles";
 

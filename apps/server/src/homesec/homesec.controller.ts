@@ -1,4 +1,9 @@
 import {
+    HomesecDevicesResponse,
+    HomesecPanelResponse,
+    HomesecStatusResponse,
+} from "@homeremote/types";
+import {
     Controller,
     Get,
     HttpException,
@@ -8,14 +13,9 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
-import got from "got";
-import {
-    HomesecDevicesResponse,
-    HomesecPanelResponse,
-    HomesecStatusResponse,
-} from "@homeremote/types";
 import { wait } from "../util/wait";
 
 @Controller("api/homesec")

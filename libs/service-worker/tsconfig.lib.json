@@ -4,7 +4,11 @@
         "module": "commonjs",
         "outDir": "../../dist/out-tsc",
         "declaration": true,
-        "types": ["node"]
+        "types": [
+            "node",
+            "@nx/react/typings/cssmodule.d.ts",
+            "@nx/react/typings/image.d.ts"
+        ]
     },
     "exclude": ["**/*.spec.ts", "**/*.test.ts", "jest.config.ts"],
     "include": ["**/*.ts"]

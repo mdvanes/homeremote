@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import fetchToJson from "../../../fetchToJson";
 import ApiBaseState from "../../../Reducers/state.types";
+import fetchToJson from "../../../fetchToJson";
 
 export interface AppStatusState extends ApiBaseState {
     status: string;

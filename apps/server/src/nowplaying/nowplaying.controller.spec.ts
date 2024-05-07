@@ -3,14 +3,14 @@ import {
     getNowPlaying,
     NowPlayingResponse,
 } from "@mdworld/homeremote-stream-player-server";
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
+import got from "got";
 import { mocked } from "jest-mock";
 import { NowplayingController } from "./nowplaying.controller";
-import got from "got";
-import { ConfigService } from "@nestjs/config";
 
 jest.mock("@mdworld/homeremote-stream-player-server");
-const mockGetNowPlaying = mocked(getNowPlaying, true); // not to have: getNowPlaying as unknown as jest.Mock<something>;
+const mockGetNowPlaying = mocked(getNowPlaying, { shallow: true }); // not to have: getNowPlaying as unknown as jest.Mock<something>;
 
 jest.mock("got");
 const mockGot = mocked(got);

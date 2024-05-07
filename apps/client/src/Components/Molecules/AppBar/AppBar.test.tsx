@@ -1,10 +1,9 @@
-import React from "react";
 import { fireEvent } from "@testing-library/react";
 import mediaQuery from "css-mediaquery";
-import AppBar from "./AppBar";
 import { RootState } from "../../../Reducers";
 import { renderWithProviders } from "../../../testHelpers";
 import authenticationReducer from "../../Providers/Authentication/authenticationSlice";
+import AppBar from "./AppBar";
 
 jest.mock("../AppStatusButton/AppStatusButton", () => "mock-app-status-button");
 

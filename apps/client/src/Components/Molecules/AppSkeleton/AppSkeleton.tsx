@@ -1,5 +1,4 @@
-import React, { FC } from "react";
-import createThemeWithMode from "../../../theme";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
     AppBar,
     Box,
@@ -7,12 +6,13 @@ import {
     Grid,
     IconButton,
     ThemeProvider as MuiThemeProvider,
+    Skeleton,
     StyledEngineProvider,
     Toolbar,
     Typography,
-    Skeleton,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { FC } from "react";
+import createThemeWithMode from "../../../theme";
 
 const AppSkeleton: FC = () => (
     <StyledEngineProvider injectFirst>

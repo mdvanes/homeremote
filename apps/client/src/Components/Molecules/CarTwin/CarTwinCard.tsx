@@ -5,8 +5,8 @@ import { useGetCarTwinMutation } from "../../../Services/carTwinApi";
 import { useAppDispatch } from "../../../store";
 import { logError } from "../LogCard/logSlice";
 import { CarTwinCardItems } from "./CarTwinCardItems";
-import { ERROR } from "./constants";
 import { TokenForm } from "./TokenForm";
+import { ERROR } from "./constants";
 
 let updateInterval: ReturnType<typeof setInterval> | undefined = undefined;
 

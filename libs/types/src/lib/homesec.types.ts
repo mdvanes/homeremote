@@ -3,7 +3,8 @@ export type TypeF =
     | "Smoke Detector"
     | "Keypad"
     | "IR"
-    | "Remote Controller";
+    | "Remote Controller"
+    | "Siren";
 
 interface SensorRow {
     area: number;
@@ -29,7 +30,7 @@ export interface HomesecDevicesResponse {
     senrows: SensorRow[];
 }
 
-type Modes = "Disarm" | "Home Arm 1" | "Arm";
+type Modes = "Disarm" | "Home Arm 1" | "Full Arm";
 
 export enum PcondformModes {
     Disarm = "0",

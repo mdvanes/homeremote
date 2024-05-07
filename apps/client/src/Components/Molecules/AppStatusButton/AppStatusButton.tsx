@@ -1,11 +1,11 @@
-import React, { FC, useEffect } from "react";
 import { Button } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { FC, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
+import { useAppDispatch } from "../../../store";
 import { logError } from "../LogCard/logSlice";
 import { AppStatusState, getAppStatus } from "./appStatusSlice";
-import { styled } from "@mui/material/styles";
-import { useAppDispatch } from "../../../store";
 
 const DarkButton = styled(Button)(
     ({ theme }) => `

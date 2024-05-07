@@ -1,13 +1,13 @@
+import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
+import got, { CancelableRequest, Response } from "got";
+import { mocked } from "jest-mock";
+import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import {
-    formatMonitSize,
     MonitController,
+    formatMonitSize,
     scaleMonitSizeToBytes,
 } from "./monit.controller";
-import got, { Response, CancelableRequest } from "got";
-import { ConfigService } from "@nestjs/config";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
-import { mocked } from "jest-mock";
 
 jest.mock("got");
 const mockGot = mocked(got);

@@ -19,14 +19,14 @@ import { ProfileController } from "../profile/profile.controller";
 import { PwToHashController } from "../pw-to-hash/pw-to-hash.controller";
 import { ScheduleController } from "../schedule/schedule.controller";
 import { ServiceLinksController } from "../service-links/service-links.controller";
+import { StacksController } from "../stacks/stacks.controller";
 import { StatusController } from "../status/status.controller";
 import { SwitchesController } from "../switches/switches.controller";
 import { UrltomusicController } from "../urltomusic/urltomusic.controller";
-import { VideoStreamController } from "../video-stream/video-stream.controller";
 import { UsersModule } from "../users/users.module";
+import { VideoStreamController } from "../video-stream/video-stream.controller";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { StacksController } from "../stacks/stacks.controller";
 
 @Module({
     imports: [

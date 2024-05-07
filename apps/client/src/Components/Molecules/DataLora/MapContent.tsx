@@ -1,7 +1,7 @@
+import { TrackerItem } from "@homeremote/types";
 import { polygon } from "leaflet";
 import { FC, useCallback, useEffect, useState } from "react";
-import { TileLayer, Marker, Popup, Polyline, useMap } from "react-leaflet";
-import { TrackerItem } from "@homeremote/types";
+import { Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
 
 // const DEFAULT_CENTER: LatLngTuple = [52, 5.1];
 

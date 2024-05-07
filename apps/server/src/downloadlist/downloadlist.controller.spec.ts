@@ -1,8 +1,8 @@
+import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
+import { Transmission } from "@ctrl/transmission";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
-import { Transmission } from "@ctrl/transmission";
 import { mocked } from "jest-mock";
-import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
 import { DownloadlistController } from "./downloadlist.controller";
 
 const mockResponse: Partial<NormalizedTorrent>[] = [
@@ -44,7 +44,7 @@ jest.mock("@ctrl/transmission", () => {
     };
 });
 
-const MockTransmission = mocked(Transmission, true); // not to have: Transmission as unknown as jest.Mock<Logger>;
+const MockTransmission = mocked(Transmission, { shallow: true }); // not to have: Transmission as unknown as jest.Mock<Logger>;
 
 describe("Downloadlist Controller", () => {
     let controller: DownloadlistController;

@@ -1,4 +1,3 @@
-import { FC, ReactNode } from "react";
 import {
     Icon,
     IconButton,
@@ -10,11 +9,12 @@ import {
     Typography,
     useMediaQuery,
 } from "@mui/material";
+import { FC, ReactNode } from "react";
 import { makeStyles } from "tss-react/mui";
 import { ReactComponent as PortainerIconRaw } from "./icons/docker.svg";
+import { ReactComponent as JellyfinIconRaw } from "./icons/jellyfin.svg";
 import { ReactComponent as PiHoleIconRaw } from "./icons/pi-hole.svg";
 import { ReactComponent as SubsonicIconRaw } from "./icons/subsonic.svg";
-import { ReactComponent as JellyfinIconRaw } from "./icons/jellyfin.svg";
 
 const useStyles = makeStyles()(({ palette }) => ({
     icon: {

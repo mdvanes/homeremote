@@ -10,16 +10,16 @@ import {
     HttpException,
     HttpStatus,
     Logger,
-    UseGuards,
     Request,
+    UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { XMLParser } from "fast-xml-parser";
 import got from "got";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import prettyBytes from "pretty-bytes";
 import prettyMs from "pretty-ms";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { AuthenticatedRequest } from "../login/LoginRequest.types";
 
 const strToConfigs = (
     monitConfig: string

@@ -1,10 +1,9 @@
-import React from "react";
 import { fireEvent, waitFor } from "@testing-library/react";
-import AppStatusButton from "./AppStatusButton";
-import { renderWithProviders } from "../../../testHelpers";
 import { RootState } from "../../../Reducers";
-import appStatusReducer, { initialState } from "./appStatusSlice";
+import { renderWithProviders } from "../../../testHelpers";
 import * as LogSlice from "../LogCard/logSlice";
+import AppStatusButton from "./AppStatusButton";
+import appStatusReducer, { initialState } from "./appStatusSlice";
 
 const fetchSpy = jest.spyOn(window, "fetch");
 let logErrorSpy = jest.spyOn(LogSlice, "logError");

@@ -1,0 +1,192 @@
+# npx mock-to-openapi ./libs/types/examples
+# https://editor.swagger.io/
+
+openapi: 3.0.1
+info:
+  title: HomeRemote API
+  description: HomeRemote
+  version: 1.0.0
+servers:
+  - url: https://example.com
+    description: Generated server url
+paths:
+  /api/energyusage/temperature:
+    get:
+      tags:
+        - temperature
+      summary: Get temperatures
+      description: Get temperatures
+      operationId: getTemperatures
+      responses:
+        '200':
+          description: Temperatures
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTemperaturesResponse'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/energyusage/water:
+    get:
+      tags:
+        - water
+      summary: Get water
+      description: Get water
+      operationId: getWater
+      responses:
+        '200':
+          description: Water
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetWaterResponse'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'                
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Time when error happened
+        status:
+          type: integer
+          description: Code describing the error
+          format: int32
+        error:
+          type: string
+          description: Short error name
+        message:
+          type: string
+          description: Message explaining the error
+        code:
+          type: integer
+          description: Code of the error
+          format: int32
+      description: Error information details
+    GetTemperaturesResponse:
+      type: array
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            entity_id:
+              type: string
+              example: sensor.tz3000_amqudjr0_ts0201_temperature
+            state:
+              type: string
+              example: "17.7"
+            attributes:
+              type: object
+              properties:
+                state_class:
+                  type: string
+                  example: measurement
+                unit_of_measurement:
+                  type: string
+                  example: °C
+                device_class:
+                  type: string
+                  example: temperature
+                friendly_name:
+                  type: string
+                  example: Woox TempHumid 1 Temperature
+            last_changed:
+              type: string
+              format: date-time
+              example: 2024-05-05T00:00:00+00:00
+            last_reported:
+              type: string
+              format: date-time
+              example: 2024-05-05T00:00:00+00:00
+            last_updated:
+              type: string
+              format: date-time
+              example: 2024-05-05T00:00:00+00:00
+            context:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 01HWQC2MBD01BVZJP660G9JKXA
+                parent_id:
+                  type: string
+                  format: nullable
+                user_id:
+                  type: string
+                  format: nullable
+    GetWaterResponse:
+      type: array
+      items:
+        type: array
+        items:
+          type: object
+          properties:
+            entity_id:
+              type: string
+              example: sensor.liters
+            state:
+              type: string
+              format: date
+              example: "3201"
+            attributes:
+              type: object
+              properties:
+                state_class:
+                  type: string
+                  example: total
+                unit_of_measurement:
+                  type: string
+                  example: L
+                device_class:
+                  type: string
+                  example: water
+                friendly_name:
+                  type: string
+                  example: liters
+            last_changed:
+              type: string
+              format: date-time
+              example: 2024-05-06T00:00:00+00:00
+            last_reported:
+              type: string
+              format: date-time
+              example: 2024-05-06T00:00:00+00:00
+            last_updated:
+              type: string
+              format: date-time
+              example: 2024-05-06T00:00:00+00:00
+            context:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 01HWQC2MBD01BVZJP660G9JKXA
+                parent_id:
+                  type: string
+                  format: nullable
+                user_id:
+                  type: string
+                  format: nullable

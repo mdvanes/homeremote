@@ -11,12 +11,12 @@ import {
     DialogTitle,
     Typography,
 } from "@mui/material";
+import { FC, useState } from "react";
 import {
     ToggleArgs,
     useStartStackMutation,
     useStopStackMutation,
 } from "../../../Services/stacksApi";
-import { FC, useState } from "react";
 
 interface DockerStackItemProps {
     stack: StackItem;

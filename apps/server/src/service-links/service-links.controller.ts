@@ -1,3 +1,4 @@
+import { ServiceLinksResponse } from "@homeremote/types";
 import {
     Controller,
     Get,
@@ -8,7 +9,6 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { ServiceLinksResponse } from "@homeremote/types";
 
 @Controller("api/servicelinks")
 export class ServiceLinksController {

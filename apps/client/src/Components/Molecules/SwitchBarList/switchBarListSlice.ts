@@ -1,7 +1,7 @@
 import { HomeRemoteSwitch, SwitchesResponse } from "@homeremote/types";
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import fetchToJson from "../../../fetchToJson";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import ApiBaseState from "../../../Reducers/state.types";
+import fetchToJson from "../../../fetchToJson";
 import { logInfo } from "../LogCard/logSlice";
 import { getSwitches } from "./getSwitchesThunk";
 

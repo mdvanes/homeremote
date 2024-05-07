@@ -1,7 +1,7 @@
 import { Controller, Get, Logger, Req, UseGuards } from "@nestjs/common";
-import { User } from "../users/users.service";
 import { clearCookie } from "../auth/auth.service";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { User } from "../users/users.service";
 
 @Controller("auth/logout")
 export class LogoutController {

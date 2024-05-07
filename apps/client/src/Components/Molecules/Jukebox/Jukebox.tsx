@@ -1,4 +1,5 @@
 import { IPlaylist, ISong } from "@homeremote/types";
+import { Star as StarIcon } from "@mui/icons-material";
 import {
     Avatar,
     Card,
@@ -17,7 +18,6 @@ import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import JukeboxPlayer, { LAST_PLAYLIST } from "./JukeboxPlayer";
 import JukeboxSongList from "./JukeboxSongList";
 import { useLocalStorage } from "./useLocalStorage";
-import { Star as StarIcon } from "@mui/icons-material";
 
 const Jukebox: FC = () => {
     const { setJukeboxElem } = useHotKeyContext();

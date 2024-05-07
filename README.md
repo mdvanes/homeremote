@@ -39,7 +39,7 @@ Development:
 Other utils:
 
 -   serve client: `npx nx serve:all` or `npx nx serve client` or `npx nx run client:serve`
--   Add an app (without e2e): `npx nx g @nrwl/react:application --name=client --e2eTestRunner=none --dry-run` or `npx nx g @nrwl/nest:application --name=server --frontendProject=client --dry-run`
+-   Add an app (without e2e): `npx nx g @nx/react:application --name=client --e2eTestRunner=none --dry-run` or `npx nx g @nx/nest:application --name=server --frontendProject=client --dry-run`
 -   Remove an app: `npx nx g rm homeremote-server-e2e --dry-run`
 -   Move/rename an app: `npx nx g mv --project homeremote client --dry-run`
 -   To build storybook run: `npx nx run demo:build-storybook`
@@ -47,7 +47,7 @@ Other utils:
 -   Testing:
     -   with watch: `npm run test:client` or `npx nx test client --watch`
     -   a single file without coverage and with watch, e.g. users.service: `npm run test:server -- --testFile=users.service`
--   Add a controller: `npx nx g @nrwl/nest:controller --name=foo --project=server --module=app --dry-run`
+-   Add a controller: `npx nx g @nx/nest:controller --name=foo --project=server --module=app --dry-run`
 -   Format (prettier):
     -   check changed: `npx nx format:check`
     -   format changed: `npx nx format:write`
@@ -112,6 +112,16 @@ Publishing is done automatically when tagging on the main branch. So make sure t
 
 8. Update the version in docker-compose.yml
 9. On the target server: `docker-compose up -d`
+
+## Generate types
+
+-   Intercept a JSON to the intended endpoint, e.g. with cURL
+-   Save the JSON in `./libs/types/examples`. The `internal` subdir is for endpoints in this repo, the `external` subdir is for endpoints outside this repo, e.g. from third parties if they don't provide their own OpenApi descriptions.
+-   Run `npx mock-to-openapi ./libs/types/examples`
+-   Copy the generated snippet from `./libs/types/examples` to the appropriate schema in `./libs/types/definitions`
+-   If there is no schema yet, this can be helpful to build one: https://editor.swagger.io/
+-   Run `npm run codegen`
+-   Types should be generated for the server and hooks for the client.
 
 ## Notes
 

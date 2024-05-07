@@ -1,11 +1,11 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { ConfigService } from "@nestjs/config";
-import * as youtubedl from "youtube-dl-exec";
-import nodeID3 from "node-id3";
-import { UrltomusicController } from "./urltomusic.controller";
+import { Test, TestingModule } from "@nestjs/testing";
+import fs from "fs";
 import * as got from "got";
 import { CancelableRequest } from "got";
-import fs from "fs";
+import nodeID3 from "node-id3";
+import * as youtubedl from "youtube-dl-exec";
+import { UrltomusicController } from "./urltomusic.controller";
 
 jest.mock("got", () => {
     return {

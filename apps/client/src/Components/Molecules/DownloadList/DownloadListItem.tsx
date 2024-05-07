@@ -1,8 +1,8 @@
-import { FC } from "react";
-import { LinearProgress, ListItem, Typography } from "@mui/material";
-import PauseToggle from "./PauseToggle";
 import { DownloadItem } from "@homeremote/types";
+import { LinearProgress, ListItem, Typography } from "@mui/material";
+import { FC } from "react";
 import useStyles, { useListItemStyles } from "./DownloadListItem.styles";
+import PauseToggle from "./PauseToggle";
 
 interface Props {
     item: DownloadItem;

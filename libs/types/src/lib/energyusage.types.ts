@@ -1,3 +1,5 @@
+import { operations } from "./generated/energyUsage";
+
 export interface GasUsageItem {
     /**
      * Counter in m3
@@ -86,16 +88,8 @@ export interface EnergyUsageGetGasUsageResponse {
     title: string;
 }
 
-export interface HomeAssistantEntry {
-    entity_id: string;
-    state: string;
-    attributes: object;
-    last_changed: string;
-    last_updated: string;
-}
+export type EnergyUsageGetWaterResponse =
+    operations["getWater"]["responses"]["200"]["content"]["application/json"];
 
-export type HomeAssistantSensor = HomeAssistantEntry[];
-
-export type EnergyUsageGetTemperatureResponse = HomeAssistantSensor[];
-
-export type EnergyUsageGetWaterResponse = HomeAssistantSensor[];
+export type EnergyUsageGetTemperatureResponse =
+    operations["getTemperatures"]["responses"]["200"]["content"]["application/json"];

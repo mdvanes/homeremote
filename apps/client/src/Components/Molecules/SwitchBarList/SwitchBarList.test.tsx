@@ -1,11 +1,10 @@
-import React from "react";
-import * as ReactRedux from "react-redux";
-import { render, fireEvent, screen } from "@testing-library/react";
-import SwitchBarList from "./SwitchBarList";
-import { RootState } from "../../../Reducers";
-import * as Slice from "./switchBarListSlice";
-import SwitchBar from "./SwitchBar";
 import { DomoticzTypeOptions } from "@homeremote/types";
+import { fireEvent, render, screen } from "@testing-library/react";
+import * as ReactRedux from "react-redux";
+import { RootState } from "../../../Reducers";
+import SwitchBar from "./SwitchBar";
+import SwitchBarList from "./SwitchBarList";
+import * as Slice from "./switchBarListSlice";
 
 type MockRootState = Pick<RootState, "switchesList">;
 

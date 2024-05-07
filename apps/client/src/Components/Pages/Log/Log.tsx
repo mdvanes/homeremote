@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import LogCard from "../../Molecules/LogCard/LogCard";
 
 const Log: FC = () => <LogCard />;

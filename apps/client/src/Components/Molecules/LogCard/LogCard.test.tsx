@@ -1,10 +1,9 @@
-import React from "react";
-import * as ReactRedux from "react-redux";
 import { fireEvent, render } from "@testing-library/react";
-import LogCard from "./LogCard";
+import * as ReactRedux from "react-redux";
 import { RootState } from "../../../Reducers";
-import { Logline, Severity } from "./logSlice";
 import * as Store from "../../../store";
+import LogCard from "./LogCard";
+import { Logline, Severity } from "./logSlice";
 
 jest.mock("react-redux", () => ({
     ...jest.requireActual("react-redux"),

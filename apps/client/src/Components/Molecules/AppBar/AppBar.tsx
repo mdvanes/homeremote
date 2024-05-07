@@ -1,17 +1,17 @@
-import React, { FC } from "react";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
-    AppBar as MuiAppBar,
     Hidden,
     IconButton,
+    AppBar as MuiAppBar,
     Toolbar,
     Typography,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import AppStatusButton from "../AppStatusButton/AppStatusButton";
-import useStyles from "./AppBar.styles";
+import { FC } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { AuthenticationState } from "../../Providers/Authentication/authenticationSlice";
+import AppStatusButton from "../AppStatusButton/AppStatusButton";
+import useStyles from "./AppBar.styles";
 
 interface Props {
     toggleDrawer: () => void;

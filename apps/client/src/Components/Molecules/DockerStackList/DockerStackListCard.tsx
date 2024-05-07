@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@mui/material";
-import DockerStackList from "./DockerStackList";
 import { FC } from "react";
+import DockerStackList from "./DockerStackList";
 
 export const DockerStackListCard: FC = () => {
     return (
