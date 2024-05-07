@@ -26,16 +26,16 @@ export const Energy: FC = () => {
                         aria-label="lab API tabs example"
                     >
                         <Tab label="Climate" value="1" />
-                        <Tab label="Gas" value="2" />
-                        <Tab label="Electric" value="3" />
+                        {/* <Tab label="Gas" value="2" />
+                        <Tab label="Electric" value="3" /> */}
                         <Tab label="Water" value="4" />
                     </TabList>
                 </Box>
                 <TabPanel value="1">
                     <ClimateChart />
                 </TabPanel>
-                <TabPanel value="2">Item Two</TabPanel>
-                <TabPanel value="3">Item Three</TabPanel>
+                {/* <TabPanel value="2">Item Two</TabPanel>
+                <TabPanel value="3">Item Three</TabPanel> */}
                 <TabPanel value="4">
                     <WaterChart />
                 </TabPanel>

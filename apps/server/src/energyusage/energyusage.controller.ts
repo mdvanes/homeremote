@@ -196,7 +196,6 @@ export class EnergyUsageController {
                     Authorization: `Bearer ${this.haApiConfig.token}`,
                 },
             }).json<GetHaSensorHistoryResponse>();
-            console.log(JSON.stringify(result.slice(0, 2), null, 2));
 
             return result;
         } catch (err) {
