@@ -1,10 +1,38 @@
 import { Chip, Stack } from "@mui/material";
 import { FC } from "react";
-import { useGetWaterQuery } from "../../../../Services/generated/energyUsageApi";
+import {
+    useGetWaterQuery,
+    type GetWaterResponse,
+} from "../../../../Services/generated/energyUsageApi";
 import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
+
+type WaterSensorItem = GetWaterResponse[0][0] & {
+    delta?: number;
+    liters?: number;
+};
+
+const INTERVAL = 1000 * 60 * 5;
 
 export const WaterChart: FC = () => {
     const { data, isLoading, isFetching } = useGetWaterQuery();
+
+    const sensorEntries: WaterSensorItem[] = data?.[0] ?? [];
+
+    const dataAggregatedBy5Mins = sensorEntries.reduce<WaterSensorItem[]>(
+        (acc, next) => {
+            const prevEntry = acc.at(-1) ?? next;
+            const prevTime = new Date(prevEntry.last_changed ?? "0").getTime();
+            const nextTime = new Date(next.last_changed ?? "0").getTime();
+            if (nextTime <= prevTime + INTERVAL) {
+                return [
+                    ...acc.slice(0, -1),
+                    { ...prevEntry, liters: (prevEntry.liters ?? 0) + 1 },
+                ];
+            }
+            return [...acc, { ...next, liters: (next.liters ?? 0) + 1 }];
+        },
+        []
+    );
 
     return (
         <>
@@ -19,15 +47,16 @@ export const WaterChart: FC = () => {
                     ))}
             </Stack>
             <EnergyChart
-                data={data?.[0].map((item) => ({
+                data={dataAggregatedBy5Mins.map((item) => ({
                     time: new Date(item.last_changed ?? "0").getTime() ?? 1,
-                    liters: item.state,
+                    liters: item.liters,
+                    state: item.state,
                 }))}
                 config={{
-                    lines: [
+                    bars: [
                         {
                             dataKey: "liters",
-                            stroke: "#66bb6a",
+                            fill: "#66bb6a",
                             unit: "l",
                         },
                     ],
