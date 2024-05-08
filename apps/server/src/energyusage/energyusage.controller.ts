@@ -330,23 +330,25 @@ day of week | date | time1 / usage | time2 / usage | etc.
 
             // console.log(fileJson);
 
-            const result = filesInDir.map<
-                EnergyUsageGetElectricExportsResponse[0]
-            >((n) => ({
-                exportName: n,
-                date: "",
-                dayOfWeek: "Monday",
-                entries: [
-                    {
-                        time: "05:30",
-                        v1: 123,
-                        v2: 456,
-                        v: 123 + 456,
-                    },
-                ],
-            }));
+            return usagePerDay;
 
-            return result;
+            // const result = filesInDir.map<
+            //     EnergyUsageGetElectricExportsResponse[0]
+            // >((n) => ({
+            //     exportName: n,
+            //     date: "",
+            //     dayOfWeek: "Monday",
+            //     entries: [
+            //         {
+            //             time: "05:30",
+            //             v1: 123,
+            //             v2: 456,
+            //             v: 123 + 456,
+            //         },
+            //     ],
+            // }));
+
+            // return result;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(
