@@ -216,28 +216,20 @@ export class EnergyUsageController {
     ): Promise<EnergyUsageGetWaterResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/energyusage/water`);
 
-        // const mode: "day" | "month" = "month".toString() as "day" | "month";
-
-        // See https://developers.home-assistant.io/docs/api/rest/
         try {
-            // crashes
-            // const date = new Date("2024-04-29").toISOString().slice(0, 10);
-            // earliest date that works, but show only 24 hours
-            // const date = new Date("2024-04-30").toISOString().slice(0, 10);
-            const startDate = new Date(
-                range === "month" ? "2024-05-01" : Date.now()
-            )
-                .toISOString()
-                .slice(0, 10);
-            this.logger.verbose(startDate);
-            const tomorrow = new Date(Date.now() + 1000 * 60 * 60 * 24)
-                .toISOString()
-                .slice(0, 10);
-            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startDate}T00:00:00Z?end_time=${tomorrow}T00:00:00Z&filter_entity_id=${this.haApiConfig.waterSensorId}&minimal_response`;
+            // TODO The API call crashes when the startDate is too far into the past. At this time 2024-04-30 is the earliest that works. Docs: https://developers.home-assistant.io/docs/api/rest/
 
-            // Default: 1 day from the selected date
-            // const date = new Date().toISOString().slice(0, 10);
-            // const url = `${this.haApiConfig.baseUrl}/api/history/period/${date}T00:00:00Z?filter_entity_id=${this.haApiConfig.waterSensorId}`;
+            const time = Date.now();
+
+            const DAY = 1000 * 60 * 60 * 24;
+            const MONTH = 1000 * 60 * 60 * 24 * 30;
+            const startOffset = range === "month" ? DAY : MONTH;
+
+            const startTime = new Date(time - startOffset).toISOString();
+
+            const endTime = new Date(time).toISOString();
+
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.waterSensorId}&minimal_response`;
 
             const result = await got(url, {
                 headers: {
