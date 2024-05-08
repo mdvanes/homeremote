@@ -55,12 +55,12 @@ export interface components {
                  * @description low usage
                  * @example 144
                  */
-                v?: Record<string, never>;
+                v?: string;
                 /**
                  * @description high usage
                  * @example 144
                  */
-                v2?: Record<string, never>;
+                v2?: string;
             }[];
         };
     };

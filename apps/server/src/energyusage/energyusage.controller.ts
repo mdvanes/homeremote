@@ -314,7 +314,12 @@ day of week | date | time1 / usage | time2 / usage | etc.
                                 dayOfWeek: day.toLocaleDateString("en-GB", {
                                     weekday: "long",
                                 }),
-                                entries: [],
+                                entries: fileJson.result.map((entry) => ({
+                                    time: entry.d,
+                                    v: parseInt(entry.v) + parseInt(entry.v2),
+                                    v1: parseInt(entry.v),
+                                    v2: parseInt(entry.v2),
+                                })),
                             };
                         // console.log(result);
                         return result;
