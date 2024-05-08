@@ -93,3 +93,6 @@ export type EnergyUsageGetWaterResponse =
 
 export type EnergyUsageGetTemperatureResponse =
     operations["getTemperatures"]["responses"]["200"]["content"]["application/json"];
+
+export type EnergyUsageGetElectricExportsResponse =
+    operations["getElectricExports"]["responses"]["200"]["content"]["application/json"];

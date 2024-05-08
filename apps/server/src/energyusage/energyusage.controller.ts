@@ -1,5 +1,6 @@
 import type {
     EnergyUsageGasItem,
+    EnergyUsageGetElectricExportsResponse,
     EnergyUsageGetGasUsageResponse,
     EnergyUsageGetTemperatureResponse,
     EnergyUsageGetWaterResponse,
@@ -19,6 +20,7 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { readdir } from "fs/promises";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
@@ -239,6 +241,42 @@ export class EnergyUsageController {
                     Authorization: `Bearer ${this.haApiConfig.token}`,
                 },
             }).json<GetHaSensorHistoryResponse>();
+
+            return result;
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("/electric/exports")
+    async getElectricExports(
+        @Request() req: AuthenticatedRequest,
+        @Query("range") range: "day" | "month"
+    ): Promise<EnergyUsageGetElectricExportsResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/energyusage/electric/exports`
+        );
+
+        try {
+            const x = await readdir("./tmp");
+            this.logger.verbose(x);
+
+            /* needed per file:
+
+day of week | date | time1 / usage | time2 / usage | etc.
+
+            - include or exclude manually
+            - then aggregate from date x to date y.
+            - get average for weekday/weekend
+
+            */
+
+            const result = x.map((n) => ({ export_name: n }));
 
             return result;
         } catch (err) {
