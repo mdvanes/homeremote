@@ -10,6 +10,28 @@ servers:
   - url: https://example.com
     description: Generated server url
 paths:
+  /api/energyusage/electric/exports:
+    get:
+      operationId: getElectricExports
+      responses:
+        '200':
+          description: ElectricExports
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetElectricExportsResponse'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'      
   /api/energyusage/temperature:
     get:
       tags:
@@ -101,6 +123,14 @@ components:
           description: Code of the error
           format: int32
       description: Error information details
+    GetElectricExportsResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          export_name:
+            type: string
+            example: 2023071705:25:01_electra.json
     GetTemperaturesResponse:
       type: array
       items:

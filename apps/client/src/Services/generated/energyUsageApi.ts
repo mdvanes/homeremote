@@ -6,6 +6,12 @@ const injectedRtkApi = api
     })
     .injectEndpoints({
         endpoints: (build) => ({
+            getElectricExports: build.query<
+                GetElectricExportsApiResponse,
+                GetElectricExportsApiArg
+            >({
+                query: () => ({ url: `/api/energyusage/electric/exports` }),
+            }),
             getTemperatures: build.query<
                 GetTemperaturesApiResponse,
                 GetTemperaturesApiArg
@@ -27,6 +33,9 @@ const injectedRtkApi = api
         overrideExisting: false,
     });
 export { injectedRtkApi as energyUsageApi };
+export type GetElectricExportsApiResponse =
+    /** status 200 ElectricExports */ GetElectricExportsResponse;
+export type GetElectricExportsApiArg = void;
 export type GetTemperaturesApiResponse =
     /** status 200 Temperatures */ GetTemperaturesResponse;
 export type GetTemperaturesApiArg = {
@@ -35,6 +44,21 @@ export type GetTemperaturesApiArg = {
 export type GetWaterApiResponse = /** status 200 Water */ GetWaterResponse;
 export type GetWaterApiArg = {
     range?: "day" | "month";
+};
+export type GetElectricExportsResponse = {
+    export_name?: string;
+}[];
+export type ErrorResponse = {
+    /** Time when error happened */
+    timestamp?: string;
+    /** Code describing the error */
+    status?: number;
+    /** Short error name */
+    error?: string;
+    /** Message explaining the error */
+    message?: string;
+    /** Code of the error */
+    code?: number;
 };
 export type GetTemperaturesResponse = {
     entity_id?: string;
@@ -54,18 +78,6 @@ export type GetTemperaturesResponse = {
         user_id?: string;
     };
 }[][];
-export type ErrorResponse = {
-    /** Time when error happened */
-    timestamp?: string;
-    /** Code describing the error */
-    status?: number;
-    /** Short error name */
-    error?: string;
-    /** Message explaining the error */
-    message?: string;
-    /** Code of the error */
-    code?: number;
-};
 export type GetWaterResponse = {
     entity_id?: string;
     state?: string;
@@ -84,4 +96,8 @@ export type GetWaterResponse = {
         user_id?: string;
     };
 }[][];
-export const { useGetTemperaturesQuery, useGetWaterQuery } = injectedRtkApi;
+export const {
+    useGetElectricExportsQuery,
+    useGetTemperaturesQuery,
+    useGetWaterQuery,
+} = injectedRtkApi;
