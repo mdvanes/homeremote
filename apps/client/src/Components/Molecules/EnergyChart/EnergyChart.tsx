@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@mui/material";
-import { FC } from "react";
+import { Button, Card, CardContent } from "@mui/material";
+import { FC, useState } from "react";
 import {
     Bar,
     ComposedChart,
@@ -45,8 +45,11 @@ export const EnergyChart: FC<{
     data: SensorItem[] | undefined;
     config: SensorConfig;
 }> = ({ isLoading, data, config }) => {
+    const [showDot, setShowDot] = useState(false);
+
     const chartLines = config.lines?.map((config) => (
         <Line
+            dot={showDot}
             key={config.dataKey?.toString()}
             yAxisId="right"
             type="monotone"
@@ -115,6 +118,14 @@ export const EnergyChart: FC<{
                         </ResponsiveContainer>
                     </div>
                 )}
+
+                <Button
+                    onClick={() => {
+                        setShowDot((prev) => !prev);
+                    }}
+                >
+                    Toggle Dots
+                </Button>
             </CardContent>
         </Card>
     );

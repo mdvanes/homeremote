@@ -159,7 +159,9 @@ export type $defs = Record<string, never>;
 export interface operations {
     getTemperatures: {
         parameters: {
-            query?: never;
+            query?: {
+                range?: "day" | "month";
+            };
             header?: never;
             path?: never;
             cookie?: never;

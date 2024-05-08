@@ -29,6 +29,9 @@ interface SensorConfig {
     idx: string;
 }
 
+const DAY = 1000 * 60 * 60 * 24;
+const MONTH = 1000 * 60 * 60 * 24 * 30;
+
 const strToConfigs = (sensorConfig: string): SensorConfig[] => {
     const sensorStrings = sensorConfig.split(";");
 
@@ -182,15 +185,20 @@ export class EnergyUsageController {
     @UseGuards(JwtAuthGuard)
     @Get("/temperature")
     async getTemperature(
-        @Request() req: AuthenticatedRequest
+        @Request() req: AuthenticatedRequest,
+        @Query("range") range: "day" | "month"
     ): Promise<EnergyUsageGetTemperatureResponse> {
         this.logger.verbose(
             `[${req.user.name}] GET to /api/energyusage/temperature`
         );
 
         try {
-            const date = new Date().toISOString().slice(0, 10);
-            const url = `${this.haApiConfig.baseUrl}/api/history/period/${date}T00:00:00Z?filter_entity_id=${this.haApiConfig.temperatureSensorId}`;
+            const time = Date.now();
+            const startOffset = range === "month" ? MONTH : DAY;
+            const startTime = new Date(time - startOffset).toISOString();
+            const endTime = new Date(time).toISOString();
+
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.temperatureSensorId}`;
 
             const result = await got(url, {
                 headers: {
@@ -220,13 +228,8 @@ export class EnergyUsageController {
             // TODO The API call crashes when the startDate is too far into the past. At this time 2024-04-30 is the earliest that works. Docs: https://developers.home-assistant.io/docs/api/rest/
 
             const time = Date.now();
-
-            const DAY = 1000 * 60 * 60 * 24;
-            const MONTH = 1000 * 60 * 60 * 24 * 30;
-            const startOffset = range === "month" ? DAY : MONTH;
-
+            const startOffset = range === "month" ? MONTH : DAY;
             const startTime = new Date(time - startOffset).toISOString();
-
             const endTime = new Date(time).toISOString();
 
             const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.waterSensorId}&minimal_response`;

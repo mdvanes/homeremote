@@ -10,7 +10,10 @@ const injectedRtkApi = api
                 GetTemperaturesApiResponse,
                 GetTemperaturesApiArg
             >({
-                query: () => ({ url: `/api/energyusage/temperature` }),
+                query: (queryArg) => ({
+                    url: `/api/energyusage/temperature`,
+                    params: { range: queryArg.range },
+                }),
                 providesTags: ["temperature"],
             }),
             getWater: build.query<GetWaterApiResponse, GetWaterApiArg>({
@@ -26,7 +29,9 @@ const injectedRtkApi = api
 export { injectedRtkApi as energyUsageApi };
 export type GetTemperaturesApiResponse =
     /** status 200 Temperatures */ GetTemperaturesResponse;
-export type GetTemperaturesApiArg = void;
+export type GetTemperaturesApiArg = {
+    range?: "day" | "month";
+};
 export type GetWaterApiResponse = /** status 200 Water */ GetWaterResponse;
 export type GetWaterApiArg = {
     range?: "day" | "month";

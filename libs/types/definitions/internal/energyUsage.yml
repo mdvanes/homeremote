@@ -17,6 +17,14 @@ paths:
       summary: Get temperatures
       description: Get temperatures
       operationId: getTemperatures
+      parameters:
+       - in: query
+         name: range
+         schema:
+           type: string
+           enum:
+             - day
+             - month
       responses:
         '200':
           description: Temperatures
@@ -50,7 +58,7 @@ paths:
            type: string
            enum:
              - day
-             - month      
+             - month
       responses:
         '200':
           description: Water
