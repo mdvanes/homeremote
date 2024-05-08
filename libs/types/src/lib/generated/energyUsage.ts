@@ -85,7 +85,26 @@ export interface components {
         };
         GetElectricExportsResponse: {
             /** @example 2023071705:25:01_electra.json */
-            export_name?: string;
+            exportName?: string;
+            /** @description for sorting */
+            dateMillis?: number;
+            /** @example 2024-05-08T12:59:26.161Z */
+            date?: string;
+            /**
+             * @description store dayOfWeek separately. When this is stored in a datebase it can be queried quickly
+             * @example Monday
+             */
+            dayOfWeek?: string;
+            entries?: {
+                /** @description usage low */
+                v1?: number;
+                /** @description usage high */
+                v2?: number;
+                /** @description usage total */
+                v?: number;
+                /** @example 13:37 */
+                time?: string;
+            }[];
         }[];
         GetTemperaturesResponse: {
             /** @example sensor.tz3000_amqudjr0_ts0201_temperature */

@@ -46,7 +46,21 @@ export type GetWaterApiArg = {
     range?: "day" | "month";
 };
 export type GetElectricExportsResponse = {
-    export_name?: string;
+    exportName?: string;
+    /** for sorting */
+    dateMillis?: number;
+    date?: string;
+    /** store dayOfWeek separately. When this is stored in a datebase it can be queried quickly */
+    dayOfWeek?: string;
+    entries?: {
+        /** usage low */
+        v1?: number;
+        /** usage high */
+        v2?: number;
+        /** usage total */
+        v?: number;
+        time?: string;
+    }[];
 }[];
 export type ErrorResponse = {
     /** Time when error happened */

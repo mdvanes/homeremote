@@ -3,6 +3,7 @@ export * from "./lib/datalora.types";
 export * from "./lib/dockerlist.types";
 export * from "./lib/downloadlist.types";
 export * from "./lib/energyusage.types";
+export * from "./lib/external/domoticz.types";
 export * as HomeAssistantTypes from "./lib/external/generated/homeAssistant";
 export * from "./lib/external/homeassistant.types";
 export * as VolvoTypes from "./lib/external/volvo/volvo.types";

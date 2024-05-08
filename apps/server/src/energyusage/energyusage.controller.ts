@@ -5,6 +5,7 @@ import type {
     EnergyUsageGetTemperatureResponse,
     EnergyUsageGetWaterResponse,
     GasUsageItem,
+    GetDomoticzJsonExport,
     GetHaSensorHistoryResponse,
     GotGasUsageResponse,
     GotTempResponse,
@@ -20,7 +21,7 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { readdir } from "fs/promises";
+import { readFile, readdir } from "fs/promises";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
@@ -263,8 +264,8 @@ export class EnergyUsageController {
         );
 
         try {
-            const x = await readdir("./tmp");
-            this.logger.verbose(x);
+            const filesInDir = await readdir("./tmp");
+            this.logger.verbose(filesInDir);
 
             /* needed per file:
 
@@ -276,7 +277,74 @@ day of week | date | time1 / usage | time2 / usage | etc.
 
             */
 
-            const result = x.map((n) => ({ export_name: n }));
+            /*
+            {
+	"result" : 
+	[
+		{
+			"d" : "2024-04-14 05:30",
+			"eu" : "1719",
+			"r1" : "0",
+			"r2" : "0",
+			"v" : "0",
+			"v2" : "0"
+		},
+            */
+
+            const usagePerDay: EnergyUsageGetElectricExportsResponse =
+                await Promise.all(
+                    filesInDir.map<
+                        Promise<EnergyUsageGetElectricExportsResponse[0]>
+                    >(async (fileInDir) => {
+                        const fileContents = await readFile(
+                            `./tmp/${fileInDir}`,
+                            "utf-8"
+                        );
+                        const fileJson: GetDomoticzJsonExport =
+                            JSON.parse(fileContents);
+                        // console.log(fileInDir, fileJson.result[0]);
+                        const firstItem = fileJson.result[0];
+                        const day = new Date(firstItem.d.slice(0, 10));
+                        // console.log(date);
+                        const result: EnergyUsageGetElectricExportsResponse[0] =
+                            {
+                                exportName: fileInDir,
+                                date: day.toISOString(),
+                                dateMillis: day.getTime(),
+                                dayOfWeek: day.toLocaleDateString("en-GB", {
+                                    weekday: "long",
+                                }),
+                                entries: [],
+                            };
+                        // console.log(result);
+                        return result;
+                    })
+                );
+            console.log(usagePerDay);
+
+            // const fileContents = await readFile(
+            //     `./tmp/${filesInDir[0]}`,
+            //     "utf-8"
+            // );
+            // const fileJson: GetDomoticzJsonExport = JSON.parse(fileContents);
+
+            // console.log(fileJson);
+
+            const result = filesInDir.map<
+                EnergyUsageGetElectricExportsResponse[0]
+            >((n) => ({
+                exportName: n,
+                date: "",
+                dayOfWeek: "Monday",
+                entries: [
+                    {
+                        time: "05:30",
+                        v1: 123,
+                        v2: 456,
+                        v: 123 + 456,
+                    },
+                ],
+            }));
 
             return result;
         } catch (err) {
