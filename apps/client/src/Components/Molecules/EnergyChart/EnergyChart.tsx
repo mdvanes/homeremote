@@ -47,17 +47,17 @@ export const EnergyChart: FC<{
 }> = ({ isLoading, data, config }) => {
     const [showDot, setShowDot] = useState(false);
 
-    const chartLines = config.lines?.map((config) => (
+    const chartLines = config.lines?.map((config, i) => (
         <Line
             dot={showDot}
-            key={config.dataKey?.toString()}
+            key={`${config.dataKey?.toString()}${i}`}
             yAxisId="right"
             type="monotone"
             {...config}
         />
     ));
     const chartBars = config.bars?.map((config) => (
-        <Bar yAxisId="left" {...config} />
+        <Bar key={config.dataKey?.toString()} yAxisId="left" {...config} />
     ));
 
     return (
