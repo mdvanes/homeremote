@@ -1,5 +1,7 @@
 .electric-chart-table {
     overflow-x: scroll;
+    overflow-y: scroll;
+    max-height: calc(100vh - 180px);
 
     th {
         text-align: right;
@@ -12,7 +14,14 @@
     }
 
     td {
-        min-width: 150px;
+        min-width: 60px;
+        text-align: right;
+
+        &:first-child,
+        &:nth-child(2),
+        &:nth-child(3) {
+            text-align: left;
+        }
 
         &:first-child {
             min-width: auto;

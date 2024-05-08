@@ -25,6 +25,7 @@ import { readFile, readdir } from "fs/promises";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import { isDefined } from "../util/isDefined";
 
 interface SensorConfig {
     name: string;
@@ -300,71 +301,76 @@ day of week | date | time1 / usage | time2 / usage | etc.
                             `./tmp/${fileInDir}`,
                             "utf-8"
                         );
-                        const fileJson: GetDomoticzJsonExport =
-                            JSON.parse(fileContents);
-                        // console.log(fileInDir, fileJson.result[0]);
-                        const firstItem = fileJson.result[0];
-                        const day = new Date(firstItem.d.slice(0, 10));
-                        // console.log(date);
+                        try {
+                            const fileJson: GetDomoticzJsonExport =
+                                JSON.parse(fileContents);
+                            // console.log(fileInDir, fileJson.result[0]);
+                            const firstItem = fileJson.result[0];
+                            const day = new Date(firstItem.d.slice(0, 10));
+                            // console.log(date);
 
-                        const OFFSET = 19800000 - 1000 * 60 * 60; // 5:30 in millis
-                        const timepoints = new Array(288)
-                            .fill(0)
-                            .map((n, i) => OFFSET + 1000 * 60 * 5 * i)
-                            .map((n) =>
-                                new Date(n).toLocaleTimeString("nl-NL", {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                })
-                            );
-                        const normalizedEntries = timepoints.map(
-                            (timepoint) => {
-                                const match = fileJson.result.find(
-                                    (item: {
-                                        d: string;
-                                        v: string;
-                                        v2: string;
-                                    }) => item.d.slice(-5) === timepoint
+                            const OFFSET = 19800000 - 1000 * 60 * 60; // 5:30 in millis
+                            const timepoints = new Array(288)
+                                .fill(0)
+                                .map((n, i) => OFFSET + 1000 * 60 * 5 * i)
+                                .map((n) =>
+                                    new Date(n).toLocaleTimeString("nl-NL", {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                    })
                                 );
-                                if (!match) {
+                            const normalizedEntries = timepoints.map(
+                                (timepoint) => {
+                                    const match = fileJson.result.find(
+                                        (item: {
+                                            d: string;
+                                            v: string;
+                                            v2: string;
+                                        }) => item.d.slice(-5) === timepoint
+                                    );
+                                    if (!match) {
+                                        return {
+                                            d: timepoint,
+                                            v: undefined,
+                                        };
+                                    }
+                                    const v1 = parseInt(match.v);
+                                    const v2 = parseInt(match.v2);
+                                    const v = v1 + v2;
                                     return {
-                                        d: timepoint,
-                                        v: undefined,
+                                        time: match.d,
+                                        v,
+                                        v1,
+                                        v2,
                                     };
                                 }
-                                const v1 = parseInt(match.v);
-                                const v2 = parseInt(match.v2);
-                                const v = v1 + v2;
-                                return {
-                                    time: match.d,
-                                    v,
-                                    v1,
-                                    v2,
-                                };
-                            }
-                        );
+                            );
 
-                        const result: EnergyUsageGetElectricExportsResponse[0] =
-                            {
-                                exportName: fileInDir,
-                                date: day.toISOString(),
-                                dateMillis: day.getTime(),
-                                dayOfWeek: day.toLocaleDateString("en-GB", {
-                                    weekday: "long",
-                                }),
-                                entries: normalizedEntries,
-                                // entries: fileJson.result.map((entry) => ({
-                                //     time: entry.d,
-                                //     v: parseInt(entry.v) + parseInt(entry.v2),
-                                //     v1: parseInt(entry.v),
-                                //     v2: parseInt(entry.v2),
-                                // })),
-                            };
-                        // console.log(result);
-                        return result;
+                            const result: EnergyUsageGetElectricExportsResponse[0] =
+                                {
+                                    exportName: fileInDir,
+                                    date: day.toISOString(),
+                                    dateMillis: day.getTime(),
+                                    dayOfWeek: day.toLocaleDateString("en-GB", {
+                                        weekday: "long",
+                                    }),
+                                    entries: normalizedEntries,
+                                    // entries: fileJson.result.map((entry) => ({
+                                    //     time: entry.d,
+                                    //     v: parseInt(entry.v) + parseInt(entry.v2),
+                                    //     v1: parseInt(entry.v),
+                                    //     v2: parseInt(entry.v2),
+                                    // })),
+                                };
+                            // console.log(result);
+                            return result;
+                        } catch (err) {
+                            console.log(`Can't process ${fileInDir}`);
+                            return undefined;
+                        }
                     })
                 );
-            console.log(usagePerDay);
+            // console.log(usagePerDay);
 
             // const fileContents = await readFile(
             //     `./tmp/${filesInDir[0]}`,
@@ -374,7 +380,7 @@ day of week | date | time1 / usage | time2 / usage | etc.
 
             // console.log(fileJson);
 
-            return usagePerDay;
+            return usagePerDay.filter(isDefined);
 
             // const result = filesInDir.map<
             //     EnergyUsageGetElectricExportsResponse[0]
