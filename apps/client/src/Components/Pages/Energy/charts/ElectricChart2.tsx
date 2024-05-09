@@ -4,7 +4,8 @@ import {
     GetElectricExportsApiResponse,
     useGetElectricExportsQuery,
 } from "../../../../Services/generated/energyUsageApi";
-import styles from "./ElectricChart.module.scss";
+import { ElectricChart } from "./ElectricChart";
+import styles from "./ElectricChart2.module.scss";
 
 type Row = GetElectricExportsApiResponse[0];
 
@@ -59,14 +60,17 @@ const ElectricChartRow: FC<{ data: Row }> = ({ data }) => {
 
 export const ElectricChart2: FC = () => {
     const [filterMonth, setFilterMonth] = useState<string | undefined>();
-    const [showCharts, setShowCharts] = useState(false);
+    // const [showCharts, setShowCharts] = useState(false);
     const { data, isLoading, isFetching, error } = useGetElectricExportsQuery();
-    const [foo, setFoo] = useState<{
-        year1Weekdays: Row[];
-        year1Weekends: Row[];
-        year2Weekdays: Row[];
-        year2Weekends: Row[];
-    }>();
+    const [chartData, setChartData] = useState<
+        | {
+              year1Weekdays: Row[];
+              year1Weekends: Row[];
+              year2Weekdays: Row[];
+              year2Weekends: Row[];
+          }
+        | undefined
+    >();
 
     if (error) {
         return <div>error</div>;
@@ -129,8 +133,8 @@ export const ElectricChart2: FC = () => {
             "weekends:",
             year2Weekends.length
         );
-        setShowCharts(true);
-        setFoo({
+        // setShowCharts(true);
+        setChartData({
             year1Weekdays,
             year1Weekends,
             year2Weekdays,
@@ -156,8 +160,19 @@ export const ElectricChart2: FC = () => {
                 <div>{filterMonth}</div>
                 <Button onClick={handleGenerate}>generate</Button>
             </Stack>
-            {showCharts ? (
-                <div></div>
+            {chartData ? (
+                <>
+                    <ElectricChart
+                        label="weekdays"
+                        year1={chartData.year1Weekdays}
+                        year2={chartData.year2Weekdays}
+                    />
+                    <ElectricChart
+                        label="weekend days"
+                        year1={chartData.year1Weekends}
+                        year2={chartData.year2Weekends}
+                    />
+                </>
             ) : (
                 <Box className={styles["electric-chart-table"]}>
                     <table>
