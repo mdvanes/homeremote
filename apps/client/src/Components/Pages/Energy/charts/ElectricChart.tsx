@@ -19,14 +19,14 @@ export const ElectricChart: FC<{
     // TODO add averaging
     const entries: { time: number }[] | undefined = year1[0].entries?.map(
         (entry, index) => {
-            const [h, m] = entry.time?.split(":") ?? ["0", "0"];
-            const time = year1Item1Date;
-            time.setHours(parseInt(h));
-            time.setMinutes(parseInt(m));
+            const formatTime = entry.time?.replace(" ", "T") + ":00.000+02:00";
+            const newDate = new Date(formatTime ?? "");
+
             return {
-                time: time.getTime(),
+                time: newDate.getTime(),
                 [year1Item1Year]: entry.v,
-                [year2Item1Year]: year2[index],
+                // TODO assumes that timestamps matches indexes
+                [year2Item1Year]: year2[0]?.entries?.[index]?.v ?? 0,
             };
         }
     );
@@ -44,7 +44,7 @@ export const ElectricChart: FC<{
                         {
                             dataKey: year1Item1Year,
                             stroke: COLORS[0],
-                            unit: "kWh",
+                            // unit: "kWh",
                         },
                         {
                             dataKey: year2Item1Year,
@@ -63,12 +63,12 @@ export const ElectricChart: FC<{
                         //     unit: "°C",
                         // },
                     ],
-                    leftYAxis: {
-                        unit: "%",
-                    },
-                    rightYAxis: {
-                        unit: "°",
-                    },
+                    // leftYAxis: {
+                    //     unit: "%",
+                    // },
+                    // rightYAxis: {
+                    //     unit: "°",
+                    // },
                 }}
                 isLoading={false}
                 // isLoading={isLoading || isFetching}
