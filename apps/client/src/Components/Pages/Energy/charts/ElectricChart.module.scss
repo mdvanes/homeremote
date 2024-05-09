@@ -1,7 +1,13 @@
+.select {
+    border: 1px solid white;
+    color: white;
+    width: 100px;
+}
+
 .electric-chart-table {
     overflow-x: scroll;
     overflow-y: scroll;
-    max-height: calc(100vh - 180px);
+    max-height: calc(100vh - 220px);
 
     th {
         text-align: right;
