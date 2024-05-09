@@ -59,7 +59,14 @@ const ElectricChartRow: FC<{ data: Row }> = ({ data }) => {
 
 export const ElectricChart: FC = () => {
     const [filterMonth, setFilterMonth] = useState<string | undefined>();
+    const [showCharts, setShowCharts] = useState(false);
     const { data, isLoading, isFetching, error } = useGetElectricExportsQuery();
+    const [foo, setFoo] = useState<{
+        year1Weekdays: Row[];
+        year1Weekends: Row[];
+        year2Weekdays: Row[];
+        year2Weekends: Row[];
+    }>();
 
     if (error) {
         return <div>error</div>;
@@ -122,6 +129,13 @@ export const ElectricChart: FC = () => {
             "weekends:",
             year2Weekends.length
         );
+        setShowCharts(true);
+        setFoo({
+            year1Weekdays,
+            year1Weekends,
+            year2Weekdays,
+            year2Weekends,
+        });
     };
 
     return (
@@ -142,29 +156,35 @@ export const ElectricChart: FC = () => {
                 <div>{filterMonth}</div>
                 <Button onClick={handleGenerate}>generate</Button>
             </Stack>
-            <Box className={styles["electric-chart-table"]}>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>file name</th>
-                            <th>date</th>
-                            {data?.[0] &&
-                                data?.[0].entries?.map((e) => (
-                                    <th key={e.time}>{e.time?.slice(-5)}</th>
-                                ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data?.filter(isSelectedRange).map((file) => (
-                            <ElectricChartRow
-                                key={file.exportName}
-                                data={file}
-                            />
-                        ))}
-                    </tbody>
-                </table>
-            </Box>
+            {showCharts ? (
+                <div></div>
+            ) : (
+                <Box className={styles["electric-chart-table"]}>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>file name</th>
+                                <th>date</th>
+                                {data?.[0] &&
+                                    data?.[0].entries?.map((e) => (
+                                        <th key={e.time}>
+                                            {e.time?.slice(-5)}
+                                        </th>
+                                    ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data?.filter(isSelectedRange).map((file) => (
+                                <ElectricChartRow
+                                    key={file.exportName}
+                                    data={file}
+                                />
+                            ))}
+                        </tbody>
+                    </table>
+                </Box>
+            )}
         </>
     );
 };
