@@ -57,7 +57,7 @@ const ElectricChartRow: FC<{ data: Row }> = ({ data }) => {
     );
 };
 
-export const ElectricChart: FC = () => {
+export const ElectricChart2: FC = () => {
     const [filterMonth, setFilterMonth] = useState<string | undefined>();
     const [showCharts, setShowCharts] = useState(false);
     const { data, isLoading, isFetching, error } = useGetElectricExportsQuery();
