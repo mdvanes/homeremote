@@ -1,4 +1,4 @@
-import { Box, LinearProgress, Stack } from "@mui/material";
+import { Box, Button, LinearProgress, Stack } from "@mui/material";
 import { FC, useState } from "react";
 import {
     GetElectricExportsApiResponse,
@@ -6,10 +6,25 @@ import {
 } from "../../../../Services/generated/energyUsageApi";
 import styles from "./ElectricChart.module.scss";
 
-const ElectricChartRow: FC<{ data: GetElectricExportsApiResponse[0] }> = ({
-    data,
-}) => {
-    const areSomeEmpty = data.entries?.some((e) => typeof e.v === "undefined");
+type Row = GetElectricExportsApiResponse[0];
+
+const getAreSomeEmpty = (entries: Row["entries"]): boolean =>
+    entries?.some((e) => typeof e.v === "undefined") ?? true;
+
+const isWeekday = (row: Row): boolean =>
+    ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(
+        row.dayOfWeek ?? ""
+    );
+
+const isWeekend = (row: Row): boolean => !isWeekday(row);
+
+const isYear =
+    (year: number) =>
+    (row: Row): boolean =>
+        new Date(row.dateMillis ?? 0).getFullYear() === year;
+
+const ElectricChartRow: FC<{ data: Row }> = ({ data }) => {
+    const areSomeEmpty = getAreSomeEmpty(data.entries);
 
     if (!data.dateMillis) {
         return null;
@@ -75,6 +90,40 @@ export const ElectricChart: FC = () => {
         // return file.date;
     };
 
+    const handleGenerate = () => {
+        const selectedMonthAndNonEmptyRows =
+            data
+                ?.filter(isSelectedRange)
+                .filter((row) => !getAreSomeEmpty(row.entries)) ?? [];
+
+        const year1Weekdays = selectedMonthAndNonEmptyRows
+            .filter(isWeekday)
+            .filter(isYear(2023));
+        const year1Weekends = selectedMonthAndNonEmptyRows
+            .filter(isWeekend)
+            .filter(isYear(2023));
+        const year2Weekdays = selectedMonthAndNonEmptyRows
+            .filter(isWeekday)
+            .filter(isYear(2024));
+        const year2Weekends = selectedMonthAndNonEmptyRows
+            .filter(isWeekend)
+            .filter(isYear(2024));
+
+        console.log(
+            data?.filter(isSelectedRange).length,
+            "non empty in range:",
+            selectedMonthAndNonEmptyRows?.length,
+            "2023, weekdays:",
+            year1Weekdays.length,
+            "weekends:",
+            year1Weekends.length,
+            "2024, weekdays:",
+            year2Weekdays.length,
+            "weekends:",
+            year2Weekends.length
+        );
+    };
+
     return (
         <>
             <Stack direction="row" spacing={1} marginBottom={1}>
@@ -91,6 +140,7 @@ export const ElectricChart: FC = () => {
                     <option value="may">may</option>
                 </select>
                 <div>{filterMonth}</div>
+                <Button onClick={handleGenerate}>generate</Button>
             </Stack>
             <Box className={styles["electric-chart-table"]}>
                 <table>
@@ -107,7 +157,10 @@ export const ElectricChart: FC = () => {
                     </thead>
                     <tbody>
                         {data?.filter(isSelectedRange).map((file) => (
-                            <ElectricChartRow data={file} />
+                            <ElectricChartRow
+                                key={file.exportName}
+                                data={file}
+                            />
                         ))}
                     </tbody>
                 </table>
