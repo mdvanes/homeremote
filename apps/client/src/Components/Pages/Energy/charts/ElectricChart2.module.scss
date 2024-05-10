@@ -14,7 +14,8 @@
 
         &:first-child,
         &:nth-child(2),
-        &:nth-child(3) {
+        &:nth-child(3),
+        &:nth-child(4) {
             text-align: left;
         }
     }
@@ -39,6 +40,10 @@
 
         &:nth-child(3) {
             min-width: 150px;
+        }
+
+        &:nth-child(4) {
+            min-width: 80px;
         }
 
         &.empty {

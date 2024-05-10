@@ -32,12 +32,14 @@ export const ElectricChart: FC<{
     );
 
     // TODO This is very inaccurate, should come directly from Domoticz endpoint. Include in the getElectricExports response?
-    const year1Item1Sum = year1[0].entries?.reduce((acc, next) => {
-        return acc + (next?.v ?? 0);
-    }, 0);
-    const year2Item1Sum = year2[0].entries?.reduce((acc, next) => {
-        return acc + (next?.v ?? 0);
-    }, 0);
+    // const year1Item1Sum = year1[0].entries?.reduce((acc, next) => {
+    //     return acc + (next?.v ?? 0);
+    // }, 0);
+    // const year2Item1Sum = year2[0].entries?.reduce((acc, next) => {
+    //     return acc + (next?.v ?? 0);
+    // }, 0);
+    const year1Item1Sum = year1[0].dayUsage;
+    const year2Item1Sum = year2[0].dayUsage;
 
     return (
         <>
@@ -54,24 +56,13 @@ export const ElectricChart: FC<{
                         {
                             dataKey: year1Item1Year,
                             stroke: COLORS[0],
-                            // unit: "kWh",
+                            unit: " Watt",
                         },
                         {
                             dataKey: year2Item1Year,
                             stroke: COLORS[1],
-                            // unit: "%",
-                            // yAxisId: "left",
+                            unit: " Watt",
                         },
-                        // {
-                        //     dataKey: sensors[2]?.attributes?.friendly_name,
-                        //     stroke: COLORS[2],
-                        //     unit: "°C",
-                        // },
-                        // {
-                        //     dataKey: sensors[3]?.attributes?.friendly_name,
-                        //     stroke: COLORS[3],
-                        //     unit: "°C",
-                        // },
                     ],
                     // leftYAxis: {
                     //     unit: "%",
@@ -81,7 +72,6 @@ export const ElectricChart: FC<{
                     // },
                 }}
                 isLoading={false}
-                // isLoading={isLoading || isFetching}
             />
         </>
     );

@@ -141,6 +141,9 @@ components:
                         type: string
                         example: Monday
                         description: store dayOfWeek separately. When this is stored in a datebase it can be queried quickly
+                    dayUsage:
+                        type: number
+                        description: day usage
                     entries:
                         type: array
                         items:

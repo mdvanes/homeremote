@@ -95,6 +95,8 @@ export interface components {
              * @example Monday
              */
             dayOfWeek?: string;
+            /** @description day usage */
+            dayUsage?: number;
             entries?: {
                 /** @description usage low */
                 v1?: number;

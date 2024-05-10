@@ -52,6 +52,8 @@ export type GetElectricExportsResponse = {
     date?: string;
     /** store dayOfWeek separately. When this is stored in a datebase it can be queried quickly */
     dayOfWeek?: string;
+    /** day usage */
+    dayUsage?: number;
     entries?: {
         /** usage low */
         v1?: number;

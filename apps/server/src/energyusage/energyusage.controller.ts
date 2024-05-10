@@ -6,6 +6,7 @@ import type {
     EnergyUsageGetWaterResponse,
     GasUsageItem,
     GetDomoticzJsonExport,
+    GetDomoticzUsePerDayResponse,
     GetHaSensorHistoryResponse,
     GotGasUsageResponse,
     GotTempResponse,
@@ -266,7 +267,7 @@ export class EnergyUsageController {
 
         try {
             const filesInDir = await readdir("./tmp");
-            this.logger.verbose(filesInDir);
+            // this.logger.verbose(filesInDir);
 
             /* needed per file:
 
@@ -291,6 +292,41 @@ day of week | date | time1 / usage | time2 / usage | etc.
 			"v2" : "0"
 		},
             */
+
+            this.logger.verbose(`[${req.user.name}] start get counter`);
+            const electricCounterResponseYear1: GetDomoticzUsePerDayResponse =
+                await got(
+                    `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=counter&idx=2071&range=year&actyear=2023`
+                ).json();
+            const electricCounterResponseYear2: GetDomoticzUsePerDayResponse =
+                await got(
+                    `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=counter&idx=2071&range=year&actyear=2024`
+                ).json();
+            // console.log(electricCounterResponse);
+            // writeFileSync(
+            //     "foo.json",
+            //     JSON.stringify(electricCounterResponse, null, 2)
+            // );
+            this.logger.verbose(
+                `[${req.user.name}] end get counter`,
+                electricCounterResponseYear1.result.length,
+                electricCounterResponseYear1.result.at(0),
+                electricCounterResponseYear1.result.at(-1),
+                electricCounterResponseYear2.result.length,
+                electricCounterResponseYear2.result.at(0),
+                electricCounterResponseYear2.result.at(-1)
+            );
+            const usePerDayTotals = electricCounterResponseYear1.result.concat(
+                electricCounterResponseYear2.result
+            );
+
+            const findUserPerDayTotalByDate = (
+                total: GetDomoticzUsePerDayResponse["result"],
+                date: string
+            ) => {
+                // console.log(date);
+                return total.find((e) => e.d === date);
+            };
 
             const usagePerDay: EnergyUsageGetElectricExportsResponse =
                 await Promise.all(
@@ -346,6 +382,33 @@ day of week | date | time1 / usage | time2 / usage | etc.
                                 }
                             );
 
+                            // const electricCounterResponse: GotGasUsageResponse =
+                            //     await got(this.getAPI(gasSensor)).json();
+
+                            let dayUsage: number | undefined = undefined;
+                            try {
+                                const dayUsageTimestamp = `${day.getFullYear()}-${(
+                                    day.getMonth() + 1
+                                )
+                                    .toString()
+                                    .padStart(2, "0")}-${day
+                                    .getDay()
+                                    .toString()
+                                    .padStart(2, "0")}`;
+                                const dayUsageDay = findUserPerDayTotalByDate(
+                                    usePerDayTotals,
+                                    dayUsageTimestamp
+                                );
+                                dayUsage =
+                                    parseFloat(dayUsageDay.v) +
+                                    parseFloat(dayUsageDay.v2);
+                                // console.log(dayUsage);
+                            } catch (err) {
+                                console.log(
+                                    `Can't get dayUsage for ${fileInDir}`
+                                );
+                            }
+
                             const result: EnergyUsageGetElectricExportsResponse[0] =
                                 {
                                     exportName: fileInDir,
@@ -354,6 +417,7 @@ day of week | date | time1 / usage | time2 / usage | etc.
                                     dayOfWeek: day.toLocaleDateString("en-GB", {
                                         weekday: "long",
                                     }),
+                                    dayUsage,
                                     entries: normalizedEntries,
                                     // entries: fileJson.result.map((entry) => ({
                                     //     time: entry.d,
@@ -370,6 +434,7 @@ day of week | date | time1 / usage | time2 / usage | etc.
                         }
                     })
                 );
+            //
             // console.log(usagePerDay);
 
             // const fileContents = await readFile(

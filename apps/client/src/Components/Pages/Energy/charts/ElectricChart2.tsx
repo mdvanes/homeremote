@@ -45,6 +45,7 @@ const ElectricChartRow: FC<{ data: Row }> = ({ data }) => {
                     weekday: "short",
                 })}
             </td>
+            <td>{data.dayUsage?.toFixed(3)}</td>
             {data.entries?.map((e, i) => (
                 <td
                     key={i}
@@ -60,7 +61,6 @@ const ElectricChartRow: FC<{ data: Row }> = ({ data }) => {
 
 export const ElectricChart2: FC = () => {
     const [filterMonth, setFilterMonth] = useState<string | undefined>();
-    // const [showCharts, setShowCharts] = useState(false);
     const { data, isLoading, isFetching, error } = useGetElectricExportsQuery();
     const [chartData, setChartData] = useState<
         | {
@@ -95,13 +95,14 @@ export const ElectricChart2: FC = () => {
         }
 
         return true;
-        // console.log(
-        //     new Date(file.dateMillis).getMonth()
-        // );
-        // return file.date;
     };
 
     const handleGenerate = () => {
+        if (!filterMonth) {
+            setChartData(undefined);
+            return;
+        }
+
         const selectedMonthAndNonEmptyRows =
             data
                 ?.filter(isSelectedRange)
@@ -120,20 +121,6 @@ export const ElectricChart2: FC = () => {
             .filter(isWeekend)
             .filter(isYear(2024));
 
-        console.log(
-            data?.filter(isSelectedRange).length,
-            "non empty in range:",
-            selectedMonthAndNonEmptyRows?.length,
-            "2023, weekdays:",
-            year1Weekdays.length,
-            "weekends:",
-            year1Weekends.length,
-            "2024, weekdays:",
-            year2Weekdays.length,
-            "weekends:",
-            year2Weekends.length
-        );
-        // setShowCharts(true);
         setChartData({
             year1Weekdays,
             year1Weekends,
@@ -181,6 +168,7 @@ export const ElectricChart2: FC = () => {
                                 <th></th>
                                 <th>file name</th>
                                 <th>date</th>
+                                <th></th>
                                 {data?.[0] &&
                                     data?.[0].entries?.map((e) => (
                                         <th key={e.time}>
