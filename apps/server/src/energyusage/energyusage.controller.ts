@@ -88,6 +88,69 @@ const sensorResultsToAggregated =
         return result;
     };
 
+const findUsePerDayTotalByDate = (
+    total: GetDomoticzUsePerDayResponse["result"],
+    date: string
+) => {
+    return total.find((e) => e.d === date);
+};
+
+const OFFSET = 19800000 - 1000 * 60 * 60; // 5:30 in millis
+const TIMEPOINTS = new Array(288)
+    .fill(0)
+    .map((n, i) => OFFSET + 1000 * 60 * 5 * i)
+    .map((n) =>
+        new Date(n).toLocaleTimeString("nl-NL", {
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+    );
+
+const getNormalizedEntries =
+    (jsonExport: GetDomoticzJsonExport) => (timepoint: string) => {
+        const match = jsonExport.result.find(
+            (item: { d: string; v: string; v2: string }) =>
+                item.d.slice(-5) === timepoint
+        );
+        if (!match) {
+            return {
+                d: timepoint,
+                v: undefined,
+            };
+        }
+        const v1 = parseInt(match.v);
+        const v2 = parseInt(match.v2);
+        const v = v1 + v2;
+        return {
+            time: match.d,
+            v,
+            v1,
+            v2,
+        };
+    };
+
+const getDayUsage = (
+    day: Date,
+    usePerDayTotals: GetDomoticzUsePerDayResponse["result"]
+): number | undefined => {
+    // let dayUsage = undefined;
+    try {
+        const dayUsageTimestamp = `${day.getFullYear()}-${(day.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}-${day.getDay().toString().padStart(2, "0")}`;
+        const dayUsageDay = findUsePerDayTotalByDate(
+            usePerDayTotals,
+            dayUsageTimestamp
+        );
+        const dayUsage = parseFloat(dayUsageDay.v) + parseFloat(dayUsageDay.v2);
+        console.log("dayUsage1", dayUsage, dayUsageTimestamp, dayUsageDay);
+        return dayUsage;
+    } catch (err) {
+        console.log(`Can't get dayUsage for ${day}`);
+        return undefined;
+    }
+};
+
 @Controller("api/energyusage")
 export class EnergyUsageController {
     private readonly logger: Logger;
@@ -320,14 +383,6 @@ day of week | date | time1 / usage | time2 / usage | etc.
                 electricCounterResponseYear2.result
             );
 
-            const findUserPerDayTotalByDate = (
-                total: GetDomoticzUsePerDayResponse["result"],
-                date: string
-            ) => {
-                // console.log(date);
-                return total.find((e) => e.d === date);
-            };
-
             const usagePerDay: EnergyUsageGetElectricExportsResponse =
                 await Promise.all(
                     filesInDir.map<
@@ -345,69 +400,69 @@ day of week | date | time1 / usage | time2 / usage | etc.
                             const day = new Date(firstItem.d.slice(0, 10));
                             // console.log(date);
 
-                            const OFFSET = 19800000 - 1000 * 60 * 60; // 5:30 in millis
-                            const timepoints = new Array(288)
-                                .fill(0)
-                                .map((n, i) => OFFSET + 1000 * 60 * 5 * i)
-                                .map((n) =>
-                                    new Date(n).toLocaleTimeString("nl-NL", {
-                                        hour: "2-digit",
-                                        minute: "2-digit",
-                                    })
-                                );
-                            const normalizedEntries = timepoints.map(
-                                (timepoint) => {
-                                    const match = fileJson.result.find(
-                                        (item: {
-                                            d: string;
-                                            v: string;
-                                            v2: string;
-                                        }) => item.d.slice(-5) === timepoint
-                                    );
-                                    if (!match) {
-                                        return {
-                                            d: timepoint,
-                                            v: undefined,
-                                        };
-                                    }
-                                    const v1 = parseInt(match.v);
-                                    const v2 = parseInt(match.v2);
-                                    const v = v1 + v2;
-                                    return {
-                                        time: match.d,
-                                        v,
-                                        v1,
-                                        v2,
-                                    };
-                                }
+                            // Align supplied entries to exact timepoints
+                            const normalizedEntries = TIMEPOINTS.map(
+                                getNormalizedEntries(fileJson)
                             );
+                            // const normalizedEntries = timepoints.map(
+                            //     (timepoint) => {
+                            //         const match = fileJson.result.find(
+                            //             (item: {
+                            //                 d: string;
+                            //                 v: string;
+                            //                 v2: string;
+                            //             }) => item.d.slice(-5) === timepoint
+                            //         );
+                            //         if (!match) {
+                            //             return {
+                            //                 d: timepoint,
+                            //                 v: undefined,
+                            //             };
+                            //         }
+                            //         const v1 = parseInt(match.v);
+                            //         const v2 = parseInt(match.v2);
+                            //         const v = v1 + v2;
+                            //         return {
+                            //             time: match.d,
+                            //             v,
+                            //             v1,
+                            //             v2,
+                            //         };
+                            //     }
+                            // );
 
                             // const electricCounterResponse: GotGasUsageResponse =
                             //     await got(this.getAPI(gasSensor)).json();
 
-                            let dayUsage: number | undefined = undefined;
-                            try {
-                                const dayUsageTimestamp = `${day.getFullYear()}-${(
-                                    day.getMonth() + 1
-                                )
-                                    .toString()
-                                    .padStart(2, "0")}-${day
-                                    .getDay()
-                                    .toString()
-                                    .padStart(2, "0")}`;
-                                const dayUsageDay = findUserPerDayTotalByDate(
-                                    usePerDayTotals,
-                                    dayUsageTimestamp
-                                );
-                                dayUsage =
-                                    parseFloat(dayUsageDay.v) +
-                                    parseFloat(dayUsageDay.v2);
-                                // console.log(dayUsage);
-                            } catch (err) {
-                                console.log(
-                                    `Can't get dayUsage for ${fileInDir}`
-                                );
-                            }
+                            const dayUsage = getDayUsage(day, usePerDayTotals);
+                            // let dayUsage: number | undefined = undefined;
+                            // try {
+                            //     const dayUsageTimestamp = `${day.getFullYear()}-${(
+                            //         day.getMonth() + 1
+                            //     )
+                            //         .toString()
+                            //         .padStart(2, "0")}-${day
+                            //         .getDay()
+                            //         .toString()
+                            //         .padStart(2, "0")}`;
+                            //     const dayUsageDay = findUsePerDayTotalByDate(
+                            //         usePerDayTotals,
+                            //         dayUsageTimestamp
+                            //     );
+                            //     dayUsage =
+                            //         parseFloat(dayUsageDay.v) +
+                            //         parseFloat(dayUsageDay.v2);
+                            //     console.log(
+                            //         "dayUsage1",
+                            //         dayUsage,
+                            //         dayUsageTimestamp,
+                            //         dayUsageDay
+                            //     );
+                            // } catch (err) {
+                            //     console.log(
+                            //         `Can't get dayUsage for ${fileInDir}`
+                            //     );
+                            // }
 
                             const result: EnergyUsageGetElectricExportsResponse[0] =
                                 {
