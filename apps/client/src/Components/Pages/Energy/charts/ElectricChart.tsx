@@ -38,23 +38,16 @@ export const ElectricChart: FC<{
         }
     );
 
-    // TODO This is very inaccurate, should come directly from Domoticz endpoint. Include in the getElectricExports response?
-    // const year1Item1Sum = year1[0].entries?.reduce((acc, next) => {
-    //     return acc + (next?.v ?? 0);
-    // }, 0);
-    // const year2Item1Sum = year2[0].entries?.reduce((acc, next) => {
-    //     return acc + (next?.v ?? 0);
-    // }, 0);
     const year1AvgDayUsage = avgDayUsage(year1);
     const year2AvgDayUsage = avgDayUsage(year2);
 
     return (
         <>
             <Typography variant="h4">
-                {`Daily usage, averaged over ${year1.length} and ${year2.length} ${label}`}
+                {`Daily usage, averaged over ${year1.length} vs ${year2.length} ${label}`}
             </Typography>
             <Typography variant="h5">
-                {`${year1Item1Year} ${year1AvgDayUsage} avg per day vs ${year2Item1Year} ${year2AvgDayUsage} avg per day`}
+                {`${year1AvgDayUsage} kWh avg per day in ${year1Item1Year} vs ${year2AvgDayUsage} kWh avg per day in ${year2Item1Year}`}
             </Typography>
             <EnergyChart
                 data={entries}

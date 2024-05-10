@@ -133,20 +133,17 @@ const getDayUsage = (
     day: Date,
     usePerDayTotals: GetDomoticzUsePerDayResponse["result"]
 ): number | undefined => {
-    // let dayUsage = undefined;
+    const yearMonthDay = day.toISOString().slice(0, 10);
     try {
-        const dayUsageTimestamp = `${day.getFullYear()}-${(day.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}-${day.getDay().toString().padStart(2, "0")}`;
         const dayUsageDay = findUsePerDayTotalByDate(
             usePerDayTotals,
-            dayUsageTimestamp
+            yearMonthDay
         );
         const dayUsage = parseFloat(dayUsageDay.v) + parseFloat(dayUsageDay.v2);
-        console.log("dayUsage1", dayUsage, dayUsageTimestamp, dayUsageDay);
+        // console.log("dayUsage1", dayUsage, yearMonthDay, dayUsageDay, day);
         return dayUsage;
     } catch (err) {
-        console.log(`Can't get dayUsage for ${day}`);
+        console.log(`Can't get dayUsage for ${yearMonthDay}`);
         return undefined;
     }
 };
