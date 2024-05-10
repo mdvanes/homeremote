@@ -5,6 +5,8 @@ import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
 
 export type Row = GetElectricExportsApiResponse[0];
 
+type RowEntry = NonNullable<Row["entries"]>[0];
+
 const COLORS = ["#66bb6a", "#ff9100", "#159bff", "#bb47d3"];
 
 const sumDayUsage = (acc: number, next: Row) => {
@@ -13,6 +15,20 @@ const sumDayUsage = (acc: number, next: Row) => {
 
 const avgDayUsage = (rows: Row[]) =>
     (rows.reduce(sumDayUsage, 0) / rows.length).toFixed(3);
+
+const rowEntryToChartEntry =
+    (year1Nr: number, year2Nr: number, year2: Row[]) =>
+    (entry: RowEntry, index: number) => {
+        const formatTime = entry.time?.replace(" ", "T") + ":00.000+02:00";
+        const newDate = new Date(formatTime ?? "");
+
+        return {
+            time: newDate.getTime(),
+            [year1Nr]: entry.v,
+            // TODO assumes that timestamps matches indexes
+            [year2Nr]: year2[0]?.entries?.[index]?.v ?? 0,
+        };
+    };
 
 export const ElectricChart: FC<{
     label: string;
@@ -23,19 +39,14 @@ export const ElectricChart: FC<{
     const year1Item1Year = year1Item1Date.getFullYear();
     const year2Item1Year = new Date(year2[0].dateMillis ?? 0).getFullYear();
 
+    // const entriesForFirstDay: { time: number }[] | undefined =
+    //     year1[0].entries?.map(
+    //         rowEntryToChartEntry(year1Item1Year, year2Item1Year, year2)
+    //     );
+
     // TODO add averaging
     const entries: { time: number }[] | undefined = year1[0].entries?.map(
-        (entry, index) => {
-            const formatTime = entry.time?.replace(" ", "T") + ":00.000+02:00";
-            const newDate = new Date(formatTime ?? "");
-
-            return {
-                time: newDate.getTime(),
-                [year1Item1Year]: entry.v,
-                // TODO assumes that timestamps matches indexes
-                [year2Item1Year]: year2[0]?.entries?.[index]?.v ?? 0,
-            };
-        }
+        rowEntryToChartEntry(year1Item1Year, year2Item1Year, year2)
     );
 
     const year1AvgDayUsage = avgDayUsage(year1);
