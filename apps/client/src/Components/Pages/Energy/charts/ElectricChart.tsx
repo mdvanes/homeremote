@@ -7,6 +7,13 @@ export type Row = GetElectricExportsApiResponse[0];
 
 const COLORS = ["#66bb6a", "#ff9100", "#159bff", "#bb47d3"];
 
+const sumDayUsage = (acc: number, next: Row) => {
+    return acc + (next?.dayUsage ?? 0);
+};
+
+const avgDayUsage = (rows: Row[]) =>
+    (rows.reduce(sumDayUsage, 0) / rows.length).toFixed(3);
+
 export const ElectricChart: FC<{
     label: string;
     year1: Row[];
@@ -38,8 +45,8 @@ export const ElectricChart: FC<{
     // const year2Item1Sum = year2[0].entries?.reduce((acc, next) => {
     //     return acc + (next?.v ?? 0);
     // }, 0);
-    const year1Item1Sum = year1[0].dayUsage;
-    const year2Item1Sum = year2[0].dayUsage;
+    const year1AvgDayUsage = avgDayUsage(year1);
+    const year2AvgDayUsage = avgDayUsage(year2);
 
     return (
         <>
@@ -47,7 +54,7 @@ export const ElectricChart: FC<{
                 {`Daily usage, averaged over ${year1.length} and ${year2.length} ${label}`}
             </Typography>
             <Typography variant="h5">
-                {`${year1Item1Year} ${year1Item1Sum} avg per day vs ${year2Item1Year} ${year2Item1Sum} avg per day`}
+                {`${year1Item1Year} ${year1AvgDayUsage} avg per day vs ${year2Item1Year} ${year2AvgDayUsage} avg per day`}
             </Typography>
             <EnergyChart
                 data={entries}
