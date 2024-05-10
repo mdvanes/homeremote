@@ -7,6 +7,11 @@ export type Row = GetElectricExportsApiResponse[0];
 
 type RowEntry = NonNullable<Row["entries"]>[0];
 
+interface RowEntryAvg extends RowEntry {
+    sum: number;
+    avg?: number;
+}
+
 const COLORS = ["#66bb6a", "#ff9100", "#159bff", "#bb47d3"];
 
 const sumDayUsage = (acc: number, next: Row) => {
@@ -17,7 +22,7 @@ const avgDayUsage = (rows: Row[]) =>
     (rows.reduce(sumDayUsage, 0) / rows.length).toFixed(3);
 
 const rowEntryToChartEntry =
-    (year1Nr: number, year2Nr: number, year2: Row[]) =>
+    (year1Nr: number, year2Nr: number, year2Row: Row) =>
     (entry: RowEntry, index: number) => {
         const formatTime = entry.time?.replace(" ", "T") + ":00.000+02:00";
         const newDate = new Date(formatTime ?? "");
@@ -26,9 +31,48 @@ const rowEntryToChartEntry =
             time: newDate.getTime(),
             [year1Nr]: entry.v,
             // TODO assumes that timestamps matches indexes
-            [year2Nr]: year2[0]?.entries?.[index]?.v ?? 0,
+            [year2Nr]: year2Row?.entries?.[index]?.v ?? 0,
         };
     };
+
+const rowEntryToAvgChartEntry =
+    (year1Nr: number, year2Nr: number, year2Row: Row) =>
+    (entry: RowEntry, index: number) => {
+        const formatTime = entry.time?.replace(" ", "T") + ":00.000+02:00";
+        const newDate = new Date(formatTime ?? "");
+
+        return {
+            time: newDate.getTime(),
+            [year1Nr]: (entry as RowEntryAvg).avg,
+            // TODO assumes that timestamps matches indexes
+            [year2Nr]: (year2Row?.entries?.[index] as RowEntryAvg).avg ?? 0,
+        };
+    };
+
+const rowsToAvgRows = (rows: Row[]) => {
+    const rowsWithSum = rows.slice(1).reduce((acc: Row, next: Row) => {
+        const entries = acc.entries?.map((entry, i) => ({
+            ...entry,
+            sum: (entry.v ?? 0) + (next.entries?.[i].v ?? 0),
+        }));
+        return {
+            ...acc,
+            entries,
+        };
+    }, rows[0]);
+    const rowsWithAvg = {
+        ...rowsWithSum,
+        entries: rowsWithSum.entries?.map((entry) => {
+            return {
+                ...entry,
+                avg: (entry as RowEntryAvg).sum / rows.length,
+            };
+        }),
+    };
+    return rowsWithAvg;
+};
+
+// TODO draw chart for a specific day
 
 export const ElectricChart: FC<{
     label: string;
@@ -41,12 +85,38 @@ export const ElectricChart: FC<{
 
     // const entriesForFirstDay: { time: number }[] | undefined =
     //     year1[0].entries?.map(
-    //         rowEntryToChartEntry(year1Item1Year, year2Item1Year, year2)
+    //         rowEntryToChartEntry(year1Item1Year, year2Item1Year, year2[0])
     //     );
+    // const entries: { time: number }[] | undefined = year1.entries?.map(
+    //     rowEntryToChartEntry(year1Item1Year, year2Item1Year, year2)
+    // );
+
+    // TODO year1.reduce => year1Sum => year1Avg
+    // const year1Sum = year1.slice(1).reduce((acc: Row, next: Row) => {
+    //     const entries = acc.entries?.map((entry, i) => ({
+    //         ...entry,
+    //         sum: (entry.v ?? 0) + (next.entries?.[i].v ?? 0),
+    //     }));
+    //     return {
+    //         ...acc,
+    //         entries,
+    //     };
+    // }, year1[0]);
+    // const year1Avg = {
+    //     ...year1Sum,
+    //     entries: year1Sum.entries?.map((entry) => {
+    //         return {
+    //             ...entry,
+    //             avg: (entry as RowEntryAvg).sum / year1.length,
+    //         };
+    //     }),
+    // };
+    const year1Avg = rowsToAvgRows(year1);
+    const year2Avg = rowsToAvgRows(year2);
 
     // TODO add averaging
-    const entries: { time: number }[] | undefined = year1[0].entries?.map(
-        rowEntryToChartEntry(year1Item1Year, year2Item1Year, year2)
+    const entries: { time: number }[] | undefined = year1Avg.entries?.map(
+        rowEntryToAvgChartEntry(year1Item1Year, year2Item1Year, year2Avg)
     );
 
     const year1AvgDayUsage = avgDayUsage(year1);
