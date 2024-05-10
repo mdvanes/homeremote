@@ -151,6 +151,43 @@ const getDayUsage = (
     }
 };
 
+// exportJsonToRow
+const exportJsonToRow =
+    (usePerDayTotals: GetDomoticzUsePerDayResponse["result"]) =>
+    async (
+        fileInDir: string
+    ): Promise<EnergyUsageGetElectricExportsResponse[0] | undefined> => {
+        const fileContents = await readFile(`./tmp/${fileInDir}`, "utf-8");
+        try {
+            const fileJson: GetDomoticzJsonExport = JSON.parse(fileContents);
+            const firstItem = fileJson.result[0];
+            const day = new Date(firstItem.d.slice(0, 10));
+
+            // Align supplied entries to exact timepoints
+            const normalizedEntries = TIMEPOINTS.map(
+                getNormalizedEntries(fileJson)
+            );
+
+            const dayUsage = getDayUsage(day, usePerDayTotals);
+
+            const result: EnergyUsageGetElectricExportsResponse[0] = {
+                exportName: fileInDir,
+                date: day.toISOString(),
+                dateMillis: day.getTime(),
+                dayOfWeek: day.toLocaleDateString("en-GB", {
+                    weekday: "long",
+                }),
+                dayUsage,
+                entries: normalizedEntries,
+            };
+
+            return result;
+        } catch (err) {
+            console.log(`Can't process ${fileInDir}`);
+            return undefined;
+        }
+    };
+
 @Controller("api/energyusage")
 export class EnergyUsageController {
     private readonly logger: Logger;
@@ -321,8 +358,8 @@ export class EnergyUsageController {
     @UseGuards(JwtAuthGuard)
     @Get("/electric/exports")
     async getElectricExports(
-        @Request() req: AuthenticatedRequest,
-        @Query("range") range: "day" | "month"
+        @Request() req: AuthenticatedRequest
+        // @Query("range") range: "day" | "month"
     ): Promise<EnergyUsageGetElectricExportsResponse> {
         this.logger.verbose(
             `[${req.user.name}] GET to /api/energyusage/electric/exports`
@@ -330,33 +367,10 @@ export class EnergyUsageController {
 
         try {
             const filesInDir = await readdir("./tmp");
-            // this.logger.verbose(filesInDir);
-
-            /* needed per file:
-
-day of week | date | time1 / usage | time2 / usage | etc.
-
-            - include or exclude manually
-            - then aggregate from date x to date y.
-            - get average for weekday/weekend
-
-            */
-
-            /*
-            {
-	"result" : 
-	[
-		{
-			"d" : "2024-04-14 05:30",
-			"eu" : "1719",
-			"r1" : "0",
-			"r2" : "0",
-			"v" : "0",
-			"v2" : "0"
-		},
-            */
 
             this.logger.verbose(`[${req.user.name}] start get counter`);
+
+            // TODO make idx and actyear dynamic
             const electricCounterResponseYear1: GetDomoticzUsePerDayResponse =
                 await got(
                     `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=counter&idx=2071&range=year&actyear=2023`
@@ -365,20 +379,16 @@ day of week | date | time1 / usage | time2 / usage | etc.
                 await got(
                     `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=counter&idx=2071&range=year&actyear=2024`
                 ).json();
-            // console.log(electricCounterResponse);
-            // writeFileSync(
-            //     "foo.json",
-            //     JSON.stringify(electricCounterResponse, null, 2)
+
+            // this.logger.verbose(
+            //     `[${req.user.name}] end get counter`,
+            //     electricCounterResponseYear1.result.length,
+            //     electricCounterResponseYear1.result.at(0),
+            //     electricCounterResponseYear1.result.at(-1),
+            //     electricCounterResponseYear2.result.length,
+            //     electricCounterResponseYear2.result.at(0),
+            //     electricCounterResponseYear2.result.at(-1)
             // );
-            this.logger.verbose(
-                `[${req.user.name}] end get counter`,
-                electricCounterResponseYear1.result.length,
-                electricCounterResponseYear1.result.at(0),
-                electricCounterResponseYear1.result.at(-1),
-                electricCounterResponseYear2.result.length,
-                electricCounterResponseYear2.result.at(0),
-                electricCounterResponseYear2.result.at(-1)
-            );
             const usePerDayTotals = electricCounterResponseYear1.result.concat(
                 electricCounterResponseYear2.result
             );
@@ -387,138 +397,10 @@ day of week | date | time1 / usage | time2 / usage | etc.
                 await Promise.all(
                     filesInDir.map<
                         Promise<EnergyUsageGetElectricExportsResponse[0]>
-                    >(async (fileInDir) => {
-                        const fileContents = await readFile(
-                            `./tmp/${fileInDir}`,
-                            "utf-8"
-                        );
-                        try {
-                            const fileJson: GetDomoticzJsonExport =
-                                JSON.parse(fileContents);
-                            // console.log(fileInDir, fileJson.result[0]);
-                            const firstItem = fileJson.result[0];
-                            const day = new Date(firstItem.d.slice(0, 10));
-                            // console.log(date);
-
-                            // Align supplied entries to exact timepoints
-                            const normalizedEntries = TIMEPOINTS.map(
-                                getNormalizedEntries(fileJson)
-                            );
-                            // const normalizedEntries = timepoints.map(
-                            //     (timepoint) => {
-                            //         const match = fileJson.result.find(
-                            //             (item: {
-                            //                 d: string;
-                            //                 v: string;
-                            //                 v2: string;
-                            //             }) => item.d.slice(-5) === timepoint
-                            //         );
-                            //         if (!match) {
-                            //             return {
-                            //                 d: timepoint,
-                            //                 v: undefined,
-                            //             };
-                            //         }
-                            //         const v1 = parseInt(match.v);
-                            //         const v2 = parseInt(match.v2);
-                            //         const v = v1 + v2;
-                            //         return {
-                            //             time: match.d,
-                            //             v,
-                            //             v1,
-                            //             v2,
-                            //         };
-                            //     }
-                            // );
-
-                            // const electricCounterResponse: GotGasUsageResponse =
-                            //     await got(this.getAPI(gasSensor)).json();
-
-                            const dayUsage = getDayUsage(day, usePerDayTotals);
-                            // let dayUsage: number | undefined = undefined;
-                            // try {
-                            //     const dayUsageTimestamp = `${day.getFullYear()}-${(
-                            //         day.getMonth() + 1
-                            //     )
-                            //         .toString()
-                            //         .padStart(2, "0")}-${day
-                            //         .getDay()
-                            //         .toString()
-                            //         .padStart(2, "0")}`;
-                            //     const dayUsageDay = findUsePerDayTotalByDate(
-                            //         usePerDayTotals,
-                            //         dayUsageTimestamp
-                            //     );
-                            //     dayUsage =
-                            //         parseFloat(dayUsageDay.v) +
-                            //         parseFloat(dayUsageDay.v2);
-                            //     console.log(
-                            //         "dayUsage1",
-                            //         dayUsage,
-                            //         dayUsageTimestamp,
-                            //         dayUsageDay
-                            //     );
-                            // } catch (err) {
-                            //     console.log(
-                            //         `Can't get dayUsage for ${fileInDir}`
-                            //     );
-                            // }
-
-                            const result: EnergyUsageGetElectricExportsResponse[0] =
-                                {
-                                    exportName: fileInDir,
-                                    date: day.toISOString(),
-                                    dateMillis: day.getTime(),
-                                    dayOfWeek: day.toLocaleDateString("en-GB", {
-                                        weekday: "long",
-                                    }),
-                                    dayUsage,
-                                    entries: normalizedEntries,
-                                    // entries: fileJson.result.map((entry) => ({
-                                    //     time: entry.d,
-                                    //     v: parseInt(entry.v) + parseInt(entry.v2),
-                                    //     v1: parseInt(entry.v),
-                                    //     v2: parseInt(entry.v2),
-                                    // })),
-                                };
-                            // console.log(result);
-                            return result;
-                        } catch (err) {
-                            console.log(`Can't process ${fileInDir}`);
-                            return undefined;
-                        }
-                    })
+                    >(exportJsonToRow(usePerDayTotals))
                 );
-            //
-            // console.log(usagePerDay);
-
-            // const fileContents = await readFile(
-            //     `./tmp/${filesInDir[0]}`,
-            //     "utf-8"
-            // );
-            // const fileJson: GetDomoticzJsonExport = JSON.parse(fileContents);
-
-            // console.log(fileJson);
 
             return usagePerDay.filter(isDefined);
-
-            // const result = filesInDir.map<
-            //     EnergyUsageGetElectricExportsResponse[0]
-            // >((n) => ({
-            //     exportName: n,
-            //     date: "",
-            //     dayOfWeek: "Monday",
-            //     entries: [
-            //         {
-            //             time: "05:30",
-            //             v1: 123,
-            //             v2: 456,
-            //             v: 123 + 456,
-            //         },
-            //     ],
-            // }));
-
-            // return result;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(
