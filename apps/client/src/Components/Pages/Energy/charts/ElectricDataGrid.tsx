@@ -4,8 +4,8 @@ import {
     GetElectricExportsApiResponse,
     useGetElectricExportsQuery,
 } from "../../../../Services/generated/energyUsageApi";
-import { ElectricChart } from "./ElectricChart";
-import styles from "./ElectricChart2.module.scss";
+import { ElectricChartCompareAvg } from "./ElectricChartCompareAvg";
+import styles from "./ElectricDataGrid.module.scss";
 
 type Row = GetElectricExportsApiResponse[0];
 
@@ -59,7 +59,7 @@ const ElectricChartRow: FC<{ data: Row }> = ({ data }) => {
     );
 };
 
-export const ElectricChart2: FC = () => {
+export const ElectricDataGrid: FC = () => {
     const [filterMonth, setFilterMonth] = useState<string | undefined>();
     const { data, isLoading, isFetching, error } = useGetElectricExportsQuery();
     const [chartData, setChartData] = useState<
@@ -149,12 +149,12 @@ export const ElectricChart2: FC = () => {
             </Stack>
             {chartData ? (
                 <>
-                    <ElectricChart
+                    <ElectricChartCompareAvg
                         label="weekdays"
                         year1={chartData.year1Weekdays}
                         year2={chartData.year2Weekdays}
                     />
-                    <ElectricChart
+                    <ElectricChartCompareAvg
                         label="weekend days"
                         year1={chartData.year1Weekends}
                         year2={chartData.year2Weekends}
