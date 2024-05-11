@@ -52,7 +52,10 @@ describe("EnergyUsage Controller", () => {
             json: () => Promise.resolve(mockWaterResponse),
         } as CancelableRequest<Response>);
 
-        const response = await controller.getWater(mockAuthenticatedRequest);
+        const response = await controller.getWater(
+            mockAuthenticatedRequest,
+            "day"
+        );
         expect(response).toEqual([
             [
                 {
