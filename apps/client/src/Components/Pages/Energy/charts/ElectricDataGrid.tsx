@@ -1,10 +1,12 @@
-import { Box, Button, LinearProgress, Stack } from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
+import { Box, Button, IconButton, LinearProgress, Stack } from "@mui/material";
 import { FC, useState } from "react";
 import {
     GetElectricExportsApiResponse,
     useGetElectricExportsQuery,
 } from "../../../../Services/generated/energyUsageApi";
 import { ElectricChartCompareAvg } from "./ElectricChartCompareAvg";
+import { ElectricChartForRow } from "./ElectricChartForRow";
 import styles from "./ElectricDataGrid.module.scss";
 
 type Row = GetElectricExportsApiResponse[0];
@@ -24,7 +26,10 @@ const isYear =
     (row: Row): boolean =>
         new Date(row.dateMillis ?? 0).getFullYear() === year;
 
-const ElectricChartRow: FC<{ data: Row }> = ({ data }) => {
+const ElectricChartRow: FC<{ data: Row; onClick: (_: Row) => void }> = ({
+    data,
+    onClick,
+}) => {
     const areSomeEmpty = getAreSomeEmpty(data.entries);
 
     if (!data.dateMillis) {
@@ -38,12 +43,20 @@ const ElectricChartRow: FC<{ data: Row }> = ({ data }) => {
             </td>
             <td>{data.exportName}</td>
             <td className={`${areSomeEmpty ? styles["empty"] : ""}`}>
-                {new Date(data.dateMillis).toLocaleDateString("en-gb", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    weekday: "short",
-                })}
+                <Button
+                    color="primary"
+                    variant="text"
+                    onClick={() => {
+                        onClick(data);
+                    }}
+                >
+                    {new Date(data.dateMillis).toLocaleDateString("en-gb", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                        weekday: "short",
+                    })}
+                </Button>
             </td>
             <td>{data.dayUsage?.toFixed(3)}</td>
             {data.entries?.map((e, i) => (
@@ -71,6 +84,7 @@ export const ElectricDataGrid: FC = () => {
           }
         | undefined
     >();
+    const [dayChartRow, setDayChartRow] = useState<Row | undefined>();
 
     if (error) {
         return <div>error</div>;
@@ -98,6 +112,7 @@ export const ElectricDataGrid: FC = () => {
     };
 
     const handleGenerate = () => {
+        setDayChartRow(undefined);
         if (!filterMonth) {
             setChartData(undefined);
             return;
@@ -132,22 +147,37 @@ export const ElectricDataGrid: FC = () => {
     return (
         <>
             <Stack direction="row" spacing={1} marginBottom={1}>
-                <select
-                    className={styles["select"]}
-                    name="month"
-                    id=""
-                    onChange={(v) => {
-                        setFilterMonth(v.target.value);
-                    }}
-                >
-                    <option value=""></option>
-                    <option value="april">april</option>
-                    <option value="may">may</option>
-                </select>
-                <div>{filterMonth}</div>
-                <Button onClick={handleGenerate}>generate</Button>
+                {(chartData || dayChartRow) && (
+                    <IconButton
+                        onClick={() => {
+                            setChartData(undefined);
+                            setDayChartRow(undefined);
+                        }}
+                    >
+                        <ArrowBack />
+                    </IconButton>
+                )}
+                {!chartData && !dayChartRow && (
+                    <>
+                        <select
+                            className={styles["select"]}
+                            name="month"
+                            id=""
+                            onChange={(v) => {
+                                setFilterMonth(v.target.value);
+                            }}
+                        >
+                            <option value=""></option>
+                            <option value="april">april</option>
+                            <option value="may">may</option>
+                        </select>
+                        <div>{filterMonth}</div>
+                        <Button onClick={handleGenerate}>generate</Button>
+                    </>
+                )}
             </Stack>
-            {chartData ? (
+
+            {chartData && (
                 <>
                     <ElectricChartCompareAvg
                         label="weekdays"
@@ -160,7 +190,11 @@ export const ElectricDataGrid: FC = () => {
                         year2={chartData.year2Weekends}
                     />
                 </>
-            ) : (
+            )}
+
+            {dayChartRow && <ElectricChartForRow row={dayChartRow} />}
+
+            {!chartData && !dayChartRow && (
                 <Box className={styles["electric-chart-table"]}>
                     <table>
                         <thead>
@@ -182,6 +216,10 @@ export const ElectricDataGrid: FC = () => {
                                 <ElectricChartRow
                                     key={file.exportName}
                                     data={file}
+                                    onClick={(row) => {
+                                        setChartData(undefined);
+                                        setDayChartRow(row);
+                                    }}
                                 />
                             ))}
                         </tbody>

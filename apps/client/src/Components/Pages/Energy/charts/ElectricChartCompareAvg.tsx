@@ -5,7 +5,7 @@ import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
 
 export type Row = GetElectricExportsApiResponse[0];
 
-type RowEntry = NonNullable<Row["entries"]>[0];
+export type RowEntry = NonNullable<Row["entries"]>[0];
 
 interface RowEntryAvg extends RowEntry {
     sum: number;
