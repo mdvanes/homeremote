@@ -112,6 +112,7 @@ export const ElectricChartCompareAvg: FC<{
             <EnergyChart
                 data={entries}
                 config={{
+                    tickCount: 24,
                     lines: [
                         {
                             dataKey: year1Item1Year,

@@ -2,7 +2,9 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { Button, Chip, IconButton, Stack } from "@mui/material";
 import { FC, useState } from "react";
 import { useGetTemperaturesQuery } from "../../../../Services/generated/energyUsageApi";
-import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
+import EnergyChart, {
+    axisDateTimeFormatDay,
+} from "../../../Molecules/EnergyChart/EnergyChart";
 
 const COLORS = ["#66bb6a", "#ff9100", "#159bff", "#bb47d3"];
 
@@ -11,8 +13,6 @@ export const ClimateChart: FC = () => {
     const { data, isLoading, isFetching, refetch } = useGetTemperaturesQuery({
         range: mode,
     });
-
-    // TODO add Domoticz temperature (Cresta)
 
     const sensors = data?.flatMap((sensor) => sensor[0]) ?? [];
 
@@ -93,6 +93,9 @@ export const ClimateChart: FC = () => {
                     rightYAxis: {
                         unit: "°",
                     },
+                    tickCount: mode === "day" ? 24 : 30,
+                    axisDateTimeFormat:
+                        mode === "day" ? undefined : axisDateTimeFormatDay,
                 }}
                 isLoading={isLoading || isFetching}
             />

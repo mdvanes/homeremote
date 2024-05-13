@@ -23,7 +23,31 @@ interface SensorConfig {
     bars?: Omit<BarProps, "ref">[];
     leftYAxis?: YAxisProps;
     rightYAxis?: YAxisProps;
+    tickCount?: number;
+    axisDateTimeFormat?: (val: string) => string;
 }
+
+const axisDateTimeFormatHour = (val: string): string => {
+    const date = new Date(val);
+
+    const formattedDate = date.toLocaleString("en-uk", {
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+    return formattedDate;
+};
+
+export const axisDateTimeFormatDay = (val: string): string => {
+    const date = new Date(val);
+
+    const formattedDate = date.toLocaleString("en-uk", {
+        day: "numeric",
+        month: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+    return formattedDate;
+};
 
 const dateTimeFormat = (val: string): string => {
     const date = new Date(val);
@@ -85,9 +109,13 @@ export const EnergyChart: FC<{
                                     angle={-25}
                                     interval={0}
                                     style={{ fontSize: "10px" }}
-                                    tickFormatter={dateTimeFormat}
+                                    tickFormatter={
+                                        config.axisDateTimeFormat ??
+                                        axisDateTimeFormatHour
+                                    }
                                     type="number"
                                     domain={["auto", "auto"]}
+                                    tickCount={config.tickCount}
                                 />
                                 <YAxis
                                     yAxisId="left"
@@ -103,6 +131,15 @@ export const EnergyChart: FC<{
                                     {...config.rightYAxis}
                                 />
                                 <Tooltip
+                                    formatter={(val) => {
+                                        if ((val as number).toLocaleString) {
+                                            return val.toLocaleString("en-uk", {
+                                                minimumFractionDigits: 0,
+                                                maximumFractionDigits: 2,
+                                            });
+                                        }
+                                        return val;
+                                    }}
                                     labelFormatter={dateTimeFormat}
                                     wrapperStyle={{
                                         border: "none",

@@ -5,7 +5,9 @@ import {
     useGetWaterQuery,
     type GetWaterResponse,
 } from "../../../../Services/generated/energyUsageApi";
-import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
+import EnergyChart, {
+    axisDateTimeFormatDay,
+} from "../../../Molecules/EnergyChart/EnergyChart";
 
 type WaterSensorItem = GetWaterResponse[0][0] & {
     delta?: number;
@@ -98,6 +100,9 @@ export const WaterChart: FC = () => {
                     rightYAxis: {
                         unit: "l",
                     },
+                    tickCount: mode === "day" ? 24 : 30,
+                    axisDateTimeFormat:
+                        mode === "day" ? undefined : axisDateTimeFormatDay,
                 }}
                 isLoading={isLoading || isFetching}
             />
