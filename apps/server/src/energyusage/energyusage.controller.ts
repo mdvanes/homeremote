@@ -22,6 +22,7 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { fstatSync, openSync } from "fs";
 import { readFile, readdir } from "fs/promises";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
@@ -148,13 +149,17 @@ const getDayUsage = (
     }
 };
 
-// exportJsonToRow
+const ELECTRIC_EXPORTS_ROOT_DIR = "./0_electric_exports";
+
 const exportJsonToRow =
     (usePerDayTotals: GetDomoticzUsePerDayResponse["result"]) =>
     async (
         fileInDir: string
     ): Promise<EnergyUsageGetElectricExportsResponse[0] | undefined> => {
-        const fileContents = await readFile(`./tmp/${fileInDir}`, "utf-8");
+        const fileContents = await readFile(
+            `${ELECTRIC_EXPORTS_ROOT_DIR}/${fileInDir}`,
+            "utf-8"
+        );
         try {
             const fileJson: GetDomoticzJsonExport = JSON.parse(fileContents);
             const firstItem = fileJson.result[0];
@@ -365,7 +370,16 @@ export class EnergyUsageController {
         );
 
         try {
-            const filesInDir = await readdir("./tmp");
+            const filesInDir = await readdir(ELECTRIC_EXPORTS_ROOT_DIR);
+
+            const filteredFilesInDir = filesInDir.filter((file) => {
+                const fileRef = openSync(
+                    `${ELECTRIC_EXPORTS_ROOT_DIR}/${file}`,
+                    "r"
+                );
+                const stats = fstatSync(fileRef);
+                return stats.isFile() && file.endsWith("_electra.json");
+            });
 
             this.logger.verbose(`[${req.user.name}] start get counter`);
 
@@ -395,7 +409,7 @@ export class EnergyUsageController {
 
             const usagePerDay: EnergyUsageGetElectricExportsResponse =
                 await Promise.all(
-                    filesInDir.map<
+                    filteredFilesInDir.map<
                         Promise<EnergyUsageGetElectricExportsResponse[0]>
                     >(exportJsonToRow(usePerDayTotals))
                 );
