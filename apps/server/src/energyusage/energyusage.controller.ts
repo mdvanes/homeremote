@@ -132,7 +132,8 @@ const getNormalizedEntries =
 
 const getDayUsage = (
     day: Date,
-    usePerDayTotals: GetDomoticzUsePerDayResponse["result"]
+    usePerDayTotals: GetDomoticzUsePerDayResponse["result"],
+    logger: Logger
 ): number | undefined => {
     const yearMonthDay = day.toISOString().slice(0, 10);
     try {
@@ -144,7 +145,7 @@ const getDayUsage = (
         // console.log("dayUsage1", dayUsage, yearMonthDay, dayUsageDay, day);
         return dayUsage;
     } catch (err) {
-        console.log(`Can't get dayUsage for ${yearMonthDay}`);
+        logger.warn(`Can't get dayUsage for ${yearMonthDay}`);
         return undefined;
     }
 };
@@ -152,7 +153,7 @@ const getDayUsage = (
 const ELECTRIC_EXPORTS_ROOT_DIR = "./0_electric_exports";
 
 const exportJsonToRow =
-    (usePerDayTotals: GetDomoticzUsePerDayResponse["result"]) =>
+    (usePerDayTotals: GetDomoticzUsePerDayResponse["result"], logger: Logger) =>
     async (
         fileInDir: string
     ): Promise<EnergyUsageGetElectricExportsResponse[0] | undefined> => {
@@ -170,7 +171,7 @@ const exportJsonToRow =
                 getNormalizedEntries(fileJson)
             );
 
-            const dayUsage = getDayUsage(day, usePerDayTotals);
+            const dayUsage = getDayUsage(day, usePerDayTotals, logger);
 
             const result: EnergyUsageGetElectricExportsResponse[0] = {
                 exportName: fileInDir,
@@ -185,7 +186,7 @@ const exportJsonToRow =
 
             return result;
         } catch (err) {
-            console.log(`Can't process ${fileInDir}`);
+            logger.warn(`Can't process ${fileInDir}`);
             return undefined;
         }
     };
@@ -411,7 +412,7 @@ export class EnergyUsageController {
                 await Promise.all(
                     filteredFilesInDir.map<
                         Promise<EnergyUsageGetElectricExportsResponse[0]>
-                    >(exportJsonToRow(usePerDayTotals))
+                    >(exportJsonToRow(usePerDayTotals, this.logger))
                 );
 
             return usagePerDay.filter(isDefined);
