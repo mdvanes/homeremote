@@ -52,7 +52,7 @@ export const DockerStackList: FC = () => {
                     {data && (
                         <Stack spacing={0.5}>
                             {stacks1.map((stack) => (
-                                <DockerStackItem stack={stack} />
+                                <DockerStackItem key={stack.Id} stack={stack} />
                             ))}
                         </Stack>
                     )}
@@ -60,7 +60,7 @@ export const DockerStackList: FC = () => {
                 <Grid item xs>
                     <Stack spacing={0.5}>
                         {stacks2.map((stack) => (
-                            <DockerStackItem stack={stack} />
+                            <DockerStackItem key={stack.Id} stack={stack} />
                         ))}
                         {/* {!isOpen && <div>{containerDots}</div>} */}
                     </Stack>

@@ -191,6 +191,7 @@ export class EnergyUsageController {
     private readonly apiConfig: {
         baseUrl: string;
         sensors: SensorConfig[];
+        electraSensorId: string;
     };
     private readonly haApiConfig: {
         baseUrl: string;
@@ -207,6 +208,8 @@ export class EnergyUsageController {
         this.apiConfig = {
             baseUrl,
             sensors: strToConfigs(DOMOTICZ_SENSORS),
+            electraSensorId:
+                this.configService.get<string>("DOMOTICZ_ELECTRA_SENSOR") || "",
         };
         this.haApiConfig = {
             baseUrl:
@@ -356,7 +359,6 @@ export class EnergyUsageController {
     @Get("/electric/exports")
     async getElectricExports(
         @Request() req: AuthenticatedRequest
-        // @Query("range") range: "day" | "month"
     ): Promise<EnergyUsageGetElectricExportsResponse> {
         this.logger.verbose(
             `[${req.user.name}] GET to /api/energyusage/electric/exports`
@@ -367,15 +369,16 @@ export class EnergyUsageController {
 
             this.logger.verbose(`[${req.user.name}] start get counter`);
 
-            // TODO make idx and actyear dynamic
+            const thisYear = new Date().getFullYear();
+            const lastYear = thisYear - 1;
+
+            const getUrl = (year: number) =>
+                `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=counter&idx=${this.apiConfig.electraSensorId}&range=year&actyear=${year}`;
+
             const electricCounterResponseYear1: GetDomoticzUsePerDayResponse =
-                await got(
-                    `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=counter&idx=2071&range=year&actyear=2023`
-                ).json();
+                await got(getUrl(lastYear)).json();
             const electricCounterResponseYear2: GetDomoticzUsePerDayResponse =
-                await got(
-                    `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=counter&idx=2071&range=year&actyear=2024`
-                ).json();
+                await got(getUrl(thisYear)).json();
 
             // this.logger.verbose(
             //     `[${req.user.name}] end get counter`,

@@ -69,7 +69,7 @@ describe("EnergyUsage Controller", () => {
         ]);
         expect(mockGot).toBeCalledTimes(1);
         expect(mockGot).toBeCalledWith(
-            "/api/history/period/2024-04-25T00:00:00Z?filter_entity_id=",
+            "/api/history/period/2024-04-24T00:00:00.000Z?end_time=2024-04-25T00:00:00.000Z&filter_entity_id=&minimal_response",
             {
                 headers: {
                     Authorization: "Bearer ",
