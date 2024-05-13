@@ -1,9 +1,12 @@
 import type {
     EnergyUsageGasItem,
+    EnergyUsageGetElectricExportsResponse,
     EnergyUsageGetGasUsageResponse,
     EnergyUsageGetTemperatureResponse,
     EnergyUsageGetWaterResponse,
     GasUsageItem,
+    GetDomoticzJsonExport,
+    GetDomoticzUsePerDayResponse,
     GetHaSensorHistoryResponse,
     GotGasUsageResponse,
     GotTempResponse,
@@ -14,19 +17,25 @@ import {
     HttpException,
     HttpStatus,
     Logger,
+    Query,
     Request,
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { readFile, readdir } from "fs/promises";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import { isDefined } from "../util/isDefined";
 
 interface SensorConfig {
     name: string;
     type: string;
     idx: string;
 }
+
+const DAY = 1000 * 60 * 60 * 24;
+const MONTH = 1000 * 60 * 60 * 24 * 30;
 
 const strToConfigs = (sensorConfig: string): SensorConfig[] => {
     const sensorStrings = sensorConfig.split(";");
@@ -79,12 +88,110 @@ const sensorResultsToAggregated =
         return result;
     };
 
+const findUsePerDayTotalByDate = (
+    total: GetDomoticzUsePerDayResponse["result"],
+    date: string
+) => {
+    return total.find((e) => e.d === date);
+};
+
+const OFFSET = 19800000 - 1000 * 60 * 60; // 5:30 in millis
+const TIMEPOINTS = new Array(288)
+    .fill(0)
+    .map((n, i) => OFFSET + 1000 * 60 * 5 * i)
+    .map((n) =>
+        new Date(n).toLocaleTimeString("nl-NL", {
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+    );
+
+const getNormalizedEntries =
+    (jsonExport: GetDomoticzJsonExport) => (timepoint: string) => {
+        const match = jsonExport.result.find(
+            (item: { d: string; v: string; v2: string }) =>
+                item.d.slice(-5) === timepoint
+        );
+        if (!match) {
+            return {
+                d: timepoint,
+                v: undefined,
+            };
+        }
+        const v1 = parseInt(match.v);
+        const v2 = parseInt(match.v2);
+        const v = v1 + v2;
+        return {
+            time: match.d,
+            v,
+            v1,
+            v2,
+        };
+    };
+
+const getDayUsage = (
+    day: Date,
+    usePerDayTotals: GetDomoticzUsePerDayResponse["result"]
+): number | undefined => {
+    const yearMonthDay = day.toISOString().slice(0, 10);
+    try {
+        const dayUsageDay = findUsePerDayTotalByDate(
+            usePerDayTotals,
+            yearMonthDay
+        );
+        const dayUsage = parseFloat(dayUsageDay.v) + parseFloat(dayUsageDay.v2);
+        // console.log("dayUsage1", dayUsage, yearMonthDay, dayUsageDay, day);
+        return dayUsage;
+    } catch (err) {
+        console.log(`Can't get dayUsage for ${yearMonthDay}`);
+        return undefined;
+    }
+};
+
+// exportJsonToRow
+const exportJsonToRow =
+    (usePerDayTotals: GetDomoticzUsePerDayResponse["result"]) =>
+    async (
+        fileInDir: string
+    ): Promise<EnergyUsageGetElectricExportsResponse[0] | undefined> => {
+        const fileContents = await readFile(`./tmp/${fileInDir}`, "utf-8");
+        try {
+            const fileJson: GetDomoticzJsonExport = JSON.parse(fileContents);
+            const firstItem = fileJson.result[0];
+            const day = new Date(firstItem.d.slice(0, 10));
+
+            // Align supplied entries to exact timepoints
+            const normalizedEntries = TIMEPOINTS.map(
+                getNormalizedEntries(fileJson)
+            );
+
+            const dayUsage = getDayUsage(day, usePerDayTotals);
+
+            const result: EnergyUsageGetElectricExportsResponse[0] = {
+                exportName: fileInDir,
+                date: day.toISOString(),
+                dateMillis: day.getTime(),
+                dayOfWeek: day.toLocaleDateString("en-GB", {
+                    weekday: "long",
+                }),
+                dayUsage,
+                entries: normalizedEntries,
+            };
+
+            return result;
+        } catch (err) {
+            console.log(`Can't process ${fileInDir}`);
+            return undefined;
+        }
+    };
+
 @Controller("api/energyusage")
 export class EnergyUsageController {
     private readonly logger: Logger;
     private readonly apiConfig: {
         baseUrl: string;
         sensors: SensorConfig[];
+        electraSensorId: string;
     };
     private readonly haApiConfig: {
         baseUrl: string;
@@ -101,6 +208,8 @@ export class EnergyUsageController {
         this.apiConfig = {
             baseUrl,
             sensors: strToConfigs(DOMOTICZ_SENSORS),
+            electraSensorId:
+                this.configService.get<string>("DOMOTICZ_ELECTRA_SENSOR") || "",
         };
         this.haApiConfig = {
             baseUrl:
@@ -181,15 +290,20 @@ export class EnergyUsageController {
     @UseGuards(JwtAuthGuard)
     @Get("/temperature")
     async getTemperature(
-        @Request() req: AuthenticatedRequest
+        @Request() req: AuthenticatedRequest,
+        @Query("range") range: "day" | "month"
     ): Promise<EnergyUsageGetTemperatureResponse> {
         this.logger.verbose(
             `[${req.user.name}] GET to /api/energyusage/temperature`
         );
 
         try {
-            const date = new Date().toISOString().slice(0, 10);
-            const url = `${this.haApiConfig.baseUrl}/api/history/period/${date}T00:00:00Z?filter_entity_id=${this.haApiConfig.temperatureSensorId}`;
+            const time = Date.now();
+            const startOffset = range === "month" ? MONTH : DAY;
+            const startTime = new Date(time - startOffset).toISOString();
+            const endTime = new Date(time).toISOString();
+
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.temperatureSensorId}`;
 
             const result = await got(url, {
                 headers: {
@@ -210,13 +324,20 @@ export class EnergyUsageController {
     @UseGuards(JwtAuthGuard)
     @Get("/water")
     async getWater(
-        @Request() req: AuthenticatedRequest
+        @Request() req: AuthenticatedRequest,
+        @Query("range") range: "day" | "month"
     ): Promise<EnergyUsageGetWaterResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/energyusage/water`);
 
         try {
-            const date = new Date().toISOString().slice(0, 10);
-            const url = `${this.haApiConfig.baseUrl}/api/history/period/${date}T00:00:00Z?filter_entity_id=${this.haApiConfig.waterSensorId}`;
+            // TODO The API call crashes when the startDate is too far into the past. At this time 2024-04-30 is the earliest that works. Docs: https://developers.home-assistant.io/docs/api/rest/
+
+            const time = Date.now();
+            const startOffset = range === "month" ? MONTH : DAY;
+            const startTime = new Date(time - startOffset).toISOString();
+            const endTime = new Date(time).toISOString();
+
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.waterSensorId}&minimal_response`;
 
             const result = await got(url, {
                 headers: {
@@ -225,6 +346,61 @@ export class EnergyUsageController {
             }).json<GetHaSensorHistoryResponse>();
 
             return result;
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("/electric/exports")
+    async getElectricExports(
+        @Request() req: AuthenticatedRequest
+    ): Promise<EnergyUsageGetElectricExportsResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/energyusage/electric/exports`
+        );
+
+        try {
+            const filesInDir = await readdir("./tmp");
+
+            this.logger.verbose(`[${req.user.name}] start get counter`);
+
+            const thisYear = new Date().getFullYear();
+            const lastYear = thisYear - 1;
+
+            const getUrl = (year: number) =>
+                `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=counter&idx=${this.apiConfig.electraSensorId}&range=year&actyear=${year}`;
+
+            const electricCounterResponseYear1: GetDomoticzUsePerDayResponse =
+                await got(getUrl(lastYear)).json();
+            const electricCounterResponseYear2: GetDomoticzUsePerDayResponse =
+                await got(getUrl(thisYear)).json();
+
+            // this.logger.verbose(
+            //     `[${req.user.name}] end get counter`,
+            //     electricCounterResponseYear1.result.length,
+            //     electricCounterResponseYear1.result.at(0),
+            //     electricCounterResponseYear1.result.at(-1),
+            //     electricCounterResponseYear2.result.length,
+            //     electricCounterResponseYear2.result.at(0),
+            //     electricCounterResponseYear2.result.at(-1)
+            // );
+            const usePerDayTotals = electricCounterResponseYear1.result.concat(
+                electricCounterResponseYear2.result
+            );
+
+            const usagePerDay: EnergyUsageGetElectricExportsResponse =
+                await Promise.all(
+                    filesInDir.map<
+                        Promise<EnergyUsageGetElectricExportsResponse[0]>
+                    >(exportJsonToRow(usePerDayTotals))
+                );
+
+            return usagePerDay.filter(isDefined);
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

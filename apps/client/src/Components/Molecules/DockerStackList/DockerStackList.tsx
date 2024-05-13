@@ -11,7 +11,7 @@ import DockerStackItem from "./DockerStackItem";
 const UPDATE_INTERVAL_MS = 30000;
 
 export const DockerStackList: FC = () => {
-    // const [isOpen, setIsOpen] = useState(false);
+    const [errorCount, setErrorCount] = useState(0);
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const dispatch = useAppDispatch();
     const { data, isLoading, isFetching, isError, error, refetch } =
@@ -23,10 +23,14 @@ export const DockerStackList: FC = () => {
 
     useEffect(() => {
         if (error) {
-            setIsSkippingBecauseError(true);
+            if (errorCount > 3) {
+                setIsSkippingBecauseError(true);
+                setErrorCount(0);
+            }
+            setErrorCount((prev) => prev + 1);
             dispatch(logError(`HomeSec failed: ${getErrorMessage(error)}`));
         }
-    }, [error, dispatch]);
+    }, [error, errorCount, dispatch]);
 
     if (isError) {
         return (
@@ -48,7 +52,7 @@ export const DockerStackList: FC = () => {
                     {data && (
                         <Stack spacing={0.5}>
                             {stacks1.map((stack) => (
-                                <DockerStackItem stack={stack} />
+                                <DockerStackItem key={stack.Id} stack={stack} />
                             ))}
                         </Stack>
                     )}
@@ -56,7 +60,7 @@ export const DockerStackList: FC = () => {
                 <Grid item xs>
                     <Stack spacing={0.5}>
                         {stacks2.map((stack) => (
-                            <DockerStackItem stack={stack} />
+                            <DockerStackItem key={stack.Id} stack={stack} />
                         ))}
                         {/* {!isOpen && <div>{containerDots}</div>} */}
                     </Stack>

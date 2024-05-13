@@ -6,26 +6,76 @@ const injectedRtkApi = api
     })
     .injectEndpoints({
         endpoints: (build) => ({
+            getElectricExports: build.query<
+                GetElectricExportsApiResponse,
+                GetElectricExportsApiArg
+            >({
+                query: () => ({ url: `/api/energyusage/electric/exports` }),
+            }),
             getTemperatures: build.query<
                 GetTemperaturesApiResponse,
                 GetTemperaturesApiArg
             >({
-                query: () => ({ url: `/api/energyusage/temperature` }),
+                query: (queryArg) => ({
+                    url: `/api/energyusage/temperature`,
+                    params: { range: queryArg.range },
+                }),
                 providesTags: ["temperature"],
             }),
             getWater: build.query<GetWaterApiResponse, GetWaterApiArg>({
-                query: () => ({ url: `/api/energyusage/water` }),
+                query: (queryArg) => ({
+                    url: `/api/energyusage/water`,
+                    params: { range: queryArg.range },
+                }),
                 providesTags: ["water"],
             }),
         }),
         overrideExisting: false,
     });
 export { injectedRtkApi as energyUsageApi };
+export type GetElectricExportsApiResponse =
+    /** status 200 ElectricExports */ GetElectricExportsResponse;
+export type GetElectricExportsApiArg = void;
 export type GetTemperaturesApiResponse =
     /** status 200 Temperatures */ GetTemperaturesResponse;
-export type GetTemperaturesApiArg = void;
+export type GetTemperaturesApiArg = {
+    range?: "day" | "month";
+};
 export type GetWaterApiResponse = /** status 200 Water */ GetWaterResponse;
-export type GetWaterApiArg = void;
+export type GetWaterApiArg = {
+    range?: "day" | "month";
+};
+export type GetElectricExportsResponse = {
+    exportName?: string;
+    /** for sorting */
+    dateMillis?: number;
+    date?: string;
+    /** store dayOfWeek separately. When this is stored in a datebase it can be queried quickly */
+    dayOfWeek?: string;
+    /** day usage */
+    dayUsage?: number;
+    entries?: {
+        /** usage low */
+        v1?: number;
+        /** usage high */
+        v2?: number;
+        /** usage total */
+        v?: number;
+        time?: string;
+    }[];
+}[];
+export type ErrorResponse = {
+    /** Time when error happened */
+    timestamp?: string;
+    /** Code describing the error */
+    status?: number;
+    /** Short error name */
+    error?: string;
+    /** Message explaining the error */
+    message?: string;
+    /** Code of the error */
+    code?: number;
+};
 export type GetTemperaturesResponse = {
     entity_id?: string;
     state?: string;
@@ -44,18 +94,6 @@ export type GetTemperaturesResponse = {
         user_id?: string;
     };
 }[][];
-export type ErrorResponse = {
-    /** Time when error happened */
-    timestamp?: string;
-    /** Code describing the error */
-    status?: number;
-    /** Short error name */
-    error?: string;
-    /** Message explaining the error */
-    message?: string;
-    /** Code of the error */
-    code?: number;
-};
 export type GetWaterResponse = {
     entity_id?: string;
     state?: string;
@@ -74,4 +112,8 @@ export type GetWaterResponse = {
         user_id?: string;
     };
 }[][];
-export const { useGetTemperaturesQuery, useGetWaterQuery } = injectedRtkApi;
+export const {
+    useGetElectricExportsQuery,
+    useGetTemperaturesQuery,
+    useGetWaterQuery,
+} = injectedRtkApi;

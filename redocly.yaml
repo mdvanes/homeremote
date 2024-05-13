@@ -1,9 +1,13 @@
 apis:
-    homeAssistant@v1:
-        root: ./libs/types/definitions/external/homeAssistant.yml
+    domoticz@v1:
+        root: ./libs/types/definitions/external/domoticz.yml
         x-openapi-ts:
-            output: ./libs/types/src/lib/external/generated/homeAssistant.ts
+            output: ./libs/types/src/lib/external/generated/domoticz.ts            
     external@v1:
         root: ./libs/types/definitions/internal/energyUsage.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/generated/energyUsage.ts
+    homeAssistant@v1:
+        root: ./libs/types/definitions/external/homeAssistant.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/homeAssistant.ts

@@ -1,0 +1,149 @@
+openapi: 3.0.1
+info:
+    title: Domoticz API
+    description: Domoticz
+    version: 1.0.0
+servers:
+    - url: https://example.com
+      description: Generated server url
+paths:
+    /json.html?type=graph&sensor=counter:
+        get:
+            summary: Historic use per day
+            operationId: getUsePerDay
+            responses:
+                "200":
+                    description: UserPerDay
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UserPerDayResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /json-export:
+        get:
+            summary: A JSON export from daily usage from Domoticz
+            description: JSON export
+            operationId: getJsonExport
+            responses:
+                "200":
+                    description: JsonExport
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/JsonExport"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+components:
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: Time when error happened
+                status:
+                    type: integer
+                    description: Code describing the error
+                    format: int32
+                error:
+                    type: string
+                    description: Short error name
+                message:
+                    type: string
+                    description: Message explaining the error
+                code:
+                    type: integer
+                    description: Code of the error
+                    format: int32
+            description: Error information details
+        UserPerDayResponse:
+            type: object
+            properties:
+                ValueQuantity:
+                    type: string
+                    example: ""
+                ValueUnits:
+                    type: string
+                    example: ""
+                delivered:
+                    type: boolean
+                    example: true
+                result:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            c1:
+                                type: string
+                                example: "7089.629"
+                            c2:
+                                type: string
+                                example: "0"
+                            c3:
+                                type: string
+                                example: "7038.847"
+                            c4:
+                                type: string
+                                example: "0.000"
+                            d:
+                                type: string
+                                format: date
+                                example: 2024-04-10
+                            r1:
+                                type: string
+                                example: "0.000"
+                            r2:
+                                type: string
+                                example: "64423.000"
+                            v:
+                                type: string
+                                example: "3.549"
+                            v2:
+                                type: string
+                                example: "10.861"
+                status:
+                    type: string
+                    example: OK
+                title:
+                    type: string
+                    example: Graph counter month
+        JsonExport:
+            type: object
+            properties:
+                result:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            d:
+                                type: string
+                                example: 2024-04-14 05:30
+                            v:
+                                type: string
+                                example: "144"
+                                description: low usage
+                            v2:
+                                type: string
+                                example: "144"
+                                description: high usage

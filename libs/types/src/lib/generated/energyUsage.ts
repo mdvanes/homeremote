@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+    "/api/energyusage/electric/exports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getElectricExports"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/energyusage/temperature": {
         parameters: {
             query?: never;
@@ -67,6 +83,31 @@ export interface components {
              */
             code?: number;
         };
+        GetElectricExportsResponse: {
+            /** @example 2023071705:25:01_electra.json */
+            exportName?: string;
+            /** @description for sorting */
+            dateMillis?: number;
+            /** @example 2024-05-08T12:59:26.161Z */
+            date?: string;
+            /**
+             * @description store dayOfWeek separately. When this is stored in a datebase it can be queried quickly
+             * @example Monday
+             */
+            dayOfWeek?: string;
+            /** @description day usage */
+            dayUsage?: number;
+            entries?: {
+                /** @description usage low */
+                v1?: number;
+                /** @description usage high */
+                v2?: number;
+                /** @description usage total */
+                v?: number;
+                /** @example 13:37 */
+                time?: string;
+            }[];
+        }[];
         GetTemperaturesResponse: {
             /** @example sensor.tz3000_amqudjr0_ts0201_temperature */
             entity_id?: string;
@@ -157,9 +198,49 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getTemperatures: {
+    getElectricExports: {
         parameters: {
             query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ElectricExports */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetElectricExportsResponse"];
+                };
+            };
+            /** @description Bad request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getTemperatures: {
+        parameters: {
+            query?: {
+                range?: "day" | "month";
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -197,7 +278,9 @@ export interface operations {
     };
     getWater: {
         parameters: {
-            query?: never;
+            query?: {
+                range?: "day" | "month";
+            };
             header?: never;
             path?: never;
             cookie?: never;
