@@ -8,6 +8,7 @@ import type {
     GetDomoticzJsonExport,
     GetDomoticzUsePerDayResponse,
     GetHaSensorHistoryResponse,
+    GetHaStatesResponse,
     GotGasUsageResponse,
     GotTempResponse,
 } from "@homeremote/types";
@@ -71,7 +72,8 @@ const sensorResultsToAggregated =
     (
         gasEntries: GasUsageItem[],
         temperatureSensors: SensorConfig[],
-        temperatureResponses: GotTempResponse[]
+        temperatureResponses: GotTempResponse[],
+        haTemperatureResponses: GetHaSensorHistoryResponse
     ) =>
     (date: string) => {
         const temperatureEntries = temperatureResponses.map(
@@ -79,12 +81,22 @@ const sensorResultsToAggregated =
         );
         const gasEntry = gasEntries.find((r) => r.d === date);
 
+        // Patch inside temperature with firstHaTemperatureResponse
+        const x = haTemperatureResponses[0].find(
+            (entry) => entry.last_changed?.slice(0, 10) === date
+        );
+        const temp = Object.fromEntries(temperatureEntries);
+        if (temp["inside"].avg === "") {
+            temp["inside"].avg = parseInt(x?.state);
+        }
+        // End of patch
+
         const result: EnergyUsageGasItem = {
             day: date,
             counter: gasEntry?.c ?? "",
             used: gasEntry?.v ?? "",
 
-            temp: Object.fromEntries(temperatureEntries),
+            temp: temp,
         };
         return result;
     };
@@ -236,6 +248,33 @@ export class EnergyUsageController {
         return `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=${sensorConfig.type}&idx=${sensorConfig.idx}&range=month`;
     }
 
+    getFirstHaTemperatureResponse = async () => {
+        const haTemperaturesIdsResponse = await fetch(
+            `${this.haApiConfig.baseUrl}/api/states/sensor.temperatures`,
+            {
+                headers: {
+                    Authorization: `Bearer ${this.haApiConfig.token}`,
+                },
+            }
+        );
+        const haTemperaturesIds =
+            (await haTemperaturesIdsResponse.json()) as GetHaStatesResponse;
+
+        const firstHaTemperatureId = haTemperaturesIds.attributes.entity_id[0];
+        const time = Date.now();
+        const startOffset = MONTH;
+        const startTime = new Date(time - startOffset).toISOString();
+        const endTime = new Date(time).toISOString();
+        const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${firstHaTemperatureId}&minimal_response`;
+        const firstHaTemperatureResponse = await got(url, {
+            headers: {
+                Authorization: `Bearer ${this.haApiConfig.token}`,
+            },
+        }).json<GetHaSensorHistoryResponse>();
+
+        return firstHaTemperatureResponse;
+    };
+
     @UseGuards(JwtAuthGuard)
     @Get("/gas")
     async getGas(
@@ -260,6 +299,9 @@ export class EnergyUsageController {
                 temperaturePromises
             );
 
+            const firstHaTemperatureResponse =
+                await this.getFirstHaTemperatureResponse();
+
             const now = Date.now();
             const NR_OF_DAYS = 31;
             const lastMonth = new Date(now - 1000 * 60 * 60 * 24 * NR_OF_DAYS);
@@ -278,7 +320,8 @@ export class EnergyUsageController {
                     sensorResultsToAggregated(
                         gasCounterResponse.result,
                         temperatureSensors,
-                        temperatureResponses
+                        temperatureResponses,
+                        firstHaTemperatureResponse
                     )
                 ),
             };
