@@ -14,6 +14,8 @@ export const ClimateChart: FC = () => {
         range: mode,
     });
 
+    // TODO add Domoticz temperature (Cresta)_
+
     const sensors = data?.flatMap((sensor) => sensor[0]) ?? [];
 
     const entries =

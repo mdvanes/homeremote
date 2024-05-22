@@ -21,9 +21,21 @@ export interface HomeRemoteSwitch {
     dimLevel: number | null;
     readOnly: boolean;
     children?: HomeRemoteSwitch[] | false;
+    origin: "domoticz";
+}
+
+export interface HomeRemoteHaSwitch {
+    idx: string;
+    name: string;
+    type: DomoticzType;
+    status: DomoticzStatus;
+    dimLevel: number | null;
+    readOnly: boolean;
+    children?: HomeRemoteSwitch[] | false;
+    origin: "home-assistant";
 }
 
 export interface SwitchesResponse {
     status: "received" | "error";
-    switches?: HomeRemoteSwitch[];
+    switches?: Array<HomeRemoteSwitch | HomeRemoteHaSwitch>;
 }

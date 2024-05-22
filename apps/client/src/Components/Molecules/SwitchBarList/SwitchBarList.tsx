@@ -1,6 +1,7 @@
 import {
     DomoticzSendType,
     DomoticzType,
+    HomeRemoteHaSwitch,
     HomeRemoteSwitch,
 } from "@homeremote/types";
 import { LinearProgress } from "@mui/material";
@@ -9,6 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { useAppDispatch } from "../../../store";
 import { logError } from "../LogCard/logSlice";
+import HaSwitchBar from "./HaSwitchBar";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
 import {
@@ -45,7 +47,7 @@ const getRightIcon = (label: string): string =>
 const getNameAndChildren = (
     name: string,
     children: HomeRemoteSwitch[] | false
-): string => (children ? `${name} \u25BE` : name);
+): string => (children ? `${name}  \u25BE` : name);
 
 const getLabel = (
     name: string,
@@ -60,8 +62,24 @@ const getLabel = (
 
 type SendSomeState = (id: string, type: string) => void;
 
+const isDomoticzSwitch = (
+    dSwitch: HomeRemoteSwitch | HomeRemoteHaSwitch
+): dSwitch is HomeRemoteSwitch => dSwitch.origin === "domoticz";
+
+const isHaSwitch = (
+    dSwitch: HomeRemoteSwitch | HomeRemoteHaSwitch
+): dSwitch is HomeRemoteHaSwitch => dSwitch.origin === "home-assistant";
+
 const mapSwitchToSwitchBar = (
-    { idx, name, type, dimLevel, readOnly, status, children }: HomeRemoteSwitch,
+    {
+        idx,
+        name,
+        type,
+        dimLevel,
+        readOnly,
+        status,
+        children,
+    }: HomeRemoteSwitch | HomeRemoteHaSwitch,
     sendOn: SendSomeState,
     sendOff: SendSomeState,
     labelAction: (() => void) | false
@@ -130,42 +148,58 @@ const SwitchBarList: FC = () => {
     useEffect(() => {
         dispatch(logError(errorMessage));
     }, [errorMessage, dispatch]);
-    const switchBars = switches.map((dSwitch: HomeRemoteSwitch) => {
-        const hasChildren = Boolean(dSwitch.children);
-        const labelAction = getLabelAction(
-            hasChildren,
-            () => {
-                dispatch(toggleExpandScene({ sceneIdx: dSwitch.idx }));
-                dispatch(getSwitches());
-            },
-            () => {
-                dispatch(getSwitches());
-            }
-        );
-        const showChildren = expandedScenes.includes(dSwitch.idx);
-        return (
-            <Fragment key={`frag-${dSwitch.idx}`}>
-                {mapSwitchToSwitchBar(dSwitch, sendOn, sendOff, labelAction)}
-                {hasChildren && showChildren ? (
-                    <div style={{ padding: "0.5em" }}>
-                        {dSwitch.children &&
-                            dSwitch.children.map(
-                                (switchChild: HomeRemoteSwitch) =>
-                                    mapSwitchToSwitchBar(
-                                        switchChild,
-                                        sendOn,
-                                        sendOff,
-                                        false
-                                    )
-                            )}
-                    </div>
-                ) : null}
-            </Fragment>
-        );
-    });
+
+    const switchBars = switches
+        .filter(isDomoticzSwitch)
+        .map((dSwitch: HomeRemoteSwitch) => {
+            const hasChildren = Boolean(dSwitch.children);
+            const labelAction = getLabelAction(
+                hasChildren,
+                () => {
+                    dispatch(toggleExpandScene({ sceneIdx: dSwitch.idx }));
+                    dispatch(getSwitches());
+                },
+                () => {
+                    dispatch(getSwitches());
+                }
+            );
+            const showChildren = expandedScenes.includes(dSwitch.idx);
+            return (
+                <Fragment key={`frag-${dSwitch.idx}`}>
+                    {mapSwitchToSwitchBar(
+                        dSwitch,
+                        sendOn,
+                        sendOff,
+                        labelAction
+                    )}
+                    {hasChildren && showChildren ? (
+                        <div style={{ padding: "0.5em" }}>
+                            {dSwitch.children &&
+                                dSwitch.children.map(
+                                    (switchChild: HomeRemoteSwitch) =>
+                                        mapSwitchToSwitchBar(
+                                            switchChild,
+                                            sendOn,
+                                            sendOff,
+                                            false
+                                        )
+                                )}
+                        </div>
+                    ) : null}
+                </Fragment>
+            );
+        });
+
+    const haSwitchBars = switches
+        .filter(isHaSwitch)
+        .map((haSwitch: HomeRemoteHaSwitch) => (
+            <HaSwitchBar haSwitch={haSwitch} />
+        ));
+
     return (
         <Fragment>
             {switchBars}
+            {haSwitchBars}
             {isLoading && <LinearProgress />}
         </Fragment>
     );
