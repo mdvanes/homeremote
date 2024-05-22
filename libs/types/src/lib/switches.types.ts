@@ -1,3 +1,5 @@
+import { operations } from "./generated/switches";
+
 export const DomoticzTypeOptions = {
     Dimmer: "Dimmer",
     Group: "Group",
@@ -39,3 +41,9 @@ export interface SwitchesResponse {
     status: "received" | "error";
     switches?: Array<HomeRemoteSwitch | HomeRemoteHaSwitch>;
 }
+
+export type UpdateHaSwitchArgs =
+    operations["updateHaSwitch"]["requestBody"]["content"]["application/json"];
+
+export type UpdateHaSwitchResponse =
+    operations["updateHaSwitch"]["responses"]["200"]["content"]["application/json"];

@@ -5,11 +5,15 @@ import {
     HomeRemoteHaSwitch,
     HomeRemoteSwitch,
     SwitchesResponse,
+    UpdateHaSwitchArgs,
+    UpdateHaSwitchResponse,
 } from "@homeremote/types";
 import {
     Body,
     Controller,
     Get,
+    HttpException,
+    HttpStatus,
     Logger,
     Param,
     Post,
@@ -262,6 +266,40 @@ export class SwitchesController {
         } else {
             this.logger.error("domoticzuri not configured");
             return { status: "error" };
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post("/ha/:entityId")
+    async updateHaSwitch(
+        @Param("entityId") entityId: string,
+        @Body() args: UpdateHaSwitchArgs,
+        @Request() req: AuthenticatedRequest
+    ): Promise<UpdateHaSwitchResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] Call to /switch/ha/${entityId} state: ${args.state}`
+        );
+
+        try {
+            await fetch(
+                `${
+                    this.haApiConfig.baseUrl
+                }/api/services/light/turn_${args.state.toLowerCase()}`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${this.haApiConfig.token}`,
+                    },
+                    body: JSON.stringify({ entity_id: entityId }),
+                }
+            );
+            return "received";
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 }

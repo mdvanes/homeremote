@@ -11,6 +11,12 @@ const config: ConfigFile = {
             exportName: "energyUsageApi",
             tag: true,
         },
+        "./apps/client/src/Services/generated/switchesApi.ts": {
+            apiFile: "./apps/client/src/Services/emptyApi.ts",
+            schemaFile: "./libs/types/definitions/internal/switches.yml",
+            exportName: "switchesApi",
+            tag: true,
+        },
     },
     hooks: true,
 };
