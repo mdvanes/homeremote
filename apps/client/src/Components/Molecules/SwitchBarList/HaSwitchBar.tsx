@@ -1,16 +1,26 @@
 import { HomeRemoteHaSwitch } from "@homeremote/types";
 import { FC } from "react";
 import { useUpdateHaSwitchMutation } from "../../../Services/generated/switchesApi";
+import { useAppDispatch } from "../../../store";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
+import { getSwitches } from "./getSwitchesThunk";
 
 interface HaSwitchBarProps {
     haSwitch: HomeRemoteHaSwitch;
 }
 
 const HaSwitchBar: FC<HaSwitchBarProps> = ({ haSwitch }) => {
-    // Implement the HaSwitchBar component logic here
     const [updateHaSwitch] = useUpdateHaSwitchMutation();
+    const dispatch = useAppDispatch();
+
+    const toggle = (nextState: "On" | "Off") => async () => {
+        await updateHaSwitch({
+            entityId: haSwitch.idx,
+            body: { state: nextState },
+        });
+        dispatch(getSwitches());
+    };
 
     return (
         <SwitchBar
@@ -18,12 +28,7 @@ const HaSwitchBar: FC<HaSwitchBarProps> = ({ haSwitch }) => {
             leftButton={
                 <SwitchBarInnerButton
                     isReadOnly={false}
-                    clickAction={() => {
-                        updateHaSwitch({
-                            entityId: haSwitch.idx,
-                            body: { state: "On" },
-                        });
-                    }}
+                    clickAction={toggle("On")}
                     icon="radio_button_checked"
                     isActive={haSwitch.status === "On"}
                 />
@@ -31,12 +36,7 @@ const HaSwitchBar: FC<HaSwitchBarProps> = ({ haSwitch }) => {
             rightButton={
                 <SwitchBarInnerButton
                     isReadOnly={false}
-                    clickAction={() => {
-                        updateHaSwitch({
-                            entityId: haSwitch.idx,
-                            body: { state: "Off" },
-                        });
-                    }}
+                    clickAction={toggle("Off")}
                     icon="radio_button_unchecked"
                     isActive={haSwitch.status === "Off"}
                 />
