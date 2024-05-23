@@ -77,6 +77,7 @@ type GetChildren = (
     SceneType: DomoticzType,
     SceneStatus: DomoticzStatus
 ) => Promise<HomeRemoteSwitch[] | false>;
+
 const getChildren: GetChildren = async (
     domoticzuri,
     SceneIdx,
@@ -149,45 +150,50 @@ export class SwitchesController {
     }
 
     getHaLightFavoritesAsSwitches = async (): Promise<HomeRemoteHaSwitch[]> => {
-        const haFavoritesResponse = await fetch(
-            `${this.haApiConfig.baseUrl}/api/states/light.favorites`,
-            {
-                headers: {
-                    Authorization: `Bearer ${this.haApiConfig.token}`,
-                },
-            }
-        );
-        const haFavoriteIds =
-            (await haFavoritesResponse.json()) as GetHaStatesResponse;
+        try {
+            const haFavoritesResponse = await fetch(
+                `${this.haApiConfig.baseUrl}/api/states/light.favorites`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.haApiConfig.token}`,
+                    },
+                }
+            );
+            const haFavoriteIds =
+                (await haFavoritesResponse.json()) as GetHaStatesResponse;
 
-        const haStatesPromises = haFavoriteIds.attributes.entity_id.map(
-            async (entity) => {
-                const haStateResponse = await fetch(
-                    `${this.haApiConfig.baseUrl}/api/states/${entity}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${this.haApiConfig.token}`,
-                        },
-                    }
-                );
-                return (await haStateResponse.json()) as GetHaStatesResponse;
-            }
-        );
-        const haStates = await Promise.all(haStatesPromises);
+            const haStatesPromises = haFavoriteIds.attributes.entity_id.map(
+                async (entity) => {
+                    const haStateResponse = await fetch(
+                        `${this.haApiConfig.baseUrl}/api/states/${entity}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${this.haApiConfig.token}`,
+                            },
+                        }
+                    );
+                    return (await haStateResponse.json()) as GetHaStatesResponse;
+                }
+            );
+            const haStates = await Promise.all(haStatesPromises);
 
-        const haSwitches: HomeRemoteHaSwitch[] =
-            haStates.map<HomeRemoteHaSwitch>((entity) => ({
-                origin: "home-assistant",
-                dimLevel: null,
-                idx: entity.entity_id,
-                name: entity.attributes.friendly_name,
-                readOnly: false,
-                status: entity.state === "off" ? "Off" : "On",
-                type: "Light/Switch",
-                children: false,
-            }));
+            const haSwitches: HomeRemoteHaSwitch[] =
+                haStates.map<HomeRemoteHaSwitch>((entity) => ({
+                    origin: "home-assistant",
+                    dimLevel: null,
+                    idx: entity.entity_id,
+                    name: entity.attributes.friendly_name,
+                    readOnly: false,
+                    status: entity.state === "off" ? "Off" : "On",
+                    type: "Light/Switch",
+                    children: false,
+                }));
 
-        return haSwitches;
+            return haSwitches;
+        } catch (err) {
+            this.logger.error(`Can't get HaLightFavorites ${err}`);
+            return [];
+        }
     };
 
     @UseGuards(JwtAuthGuard)
