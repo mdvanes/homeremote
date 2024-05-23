@@ -20,6 +20,7 @@ const mockRootState: MockRootState = {
                 dimLevel: null,
                 readOnly: false,
                 children: false,
+                origin: "domoticz",
             },
             {
                 idx: "4",
@@ -28,6 +29,7 @@ const mockRootState: MockRootState = {
                 status: "On",
                 dimLevel: null,
                 readOnly: false,
+                origin: "domoticz",
                 children: [
                     {
                         idx: "5",
@@ -37,6 +39,7 @@ const mockRootState: MockRootState = {
                         dimLevel: null,
                         readOnly: false,
                         children: false,
+                        origin: "domoticz",
                     },
                 ],
             },
@@ -48,6 +51,7 @@ const mockRootState: MockRootState = {
                 dimLevel: 30,
                 readOnly: true,
                 children: false,
+                origin: "domoticz",
             },
             {
                 idx: "7",
@@ -57,6 +61,7 @@ const mockRootState: MockRootState = {
                 dimLevel: 30,
                 readOnly: false,
                 children: false,
+                origin: "domoticz",
             },
             {
                 idx: "8",
@@ -66,6 +71,7 @@ const mockRootState: MockRootState = {
                 dimLevel: null,
                 readOnly: false,
                 children: false,
+                origin: "domoticz",
             },
         ],
         expanded: [],

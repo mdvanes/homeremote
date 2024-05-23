@@ -24,6 +24,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/states/{entity_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Home Assistant States
+         * @description Get Home Assistant States
+         */
+        get: operations["getHaStates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -86,6 +106,45 @@ export interface components {
                 user_id?: string;
             };
         }[][];
+        GetHaStatesResponse: {
+            /** @example light.favorites */
+            entity_id?: string;
+            /** @example off */
+            state?: string;
+            attributes?: {
+                supported_color_modes?: string[];
+                /** Format: nullable */
+                color_mode?: string;
+                /** Format: nullable */
+                brightness?: string;
+                entity_id?: string[];
+                /** @example mdi:lightbulb-group */
+                icon?: string;
+                /** @example Favorites */
+                friendly_name?: string;
+                /**
+                 * Format: int32
+                 * @example 0
+                 */
+                supported_features?: number;
+            };
+            /**
+             * Format: date-time
+             * @example 2024-05-21T13:16:22.061360+00:00
+             */
+            last_changed?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-21T13:16:22.071293+00:00
+             */
+            last_reported?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-21T13:16:22.061360+00:00
+             */
+            last_updated?: string;
+            context?: Record<string, never>;
+        };
     };
     responses: never;
     parameters: never;
@@ -111,6 +170,47 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetHaSensorHistoryResponse"];
+                };
+            };
+            /** @description Bad request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getHaStates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Entity ID */
+                entity_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description HaStates */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetHaStatesResponse"];
                 };
             };
             /** @description Bad request. */

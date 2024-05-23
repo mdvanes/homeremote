@@ -33,6 +33,39 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/ErrorResponse"
+    /api/states/{entity_id}:
+        get:
+            tags:
+                - homeAssistant
+            summary: Get Home Assistant States
+            description: Get Home Assistant States
+            operationId: getHaStates
+            parameters:
+                - name: entity_id
+                  in: path
+                  description: Entity ID
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: HaStates
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetHaStatesResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
 components:
     schemas:
         ErrorResponse:
@@ -108,3 +141,65 @@ components:
                                 user_id:
                                     type: string
                                     format: nullable
+        GetHaStatesResponse:
+            type: object
+            properties:
+                entity_id:
+                    type: string
+                    example: light.favorites
+                state:
+                    type: string
+                    example: off
+                attributes:
+                    type: object
+                    properties:
+                        supported_color_modes:
+                            type: array
+                            items:
+                                type: string
+                                example: brightness
+                        color_mode:
+                            type: string
+                            format: nullable
+                        brightness:
+                            type: string
+                            format: nullable
+                        entity_id:
+                            type: array
+                            items:
+                                type: string
+                                example: light.newkaku_01dc9753_1
+                        icon:
+                            type: string
+                            example: mdi:lightbulb-group
+                        friendly_name:
+                            type: string
+                            example: Favorites
+                        supported_features:
+                            type: integer
+                            format: int32
+                            example: 0
+                last_changed:
+                    type: string
+                    format: date-time
+                    example: 2024-05-21T13:16:22.061360+00:00
+                last_reported:
+                    type: string
+                    format: date-time
+                    example: 2024-05-21T13:16:22.071293+00:00
+                last_updated:
+                    type: string
+                    format: date-time
+                    example: 2024-05-21T13:16:22.061360+00:00
+                context:
+                    type: object
+                    properties:
+                    id:
+                        type: string
+                        example: 01HYDMQE5DJ7QP3F5ADKNKXFDQ
+                    parent_id:
+                        type: string
+                        format: nullable
+                    user_id:
+                        type: string
+                        format: nullable

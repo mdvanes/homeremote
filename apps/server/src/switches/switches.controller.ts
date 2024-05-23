@@ -1,13 +1,19 @@
 import {
     DomoticzStatus,
     DomoticzType,
+    GetHaStatesResponse,
+    HomeRemoteHaSwitch,
     HomeRemoteSwitch,
     SwitchesResponse,
+    UpdateHaSwitchArgs,
+    UpdateHaSwitchResponse,
 } from "@homeremote/types";
 import {
     Body,
     Controller,
     Get,
+    HttpException,
+    HttpStatus,
     Logger,
     Param,
     Post,
@@ -62,6 +68,7 @@ const mapIncludedSwitch: MapIncludedSwitch =
         status: SceneStatus,
         dimLevel: null, // NYI, to implement this get each switch detail by DevID on /json.htm?type=command&param=getlightswitches
         readOnly: false, // NYI, to implement this get each switch detail by DevID on /json.htm?type=command&param=getlightswitches
+        origin: "domoticz",
     });
 
 type GetChildren = (
@@ -70,6 +77,7 @@ type GetChildren = (
     SceneType: DomoticzType,
     SceneStatus: DomoticzStatus
 ) => Promise<HomeRemoteSwitch[] | false>;
+
 const getChildren: GetChildren = async (
     domoticzuri,
     SceneIdx,
@@ -112,6 +120,7 @@ const mapSwitch =
             dimLevel: getDimLevel(isOnDimmer, isSelector, Level),
             readOnly: Protected,
             children,
+            origin: "domoticz",
         };
         return switchResult;
     };
@@ -125,24 +134,87 @@ interface UpdateSwitchMessage {
 export class SwitchesController {
     private readonly logger: Logger;
 
+    private readonly haApiConfig: {
+        baseUrl: string;
+        token: string;
+    };
+
     constructor(private configService: ConfigService) {
         this.logger = new Logger(SwitchesController.name);
+
+        this.haApiConfig = {
+            baseUrl:
+                this.configService.get<string>("HOMEASSISTANT_BASE_URL") || "",
+            token: this.configService.get<string>("HOMEASSISTANT_TOKEN") || "",
+        };
     }
+
+    getHaLightFavoritesAsSwitches = async (): Promise<HomeRemoteHaSwitch[]> => {
+        try {
+            const haFavoritesResponse = await fetch(
+                `${this.haApiConfig.baseUrl}/api/states/light.favorites`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.haApiConfig.token}`,
+                    },
+                }
+            );
+            const haFavoriteIds =
+                (await haFavoritesResponse.json()) as GetHaStatesResponse;
+
+            const haStatesPromises = haFavoriteIds.attributes.entity_id.map(
+                async (entity) => {
+                    const haStateResponse = await fetch(
+                        `${this.haApiConfig.baseUrl}/api/states/${entity}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${this.haApiConfig.token}`,
+                            },
+                        }
+                    );
+                    return (await haStateResponse.json()) as GetHaStatesResponse;
+                }
+            );
+            const haStates = await Promise.all(haStatesPromises);
+
+            const haSwitches: HomeRemoteHaSwitch[] =
+                haStates.map<HomeRemoteHaSwitch>((entity) => ({
+                    origin: "home-assistant",
+                    dimLevel: null,
+                    idx: entity.entity_id,
+                    name: entity.attributes.friendly_name,
+                    readOnly: false,
+                    status: entity.state === "off" ? "Off" : "On",
+                    type: "Light/Switch",
+                    children: false,
+                }));
+
+            return haSwitches;
+        } catch (err) {
+            this.logger.error(`Can't get HaLightFavorites ${err}`);
+            return [];
+        }
+    };
 
     @UseGuards(JwtAuthGuard)
     @Get()
-    async getSwitches(): Promise<SwitchesResponse> {
+    async getSwitches(
+        @Request() req: AuthenticatedRequest
+    ): Promise<SwitchesResponse> {
         const domoticzuri =
             this.configService.get<string>("DOMOTICZ_URI") || "";
 
         this.logger.verbose(
-            `GET to /api/switches domoticzuri: ${domoticzuri}]`
+            `[${req.user.name}] GET to /api/switches domoticzuri: ${domoticzuri}]`
         );
         if (domoticzuri && domoticzuri.length > 0) {
             const targetUri = `${domoticzuri}/json.htm?type=devices&used=true&filter=all&favorite=1`;
             try {
                 const remoteResponse = await got(targetUri);
                 const remoteResponseJson = JSON.parse(remoteResponse.body);
+
+                const haSwitches = await this.getHaLightFavoritesAsSwitches();
+
                 if (remoteResponseJson.status === "OK") {
                     const switches = await Promise.all(
                         (remoteResponseJson.result as DomoticzSwitch[]).map(
@@ -152,7 +224,7 @@ export class SwitchesController {
                     // this.logger.verbose(`SWITCHES ${switches} x= ${typeof switches[0]}, z=${JSON.stringify(switches[0])} json=${JSON.stringify(remoteResponseJson)}`);
                     return {
                         status: "received",
-                        switches,
+                        switches: [...switches, ...haSwitches],
                     };
                 } else {
                     // noinspection ExceptionCaughtLocallyJS
@@ -200,6 +272,40 @@ export class SwitchesController {
         } else {
             this.logger.error("domoticzuri not configured");
             return { status: "error" };
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post("/ha/:entityId")
+    async updateHaSwitch(
+        @Param("entityId") entityId: string,
+        @Body() args: UpdateHaSwitchArgs,
+        @Request() req: AuthenticatedRequest
+    ): Promise<UpdateHaSwitchResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] Call to /switch/ha/${entityId} state: ${args.state}`
+        );
+
+        try {
+            await fetch(
+                `${
+                    this.haApiConfig.baseUrl
+                }/api/services/light/turn_${args.state.toLowerCase()}`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${this.haApiConfig.token}`,
+                    },
+                    body: JSON.stringify({ entity_id: entityId }),
+                }
+            );
+            return "received";
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
         }
     }
 }

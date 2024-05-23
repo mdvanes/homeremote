@@ -2,10 +2,15 @@ import { DomoticzTypeOptions } from "@homeremote/types";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import * as Got from "got";
+import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { DomoticzSwitch, SwitchesController } from "./switches.controller";
 
 jest.mock("got");
 const gotSpy = jest.spyOn(Got, "default");
+
+const mockAuthenticatedRequest = {
+    user: { name: "someuser", id: 1 },
+} as AuthenticatedRequest;
 
 describe("Switches Controller", () => {
     let controller: SwitchesController;
@@ -42,7 +47,7 @@ describe("Switches Controller", () => {
         gotSpy.mockResolvedValue({
             body: JSON.stringify({ status: "OK", result: [mockSwitch] }),
         });
-        expect(await controller.getSwitches()).toEqual({
+        expect(await controller.getSwitches(mockAuthenticatedRequest)).toEqual({
             status: "received",
             switches: [
                 {
@@ -53,6 +58,7 @@ describe("Switches Controller", () => {
                     dimLevel: null,
                     readOnly: false,
                     children: false,
+                    origin: "domoticz",
                 },
             ],
         });
@@ -60,7 +66,7 @@ describe("Switches Controller", () => {
 
     it("returns error status on failed /GET ", async () => {
         gotSpy.mockRejectedValue("Mock Server Down");
-        expect(await controller.getSwitches()).toEqual({
+        expect(await controller.getSwitches(mockAuthenticatedRequest)).toEqual({
             status: "error",
         });
     });
@@ -69,7 +75,7 @@ describe("Switches Controller", () => {
         gotSpy.mockResolvedValue({
             body: JSON.stringify({ status: "error" }),
         });
-        expect(await controller.getSwitches()).toEqual({
+        expect(await controller.getSwitches(mockAuthenticatedRequest)).toEqual({
             status: "error",
         });
     });
@@ -78,7 +84,7 @@ describe("Switches Controller", () => {
         gotSpy.mockResolvedValue({
             body: "not json",
         });
-        expect(await controller.getSwitches()).toEqual({
+        expect(await controller.getSwitches(mockAuthenticatedRequest)).toEqual({
             status: "error",
         });
     });

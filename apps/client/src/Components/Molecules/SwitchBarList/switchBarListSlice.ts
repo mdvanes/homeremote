@@ -1,4 +1,8 @@
-import { HomeRemoteSwitch, SwitchesResponse } from "@homeremote/types";
+import {
+    HomeRemoteHaSwitch,
+    HomeRemoteSwitch,
+    SwitchesResponse,
+} from "@homeremote/types";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import ApiBaseState from "../../../Reducers/state.types";
 import fetchToJson from "../../../fetchToJson";
@@ -31,7 +35,7 @@ export const sendSwitchState = createAsyncThunk<
 );
 
 export interface SwitchBarListState extends ApiBaseState {
-    switches: HomeRemoteSwitch[];
+    switches: Array<HomeRemoteSwitch | HomeRemoteHaSwitch>;
     expanded: string[];
 }
 
