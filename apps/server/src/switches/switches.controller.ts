@@ -217,9 +217,10 @@ export class SwitchesController {
 
                 if (remoteResponseJson.status === "OK") {
                     const switches = await Promise.all(
-                        (remoteResponseJson.result as DomoticzSwitch[]).map(
-                            mapSwitch(domoticzuri)
-                        )
+                        (
+                            (remoteResponseJson.result ??
+                                []) as DomoticzSwitch[]
+                        ).map(mapSwitch(domoticzuri))
                     );
                     // this.logger.verbose(`SWITCHES ${switches} x= ${typeof switches[0]}, z=${JSON.stringify(switches[0])} json=${JSON.stringify(remoteResponseJson)}`);
                     return {
