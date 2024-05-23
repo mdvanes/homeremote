@@ -82,12 +82,12 @@ const sensorResultsToAggregated =
         const gasEntry = gasEntries.find((r) => r.d === date);
 
         // Patch inside temperature with firstHaTemperatureResponse
-        const x = haTemperatureResponses[0].find(
+        const matchingHaEntry = haTemperatureResponses[0].find(
             (entry) => entry.last_changed?.slice(0, 10) === date
         );
         const temp = Object.fromEntries(temperatureEntries);
         if (temp["inside"].avg === "") {
-            temp["inside"].avg = parseInt(x?.state);
+            temp["inside"].avg = parseInt(matchingHaEntry?.state);
         }
         // End of patch
 
@@ -95,8 +95,7 @@ const sensorResultsToAggregated =
             day: date,
             counter: gasEntry?.c ?? "",
             used: gasEntry?.v ?? "",
-
-            temp: temp,
+            temp,
         };
         return result;
     };
