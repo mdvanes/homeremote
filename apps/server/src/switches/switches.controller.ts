@@ -151,6 +151,12 @@ export class SwitchesController {
 
     getHaLightFavoritesAsSwitches = async (): Promise<HomeRemoteHaSwitch[]> => {
         try {
+            // TODO remove. This fetch randomly fails.
+            this.logger.warn(
+                `Calling curl -H "Authorization: Bearer ${
+                    this.haApiConfig.token
+                }" ${`${this.haApiConfig.baseUrl}/api/states/light.favorites`}`
+            );
             const haFavoritesResponse = await fetch(
                 `${this.haApiConfig.baseUrl}/api/states/light.favorites`,
                 {
@@ -164,6 +170,10 @@ export class SwitchesController {
 
             const haStatesPromises = haFavoriteIds.attributes.entity_id.map(
                 async (entity) => {
+                    // TODO remove. This fetch randomly fails.
+                    this.logger.warn(
+                        `Calling curl -H "Authorization: Bearer ${this.haApiConfig.token}" ${this.haApiConfig.baseUrl}/api/states/${entity}`
+                    );
                     const haStateResponse = await fetch(
                         `${this.haApiConfig.baseUrl}/api/states/${entity}`,
                         {
