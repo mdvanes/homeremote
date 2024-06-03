@@ -1,4 +1,4 @@
-import { Alert, Card, CardContent } from "@mui/material";
+import { Card, CardContent } from "@mui/material";
 import { FC } from "react";
 import {
     Bar,
@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { useGetGasUsageQuery } from "../../../Services/energyUsageApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
 const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
@@ -19,13 +20,14 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         isLoading,
         isFetching,
         error,
+        refetch,
     } = useGetGasUsageQuery(undefined);
 
     if (error || !gasUsageResponse) {
         return (
-            <Alert severity="error">
-                {getErrorMessage(error ?? Error("empty response"))}
-            </Alert>
+            <ErrorRetry retry={() => refetch()}>
+                GasChart: {getErrorMessage(error ?? Error("empty response"))}
+            </ErrorRetry>
         );
     }
 

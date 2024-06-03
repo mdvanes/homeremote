@@ -37,7 +37,7 @@ const typeIcon: Record<TypeF, string> = {
     Siren: "notifications",
 };
 
-const UPDATE_INTERVAL_MS = 120000;
+const UPDATE_INTERVAL_MS = 2 * 60 * 1000;
 
 const isApiUnimplemented = (error?: FetchBaseQueryError | SerializedError) =>
     error && "status" in error && error.status === 501;
@@ -55,13 +55,13 @@ export const HomeSec: FC = () => {
         });
 
     useEffect(() => {
-        // TODO HomeSec completely broken since downstream update
-        if (isApiUnimplemented(error)) {
-            setIsFeatureDisabled(true);
-            return;
-        }
         if (error) {
             setIsSkippingBecauseError(true);
+            if (isApiUnimplemented(error)) {
+                // TODO HomeSec completely broken since downstream update
+                setIsFeatureDisabled(true);
+                return;
+            }
             dispatch(logError(`HomeSec failed: ${getErrorMessage(error)}`));
         }
     }, [dispatch, error]);
