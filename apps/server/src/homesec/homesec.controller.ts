@@ -43,7 +43,7 @@ export class HomesecController {
 
         if (!this.baseUrl) {
             throw new HttpException(
-                "homesec not configured",
+                "feature not configured",
                 HttpStatus.NOT_IMPLEMENTED
             );
         }
