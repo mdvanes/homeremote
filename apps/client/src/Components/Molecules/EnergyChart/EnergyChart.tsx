@@ -2,6 +2,7 @@ import { Button, Card, CardContent } from "@mui/material";
 import { FC, useState } from "react";
 import {
     Bar,
+    Brush,
     ComposedChart,
     Line,
     ResponsiveContainer,
@@ -151,6 +152,14 @@ export const EnergyChart: FC<{
                                 />
                                 {chartBars}
                                 {chartLines}
+                                {/* TODO https://github.com/recharts/recharts/issues/2099 */}
+                                <Brush
+                                    dataKey="time"
+                                    tickFormatter={
+                                        config.axisDateTimeFormat ??
+                                        axisDateTimeFormatHour
+                                    }
+                                />
                             </ComposedChart>
                         </ResponsiveContainer>
                     </div>

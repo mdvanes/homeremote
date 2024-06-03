@@ -41,6 +41,13 @@ export class HomesecController {
     ): Promise<HomesecStatusResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/homesec/devices`);
 
+        if (!this.baseUrl) {
+            throw new HttpException(
+                "feature not configured",
+                HttpStatus.NOT_IMPLEMENTED
+            );
+        }
+
         try {
             const panelResponse: HomesecPanelResponse = await got(
                 `${this.baseUrl}/action/panelCondGet`,

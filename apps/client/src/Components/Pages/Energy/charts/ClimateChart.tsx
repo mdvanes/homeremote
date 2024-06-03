@@ -6,7 +6,15 @@ import EnergyChart, {
     axisDateTimeFormatDay,
 } from "../../../Molecules/EnergyChart/EnergyChart";
 
-const COLORS = ["#66bb6a", "#ff9100", "#159bff", "#bb47d3"];
+const COLORS = [
+    "#66bb6a",
+    "#ff9100",
+    "#159bff",
+    "#bb47d3",
+    "#a0ff00",
+    "#ff0021",
+    "#00ffa5",
+];
 
 export const ClimateChart: FC = () => {
     const [mode, setMode] = useState<"day" | "month">("day");
@@ -23,6 +31,12 @@ export const ClimateChart: FC = () => {
                 [`${item.attributes?.friendly_name}`]: item.state,
             }))
         ) ?? [];
+
+    const lines = sensors.slice(2).map((sensor, i) => ({
+        dataKey: sensor?.attributes?.friendly_name,
+        stroke: COLORS[i + 2],
+        unit: "°C",
+    }));
 
     return (
         <>
@@ -76,17 +90,7 @@ export const ClimateChart: FC = () => {
                             unit: "%",
                             yAxisId: "left",
                         },
-                        {
-                            dataKey: sensors[2]?.attributes?.friendly_name,
-                            stroke: COLORS[2],
-                            unit: "°C",
-                        },
-                        {
-                            dataKey: sensors[3]?.attributes?.friendly_name,
-                            stroke: COLORS[3],
-                            unit: "°C",
-                        },
-                    ],
+                    ].concat(lines),
                     leftYAxis: {
                         unit: "%",
                     },
