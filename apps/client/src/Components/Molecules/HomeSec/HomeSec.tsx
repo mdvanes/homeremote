@@ -9,6 +9,8 @@ import {
     Paper,
     Tooltip,
 } from "@mui/material";
+import { SerializedError } from "@reduxjs/toolkit";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { FC, useEffect, useState } from "react";
 import { useGetHomesecStatusQuery } from "../../../Services/homesecApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
@@ -37,8 +39,12 @@ const typeIcon: Record<TypeF, string> = {
 
 const UPDATE_INTERVAL_MS = 120000;
 
+const isApiUnimplemented = (error?: FetchBaseQueryError | SerializedError) =>
+    error && "status" in error && error.status === 501;
+
 export const HomeSec: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isFeatureDisabled, setIsFeatureDisabled] = useState(false);
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const dispatch = useAppDispatch();
     const { data, isLoading, isFetching, isError, error, refetch } =
@@ -49,6 +55,11 @@ export const HomeSec: FC = () => {
         });
 
     useEffect(() => {
+        // TODO HomeSec completely broken since downstream update
+        if (isApiUnimplemented(error)) {
+            setIsFeatureDisabled(true);
+            return;
+        }
         if (error) {
             setIsSkippingBecauseError(true);
             dispatch(logError(`HomeSec failed: ${getErrorMessage(error)}`));
@@ -72,6 +83,10 @@ export const HomeSec: FC = () => {
     const shownDevices = isOpen
         ? devices
         : devices.filter(({ type_f }) => type_f === "Door Contact");
+
+    if (isFeatureDisabled) {
+        return null;
+    }
 
     return (
         <Tooltip title={`HomeSec status: ${data?.status ?? "Error"}`}>
