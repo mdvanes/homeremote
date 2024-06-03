@@ -4,6 +4,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import { FC, useEffect, useState } from "react";
+import GasChart from "../../Molecules/GasChart/GasChart";
 import { ClimateChart } from "./charts/ClimateChart";
 import { ElectricDataGrid } from "./charts/ElectricDataGrid";
 import { WaterChart } from "./charts/WaterChart";
@@ -46,7 +47,9 @@ export const Energy: FC = () => {
                 <TabPanel value="1">
                     <ClimateChart />
                 </TabPanel>
-                <TabPanel value="2">Item Two</TabPanel>
+                <TabPanel value="2">
+                    <GasChart isBig />
+                </TabPanel>
                 <TabPanel value="3">
                     <ElectricDataGrid />
                 </TabPanel>
