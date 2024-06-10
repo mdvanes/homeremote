@@ -54,17 +54,26 @@ export const HomeSec: FC = () => {
                 : UPDATE_INTERVAL_MS,
         });
 
+    // TODO for debugging, remove later
     useEffect(() => {
-        if (error) {
+        console.log("error has changed", error);
+    }, [error]);
+
+    // TODO for debugging, remove later
+    useEffect(() => {
+        console.log("isError has changed", isError);
+    }, [isError]);
+
+    useEffect(() => {
+        if (isError) {
             setIsSkippingBecauseError(true);
             if (isApiUnimplemented(error)) {
-                // TODO HomeSec completely broken since downstream update
                 setIsFeatureDisabled(true);
                 return;
             }
             dispatch(logError(`HomeSec failed: ${getErrorMessage(error)}`));
         }
-    }, [dispatch, error]);
+    }, [dispatch, error, isError]);
 
     // TODO logInfo when data.status changes. Does this work?
     useEffect(() => {

@@ -158,7 +158,7 @@ export class SwitchesController {
                 }" ${`${this.haApiConfig.baseUrl}/api/states/light.favorites`}`
             );
             const haFavoritesResponse = await fetch(
-                `${this.haApiConfig.baseUrl}/api/states/light.favorites`,
+                `${this.haApiConfig.baseUrl}/api/states/group.favorites2`,
                 {
                     headers: {
                         Authorization: `Bearer ${this.haApiConfig.token}`,
@@ -170,7 +170,7 @@ export class SwitchesController {
 
             const haStatesPromises = haFavoriteIds.attributes.entity_id.map(
                 async (entity) => {
-                    // TODO remove. This fetch randomly fails.
+                    // TODO remove. This fetch randomly fails. Maybe because of multiple requests at once?
                     this.logger.warn(
                         `Calling curl -H "Authorization: Bearer ${this.haApiConfig.token}" ${this.haApiConfig.baseUrl}/api/states/${entity}`
                     );
@@ -187,12 +187,14 @@ export class SwitchesController {
             );
             const haStates = await Promise.all(haStatesPromises);
 
-            const haSwitches: HomeRemoteHaSwitch[] =
-                haStates.map<HomeRemoteHaSwitch>((entity) => ({
+            const haSwitches: HomeRemoteHaSwitch[] = haStates
+                // @ts-expect-error fix message type on entity
+                .filter((e) => e.message !== "Entity not found.")
+                .map<HomeRemoteHaSwitch>((entity) => ({
                     origin: "home-assistant",
                     dimLevel: null,
                     idx: entity.entity_id,
-                    name: entity.attributes.friendly_name,
+                    name: entity.attributes?.friendly_name ?? entity.entity_id,
                     readOnly: false,
                     status: entity.state === "off" ? "Off" : "On",
                     type: "Light/Switch",

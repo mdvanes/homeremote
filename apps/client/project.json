@@ -26,8 +26,7 @@
                 ],
                 "styles": ["apps/client/src/styles.css"],
                 "scripts": [],
-                "webpackConfig": "apps/client/webpack.config.js",
-                "isolatedConfig": true
+                "webpackConfig": "apps/client/webpack.config.js"
             },
             "configurations": {
                 "production": {
