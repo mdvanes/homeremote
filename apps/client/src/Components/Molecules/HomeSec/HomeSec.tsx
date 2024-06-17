@@ -54,18 +54,8 @@ export const HomeSec: FC = () => {
                 : UPDATE_INTERVAL_MS,
         });
 
-    // TODO for debugging, remove later
     useEffect(() => {
-        console.log("error has changed", error);
-    }, [error]);
-
-    // TODO for debugging, remove later
-    useEffect(() => {
-        console.log("isError has changed", isError);
-    }, [isError]);
-
-    useEffect(() => {
-        if (isError) {
+        if (isError && error) {
             setIsSkippingBecauseError(true);
             if (isApiUnimplemented(error)) {
                 setIsFeatureDisabled(true);

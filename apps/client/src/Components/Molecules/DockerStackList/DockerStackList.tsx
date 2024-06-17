@@ -1,6 +1,6 @@
 import { Grid, Stack } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import { useGetStacksQuery } from "../../../Services/stacksApi";
+import { BACKOFF_DELAY, useGetStacksQuery } from "../../../Services/stacksApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
@@ -8,29 +8,29 @@ import LoadingDot from "../LoadingDot/LoadingDot";
 import { logError } from "../LogCard/logSlice";
 import DockerStackItem from "./DockerStackItem";
 
-const UPDATE_INTERVAL_MS = 30000;
-
 export const DockerStackList: FC = () => {
-    const [errorCount, setErrorCount] = useState(0);
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const dispatch = useAppDispatch();
-    const { data, isLoading, isFetching, isError, error, refetch } =
+    const { data, isLoading, isFetching, isError, error, refetch, isSuccess } =
         useGetStacksQuery(undefined, {
-            pollingInterval: isSkippingBecauseError
-                ? undefined
-                : UPDATE_INTERVAL_MS,
+            pollingInterval: isSkippingBecauseError ? undefined : BACKOFF_DELAY,
         });
 
     useEffect(() => {
-        if (error) {
-            if (errorCount > 3) {
-                setIsSkippingBecauseError(true);
-                setErrorCount(0);
-            }
-            setErrorCount((prev) => prev + 1);
-            dispatch(logError(`HomeSec failed: ${getErrorMessage(error)}`));
+        if (isError && error) {
+            setIsSkippingBecauseError(true);
+            dispatch(
+                logError(`DockerStacks failed: ${getErrorMessage(error)}`)
+            );
         }
-    }, [error, errorCount, dispatch]);
+    }, [dispatch, error, isError]);
+
+    useEffect(() => {
+        if (isSuccess) {
+            // Resume interval when (auto) retry is successful
+            setIsSkippingBecauseError(false);
+        }
+    }, [isSuccess]);
 
     if (isError) {
         return (

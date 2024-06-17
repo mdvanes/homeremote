@@ -193,7 +193,7 @@ const SwitchBarList: FC = () => {
     const haSwitchBars = switches
         .filter(isHaSwitch)
         .map((haSwitch: HomeRemoteHaSwitch) => (
-            <HaSwitchBar haSwitch={haSwitch} />
+            <HaSwitchBar key={haSwitch.idx} haSwitch={haSwitch} />
         ));
 
     return (
