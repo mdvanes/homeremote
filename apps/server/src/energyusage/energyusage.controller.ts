@@ -215,6 +215,7 @@ export class EnergyUsageController {
         baseUrl: string;
         token: string;
         temperatureSensorId: string;
+        gasTemperatureSensorId: string;
         waterSensorId: string;
     };
 
@@ -236,6 +237,10 @@ export class EnergyUsageController {
             temperatureSensorId:
                 this.configService.get<string>(
                     "HOMEASSISTANT_TEMPERATURE_SENSOR_ID"
+                ) || "",
+            gasTemperatureSensorId:
+                this.configService.get<string>(
+                    "HOMEASSISTANT_GASTEMPERATURE_SENSOR_ID"
                 ) || "",
             waterSensorId:
                 this.configService.get<string>(
@@ -274,6 +279,40 @@ export class EnergyUsageController {
 
         return firstHaTemperatureResponse;
     };
+
+    /* Only uses Home Assistant API */
+    @UseGuards(JwtAuthGuard)
+    @Get("/gas-temperature")
+    async getGasTemperature(
+        @Request() req: AuthenticatedRequest
+    ): Promise<GetHaSensorHistoryResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/energyusage/gas-temperature`
+        );
+
+        try {
+            const time = Date.now();
+            const startOffset = MONTH;
+            const startTime = new Date(time - startOffset).toISOString();
+            const endTime = new Date(time).toISOString();
+
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
+
+            const result = await got(url, {
+                headers: {
+                    Authorization: `Bearer ${this.haApiConfig.token}`,
+                },
+            }).json<GetHaSensorHistoryResponse>();
+
+            return result;
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 
     @UseGuards(JwtAuthGuard)
     @Get("/gas")

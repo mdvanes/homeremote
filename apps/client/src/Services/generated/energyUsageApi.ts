@@ -1,5 +1,5 @@
 import { emptySplitApi as api } from "../emptyApi";
-export const addTagTypes = ["temperature", "water"] as const;
+export const addTagTypes = ["temperature", "gas-temperature", "water"] as const;
 const injectedRtkApi = api
     .enhanceEndpoints({
         addTagTypes,
@@ -22,6 +22,13 @@ const injectedRtkApi = api
                 }),
                 providesTags: ["temperature"],
             }),
+            getGasTemperatures: build.query<
+                GetGasTemperaturesApiResponse,
+                GetGasTemperaturesApiArg
+            >({
+                query: () => ({ url: `/api/energyusage/gas-temperature` }),
+                providesTags: ["gas-temperature"],
+            }),
             getWater: build.query<GetWaterApiResponse, GetWaterApiArg>({
                 query: (queryArg) => ({
                     url: `/api/energyusage/water`,
@@ -41,6 +48,9 @@ export type GetTemperaturesApiResponse =
 export type GetTemperaturesApiArg = {
     range?: "day" | "month";
 };
+export type GetGasTemperaturesApiResponse =
+    /** status 200 GasTemperatures */ GetGasTemperaturesResponse;
+export type GetGasTemperaturesApiArg = void;
 export type GetWaterApiResponse = /** status 200 Water */ GetWaterResponse;
 export type GetWaterApiArg = {
     range?: "day" | "month";
@@ -94,6 +104,24 @@ export type GetTemperaturesResponse = {
         user_id?: string;
     };
 }[][];
+export type GetGasTemperaturesResponse = {
+    entity_id?: string;
+    state?: string;
+    attributes?: {
+        state_class?: string;
+        unit_of_measurement?: string;
+        device_class?: string;
+        friendly_name?: string;
+    };
+    last_changed?: string;
+    last_reported?: string;
+    last_updated?: string;
+    context?: {
+        id?: string;
+        parent_id?: string;
+        user_id?: string;
+    };
+}[][];
 export type GetWaterResponse = {
     entity_id?: string;
     state?: string;
@@ -115,5 +143,6 @@ export type GetWaterResponse = {
 export const {
     useGetElectricExportsQuery,
     useGetTemperaturesQuery,
+    useGetGasTemperaturesQuery,
     useGetWaterQuery,
 } = injectedRtkApi;

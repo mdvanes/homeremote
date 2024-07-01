@@ -66,6 +66,32 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/ErrorResponse"
+    /api/energyusage/gas-temperature:
+        get:
+            tags:
+                - gas-temperature
+            summary: Get gas and temperatures
+            description: Get gas and temperatures
+            operationId: getGasTemperatures
+            responses:
+                "200":
+                    description: GasTemperatures
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetGasTemperaturesResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"                                
     /api/energyusage/water:
         get:
             tags:
@@ -162,6 +188,58 @@ components:
                                     type: string
                                     example: 13:37
         GetTemperaturesResponse:
+            type: array
+            items:
+                type: array
+                items:
+                    type: object
+                    properties:
+                        entity_id:
+                            type: string
+                            example: sensor.tz3000_amqudjr0_ts0201_temperature
+                        state:
+                            type: string
+                            example: "17.7"
+                        attributes:
+                            type: object
+                            properties:
+                                state_class:
+                                    type: string
+                                    example: measurement
+                                unit_of_measurement:
+                                    type: string
+                                    example: °C
+                                device_class:
+                                    type: string
+                                    example: temperature
+                                friendly_name:
+                                    type: string
+                                    example: Woox TempHumid 1 Temperature
+                        last_changed:
+                            type: string
+                            format: date-time
+                            example: 2024-05-05T00:00:00+00:00
+                        last_reported:
+                            type: string
+                            format: date-time
+                            example: 2024-05-05T00:00:00+00:00
+                        last_updated:
+                            type: string
+                            format: date-time
+                            example: 2024-05-05T00:00:00+00:00
+                        context:
+                            type: object
+                            properties:
+                                id:
+                                    type: string
+                                    example: 01HWQC2MBD01BVZJP660G9JKXA
+                                parent_id:
+                                    type: string
+                                    format: nullable
+                                user_id:
+                                    type: string
+                                    format: nullable
+        GetGasTemperaturesResponse:
             type: array
             items:
                 type: array

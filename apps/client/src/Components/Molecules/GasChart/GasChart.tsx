@@ -10,11 +10,16 @@ import {
     YAxis,
 } from "recharts";
 import { useGetGasUsageQuery } from "../../../Services/energyUsageApi";
+import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import EnergyChart, { axisDateTimeFormatDay } from "../EnergyChart/EnergyChart";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
+const temperatureLineColors = ["#66bb6a", "#ff9100"];
+
 const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
+    const mode: "day" | "month" = "month" as "day" | "month";
     const {
         data: gasUsageResponse,
         isLoading,
@@ -23,6 +28,8 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         refetch,
     } = useGetGasUsageQuery(undefined);
 
+    const { data: gasTemperatureResponse } = useGetGasTemperaturesQuery();
+
     if (error || !gasUsageResponse) {
         return (
             <ErrorRetry retry={() => refetch()}>
@@ -30,8 +37,6 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
             </ErrorRetry>
         );
     }
-
-    const temperatureLineColors = ["#66bb6a", "#ff9100"];
 
     const temperatureLines = Object.keys(gasUsageResponse.result[0].temp).map(
         (name, index) => (
@@ -46,7 +51,24 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         )
     );
 
-    return (
+    const sensors =
+        gasTemperatureResponse?.flatMap((sensor) => sensor[0]) ?? [];
+
+    const entries =
+        gasTemperatureResponse?.flatMap((sensor) =>
+            sensor.map((item) => ({
+                time: new Date(item?.last_changed ?? 0).getTime(),
+                [`${item.attributes?.friendly_name}`]: item.state,
+            }))
+        ) ?? [];
+
+    const lines = sensors.slice(0, 2).map((sensor, i) => ({
+        dataKey: sensor?.attributes?.friendly_name,
+        stroke: temperatureLineColors[i],
+        unit: "°C",
+    }));
+
+    const oldChart = (
         <Card>
             <CardContent>
                 <LoadingDot isLoading={isLoading || isFetching} noMargin />
@@ -138,6 +160,38 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                 )}
             </CardContent>
         </Card>
+    );
+
+    return (
+        <>
+            {oldChart}
+            {isBig && (
+                <EnergyChart
+                    data={entries}
+                    config={{
+                        lines,
+                        bars: [
+                            {
+                                dataKey:
+                                    sensors[2].attributes?.friendly_name ?? "",
+                                fill: "#66bb6a",
+                                unit: "m³",
+                            },
+                        ],
+                        leftYAxis: {
+                            unit: "m³",
+                        },
+                        rightYAxis: {
+                            unit: "°",
+                        },
+                        tickCount: mode === "day" ? 24 : 30,
+                        axisDateTimeFormat:
+                            mode === "day" ? undefined : axisDateTimeFormatDay,
+                    }}
+                    isLoading={isLoading || isFetching}
+                />
+            )}
+        </>
     );
 };
 
