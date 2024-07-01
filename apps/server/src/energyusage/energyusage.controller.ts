@@ -57,7 +57,8 @@ const temperatureResponseToEntry =
     (temperatureSensors: SensorConfig[], date: string) =>
     (response: GotTempResponse, temperatureIndex: number) => {
         const sensor = temperatureSensors[temperatureIndex];
-        const temperatureEntry = response.result.find((r) => r.d === date);
+        const temperatureEntry =
+            response.result?.find((r) => r.d === date) ?? undefined;
         return [
             sensor.name,
             {
@@ -79,10 +80,10 @@ const sensorResultsToAggregated =
         const temperatureEntries = temperatureResponses.map(
             temperatureResponseToEntry(temperatureSensors, date)
         );
-        const gasEntry = gasEntries.find((r) => r.d === date);
+        const gasEntry = gasEntries?.find((r) => r.d === date) ?? undefined;
 
         // Patch inside temperature with firstHaTemperatureResponse
-        const matchingHaEntry = haTemperatureResponses[0].find(
+        const matchingHaEntry = haTemperatureResponses[0]?.find(
             (entry) => entry.last_changed?.slice(0, 10) === date
         );
         const temp = Object.fromEntries(temperatureEntries);
