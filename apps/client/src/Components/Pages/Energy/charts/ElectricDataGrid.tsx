@@ -10,6 +10,21 @@ import { ElectricChartForRow } from "./ElectricChartForRow";
 import { ElectricChartRow, getAreSomeEmpty } from "./ElectricChartRow";
 import styles from "./ElectricDataGrid.module.scss";
 
+const MONTHS = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+];
+
 const isWeekday = (row: Row): boolean =>
     ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].includes(
         row.dayOfWeek ?? ""
@@ -118,8 +133,15 @@ export const ElectricDataGrid: FC = () => {
                             }}
                         >
                             <option value=""></option>
-                            <option value="april">april</option>
-                            <option value="may">may</option>
+                            {MONTHS.map((month, index) => (
+                                <option
+                                    key={month}
+                                    value={month}
+                                    selected={index === new Date().getMonth()}
+                                >
+                                    {month}
+                                </option>
+                            ))}
                         </select>
                         <div>{filterMonth}</div>
                         <Button onClick={handleGenerate}>generate</Button>
