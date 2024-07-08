@@ -21,19 +21,20 @@ const sumDayUsage = (acc: number, next: Row) => {
 const avgDayUsage = (rows: Row[]) =>
     (rows.reduce(sumDayUsage, 0) / rows.length).toFixed(3);
 
-const rowEntryToChartEntry =
-    (year1Nr: number, year2Nr: number, year2Row: Row) =>
-    (entry: RowEntry, index: number) => {
-        const formatTime = entry.time?.replace(" ", "T") + ":00.000+02:00";
-        const newDate = new Date(formatTime ?? "");
+// Could be used later
+// const rowEntryToChartEntry =
+//     (year1Nr: number, year2Nr: number, year2Row: Row) =>
+//     (entry: RowEntry, index: number) => {
+//         const formatTime = entry.time?.replace(" ", "T") + ":00.000+02:00";
+//         const newDate = new Date(formatTime ?? "");
 
-        return {
-            time: newDate.getTime(),
-            [year1Nr]: entry.v,
-            // NOTE: assumes that timestamps matches indexes
-            [year2Nr]: year2Row?.entries?.[index]?.v ?? 0,
-        };
-    };
+//         return {
+//             time: newDate.getTime(),
+//             [year1Nr]: entry.v,
+//             // NOTE: assumes that timestamps matches indexes
+//             [year2Nr]: year2Row?.entries?.[index]?.v ?? 0,
+//         };
+//     };
 
 const rowEntryToAvgChartEntry =
     (year1Nr: number, year2Nr: number, year2Row: Row) =>

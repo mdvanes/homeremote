@@ -173,7 +173,8 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                         bars: [
                             {
                                 dataKey:
-                                    sensors?.[2]?.attributes?.friendly_name ?? "",
+                                    sensors?.[2]?.attributes?.friendly_name ??
+                                    "",
                                 fill: "#66bb6a",
                                 unit: "m³",
                             },
