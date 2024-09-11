@@ -2,6 +2,7 @@ import {
     DomoticzStatus,
     DomoticzType,
     GetHaStatesResponse,
+    GetSwitchesResponse,
     HomeRemoteHaSwitch,
     HomeRemoteSwitch,
     SwitchesResponse,
@@ -207,6 +208,22 @@ export class SwitchesController {
             return [];
         }
     };
+
+    @UseGuards(JwtAuthGuard)
+    @Get("/ha")
+    async getSwitchesHa(
+        @Request() req: AuthenticatedRequest
+    ): Promise<GetSwitchesResponse> {
+        this.logger.verbose(`[${req.user.name}] GET to /api/switches/ha`);
+
+        const y: GetSwitchesResponse["switches"][0] = {
+            entity_id: "1",
+            state: "On",
+            // attributes: { friendly_name: "a" },
+        };
+
+        return { switches: [y, y, y] } as GetSwitchesResponse;
+    }
 
     @UseGuards(JwtAuthGuard)
     @Get()

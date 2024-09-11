@@ -6,6 +6,11 @@ const injectedRtkApi = api
     })
     .injectEndpoints({
         endpoints: (build) => ({
+            getSwitches: build.query<GetSwitchesApiResponse, GetSwitchesApiArg>(
+                {
+                    query: () => ({ url: `/api/switches/ha` }),
+                }
+            ),
             updateHaSwitch: build.mutation<
                 UpdateHaSwitchApiResponse,
                 UpdateHaSwitchApiArg
@@ -20,6 +25,9 @@ const injectedRtkApi = api
         overrideExisting: false,
     });
 export { injectedRtkApi as switchesApi };
+export type GetSwitchesApiResponse =
+    /** status 200 getSwitches */ GetSwitchesResponse;
+export type GetSwitchesApiArg = void;
 export type UpdateHaSwitchApiResponse =
     /** status 200 updateHaSwitch */ UpdateHaSwitchResponse;
 export type UpdateHaSwitchApiArg = {
@@ -30,7 +38,14 @@ export type UpdateHaSwitchApiArg = {
         state?: "On" | "Off";
     };
 };
-export type UpdateHaSwitchResponse = string;
+export type GetSwitchesResponse = {
+    switches?: {
+        /** Entity ID */
+        entity_id?: string;
+        /** Current state, On or Off */
+        state?: "On" | "Off";
+    }[];
+};
 export type ErrorResponse = {
     /** Time when error happened */
     timestamp?: string;
@@ -43,4 +58,6 @@ export type ErrorResponse = {
     /** Code of the error */
     code?: number;
 };
-export const { useUpdateHaSwitchMutation } = injectedRtkApi;
+export type UpdateHaSwitchResponse = string;
+export const { useGetSwitchesQuery, useUpdateHaSwitchMutation } =
+    injectedRtkApi;

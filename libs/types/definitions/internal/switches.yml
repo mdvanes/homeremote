@@ -10,6 +10,28 @@ servers:
     - url: https://example.com
       description: Generated server url
 paths:
+    /api/switches/ha:
+        get:
+            operationId: getSwitches
+            responses:
+                "200":
+                    description: getSwitches
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetSwitchesResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
     /api/switches/ha/{entity_id}:
         post:
             operationId: updateHaSwitch
@@ -73,6 +95,22 @@ components:
                     description: Code of the error
                     format: int32
             description: Error information details
+        GetSwitchesResponse:
+            type: object
+            properties:
+                switches:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            entity_id:
+                                type: string
+                                description: Entity ID
+                            state:
+                                type: string
+                                description: Current state, On or Off
+                                enum: [On, Off]
+            description: Get switches response
         UpdateHaSwitchResponse:
             type: string
             

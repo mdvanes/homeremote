@@ -47,3 +47,6 @@ export type UpdateHaSwitchArgs =
 
 export type UpdateHaSwitchResponse =
     operations["updateHaSwitch"]["responses"]["200"]["content"]["application/json"];
+
+export type GetSwitchesResponse =
+    operations["getSwitches"]["responses"]["200"]["content"]["application/json"];
