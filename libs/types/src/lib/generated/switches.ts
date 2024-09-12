@@ -61,15 +61,16 @@ export interface components {
         };
         /** @description Get switches response */
         GetSwitchesResponse: {
-            switches?: {
-                /** @description Entity ID */
-                entity_id?: string;
-                /**
-                 * @description Current state, On or Off
-                 * @enum {string}
-                 */
-                state?: "On" | "Off";
-            }[];
+            switches?: components["schemas"]["Switch"][];
+        };
+        Switch: {
+            /** @description Entity ID */
+            entity_id?: string;
+            /**
+             * @description Current state, On or Off
+             * @enum {string}
+             */
+            state?: "on" | "off";
         };
         UpdateHaSwitchResponse: string;
     };

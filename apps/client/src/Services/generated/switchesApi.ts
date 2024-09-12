@@ -38,13 +38,14 @@ export type UpdateHaSwitchApiArg = {
         state?: "On" | "Off";
     };
 };
+export type Switch = {
+    /** Entity ID */
+    entity_id?: string;
+    /** Current state, On or Off */
+    state?: "on" | "off";
+};
 export type GetSwitchesResponse = {
-    switches?: {
-        /** Entity ID */
-        entity_id?: string;
-        /** Current state, On or Off */
-        state?: "On" | "Off";
-    }[];
+    switches?: Switch[];
 };
 export type ErrorResponse = {
     /** Time when error happened */

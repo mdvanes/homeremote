@@ -1,4 +1,4 @@
-import { operations } from "./generated/switches";
+import { components, operations } from "./generated/switches";
 
 export const DomoticzTypeOptions = {
     Dimmer: "Dimmer",
@@ -50,3 +50,5 @@ export type UpdateHaSwitchResponse =
 
 export type GetSwitchesResponse =
     operations["getSwitches"]["responses"]["200"]["content"]["application/json"];
+
+export type Switch = components["schemas"]["Switch"];

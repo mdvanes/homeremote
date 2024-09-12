@@ -101,17 +101,17 @@ components:
                 switches:
                     type: array
                     items:
-                        type: object
-                        properties:
-                            entity_id:
-                                type: string
-                                description: Entity ID
-                            state:
-                                type: string
-                                description: Current state, On or Off
-                                enum: [On, Off]
+                        $ref: "#/components/schemas/Switch"
             description: Get switches response
+        Switch:
+            type: object
+            properties:
+                entity_id:
+                    type: string
+                    description: Entity ID
+                state:
+                    type: string
+                    description: Current state, On or Off
+                    enum: [on, off]
         UpdateHaSwitchResponse:
             type: string
-            
-        

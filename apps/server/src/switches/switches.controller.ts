@@ -5,6 +5,7 @@ import {
     GetSwitchesResponse,
     HomeRemoteHaSwitch,
     HomeRemoteSwitch,
+    Switch,
     SwitchesResponse,
     UpdateHaSwitchArgs,
     UpdateHaSwitchResponse,
@@ -131,6 +132,13 @@ interface UpdateSwitchMessage {
     type: string;
 }
 
+const haEntityToSwitch = (haEntity: GetHaStatesResponse): Switch => ({
+    ...haEntity,
+    state: ["on", "off"].includes(haEntity.state)
+        ? (haEntity.state as "on" | "off")
+        : undefined,
+});
+
 @Controller("api/switches")
 export class SwitchesController {
     private readonly logger: Logger;
@@ -138,6 +146,7 @@ export class SwitchesController {
     private readonly haApiConfig: {
         baseUrl: string;
         token: string;
+        entityId: string;
     };
 
     constructor(private configService: ConfigService) {
@@ -147,6 +156,9 @@ export class SwitchesController {
             baseUrl:
                 this.configService.get<string>("HOMEASSISTANT_BASE_URL") || "",
             token: this.configService.get<string>("HOMEASSISTANT_TOKEN") || "",
+            entityId:
+                this.configService.get<string>("HOMEASSISTANT_SWITCHES_ID") ||
+                "",
         };
     }
 
@@ -209,6 +221,20 @@ export class SwitchesController {
         }
     };
 
+    async fetchHa(path: string): Promise<unknown> {
+        console.log("fetchHa", path);
+        const response = await fetch(`${this.haApiConfig.baseUrl}${path}`, {
+            headers: {
+                Authorization: `Bearer ${this.haApiConfig.token}`,
+            },
+        });
+        return response.json();
+    }
+
+    async fetchHaEntityState(entityId: string): Promise<GetHaStatesResponse> {
+        return this.fetchHa(`/api/states/${entityId}`);
+    }
+
     @UseGuards(JwtAuthGuard)
     @Get("/ha")
     async getSwitchesHa(
@@ -216,13 +242,53 @@ export class SwitchesController {
     ): Promise<GetSwitchesResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/switches/ha`);
 
-        const y: GetSwitchesResponse["switches"][0] = {
-            entity_id: "1",
-            state: "On",
-            // attributes: { friendly_name: "a" },
-        };
+        // ###
 
-        return { switches: [y, y, y] } as GetSwitchesResponse;
+        const switchIdsResponse = await fetch(
+            `${this.haApiConfig.baseUrl}/api/states/${this.haApiConfig.entityId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${this.haApiConfig.token}`,
+                },
+            }
+        );
+        const switchIds =
+            (await switchIdsResponse.json()) as GetHaStatesResponse;
+
+        const fetchHaEntityState = (id: string) => this.fetchHaEntityState(id);
+
+        const switchPromises =
+            switchIds.attributes.entity_id.map(fetchHaEntityState);
+        // const switchPromises = switchIds.attributes.entity_id.map(
+        //     fetchHaEntityState(this.haApiConfig)
+        // );
+
+        const switches = (await Promise.all(switchPromises)).map(
+            haEntityToSwitch
+        );
+
+        // const switches = (await Promise.all(switchPromises)).map((x) => ({
+        //     ...x,
+        //     state: x.state === "off" ? "off" : "on",
+        // }));
+        // console.log(switchIds.attributes.entity_id, switches);
+        // const haStates = await Promise.all(haStatesPromises);
+
+        return { switches } as GetSwitchesResponse;
+        // return { switches };
+
+        // const r1: GetSwitchesResponse["switches"][0] =
+        //     switches[0] as GetSwitchesResponse["switches"][0];
+
+        // // ###
+
+        // const y: GetSwitchesResponse["switches"][0] = {
+        //     entity_id: "1",
+        //     state: "On",
+        //     // attributes: { friendly_name: "a" },
+        // };
+
+        // return { switches: [y, y, y] } as GetSwitchesResponse;
     }
 
     @UseGuards(JwtAuthGuard)

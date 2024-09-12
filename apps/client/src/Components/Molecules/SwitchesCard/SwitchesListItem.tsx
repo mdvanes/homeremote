@@ -9,37 +9,44 @@ import {
     ListItemText,
 } from "@mui/material";
 import { FC } from "react";
+import { Switch } from "../../../Services/generated/switchesApi";
 
 interface SwitchesListItemProps {
-    item: any;
+    item: Switch;
 }
 
-export const SwitchesListItem: FC<SwitchesListItemProps> = () => {
+export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
     const setSelectedItem = () => {
         /* do nothing */
     };
-    const Name = "a";
+    const Name = "b";
 
     return (
         <ListItem disableGutters disablePadding>
-            <ListItemButton sx={{ flex: 1 }} onClick={() => setSelectedItem()}>
+            <ListItemButton
+                sx={{ maxWidth: "100px" }}
+                onClick={() => setSelectedItem()}
+            >
                 <ListItemIcon sx={{ justifyContent: "center" }}>
                     <RadioButtonCheckedIcon />
                 </ListItemIcon>
             </ListItemButton>
             <ListItemText
                 sx={{ flex: 5 }}
-                primary={"a"}
+                primary={item.state}
                 secondary={
                     <>
-                        b
+                        {item.state}
                         {/* {ParentIndexNumber}x{IndexNumber}{" "}
                             <strong>{SeriesName} </strong>
                             {ProductionYear && ` (${ProductionYear}) `} */}
                     </>
                 }
             />
-            <ListItemButton sx={{ flex: 1 }} onClick={() => setSelectedItem()}>
+            <ListItemButton
+                sx={{ maxWidth: "100px" }}
+                onClick={() => setSelectedItem()}
+            >
                 <ListItemIcon sx={{ justifyContent: "center" }}>
                     <RadioButtonUncheckedIcon />
                 </ListItemIcon>
