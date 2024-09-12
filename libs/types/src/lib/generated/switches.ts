@@ -71,6 +71,23 @@ export interface components {
              * @enum {string}
              */
             state?: "on" | "off";
+            attributes?: {
+                supported_color_modes?: string[];
+                /** Format: nullable */
+                color_mode?: string;
+                /** Format: nullable */
+                brightness?: string;
+                entity_id?: string[];
+                /** @example mdi:lightbulb-group */
+                icon?: string;
+                /** @example Favorites */
+                friendly_name?: string;
+                /**
+                 * Format: int32
+                 * @example 0
+                 */
+                supported_features?: number;
+            };
         };
         UpdateHaSwitchResponse: string;
     };

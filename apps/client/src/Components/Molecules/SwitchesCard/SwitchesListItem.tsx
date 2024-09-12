@@ -2,42 +2,49 @@ import {
     RadioButtonChecked as RadioButtonCheckedIcon,
     RadioButtonUnchecked as RadioButtonUncheckedIcon,
 } from "@mui/icons-material";
-import {
-    ListItem,
-    ListItemButton,
-    ListItemButtonProps,
-    ListItemIcon,
-    ListItemText,
-} from "@mui/material";
+import { ListItem, ListItemText } from "@mui/material";
+import { SerializedError } from "@reduxjs/toolkit";
 import { FC } from "react";
-import { Switch } from "../../../Services/generated/switchesApi";
+import {
+    Switch,
+    useUpdateHaSwitchMutation,
+} from "../../../Services/generated/switchesApi";
+import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { useAppDispatch } from "../../../store";
+import { logError } from "../LogCard/logSlice";
+import { SwitchesListItemButton } from "./SwitchesListItemButton";
 
 interface SwitchesListItemProps {
     item: Switch;
 }
 
-const SwitchesListItemButton: FC<ListItemButtonProps> = ({
-    children,
-    ...props
-}) => {
-    return (
-        <ListItemButton sx={{ maxWidth: 65, flex: "0 0 auto" }} {...props}>
-            <ListItemIcon sx={{ justifyContent: "center", minWidth: 24 }}>
-                {children}
-            </ListItemIcon>
-        </ListItemButton>
-    );
-};
-
 export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
-    const setSelectedItem = () => {
-        /* do nothing */
+    const dispatch = useAppDispatch();
+    const [updateSwitch] = useUpdateHaSwitchMutation();
+
+    const setState = (state: "On" | "Off") => async () => {
+        try {
+            if (item.entity_id) {
+                await updateSwitch({
+                    entityId: item.entity_id,
+                    body: { state },
+                });
+            }
+        } catch (error) {
+            dispatch(
+                logError(
+                    `SwitchesListItem failed: ${getErrorMessage(
+                        error as SerializedError
+                    )}`
+                )
+            );
+        }
     };
 
     return (
         <ListItem disableGutters disablePadding>
             <SwitchesListItemButton
-                onClick={() => setSelectedItem()}
+                onClick={setState("On")}
                 selected={item.state === "on"}
             >
                 <RadioButtonCheckedIcon />
@@ -55,7 +62,7 @@ export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
                 // }
             />
             <SwitchesListItemButton
-                onClick={() => setSelectedItem()}
+                onClick={setState("Off")}
                 selected={item.state === "off"}
             >
                 <RadioButtonUncheckedIcon />
