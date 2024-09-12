@@ -1,5 +1,5 @@
 import { emptySplitApi as api } from "../emptyApi";
-export const addTagTypes = [] as const;
+export const addTagTypes = ["switches"] as const;
 const injectedRtkApi = api
     .enhanceEndpoints({
         addTagTypes,
@@ -9,6 +9,7 @@ const injectedRtkApi = api
             getSwitches: build.query<GetSwitchesApiResponse, GetSwitchesApiArg>(
                 {
                     query: () => ({ url: `/api/switches/ha` }),
+                    providesTags: ["switches"],
                 }
             ),
             updateHaSwitch: build.mutation<
@@ -20,6 +21,7 @@ const injectedRtkApi = api
                     method: "POST",
                     body: queryArg.body,
                 }),
+                invalidatesTags: ["switches"],
             }),
         }),
         overrideExisting: false,
@@ -43,6 +45,15 @@ export type Switch = {
     entity_id?: string;
     /** Current state, On or Off */
     state?: "on" | "off";
+    attributes?: {
+        supported_color_modes?: string[];
+        color_mode?: string;
+        brightness?: string;
+        entity_id?: string[];
+        icon?: string;
+        friendly_name?: string;
+        supported_features?: number;
+    };
 };
 export type GetSwitchesResponse = {
     switches?: Switch[];

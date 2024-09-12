@@ -194,12 +194,12 @@ components:
                 context:
                     type: object
                     properties:
-                    id:
-                        type: string
-                        example: 01HYDMQE5DJ7QP3F5ADKNKXFDQ
-                    parent_id:
-                        type: string
-                        format: nullable
-                    user_id:
-                        type: string
-                        format: nullable
+                        id:
+                            type: string
+                            example: 01HYDMQE5DJ7QP3F5ADKNKXFDQ
+                        parent_id:
+                            type: string
+                            format: nullable
+                        user_id:
+                            type: string
+                            format: nullable

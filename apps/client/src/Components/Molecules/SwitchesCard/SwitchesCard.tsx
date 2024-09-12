@@ -1,21 +1,35 @@
 import { List, Paper } from "@mui/material";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useGetSwitchesQuery } from "../../../Services/generated/switchesApi";
+import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { useAppDispatch } from "../../../store";
 import LoadingDot from "../LoadingDot/LoadingDot";
+import { logError } from "../LogCard/logSlice";
 import { SwitchesListItem } from "./SwitchesListItem";
 
-const UPDATE_INTERVAL_MS = 1000 * 60; // 1000 ms / 60 seconds = 1x per minute
+const UPDATE_INTERVAL_MS = 1_000 * 60; // 1000 ms / 60 seconds = 1x per minute
 
 export const SwitchesCard: FC = () => {
-    // const items: any[] = [{}];
-    const { data, error, isFetching, isLoading } = useGetSwitchesQuery(
+    const dispatch = useAppDispatch();
+    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
+
+    const { data, error, isError, isFetching, isLoading } = useGetSwitchesQuery(
         undefined,
         {
-            pollingInterval: UPDATE_INTERVAL_MS,
+            pollingInterval: isSkippingBecauseError
+                ? undefined
+                : UPDATE_INTERVAL_MS,
         }
     );
 
-    console.log(data, error);
+    useEffect(() => {
+        if (isError && error) {
+            setIsSkippingBecauseError(true);
+            dispatch(
+                logError(`SwitchesCard failed: ${getErrorMessage(error)}`)
+            );
+        }
+    }, [dispatch, error, isError]);
 
     return (
         <List component={Paper}>
@@ -23,19 +37,6 @@ export const SwitchesCard: FC = () => {
             {(data?.switches ?? []).map((item) => (
                 <SwitchesListItem key={item.entity_id} item={item} />
             ))}
-            {/* <CardExpandBar
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                hint={`and ${data.items.length - CUTOFF} more`}
-            /> */}
         </List>
     );
-
-    // return (
-    //     <Card>
-    //         <CardContent>
-    //             <div>switches card</div>
-    //         </CardContent>
-    //     </Card>
-    // );
 };

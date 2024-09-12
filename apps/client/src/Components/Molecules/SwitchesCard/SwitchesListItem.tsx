@@ -5,6 +5,7 @@ import {
 import {
     ListItem,
     ListItemButton,
+    ListItemButtonProps,
     ListItemIcon,
     ListItemText,
 } from "@mui/material";
@@ -15,42 +16,50 @@ interface SwitchesListItemProps {
     item: Switch;
 }
 
+const SwitchesListItemButton: FC<ListItemButtonProps> = ({
+    children,
+    ...props
+}) => {
+    return (
+        <ListItemButton sx={{ maxWidth: 65, flex: "0 0 auto" }} {...props}>
+            <ListItemIcon sx={{ justifyContent: "center", minWidth: 24 }}>
+                {children}
+            </ListItemIcon>
+        </ListItemButton>
+    );
+};
+
 export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
     const setSelectedItem = () => {
         /* do nothing */
     };
-    const Name = "b";
 
     return (
         <ListItem disableGutters disablePadding>
-            <ListItemButton
-                sx={{ maxWidth: "100px" }}
+            <SwitchesListItemButton
                 onClick={() => setSelectedItem()}
+                selected={item.state === "on"}
             >
-                <ListItemIcon sx={{ justifyContent: "center" }}>
-                    <RadioButtonCheckedIcon />
-                </ListItemIcon>
-            </ListItemButton>
+                <RadioButtonCheckedIcon />
+            </SwitchesListItemButton>
             <ListItemText
-                sx={{ flex: 5 }}
-                primary={item.state}
-                secondary={
-                    <>
-                        {item.state}
-                        {/* {ParentIndexNumber}x{IndexNumber}{" "}
-                            <strong>{SeriesName} </strong>
-                            {ProductionYear && ` (${ProductionYear}) `} */}
-                    </>
-                }
+                sx={{ flex: 1, paddingX: 1 }}
+                primary={item.attributes?.friendly_name}
+                // secondary={
+                //     <>
+                //         {item.state}
+                //         {/* {ParentIndexNumber}x{IndexNumber}{" "}
+                //             <strong>{SeriesName} </strong>
+                //             {ProductionYear && ` (${ProductionYear}) `} */}
+                //     </>
+                // }
             />
-            <ListItemButton
-                sx={{ maxWidth: "100px" }}
+            <SwitchesListItemButton
                 onClick={() => setSelectedItem()}
+                selected={item.state === "off"}
             >
-                <ListItemIcon sx={{ justifyContent: "center" }}>
-                    <RadioButtonUncheckedIcon />
-                </ListItemIcon>
-            </ListItemButton>
+                <RadioButtonUncheckedIcon />
+            </SwitchesListItemButton>
         </ListItem>
     );
 };

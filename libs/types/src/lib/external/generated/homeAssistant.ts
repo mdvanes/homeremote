@@ -143,7 +143,14 @@ export interface components {
              * @example 2024-05-21T13:16:22.061360+00:00
              */
             last_updated?: string;
-            context?: Record<string, never>;
+            context?: {
+                /** @example 01HYDMQE5DJ7QP3F5ADKNKXFDQ */
+                id?: string;
+                /** Format: nullable */
+                parent_id?: string;
+                /** Format: nullable */
+                user_id?: string;
+            };
         };
     };
     responses: never;

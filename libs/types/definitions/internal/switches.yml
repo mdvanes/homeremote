@@ -9,10 +9,15 @@ info:
 servers:
     - url: https://example.com
       description: Generated server url
+tags:
+  - name: switches
+    description: Switch state changed
 paths:
     /api/switches/ha:
         get:
             operationId: getSwitches
+            tags:
+                - switches
             responses:
                 "200":
                     description: getSwitches
@@ -42,6 +47,8 @@ paths:
                   required: true
                   schema:
                       type: string
+            tags:
+                - switches                      
             requestBody:
                 required: true
                 content:
@@ -113,5 +120,34 @@ components:
                     type: string
                     description: Current state, On or Off
                     enum: [on, off]
+                attributes:
+                    type: object
+                    properties:
+                        supported_color_modes:
+                            type: array
+                            items:
+                                type: string
+                                example: brightness
+                        color_mode:
+                            type: string
+                            format: nullable
+                        brightness:
+                            type: string
+                            format: nullable
+                        entity_id:
+                            type: array
+                            items:
+                                type: string
+                                example: light.newkaku_01dc9753_1
+                        icon:
+                            type: string
+                            example: mdi:lightbulb-group
+                        friendly_name:
+                            type: string
+                            example: Favorites
+                        supported_features:
+                            type: integer
+                            format: int32
+                            example: 0                    
         UpdateHaSwitchResponse:
             type: string
