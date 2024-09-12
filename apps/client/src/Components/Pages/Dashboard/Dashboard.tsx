@@ -15,6 +15,7 @@ import Schedule from "../../Molecules/Schedule/Schedule";
 import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
 import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
 import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
+import { SwitchesCard } from "../../Molecules/SwitchesCard/SwitchesCard";
 import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Docker from "../Docker/Docker";
@@ -42,6 +43,7 @@ const Dashboard: FC = () => {
         <Grid container spacing={2} className={classes.container}>
             <Grid item xs={12} md={3}>
                 <div className="switch-bar-list-wrapper">
+                    <SwitchesCard />
                     <SwitchBarList />
                 </div>
                 <GasChart />

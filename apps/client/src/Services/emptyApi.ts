@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const emptySplitApi = createApi({
-    // reducerPath: "energy-usage-api",
+    reducerPath: "homeremoteGeneratedApi",
     baseQuery: fetchBaseQuery({ baseUrl: "/" }),
     endpoints: () => ({}),
 });
