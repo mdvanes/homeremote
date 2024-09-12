@@ -162,6 +162,7 @@ export class SwitchesController {
         };
     }
 
+    /** @deprecated */
     getHaLightFavoritesAsSwitches = async (): Promise<HomeRemoteHaSwitch[]> => {
         try {
             // TODO remove. This fetch randomly fails.
@@ -222,7 +223,6 @@ export class SwitchesController {
     };
 
     async fetchHa(path: string): Promise<unknown> {
-        console.log("fetchHa", path);
         const response = await fetch(`${this.haApiConfig.baseUrl}${path}`, {
             headers: {
                 Authorization: `Bearer ${this.haApiConfig.token}`,
@@ -242,8 +242,6 @@ export class SwitchesController {
     ): Promise<GetSwitchesResponse> {
         this.logger.verbose(`[${req.user.name}] GET to /api/switches/ha`);
 
-        // ###
-
         const switchIdsResponse = await fetch(
             `${this.haApiConfig.baseUrl}/api/states/${this.haApiConfig.entityId}`,
             {
@@ -259,40 +257,17 @@ export class SwitchesController {
 
         const switchPromises =
             switchIds.attributes.entity_id.map(fetchHaEntityState);
-        // const switchPromises = switchIds.attributes.entity_id.map(
-        //     fetchHaEntityState(this.haApiConfig)
-        // );
 
         const switches = (await Promise.all(switchPromises)).map(
             haEntityToSwitch
         );
 
-        // const switches = (await Promise.all(switchPromises)).map((x) => ({
-        //     ...x,
-        //     state: x.state === "off" ? "off" : "on",
-        // }));
-        // console.log(switchIds.attributes.entity_id, switches);
-        // const haStates = await Promise.all(haStatesPromises);
-
         return { switches } as GetSwitchesResponse;
-        // return { switches };
-
-        // const r1: GetSwitchesResponse["switches"][0] =
-        //     switches[0] as GetSwitchesResponse["switches"][0];
-
-        // // ###
-
-        // const y: GetSwitchesResponse["switches"][0] = {
-        //     entity_id: "1",
-        //     state: "On",
-        //     // attributes: { friendly_name: "a" },
-        // };
-
-        // return { switches: [y, y, y] } as GetSwitchesResponse;
     }
 
     @UseGuards(JwtAuthGuard)
     @Get()
+    /** @deprecated */
     async getSwitches(
         @Request() req: AuthenticatedRequest
     ): Promise<SwitchesResponse> {
@@ -383,10 +358,12 @@ export class SwitchesController {
         );
 
         try {
+            const [entityType] = entityId.split(".");
+            const pathType = entityType === "light" ? "light" : "switch";
             await fetch(
                 `${
                     this.haApiConfig.baseUrl
-                }/api/services/light/turn_${args.state.toLowerCase()}`,
+                }/api/services/${pathType}/turn_${args.state.toLowerCase()}`,
                 {
                     method: "POST",
                     headers: {
