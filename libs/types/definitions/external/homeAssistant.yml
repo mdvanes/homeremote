@@ -25,13 +25,13 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/GetHaSensorHistoryResponse"
                 "400":
-                    description: Bad request.
+                    description: Bad request
                     content:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/ErrorResponse"
                 "401":
-                    description: Unauthorized.
+                    description: Unauthorized
                     content:
                         application/json:
                             schema:

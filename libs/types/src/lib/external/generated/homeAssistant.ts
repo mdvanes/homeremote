@@ -232,7 +232,7 @@ export interface operations {
                     "application/json": components["schemas"]["GetHaSensorHistoryResponse"];
                 };
             };
-            /** @description Bad request. */
+            /** @description Bad request */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -241,7 +241,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorResponse"];
                 };
             };
-            /** @description Unauthorized. */
+            /** @description Unauthorized */
             401: {
                 headers: {
                     [name: string]: unknown;

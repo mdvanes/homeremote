@@ -3,28 +3,28 @@
 
 openapi: 3.0.1
 info:
-    title: Switches Controller API
-    description: Switches Controller
+    title: Smart Entities Controller API
+    description: Smart Home interface has entities, which can be switches, sensors, etc.
     version: 1.0.0
 servers:
-    - url: https://example.com
-      description: Generated server url
+    - url: http://localhost:4200
+      description: Homeremote local server
 tags:
-    - name: switches
-      description: Switch state changed
+    - name: smartEntities
+      description: Smart entity state changed
 paths:
-    /api/switches/ha:
+    /api/smart-entities:
         get:
-            operationId: getSwitches
+            operationId: getSmartEntities
             tags:
-                - switches
+                - smartEntities
             responses:
                 "200":
-                    description: getSwitches
+                    description: getSmartEntities
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/GetSwitchesResponse"
+                                $ref: "#/components/schemas/GetSmartEntitiesResponse"
                 "400":
                     description: Bad request.
                     content:
@@ -37,9 +37,9 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/ErrorResponse"
-    /api/switches/ha/{entity_id}:
+    /api/smart-entities/{entity_id}:
         post:
-            operationId: updateHaSwitch
+            operationId: updateSmartEntity
             parameters:
                 - name: entity_id
                   in: path
@@ -48,25 +48,21 @@ paths:
                   schema:
                       type: string
             tags:
-                - switches
+                - smartEntities
             requestBody:
                 required: true
                 content:
                     application/json:
                         schema:
-                            type: object
-                            properties:
-                                state:
-                                    type: string
-                                    description: Target state, On or Off
-                                    enum: [On, Off]
+                            $ref: "#/components/schemas/UpdateSmartEntityBody"
+                            
             responses:
                 "200":
-                    description: updateHaSwitch
+                    description: updateSmartEntity
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/UpdateHaSwitchResponse"
+                                $ref: "#/components/schemas/UpdateSmartEntityResponse"
                 "400":
                     description: Bad request.
                     content:
@@ -102,10 +98,10 @@ components:
                     description: Code of the error
                     format: int32
             description: Error information details
-        GetSwitchesResponse:
+        GetSmartEntitiesResponse:
             type: object
             properties:
-                switches:
+                entities:
                     type: array
                     items:
                         $ref: "#/components/schemas/Switch"
@@ -160,5 +156,12 @@ components:
                             type: string
                             format: nullable
                             example: "°C"
-        UpdateHaSwitchResponse:
+        UpdateSmartEntityBody:
+            type: object
+            properties:
+                state:
+                    type: string
+                    description: Target state, On or Off
+                    enum: [On, Off]
+        UpdateSmartEntityResponse:
             type: string

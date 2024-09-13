@@ -4,14 +4,14 @@
  */
 
 export interface paths {
-    "/api/switches/ha": {
+    "/api/smart-entities": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["getSwitches"];
+        get: operations["getSmartEntities"];
         put?: never;
         post?: never;
         delete?: never;
@@ -20,7 +20,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/switches/ha/{entity_id}": {
+    "/api/smart-entities/{entity_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -29,7 +29,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["updateHaSwitch"];
+        post: operations["updateSmartEntity"];
         delete?: never;
         options?: never;
         head?: never;
@@ -60,8 +60,8 @@ export interface components {
             code?: number;
         };
         /** @description Get switches response */
-        GetSwitchesResponse: {
-            switches?: components["schemas"]["Switch"][];
+        GetSmartEntitiesResponse: {
+            entities?: components["schemas"]["Switch"][];
         };
         Switch: {
             /** @description Entity ID */
@@ -101,7 +101,14 @@ export interface components {
                 unit_of_measurement?: string;
             };
         };
-        UpdateHaSwitchResponse: string;
+        UpdateSmartEntityBody: {
+            /**
+             * @description Target state, On or Off
+             * @enum {string}
+             */
+            state?: "On" | "Off";
+        };
+        UpdateSmartEntityResponse: string;
     };
     responses: never;
     parameters: never;
@@ -111,7 +118,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getSwitches: {
+    getSmartEntities: {
         parameters: {
             query?: never;
             header?: never;
@@ -120,13 +127,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description getSwitches */
+            /** @description getSmartEntities */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GetSwitchesResponse"];
+                    "application/json": components["schemas"]["GetSmartEntitiesResponse"];
                 };
             };
             /** @description Bad request. */
@@ -149,7 +156,7 @@ export interface operations {
             };
         };
     };
-    updateHaSwitch: {
+    updateSmartEntity: {
         parameters: {
             query?: never;
             header?: never;
@@ -161,23 +168,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    /**
-                     * @description Target state, On or Off
-                     * @enum {string}
-                     */
-                    state?: "On" | "Off";
-                };
+                "application/json": components["schemas"]["UpdateSmartEntityBody"];
             };
         };
         responses: {
-            /** @description updateHaSwitch */
+            /** @description updateSmartEntity */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UpdateHaSwitchResponse"];
+                    "application/json": components["schemas"]["UpdateSmartEntityResponse"];
                 };
             };
             /** @description Bad request. */

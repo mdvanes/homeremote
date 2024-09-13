@@ -1,44 +1,42 @@
 import { emptySplitApi as api } from "../emptyApi";
-export const addTagTypes = ["switches"] as const;
+export const addTagTypes = ["smartEntities"] as const;
 const injectedRtkApi = api
     .enhanceEndpoints({
         addTagTypes,
     })
     .injectEndpoints({
         endpoints: (build) => ({
-            getSwitches: build.query<GetSwitchesApiResponse, GetSwitchesApiArg>(
-                {
-                    query: () => ({ url: `/api/switches/ha` }),
-                    providesTags: ["switches"],
-                }
-            ),
-            updateHaSwitch: build.mutation<
-                UpdateHaSwitchApiResponse,
-                UpdateHaSwitchApiArg
+            getSmartEntities: build.query<
+                GetSmartEntitiesApiResponse,
+                GetSmartEntitiesApiArg
+            >({
+                query: () => ({ url: `/api/smart-entities` }),
+                providesTags: ["smartEntities"],
+            }),
+            updateSmartEntity: build.mutation<
+                UpdateSmartEntityApiResponse,
+                UpdateSmartEntityApiArg
             >({
                 query: (queryArg) => ({
-                    url: `/api/switches/ha/${queryArg.entityId}`,
+                    url: `/api/smart-entities/${queryArg.entityId}`,
                     method: "POST",
-                    body: queryArg.body,
+                    body: queryArg.updateSmartEntityBody,
                 }),
-                invalidatesTags: ["switches"],
+                invalidatesTags: ["smartEntities"],
             }),
         }),
         overrideExisting: false,
     });
 export { injectedRtkApi as smartEntitiesApi };
-export type GetSwitchesApiResponse =
-    /** status 200 getSwitches */ GetSwitchesResponse;
-export type GetSwitchesApiArg = void;
-export type UpdateHaSwitchApiResponse =
-    /** status 200 updateHaSwitch */ UpdateHaSwitchResponse;
-export type UpdateHaSwitchApiArg = {
+export type GetSmartEntitiesApiResponse =
+    /** status 200 getSmartEntities */ GetSmartEntitiesResponse;
+export type GetSmartEntitiesApiArg = void;
+export type UpdateSmartEntityApiResponse =
+    /** status 200 updateSmartEntity */ UpdateSmartEntityResponse;
+export type UpdateSmartEntityApiArg = {
     /** Entity ID */
     entityId: string;
-    body: {
-        /** Target state, On or Off */
-        state?: "On" | "Off";
-    };
+    updateSmartEntityBody: UpdateSmartEntityBody;
 };
 export type Switch = {
     /** Entity ID */
@@ -59,8 +57,8 @@ export type Switch = {
         unit_of_measurement?: string;
     };
 };
-export type GetSwitchesResponse = {
-    switches?: Switch[];
+export type GetSmartEntitiesResponse = {
+    entities?: Switch[];
 };
 export type ErrorResponse = {
     /** Time when error happened */
@@ -74,6 +72,10 @@ export type ErrorResponse = {
     /** Code of the error */
     code?: number;
 };
-export type UpdateHaSwitchResponse = string;
-export const { useGetSwitchesQuery, useUpdateHaSwitchMutation } =
+export type UpdateSmartEntityResponse = string;
+export type UpdateSmartEntityBody = {
+    /** Target state, On or Off */
+    state?: "On" | "Off";
+};
+export const { useGetSmartEntitiesQuery, useUpdateSmartEntityMutation } =
     injectedRtkApi;
