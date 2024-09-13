@@ -265,6 +265,7 @@ export class EnergyUsageController {
         const haTemperaturesIds =
             (await haTemperaturesIdsResponse.json()) as GetHaStatesResponse;
 
+        // @ts-expect-error response can contain error message
         const firstHaTemperatureId = haTemperaturesIds.attributes.entity_id[0];
         const time = Date.now();
         const startOffset = MONTH;

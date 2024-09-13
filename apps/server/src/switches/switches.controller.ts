@@ -5,7 +5,7 @@ import {
     GetSwitchesResponse,
     HomeRemoteHaSwitch,
     HomeRemoteSwitch,
-    Switch,
+    State,
     SwitchesResponse,
     UpdateHaSwitchArgs,
     UpdateHaSwitchResponse,
@@ -132,12 +132,12 @@ interface UpdateSwitchMessage {
     type: string;
 }
 
-const haEntityToSwitch = (haEntity: GetHaStatesResponse): Switch => ({
-    ...haEntity,
-    state: ["on", "off"].includes(haEntity.state)
-        ? (haEntity.state as "on" | "off")
-        : undefined,
-});
+// const haEntityToSwitch = (haEntity: GetHaStatesResponse): Switch => ({
+//     ...haEntity,
+//     state: ["on", "off"].includes(haEntity.state)
+//         ? (haEntity.state as "on" | "off")
+//         : undefined,
+// });
 
 @Controller("api/switches")
 export class SwitchesController {
@@ -182,6 +182,7 @@ export class SwitchesController {
             const haFavoriteIds =
                 (await haFavoritesResponse.json()) as GetHaStatesResponse;
 
+            // @ts-expect-error old function
             const haStatesPromises = haFavoriteIds.attributes.entity_id.map(
                 async (entity) => {
                     // TODO remove. This fetch randomly fails. Maybe because of multiple requests at once?
@@ -202,7 +203,7 @@ export class SwitchesController {
             const haStates = await Promise.all(haStatesPromises);
 
             const haSwitches: HomeRemoteHaSwitch[] = haStates
-                // @ts-expect-error fix message type on entity
+
                 .filter((e) => e.message !== "Entity not found.")
                 .map<HomeRemoteHaSwitch>((entity) => ({
                     origin: "home-assistant",
@@ -240,29 +241,39 @@ export class SwitchesController {
     async getSwitchesHa(
         @Request() req: AuthenticatedRequest
     ): Promise<GetSwitchesResponse> {
-        this.logger.verbose(`[${req.user.name}] GET to /api/switches/ha`);
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/switches/ha for entityId ${this.haApiConfig.entityId}`
+        );
 
-        const switchIdsResponse = await fetch(
-            `${this.haApiConfig.baseUrl}/api/states/${this.haApiConfig.entityId}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${this.haApiConfig.token}`,
-                },
+        try {
+            const switchIds: GetHaStatesResponse = await this.fetchHa(
+                `/api/states/${this.haApiConfig.entityId}`
+            );
+            console.log("switchIds", switchIds);
+
+            if ("message" in switchIds && switchIds.message) {
+                throw new Error(switchIds.message);
             }
-        );
-        const switchIds =
-            (await switchIdsResponse.json()) as GetHaStatesResponse;
 
-        const fetchHaEntityState = (id: string) => this.fetchHaEntityState(id);
+            if ("attributes" in switchIds) {
+                const allHaStates = (await this.fetchHa(
+                    `/api/states`
+                )) as State[];
+                const switchStates = allHaStates.filter((state) =>
+                    switchIds.attributes.entity_id.includes(state.entity_id)
+                );
 
-        const switchPromises =
-            switchIds.attributes.entity_id.map(fetchHaEntityState);
+                return { switches: switchStates } as GetSwitchesResponse;
+            }
 
-        const switches = (await Promise.all(switchPromises)).map(
-            haEntityToSwitch
-        );
-
-        return { switches } as GetSwitchesResponse;
+            throw new Error("no attributes property");
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     @UseGuards(JwtAuthGuard)

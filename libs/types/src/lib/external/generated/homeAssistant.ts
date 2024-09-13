@@ -24,6 +24,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/states": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Returns an array of state objects. Each state object contains entity ID, state, and attributes.
+         * @description Returns an array of state objects. Each state object contains entity ID, state, and attributes.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Successful response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["States"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/states/{entity_id}": {
         parameters: {
             query?: never;
@@ -106,7 +145,7 @@ export interface components {
                 user_id?: string;
             };
         }[][];
-        GetHaStatesResponse: {
+        State: {
             /** @example light.favorites */
             entity_id?: string;
             /** @example off */
@@ -152,6 +191,8 @@ export interface components {
                 user_id?: string;
             };
         };
+        /** @description An array of state objects. Each state object contains entity ID, state, attributes, and last changed time. */
+        States: components["schemas"]["State"][];
     };
     responses: never;
     parameters: never;
@@ -217,7 +258,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GetHaStatesResponse"];
+                    "application/json": components["schemas"]["State"];
                 };
             };
             /** @description Bad request. */

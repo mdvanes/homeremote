@@ -3,6 +3,7 @@ import { FC, useEffect, useState } from "react";
 import { useGetSwitchesQuery } from "../../../Services/generated/switchesApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
+import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import { logError } from "../LogCard/logSlice";
 import { SwitchesListItem } from "./SwitchesListItem";
@@ -13,14 +14,12 @@ export const SwitchesCard: FC = () => {
     const dispatch = useAppDispatch();
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
 
-    const { data, error, isError, isFetching, isLoading } = useGetSwitchesQuery(
-        undefined,
-        {
+    const { data, error, isError, isFetching, isLoading, refetch } =
+        useGetSwitchesQuery(undefined, {
             pollingInterval: isSkippingBecauseError
                 ? undefined
                 : UPDATE_INTERVAL_MS,
-        }
-    );
+        });
 
     useEffect(() => {
         if (isError && error) {
@@ -34,6 +33,11 @@ export const SwitchesCard: FC = () => {
     return (
         <List component={Paper}>
             <LoadingDot isLoading={isLoading || isFetching} />
+            {isError && (
+                <ErrorRetry retry={() => refetch()}>
+                    SwitchesCard could not load
+                </ErrorRetry>
+            )}
             {(data?.switches ?? []).map((item) => (
                 <SwitchesListItem key={item.entity_id} item={item} />
             ))}
