@@ -38,11 +38,9 @@ export type UpdateSmartEntityApiArg = {
     entityId: string;
     updateSmartEntityBody: UpdateSmartEntityBody;
 };
-export type Switch = {
-    /** Entity ID */
+export type State = {
     entity_id?: string;
-    /** Current state, On or Off */
-    state?: "on" | "off";
+    state?: string;
     attributes?: {
         supported_color_modes?: string[];
         color_mode?: string;
@@ -56,9 +54,17 @@ export type Switch = {
         state_class?: string;
         unit_of_measurement?: string;
     };
+    last_changed?: string;
+    last_reported?: string;
+    last_updated?: string;
+    context?: {
+        id?: string;
+        parent_id?: string;
+        user_id?: string;
+    };
 };
 export type GetSmartEntitiesResponse = {
-    entities?: Switch[];
+    entities?: State[];
 };
 export type ErrorResponse = {
     /** Time when error happened */
@@ -74,8 +80,8 @@ export type ErrorResponse = {
 };
 export type UpdateSmartEntityResponse = string;
 export type UpdateSmartEntityBody = {
-    /** Target state, On or Off */
-    state?: "On" | "Off";
+    /** Target state, on or off */
+    state?: "on" | "off";
 };
 export const { useGetSmartEntitiesQuery, useUpdateSmartEntityMutation } =
     injectedRtkApi;

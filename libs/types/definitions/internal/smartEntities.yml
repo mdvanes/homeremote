@@ -40,6 +40,8 @@ paths:
     /api/smart-entities/{entity_id}:
         post:
             operationId: updateSmartEntity
+            tags:
+                - smartEntities
             parameters:
                 - name: entity_id
                   in: path
@@ -47,15 +49,13 @@ paths:
                   required: true
                   schema:
                       type: string
-            tags:
-                - smartEntities
             requestBody:
                 required: true
                 content:
                     application/json:
                         schema:
                             $ref: "#/components/schemas/UpdateSmartEntityBody"
-                            
+
             responses:
                 "200":
                     description: updateSmartEntity
@@ -104,64 +104,16 @@ components:
                 entities:
                     type: array
                     items:
-                        $ref: "#/components/schemas/Switch"
-            description: Get switches response
-        Switch:
-            type: object
-            properties:
-                entity_id:
-                    type: string
-                    description: Entity ID
-                state:
-                    type: string
-                    description: Current state, On or Off
-                    enum: [on, off]
-                attributes:
-                    type: object
-                    properties:
-                        supported_color_modes:
-                            type: array
-                            items:
-                                type: string
-                                example: brightness
-                        color_mode:
-                            type: string
-                            format: nullable
-                        brightness:
-                            type: string
-                            format: nullable
-                        entity_id:
-                            type: array
-                            items:
-                                type: string
-                                example: light.newkaku_01dc9753_1
-                        icon:
-                            type: string
-                            example: mdi:lightbulb-group
-                        friendly_name:
-                            type: string
-                            example: Favorites
-                        supported_features:
-                            type: integer
-                            format: int32
-                            example: 0
-                        device_class:
-                            description: "Undefined for switches. Can also be e.g. `temperature`."
-                            type: string
-                            format: nullable
-                        state_class:
-                            type: string
-                            example: measurement
-                        unit_of_measurement:
-                            type: string
-                            format: nullable
-                            example: "°C"
+                        $ref: "#/components/schemas/State"
+            description: Get smart entities response
+        State:
+            $ref: "../external/homeAssistant.yml#/components/schemas/State"
         UpdateSmartEntityBody:
             type: object
             properties:
                 state:
                     type: string
-                    description: Target state, On or Off
-                    enum: [On, Off]
+                    description: Target state, on or off
+                    enum: [on, off]
         UpdateSmartEntityResponse:
             type: string

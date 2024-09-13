@@ -59,18 +59,15 @@ export interface components {
              */
             code?: number;
         };
-        /** @description Get switches response */
+        /** @description Get smart entities response */
         GetSmartEntitiesResponse: {
-            entities?: components["schemas"]["Switch"][];
+            entities?: components["schemas"]["State"][];
         };
-        Switch: {
-            /** @description Entity ID */
+        State: {
+            /** @example light.favorites */
             entity_id?: string;
-            /**
-             * @description Current state, On or Off
-             * @enum {string}
-             */
-            state?: "on" | "off";
+            /** @example off */
+            state?: string;
             attributes?: {
                 supported_color_modes?: string[];
                 /** Format: nullable */
@@ -100,13 +97,36 @@ export interface components {
                  */
                 unit_of_measurement?: string;
             };
+            /**
+             * Format: date-time
+             * @example 2024-05-21T13:16:22.061360+00:00
+             */
+            last_changed?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-21T13:16:22.071293+00:00
+             */
+            last_reported?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-21T13:16:22.061360+00:00
+             */
+            last_updated?: string;
+            context?: {
+                /** @example 01HYDMQE5DJ7QP3F5ADKNKXFDQ */
+                id?: string;
+                /** Format: nullable */
+                parent_id?: string;
+                /** Format: nullable */
+                user_id?: string;
+            };
         };
         UpdateSmartEntityBody: {
             /**
-             * @description Target state, On or Off
+             * @description Target state, on or off
              * @enum {string}
              */
-            state?: "On" | "Off";
+            state?: "on" | "off";
         };
         UpdateSmartEntityResponse: string;
     };

@@ -80,6 +80,50 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/ErrorResponse"
+    /api/services/{domain}/{service}:
+        post:
+            operationId: postServicesDomainService
+            tags:
+                - homeAssistant
+            parameters:
+                - name: domain
+                  in: path
+                  description: domain can be device class, e.g. switch
+                  required: true
+                  schema:
+                      type: string
+                - name: service
+                  in: path
+                  description: New state for the domain, e.g. turn_on or turn_off
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PostServicesDomainServiceBody"
+            responses:
+                "200":
+                    # TODO what will the response be?
+                    description: HaStates
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/State"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
 components:
     schemas:
         ErrorResponse:
@@ -233,3 +277,9 @@ components:
             description: "An array of state objects. Each state object contains entity ID, state, attributes, and last changed time."
             items:
                 $ref: "#/components/schemas/State"
+        PostServicesDomainServiceBody:
+            type: object
+            properties:
+                entity_id:
+                    type: string
+                    example: light.favorites

@@ -83,6 +83,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/services/{domain}/{service}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["postServicesDomainService"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -205,6 +221,10 @@ export interface components {
         };
         /** @description An array of state objects. Each state object contains entity ID, state, attributes, and last changed time. */
         States: components["schemas"]["State"][];
+        PostServicesDomainServiceBody: {
+            /** @example light.favorites */
+            entity_id?: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -263,6 +283,53 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description HaStates */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["State"];
+                };
+            };
+            /** @description Bad request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    postServicesDomainService: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description domain can be device class, e.g. switch */
+                domain: string;
+                /** @description New state for the domain, e.g. turn_on or turn_off */
+                service: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostServicesDomainServiceBody"];
+            };
+        };
         responses: {
             /** @description HaStates */
             200: {
