@@ -6,12 +6,12 @@ import { useAppDispatch } from "../../../store";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import { logError } from "../LogCard/logSlice";
-import { SwitchesListItem } from "./SwitchesListItem";
-import { isSwitch } from "./utils";
+import { isClimateSensor, sortClimateSensors } from "../SwitchesCard/utils";
+import { ClimateSensorsListItem } from "./ClimateSensorsListItem";
 
-const UPDATE_INTERVAL_MS = 1_000 * 60; // 1000 ms / 60 seconds = 1x per minute
+const UPDATE_INTERVAL_MS = 1_000 * 60 * 1.5; // 1000 ms / 60 seconds = 1x per 1.5 minutes (to prevent synching with SwitchesCard)
 
-export const SwitchesCard: FC = () => {
+export const ClimateSensorsCard: FC = () => {
     const dispatch = useAppDispatch();
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
 
@@ -22,7 +22,9 @@ export const SwitchesCard: FC = () => {
                 : UPDATE_INTERVAL_MS,
         });
 
-    const switches = (data?.entities ?? []).filter(isSwitch);
+    const climateSensors = (data?.entities ?? [])
+        .filter(isClimateSensor)
+        .toSorted(sortClimateSensors);
 
     useEffect(() => {
         if (isError && error) {
@@ -41,9 +43,11 @@ export const SwitchesCard: FC = () => {
                     SwitchesCard could not load
                 </ErrorRetry>
             )}
-            {switches.map((item) => (
+            {/* {switches.map((item) => (
                 <SwitchesListItem key={item.entity_id} item={item} />
-            ))}
+            ))} */}
+            {/* TODO extract to own card _ */}
+            <ClimateSensorsListItem sensors={climateSensors} />
         </List>
     );
 };
