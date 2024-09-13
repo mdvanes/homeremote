@@ -2,10 +2,10 @@ import DeviceThermostatIcon from "@mui/icons-material/DeviceThermostat";
 import WaterIcon from "@mui/icons-material/Water";
 import { ListItemIcon, ListItemText, Stack } from "@mui/material";
 import { FC } from "react";
-import { Switch } from "../../../Services/generated/switchesApi";
+import { State } from "../../../Services/generated/smartEntitiesApi";
 
 interface ClimateSensorsListItemProps {
-    sensors: Switch[];
+    sensors: State[];
 }
 
 export const ClimateSensorsListItem: FC<ClimateSensorsListItemProps> = ({

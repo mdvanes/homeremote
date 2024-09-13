@@ -1,6 +1,6 @@
 import { HomeRemoteHaSwitch } from "@homeremote/types";
 import { FC } from "react";
-import { useUpdateHaSwitchMutation } from "../../../Services/generated/switchesApi";
+import { useUpdateSmartEntityMutation } from "../../../Services/generated/smartEntitiesApi";
 import { useAppDispatch } from "../../../store";
 import SwitchBar from "./SwitchBar";
 import SwitchBarInnerButton from "./SwitchBarInnerButton";
@@ -11,13 +11,13 @@ interface HaSwitchBarProps {
 }
 
 const HaSwitchBar: FC<HaSwitchBarProps> = ({ haSwitch }) => {
-    const [updateHaSwitch] = useUpdateHaSwitchMutation();
+    const [updateHaSwitch] = useUpdateSmartEntityMutation();
     const dispatch = useAppDispatch();
 
-    const toggle = (nextState: "On" | "Off") => async () => {
+    const toggle = (nextState: "on" | "off") => async () => {
         await updateHaSwitch({
             entityId: haSwitch.idx,
-            body: { state: nextState },
+            updateSmartEntityBody: { state: nextState },
         });
         dispatch(getSwitches());
     };
@@ -28,17 +28,17 @@ const HaSwitchBar: FC<HaSwitchBarProps> = ({ haSwitch }) => {
             leftButton={
                 <SwitchBarInnerButton
                     isReadOnly={false}
-                    clickAction={toggle("On")}
+                    clickAction={toggle("on")}
                     icon="radio_button_checked"
-                    isActive={haSwitch.status === "On"}
+                    isActive={haSwitch.status === "on"}
                 />
             }
             rightButton={
                 <SwitchBarInnerButton
                     isReadOnly={false}
-                    clickAction={toggle("Off")}
+                    clickAction={toggle("off")}
                     icon="radio_button_unchecked"
-                    isActive={haSwitch.status === "Off"}
+                    isActive={haSwitch.status === "off"}
                 />
             }
             icon={false}

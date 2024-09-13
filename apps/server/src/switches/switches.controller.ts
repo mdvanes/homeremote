@@ -2,13 +2,9 @@ import {
     DomoticzStatus,
     DomoticzType,
     GetHaStatesResponse,
-    GetSwitchesResponse,
     HomeRemoteHaSwitch,
     HomeRemoteSwitch,
-    State,
     SwitchesResponse,
-    UpdateHaSwitchArgs,
-    UpdateHaSwitchResponse,
 } from "@homeremote/types";
 import {
     Body,
@@ -132,13 +128,6 @@ interface UpdateSwitchMessage {
     type: string;
 }
 
-// const haEntityToSwitch = (haEntity: GetHaStatesResponse): Switch => ({
-//     ...haEntity,
-//     state: ["on", "off"].includes(haEntity.state)
-//         ? (haEntity.state as "on" | "off")
-//         : undefined,
-// });
-
 @Controller("api/switches")
 export class SwitchesController {
     private readonly logger: Logger;
@@ -222,59 +211,6 @@ export class SwitchesController {
             return [];
         }
     };
-
-    async fetchHa(path: string): Promise<unknown> {
-        const response = await fetch(`${this.haApiConfig.baseUrl}${path}`, {
-            headers: {
-                Authorization: `Bearer ${this.haApiConfig.token}`,
-            },
-        });
-        return response.json();
-    }
-
-    async fetchHaEntityState(entityId: string): Promise<GetHaStatesResponse> {
-        return this.fetchHa(`/api/states/${entityId}`);
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get("/ha")
-    async getSwitchesHa(
-        @Request() req: AuthenticatedRequest
-    ): Promise<GetSwitchesResponse> {
-        this.logger.verbose(
-            `[${req.user.name}] GET to /api/switches/ha for entityId ${this.haApiConfig.entityId}`
-        );
-
-        try {
-            const switchIds: GetHaStatesResponse = await this.fetchHa(
-                `/api/states/${this.haApiConfig.entityId}`
-            );
-            console.log("switchIds", switchIds);
-
-            if ("message" in switchIds && switchIds.message) {
-                throw new Error(switchIds.message);
-            }
-
-            if ("attributes" in switchIds) {
-                const allHaStates = (await this.fetchHa(
-                    `/api/states`
-                )) as State[];
-                const switchStates = allHaStates.filter((state) =>
-                    switchIds.attributes.entity_id.includes(state.entity_id)
-                );
-
-                return { switches: switchStates } as GetSwitchesResponse;
-            }
-
-            throw new Error("no attributes property");
-        } catch (err) {
-            this.logger.error(`[${req.user.name}] ${err}`);
-            throw new HttpException(
-                "failed to receive downstream data",
-                HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
-    }
 
     @UseGuards(JwtAuthGuard)
     @Get()
@@ -361,9 +297,9 @@ export class SwitchesController {
     @Post("/ha/:entityId")
     async updateHaSwitch(
         @Param("entityId") entityId: string,
-        @Body() args: UpdateHaSwitchArgs,
+        @Body() args: any,
         @Request() req: AuthenticatedRequest
-    ): Promise<UpdateHaSwitchResponse> {
+    ): Promise<any> {
         this.logger.verbose(
             `[${req.user.name}] Call to /switch/ha/${entityId} state: ${args.state}`
         );

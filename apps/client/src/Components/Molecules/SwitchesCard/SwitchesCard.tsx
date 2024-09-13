@@ -1,6 +1,6 @@
 import { List, Paper } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import { useGetSwitchesQuery } from "../../../Services/generated/switchesApi";
+import { useGetSmartEntitiesQuery } from "../../../Services/generated/smartEntitiesApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
@@ -17,15 +17,15 @@ export const SwitchesCard: FC = () => {
     const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
 
     const { data, error, isError, isFetching, isLoading, refetch } =
-        useGetSwitchesQuery(undefined, {
+        useGetSmartEntitiesQuery(undefined, {
             pollingInterval: isSkippingBecauseError
                 ? undefined
                 : UPDATE_INTERVAL_MS,
         });
 
-    const switches = (data?.switches ?? []).filter(isSwitch);
+    const switches = (data?.entities ?? []).filter(isSwitch);
 
-    const climateSensors = (data?.switches ?? [])
+    const climateSensors = (data?.entities ?? [])
         .filter(isClimateSensor)
         .toSorted(sortClimateSensors);
 
@@ -49,6 +49,7 @@ export const SwitchesCard: FC = () => {
             {switches.map((item) => (
                 <SwitchesListItem key={item.entity_id} item={item} />
             ))}
+            {/* TODO extract to own card */}
             <ClimateSensorsListItem sensors={climateSensors} />
         </List>
     );

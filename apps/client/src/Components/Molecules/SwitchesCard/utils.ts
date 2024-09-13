@@ -1,13 +1,13 @@
-import { Switch } from "../../../Services/generated/switchesApi";
+import { State } from "../../../Services/generated/smartEntitiesApi";
 
 // device_class is undefined for switches
-export const isSwitch = (s: Switch) =>
+export const isSwitch = (s: State) =>
     typeof s?.attributes?.device_class === "undefined";
 
-export const isClimateSensor = (s: Switch) =>
+export const isClimateSensor = (s: State) =>
     ["temperature", "humidity"].includes(s?.attributes?.device_class ?? "");
 
-export const sortClimateSensors = (a: Switch, b: Switch) => {
+export const sortClimateSensors = (a: State, b: State) => {
     const aName = a.attributes?.friendly_name ?? "";
     const bName = b.attributes?.friendly_name ?? "";
     const aClass = a.attributes?.device_class ?? "";
