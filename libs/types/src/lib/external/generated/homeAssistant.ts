@@ -225,6 +225,7 @@ export interface components {
             /** @example light.favorites */
             entity_id?: string;
         };
+        ServiceResponse: unknown[];
     };
     responses: never;
     parameters: never;
@@ -284,7 +285,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description HaStates */
+            /** @description State */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -331,13 +332,13 @@ export interface operations {
             };
         };
         responses: {
-            /** @description HaStates */
+            /** @description Update State Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["State"];
+                    "application/json": components["schemas"]["ServiceResponse"];
                 };
             };
             /** @description Bad request. */

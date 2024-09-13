@@ -1,5 +1,7 @@
 import {
     GetHaStatesResponse,
+    PostServicesDomainServiceBody,
+    PostServicesDomainServiceResponse,
     State,
     type SmartEntitiesTypes,
 } from "@homeremote/types";
@@ -67,26 +69,28 @@ export class SmartEntitiesController {
         );
 
         try {
-            const switchIds: GetHaStatesResponse = await this.fetchHa(
+            const listOfIdsResponse: GetHaStatesResponse = await this.fetchHa(
                 `/api/states/${this.haApiConfig.entityId}`
             );
-            console.log("switchIds", switchIds);
+            console.log("switchIds", listOfIdsResponse);
 
-            if ("message" in switchIds && switchIds.message) {
-                throw new Error(switchIds.message);
+            if ("message" in listOfIdsResponse && listOfIdsResponse.message) {
+                throw new Error(listOfIdsResponse.message);
             }
 
-            if ("attributes" in switchIds) {
+            if ("attributes" in listOfIdsResponse) {
                 const allHaStates = (await this.fetchHa(
                     `/api/states`
                 )) as State[];
-                const switchStates = allHaStates.filter((state) =>
-                    switchIds.attributes.entity_id.includes(state.entity_id)
+                const entities = allHaStates.filter((state) =>
+                    listOfIdsResponse.attributes.entity_id.includes(
+                        state.entity_id
+                    )
                 );
 
                 return {
-                    switches: switchStates,
-                } as SmartEntitiesTypes.GetSmartEntitiesResponse;
+                    entities,
+                };
             }
 
             throw new Error("no attributes property");
@@ -113,8 +117,8 @@ export class SmartEntitiesController {
         try {
             const [entityType] = entityId.split(".");
             const pathType = entityType === "light" ? "light" : "switch";
-            // TODO use helper and add Arg/Response types
-            await fetch(
+            const body: PostServicesDomainServiceBody = { entity_id: entityId };
+            const response = await fetch(
                 `${
                     this.haApiConfig.baseUrl
                 }/api/services/${pathType}/turn_${args.state.toLowerCase()}`,
@@ -123,9 +127,12 @@ export class SmartEntitiesController {
                     headers: {
                         Authorization: `Bearer ${this.haApiConfig.token}`,
                     },
-                    body: JSON.stringify({ entity_id: entityId }),
+                    body: JSON.stringify(body),
                 }
             );
+            const data: PostServicesDomainServiceResponse =
+                await response.json();
+            console.log(data);
             return "received";
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
