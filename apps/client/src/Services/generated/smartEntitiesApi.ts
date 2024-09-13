@@ -26,7 +26,7 @@ const injectedRtkApi = api
         }),
         overrideExisting: false,
     });
-export { injectedRtkApi as switchesApi };
+export { injectedRtkApi as smartEntitiesApi };
 export type GetSwitchesApiResponse =
     /** status 200 getSwitches */ GetSwitchesResponse;
 export type GetSwitchesApiArg = void;

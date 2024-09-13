@@ -7,10 +7,10 @@ apis:
         root: ./libs/types/definitions/internal/energyUsage.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/generated/energyUsage.ts
-    switches@v1:
-        root: ./libs/types/definitions/internal/switches.yml
+    smartEntities@v1:
+        root: ./libs/types/definitions/internal/smartEntities.yml
         x-openapi-ts:
-            output: ./libs/types/src/lib/generated/switches.ts
+            output: ./libs/types/src/lib/generated/smartEntities.ts
     homeAssistant@v1:
         root: ./libs/types/definitions/external/homeAssistant.yml
         x-openapi-ts:
