@@ -166,6 +166,18 @@ export interface components {
                  * @example 0
                  */
                 supported_features?: number;
+                /**
+                 * Format: nullable
+                 * @description Undefined for switches. Can also be e.g. `temperature`.
+                 */
+                device_class?: string;
+                /** @example measurement */
+                state_class?: string;
+                /**
+                 * Format: nullable
+                 * @example °C
+                 */
+                unit_of_measurement?: string;
             };
             /**
              * Format: date-time

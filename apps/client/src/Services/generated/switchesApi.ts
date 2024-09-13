@@ -53,6 +53,10 @@ export type Switch = {
         icon?: string;
         friendly_name?: string;
         supported_features?: number;
+        /** Undefined for switches. Can also be e.g. `temperature`. */
+        device_class?: string;
+        state_class?: string;
+        unit_of_measurement?: string;
     };
 };
 export type GetSwitchesResponse = {

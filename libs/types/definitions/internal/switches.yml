@@ -10,8 +10,8 @@ servers:
     - url: https://example.com
       description: Generated server url
 tags:
-  - name: switches
-    description: Switch state changed
+    - name: switches
+      description: Switch state changed
 paths:
     /api/switches/ha:
         get:
@@ -48,7 +48,7 @@ paths:
                   schema:
                       type: string
             tags:
-                - switches                      
+                - switches
             requestBody:
                 required: true
                 content:
@@ -148,6 +148,17 @@ components:
                         supported_features:
                             type: integer
                             format: int32
-                            example: 0                    
+                            example: 0
+                        device_class:
+                            description: "Undefined for switches. Can also be e.g. `temperature`."
+                            type: string
+                            format: nullable
+                        state_class:
+                            type: string
+                            example: measurement
+                        unit_of_measurement:
+                            type: string
+                            format: nullable
+                            example: "°C"
         UpdateHaSwitchResponse:
             type: string

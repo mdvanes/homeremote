@@ -193,6 +193,17 @@ components:
                             type: integer
                             format: int32
                             example: 0
+                        device_class:
+                            description: "Undefined for switches. Can also be e.g. `temperature`."
+                            type: string
+                            format: nullable
+                        state_class:
+                            type: string
+                            example: measurement
+                        unit_of_measurement:
+                            type: string
+                            format: nullable
+                            example: "°C"
                 last_changed:
                     type: string
                     format: date-time
