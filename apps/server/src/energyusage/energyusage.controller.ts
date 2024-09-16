@@ -258,23 +258,7 @@ const getSlotFromEntry = (timeslot: number, entry: SensorEntry) => {
 };
 
 const entryToTimeslotStart = (timeslot: number, entry: SensorEntry) => {
-    // const timestampStr = entry.last_changed;
-    // const timeslotStart = new Date(timestampStr.slice(0, 10));
-
-    // const entryTimestampMs = new Date(entry.last_changed).getTime();
-
-    // const entrySlotNr = entryTimestampMs % DAY_IN_MS;
-    // const entrySlotStart = entrySlotNr * DAY_IN_MS;
-
     const slot = getSlotFromEntry(timeslot, entry);
-    // const entrySlotEnd = entrySlotStart + DAY_IN_MS;
-    // console.log(
-    //     "n1",
-    //     entryTimestampMs,
-    //     entrySlotNr,
-    //     entrySlotStart,
-    //     entrySlotEnd
-    // );
 
     return {
         ...entry,
@@ -289,47 +273,20 @@ const avgString = (list: string[]) => {
     return sum / list.length;
 };
 
-// timeslot is ms from 00:00
+// timeslot is ms, the first timeslot of each day starts at 00:00
 const reduceSensorEntriesByTimeslot =
     (timeslot: number) =>
     (acc: SensorEntry[], next: SensorEntry): SensorEntry[] => {
         const last = acc.at(-1);
         const lastTimestampStr = last?.last_changed;
-        // console.log(">", acc, next);
 
         if (!lastTimestampStr) {
             return [entryToTimeslotStart(timeslot, next)];
         }
 
-        // const timeslotStartMs = new Date(
-        //     lastTimestampStr.slice(0, 10)
-        // ).getTime();
-
-        // const timeslotEndMs = timeslotStartMs + timeslot;
-
-        // const nextTimestampMs = new Date(
-        //     next.last_changed
-        // ).getTime();
-
-        // const nextSlotNr = nextTimestampMs % DAY_IN_MS;
-        // const nextSlotStart = nextSlotNr * DAY_IN_MS;
-        // const nextSlotEnd = nextSlotStart + DAY_IN_MS;
         const lastSlot = getSlotFromEntry(timeslot, last);
         const nextSlot = getSlotFromEntry(timeslot, next);
-        console.log(
-            "n1",
-            nextSlot.entryTimestampMs,
-            // nextSlotNr,
-            nextSlot.start,
-            nextSlot.end
-        );
 
-        // console.log(
-        //     ">>",
-        //     timeslotStartMs,
-        //     timeslotEndMs,
-        //     nextTimestampMs
-        // );
         if (nextSlot.entryTimestampMs <= lastSlot.end) {
             const head = acc.slice(0, -1);
             const states = [...(last.states ?? [last.state]), next.state];
@@ -453,16 +410,7 @@ export class EnergyUsageController {
             const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
             const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
 
-            // const foo = mockSensorEntries.reduce(
-            //     reduceSensorEntriesByTimeslot(DAY_IN_MS),
-            //     []
-            // );
-            // console.log(
-            //     "reduceSensorEntriesByTimeslot:",
-            //     JSON.stringify(foo, null, 2)
-            // );
-
-            const result1 = result.map((sensorEntries) =>
+            const reduced = result.map((sensorEntries) =>
                 // Reduce by timeslot, timeslot is SIX_HOURS_IN_MS, from 00:00
                 sensorEntries.reduce(
                     reduceSensorEntriesByTimeslot(SIX_HOURS_IN_MS),
@@ -470,10 +418,7 @@ export class EnergyUsageController {
                 )
             );
 
-            return result1;
-            // console.log("result1", result1);
-
-            // return [];
+            return reduced;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(
