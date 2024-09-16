@@ -2,8 +2,7 @@ import SpeedIcon from "@mui/icons-material/Speed";
 import {
     Card,
     CardContent,
-    IconButton,
-    Stack,
+    Fab,
     Table,
     TableBody,
     TableCell,
@@ -67,48 +66,56 @@ export const SpeedTestCard: FC = () => {
 
     return (
         <Card>
-            <CardContent>
-                <Stack direction="column" alignItems="center" gap={2}>
-                    <IconButton onClick={fetchSpeedTestAndSet}>
-                        <SpeedIcon />
-                    </IconButton>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>down</TableCell>
-                                <TableCell>up</TableCell>
-                                <TableCell>ping</TableCell>
-                                <TableCell>timestamp</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            <TableRow
-                                hover
-                                onClick={() => window.open(BASE_URL)}
-                                style={{ cursor: "pointer" }}
-                            >
-                                <TableCell>
-                                    {Math.round(speedTestResult.data.download)}
-                                    Mbps
-                                </TableCell>
-                                <TableCell>
-                                    {Math.round(speedTestResult.data.upload)}
-                                    Mbps
-                                </TableCell>
-                                <TableCell>
-                                    {Math.round(speedTestResult.data.ping)}ms
-                                </TableCell>
-                                <TableCell>
-                                    {FORMAT_DATE.format(
-                                        new Date(
-                                            speedTestResult.data.updated_at
-                                        )
-                                    )}
-                                </TableCell>
-                            </TableRow>
-                        </TableBody>
-                    </Table>
-                </Stack>
+            <CardContent sx={{ position: "relative" }}>
+                <Table sx={{ marginBottom: 3 }}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>down</TableCell>
+                            <TableCell>up</TableCell>
+                            <TableCell>ping</TableCell>
+                            <TableCell>timestamp</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow
+                            hover
+                            onClick={() => window.open(BASE_URL)}
+                            title="Open speedtest-tracker"
+                            style={{ cursor: "pointer" }}
+                        >
+                            <TableCell>
+                                {Math.round(speedTestResult.data.download)}
+                                Mbps
+                            </TableCell>
+                            <TableCell>
+                                {Math.round(speedTestResult.data.upload)}
+                                Mbps
+                            </TableCell>
+                            <TableCell>
+                                {Math.round(speedTestResult.data.ping)}ms
+                            </TableCell>
+                            <TableCell>
+                                {FORMAT_DATE.format(
+                                    new Date(speedTestResult.data.updated_at)
+                                )}
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+                <Fab
+                    color="primary"
+                    aria-label="speed"
+                    size="small"
+                    onClick={fetchSpeedTestAndSet}
+                    title="Get latest speedtest result"
+                    sx={{
+                        position: "absolute",
+                        bottom: 16,
+                        right: 16,
+                    }}
+                >
+                    <SpeedIcon />
+                </Fab>
             </CardContent>
         </Card>
     );
