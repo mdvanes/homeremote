@@ -243,32 +243,108 @@ const mockSensorEntries: GetHaSensorHistoryResponse[0] = [
 ];
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
+const SIX_HOURS_IN_MS = DAY_IN_MS / 4;
 
 type SensorEntry = GetHaSensorHistoryResponse[0][0] & { states?: string[] };
 
-// // timeslot is ms from 00:00
-// const reduceSensorEntriesByTimeslot =
-//     (timeslot: number) =>
-//     (acc: SensorEntry[], next: SensorEntry): SensorEntry[] => {
-//         console.log(acc, next);
-//         const lastTimestamp = acc.at(-1)?.last_changed;
-//         if (!lastTimestamp) {
-//             return [next];
-//         }
-//         return [];
-//     };
+const getSlotFromEntry = (timeslot: number, entry: SensorEntry) => {
+    const entryTimestampMs = new Date(entry.last_changed).getTime();
 
-// const foo = mockSensorEntries.reduce(
-//     (acc: SensorEntry[], next: SensorEntry): SensorEntry[] => {
-//         console.log(acc, next);
-//         const lastTimestamp = acc.at(-1)?.last_changed;
-//         if (!lastTimestamp) {
-//             return [next];
-//         }
-//         return [];
-//     },
-//     []
-// );
+    const entrySlotNr = Math.floor(entryTimestampMs / timeslot);
+    const start = entrySlotNr * timeslot;
+    const end = start + timeslot;
+
+    return { entryTimestampMs, start, end };
+};
+
+const entryToTimeslotStart = (timeslot: number, entry: SensorEntry) => {
+    // const timestampStr = entry.last_changed;
+    // const timeslotStart = new Date(timestampStr.slice(0, 10));
+
+    // const entryTimestampMs = new Date(entry.last_changed).getTime();
+
+    // const entrySlotNr = entryTimestampMs % DAY_IN_MS;
+    // const entrySlotStart = entrySlotNr * DAY_IN_MS;
+
+    const slot = getSlotFromEntry(timeslot, entry);
+    // const entrySlotEnd = entrySlotStart + DAY_IN_MS;
+    // console.log(
+    //     "n1",
+    //     entryTimestampMs,
+    //     entrySlotNr,
+    //     entrySlotStart,
+    //     entrySlotEnd
+    // );
+
+    return {
+        ...entry,
+        last_changed: new Date(slot.start).toISOString(),
+    };
+};
+
+const avgString = (list: string[]) => {
+    const sum: number = list.reduce((acc: number, next: string) => {
+        return acc + parseFloat(next);
+    }, 0);
+    return sum / list.length;
+};
+
+// timeslot is ms from 00:00
+const reduceSensorEntriesByTimeslot =
+    (timeslot: number) =>
+    (acc: SensorEntry[], next: SensorEntry): SensorEntry[] => {
+        const last = acc.at(-1);
+        const lastTimestampStr = last?.last_changed;
+        // console.log(">", acc, next);
+
+        if (!lastTimestampStr) {
+            return [entryToTimeslotStart(timeslot, next)];
+        }
+
+        // const timeslotStartMs = new Date(
+        //     lastTimestampStr.slice(0, 10)
+        // ).getTime();
+
+        // const timeslotEndMs = timeslotStartMs + timeslot;
+
+        // const nextTimestampMs = new Date(
+        //     next.last_changed
+        // ).getTime();
+
+        // const nextSlotNr = nextTimestampMs % DAY_IN_MS;
+        // const nextSlotStart = nextSlotNr * DAY_IN_MS;
+        // const nextSlotEnd = nextSlotStart + DAY_IN_MS;
+        const lastSlot = getSlotFromEntry(timeslot, last);
+        const nextSlot = getSlotFromEntry(timeslot, next);
+        console.log(
+            "n1",
+            nextSlot.entryTimestampMs,
+            // nextSlotNr,
+            nextSlot.start,
+            nextSlot.end
+        );
+
+        // console.log(
+        //     ">>",
+        //     timeslotStartMs,
+        //     timeslotEndMs,
+        //     nextTimestampMs
+        // );
+        if (nextSlot.entryTimestampMs <= lastSlot.end) {
+            const head = acc.slice(0, -1);
+            const states = [...(last.states ?? [last.state]), next.state];
+            return [
+                ...head,
+                {
+                    ...last,
+                    states,
+                    state: avgString(states).toString(),
+                },
+            ];
+        }
+
+        return [...acc, entryToTimeslotStart(timeslot, next)];
+    };
 
 @Controller("api/energyusage")
 export class EnergyUsageController {
@@ -374,131 +450,30 @@ export class EnergyUsageController {
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 
-            // const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
-            // const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
+            const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
+            const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
 
-            // // timeslot is 24 hours, from 00:00
-
-            // const result1 = result.map((sensor) =>
-            //     // Reduce by timeslot
-            //     sensor.map((entry) => entry)
+            // const foo = mockSensorEntries.reduce(
+            //     reduceSensorEntriesByTimeslot(DAY_IN_MS),
+            //     []
+            // );
+            // console.log(
+            //     "reduceSensorEntriesByTimeslot:",
+            //     JSON.stringify(foo, null, 2)
             // );
 
-            const getSlotFromEntry = (timeslot: number, entry: SensorEntry) => {
-                const entryTimestampMs = new Date(entry.last_changed).getTime();
-
-                const entrySlotNr = Math.floor(entryTimestampMs / timeslot);
-                const start = entrySlotNr * timeslot;
-                const end = start + timeslot;
-
-                return { entryTimestampMs, start, end };
-            };
-
-            const entryToTimeslotStart = (
-                timeslot: number,
-                entry: SensorEntry
-            ) => {
-                // const timestampStr = entry.last_changed;
-                // const timeslotStart = new Date(timestampStr.slice(0, 10));
-
-                // const entryTimestampMs = new Date(entry.last_changed).getTime();
-
-                // const entrySlotNr = entryTimestampMs % DAY_IN_MS;
-                // const entrySlotStart = entrySlotNr * DAY_IN_MS;
-
-                const slot = getSlotFromEntry(timeslot, entry);
-                // const entrySlotEnd = entrySlotStart + DAY_IN_MS;
-                // console.log(
-                //     "n1",
-                //     entryTimestampMs,
-                //     entrySlotNr,
-                //     entrySlotStart,
-                //     entrySlotEnd
-                // );
-
-                return {
-                    ...entry,
-                    last_changed: new Date(slot.start).toISOString(),
-                };
-            };
-
-            const avgString = (list: string[]) => {
-                const sum: number = list.reduce((acc: number, next: string) => {
-                    return acc + parseFloat(next);
-                }, 0);
-                return sum / list.length;
-            };
-
-            // timeslot is ms from 00:00
-            const reduceSensorEntriesByTimeslot =
-                (timeslot: number) =>
-                (acc: SensorEntry[], next: SensorEntry): SensorEntry[] => {
-                    const last = acc.at(-1);
-                    const lastTimestampStr = last?.last_changed;
-                    // console.log(">", acc, next);
-
-                    if (!lastTimestampStr) {
-                        return [entryToTimeslotStart(timeslot, next)];
-                    }
-
-                    // const timeslotStartMs = new Date(
-                    //     lastTimestampStr.slice(0, 10)
-                    // ).getTime();
-
-                    // const timeslotEndMs = timeslotStartMs + timeslot;
-
-                    // const nextTimestampMs = new Date(
-                    //     next.last_changed
-                    // ).getTime();
-
-                    // const nextSlotNr = nextTimestampMs % DAY_IN_MS;
-                    // const nextSlotStart = nextSlotNr * DAY_IN_MS;
-                    // const nextSlotEnd = nextSlotStart + DAY_IN_MS;
-                    const lastSlot = getSlotFromEntry(timeslot, last);
-                    const nextSlot = getSlotFromEntry(timeslot, next);
-                    console.log(
-                        "n1",
-                        nextSlot.entryTimestampMs,
-                        // nextSlotNr,
-                        nextSlot.start,
-                        nextSlot.end
-                    );
-
-                    // console.log(
-                    //     ">>",
-                    //     timeslotStartMs,
-                    //     timeslotEndMs,
-                    //     nextTimestampMs
-                    // );
-                    if (nextSlot.entryTimestampMs <= lastSlot.end) {
-                        const head = acc.slice(0, -1);
-                        const states = [
-                            ...(last.states ?? [last.state]),
-                            next.state,
-                        ];
-                        return [
-                            ...head,
-                            {
-                                ...last,
-                                states,
-                                state: avgString(states).toString(),
-                            },
-                        ];
-                    }
-
-                    return [...acc, entryToTimeslotStart(timeslot, next)];
-                };
-
-            const foo = mockSensorEntries.reduce(
-                reduceSensorEntriesByTimeslot(DAY_IN_MS / 2),
-                []
-            );
-            console.log(
-                "reduceSensorEntriesByTimeslot:",
-                JSON.stringify(foo, null, 2)
+            const result1 = result.map((sensorEntries) =>
+                // Reduce by timeslot, timeslot is SIX_HOURS_IN_MS, from 00:00
+                sensorEntries.reduce(
+                    reduceSensorEntriesByTimeslot(SIX_HOURS_IN_MS),
+                    []
+                )
             );
 
-            return [];
+            return result1;
+            // console.log("result1", result1);
+
+            // return [];
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(
