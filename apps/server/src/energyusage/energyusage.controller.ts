@@ -203,6 +203,73 @@ const exportJsonToRow =
         }
     };
 
+const mockSensorEntries: GetHaSensorHistoryResponse[0] = [
+    {
+        entity_id: "sensor.temperatures",
+        attributes: { device_class: "temperature" },
+        last_changed: "2024-09-06T03:10:43.172659+00:00",
+        state: "20.0",
+    },
+    {
+        entity_id: "sensor.temperatures",
+        attributes: { device_class: "temperature" },
+        last_changed: "2024-09-06T04:10:43.314813+00:00",
+        state: "21.0",
+    },
+    {
+        entity_id: "sensor.temperatures",
+        attributes: { device_class: "temperature" },
+        last_changed: "2024-09-07T03:10:43.172659+00:00",
+        state: "22.0",
+    },
+    {
+        entity_id: "sensor.temperatures",
+        attributes: { device_class: "temperature" },
+        last_changed: "2024-09-07T04:10:43.314813+00:00",
+        state: "24.0",
+    },
+    {
+        entity_id: "sensor.temperatures",
+        attributes: { device_class: "temperature" },
+        last_changed: "2024-09-07T15:10:43.314813+00:00",
+        state: "26.0",
+    },
+    {
+        entity_id: "sensor.temperatures",
+        attributes: { device_class: "temperature" },
+        last_changed: "2024-09-07T16:10:43.314813+00:00",
+        state: "28.0",
+    },
+];
+
+const DAY_IN_MS = 1000 * 60 * 60 * 24;
+
+type SensorEntry = GetHaSensorHistoryResponse[0][0] & { states?: string[] };
+
+// // timeslot is ms from 00:00
+// const reduceSensorEntriesByTimeslot =
+//     (timeslot: number) =>
+//     (acc: SensorEntry[], next: SensorEntry): SensorEntry[] => {
+//         console.log(acc, next);
+//         const lastTimestamp = acc.at(-1)?.last_changed;
+//         if (!lastTimestamp) {
+//             return [next];
+//         }
+//         return [];
+//     };
+
+// const foo = mockSensorEntries.reduce(
+//     (acc: SensorEntry[], next: SensorEntry): SensorEntry[] => {
+//         console.log(acc, next);
+//         const lastTimestamp = acc.at(-1)?.last_changed;
+//         if (!lastTimestamp) {
+//             return [next];
+//         }
+//         return [];
+//     },
+//     []
+// );
+
 @Controller("api/energyusage")
 export class EnergyUsageController {
     private readonly logger: Logger;
@@ -307,8 +374,88 @@ export class EnergyUsageController {
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 
-            const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
-            return this.fetchHa<GetHaSensorHistoryResponse>(url);
+            // const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
+            // const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
+
+            // // timeslot is 24 hours, from 00:00
+
+            // const result1 = result.map((sensor) =>
+            //     // Reduce by timeslot
+            //     sensor.map((entry) => entry)
+            // );
+
+            const entryToTimeslotStart = (entry: SensorEntry) => {
+                const timestampStr = entry.last_changed;
+                const timeslotStart = new Date(timestampStr.slice(0, 10));
+                return {
+                    ...entry,
+                    last_changed: timeslotStart.toISOString(),
+                };
+            };
+
+            const avgString = (list: string[]) => {
+                const sum: number = list.reduce((acc: number, next: string) => {
+                    return acc + parseFloat(next);
+                }, 0);
+                return sum / list.length;
+            };
+
+            // timeslot is ms from 00:00
+            const reduceSensorEntriesByTimeslot =
+                (timeslot: number) =>
+                (acc: SensorEntry[], next: SensorEntry): SensorEntry[] => {
+                    const last = acc.at(-1);
+                    const lastTimestampStr = last?.last_changed;
+                    // console.log(">", acc, next);
+
+                    if (!lastTimestampStr) {
+                        return [entryToTimeslotStart(next)];
+                    }
+                    const timeslotStartMs = new Date(
+                        lastTimestampStr.slice(0, 10)
+                    ).getTime();
+
+                    const timeslotEndMs = timeslotStartMs + timeslot;
+
+                    const nextTimestampMs = new Date(
+                        next.last_changed
+                    ).getTime();
+
+                    // console.log(
+                    //     ">>",
+                    //     timeslotStartMs,
+                    //     timeslotEndMs,
+                    //     nextTimestampMs
+                    // );
+                    if (nextTimestampMs <= timeslotEndMs) {
+                        const head = acc.slice(0, -1);
+                        const states = [
+                            ...(last.states ?? [last.state]),
+                            next.state,
+                        ];
+                        return [
+                            ...head,
+                            {
+                                ...last,
+                                states,
+                                state: avgString(states).toString(),
+                            },
+                        ];
+                    }
+
+                    return [...acc, entryToTimeslotStart(next)];
+                };
+
+            const foo = mockSensorEntries.reduce(
+                reduceSensorEntriesByTimeslot(DAY_IN_MS),
+                []
+            );
+            console.log(
+                "reduceSensorEntriesByTimeslot:",
+                JSON.stringify(foo, null, 2)
+            );
+
+            return [];
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(
