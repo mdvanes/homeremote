@@ -51,7 +51,11 @@ export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
             </SwitchesListItemButton>
             <ListItemText
                 sx={{ flex: 1, paddingX: 1 }}
-                primary={item.attributes?.friendly_name}
+                primary={
+                    (item.attributes?.friendly_name ?? "").length > 0
+                        ? item.attributes?.friendly_name
+                        : item.entity_id
+                }
             />
             <SwitchesListItemButton
                 onClick={setState("off")}

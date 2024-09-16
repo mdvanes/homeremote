@@ -68,7 +68,7 @@ export const SpeedTestCard: FC = () => {
     return (
         <Card>
             <CardContent>
-                <Stack direction="row" alignItems="center" gap={4}>
+                <Stack direction="column" alignItems="center" gap={2}>
                     <IconButton onClick={fetchSpeedTestAndSet}>
                         <SpeedIcon />
                     </IconButton>
@@ -85,15 +85,18 @@ export const SpeedTestCard: FC = () => {
                             <TableRow
                                 hover
                                 onClick={() => window.open(BASE_URL)}
+                                style={{ cursor: "pointer" }}
                             >
                                 <TableCell>
-                                    {speedTestResult.data.download}
+                                    {Math.round(speedTestResult.data.download)}
+                                    Mbps
                                 </TableCell>
                                 <TableCell>
-                                    {speedTestResult.data.upload}
+                                    {Math.round(speedTestResult.data.upload)}
+                                    Mbps
                                 </TableCell>
                                 <TableCell>
-                                    {speedTestResult.data.ping}
+                                    {Math.round(speedTestResult.data.ping)}ms
                                 </TableCell>
                                 <TableCell>
                                     {FORMAT_DATE.format(

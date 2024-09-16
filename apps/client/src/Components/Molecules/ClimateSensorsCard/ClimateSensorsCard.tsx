@@ -30,7 +30,7 @@ export const ClimateSensorsCard: FC = () => {
         if (isError && error) {
             setIsSkippingBecauseError(true);
             dispatch(
-                logError(`SwitchesCard failed: ${getErrorMessage(error)}`)
+                logError(`ClimateSensorsCard failed: ${getErrorMessage(error)}`)
             );
         }
     }, [dispatch, error, isError]);
@@ -40,13 +40,9 @@ export const ClimateSensorsCard: FC = () => {
             <LoadingDot isLoading={isLoading || isFetching} />
             {isError && (
                 <ErrorRetry retry={() => refetch()}>
-                    SwitchesCard could not load
+                    ClimateSensorsCard could not load
                 </ErrorRetry>
             )}
-            {/* {switches.map((item) => (
-                <SwitchesListItem key={item.entity_id} item={item} />
-            ))} */}
-            {/* TODO extract to own card _ */}
             <ClimateSensorsListItem sensors={climateSensors} />
         </List>
     );
