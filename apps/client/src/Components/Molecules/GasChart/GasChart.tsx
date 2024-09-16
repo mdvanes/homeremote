@@ -18,8 +18,72 @@ import LoadingDot from "../LoadingDot/LoadingDot";
 
 const temperatureLineColors = ["#66bb6a", "#ff9100"];
 
-const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
+const GasTemperaturesChart: FC = () => {
     const mode: "day" | "month" = "month" as "day" | "month";
+
+    // TODO retry? see homesecApi.ts
+    const {
+        data: gasTemperatureResponse,
+        error,
+        isLoading,
+        isFetching,
+        refetch,
+    } = useGetGasTemperaturesQuery();
+
+    if (error || !gasTemperatureResponse) {
+        return (
+            <ErrorRetry retry={() => refetch()}>
+                GasChart: {getErrorMessage(error ?? Error("empty response"))}
+            </ErrorRetry>
+        );
+    }
+
+    const sensors =
+        gasTemperatureResponse?.flatMap((sensor) => sensor[0]) ?? [];
+
+    const entries =
+        gasTemperatureResponse?.flatMap((sensor) =>
+            sensor.map((item) => ({
+                time: new Date(item?.last_changed ?? 0).getTime(),
+                [`${item.attributes?.friendly_name}`]: item.state,
+            }))
+        ) ?? [];
+
+    const lines = sensors.slice(0, 2).map((sensor, i) => ({
+        dataKey: sensor?.attributes?.friendly_name,
+        stroke: temperatureLineColors[i],
+        unit: "°C",
+    }));
+
+    return (
+        <EnergyChart
+            data={entries}
+            config={{
+                lines,
+                bars: [
+                    {
+                        dataKey: sensors?.[2]?.attributes?.friendly_name ?? "",
+                        fill: "#66bb6a",
+                        unit: "m³",
+                    },
+                ],
+                leftYAxis: {
+                    unit: "m³",
+                },
+                rightYAxis: {
+                    unit: "°",
+                },
+                tickCount: mode === "day" ? 24 : 30,
+                axisDateTimeFormat:
+                    mode === "day" ? undefined : axisDateTimeFormatDay,
+            }}
+            isLoading={isLoading || isFetching}
+        />
+    );
+};
+
+// TODO replace old GasChart by new EnergyChart. Need to fix displaying of gas usage first.
+const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     const {
         data: gasUsageResponse,
         isLoading,
@@ -27,8 +91,6 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         error,
         refetch,
     } = useGetGasUsageQuery(undefined);
-
-    const { data: gasTemperatureResponse } = useGetGasTemperaturesQuery();
 
     if (error || !gasUsageResponse) {
         return (
@@ -50,23 +112,6 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
             />
         )
     );
-
-    const sensors =
-        gasTemperatureResponse?.flatMap((sensor) => sensor[0]) ?? [];
-
-    const entries =
-        gasTemperatureResponse?.flatMap((sensor) =>
-            sensor.map((item) => ({
-                time: new Date(item?.last_changed ?? 0).getTime(),
-                [`${item.attributes?.friendly_name}`]: item.state,
-            }))
-        ) ?? [];
-
-    const lines = sensors.slice(0, 2).map((sensor, i) => ({
-        dataKey: sensor?.attributes?.friendly_name,
-        stroke: temperatureLineColors[i],
-        unit: "°C",
-    }));
 
     const oldChart = (
         <Card>
@@ -165,33 +210,7 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     return (
         <>
             {oldChart}
-            {isBig && (
-                <EnergyChart
-                    data={entries}
-                    config={{
-                        lines,
-                        bars: [
-                            {
-                                dataKey:
-                                    sensors?.[2]?.attributes?.friendly_name ??
-                                    "",
-                                fill: "#66bb6a",
-                                unit: "m³",
-                            },
-                        ],
-                        leftYAxis: {
-                            unit: "m³",
-                        },
-                        rightYAxis: {
-                            unit: "°",
-                        },
-                        tickCount: mode === "day" ? 24 : 30,
-                        axisDateTimeFormat:
-                            mode === "day" ? undefined : axisDateTimeFormatDay,
-                    }}
-                    isLoading={isLoading || isFetching}
-                />
-            )}
+            {isBig && <GasTemperaturesChart />}
         </>
     );
 };

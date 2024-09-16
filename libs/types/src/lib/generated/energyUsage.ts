@@ -40,6 +40,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/energyusage/gas-temperature": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get gas and temperatures
+         * @description Get gas and temperatures
+         */
+        get: operations["getGasTemperatures"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/energyusage/water": {
         parameters: {
             query?: never;
@@ -109,6 +129,45 @@ export interface components {
             }[];
         }[];
         GetTemperaturesResponse: {
+            /** @example sensor.tz3000_amqudjr0_ts0201_temperature */
+            entity_id?: string;
+            /** @example 17.7 */
+            state?: string;
+            attributes?: {
+                /** @example measurement */
+                state_class?: string;
+                /** @example °C */
+                unit_of_measurement?: string;
+                /** @example temperature */
+                device_class?: string;
+                /** @example Woox TempHumid 1 Temperature */
+                friendly_name?: string;
+            };
+            /**
+             * Format: date-time
+             * @example 2024-05-05T00:00:00+00:00
+             */
+            last_changed?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-05T00:00:00+00:00
+             */
+            last_reported?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-05T00:00:00+00:00
+             */
+            last_updated?: string;
+            context?: {
+                /** @example 01HWQC2MBD01BVZJP660G9JKXA */
+                id?: string;
+                /** Format: nullable */
+                parent_id?: string;
+                /** Format: nullable */
+                user_id?: string;
+            };
+        }[][];
+        GetGasTemperaturesResponse: {
             /** @example sensor.tz3000_amqudjr0_ts0201_temperature */
             entity_id?: string;
             /** @example 17.7 */
@@ -254,6 +313,44 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetTemperaturesResponse"];
+                };
+            };
+            /** @description Bad request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getGasTemperatures: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GasTemperatures */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetGasTemperaturesResponse"];
                 };
             };
             /** @description Bad request. */

@@ -3,7 +3,11 @@ apis:
         root: ./libs/types/definitions/external/domoticz.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/external/generated/domoticz.ts
-    external@v1:
+    homeAssistant@v1:
+        root: ./libs/types/definitions/external/homeAssistant.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/homeAssistant.ts
+    energyUsage@v1:
         root: ./libs/types/definitions/internal/energyUsage.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/generated/energyUsage.ts
@@ -11,7 +15,3 @@ apis:
         root: ./libs/types/definitions/internal/smartEntities.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/generated/smartEntities.ts
-    homeAssistant@v1:
-        root: ./libs/types/definitions/external/homeAssistant.yml
-        x-openapi-ts:
-            output: ./libs/types/src/lib/external/generated/homeAssistant.ts

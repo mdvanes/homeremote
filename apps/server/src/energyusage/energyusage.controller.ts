@@ -249,6 +249,7 @@ export class EnergyUsageController {
         };
     }
 
+    // @deprecated use fetchHa
     getAPI(sensorConfig: SensorConfig) {
         return `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=${sensorConfig.type}&idx=${sensorConfig.idx}&range=month`;
     }
@@ -281,6 +282,15 @@ export class EnergyUsageController {
         return firstHaTemperatureResponse;
     };
 
+    async fetchHa<T>(path: string): Promise<T> {
+        const response = await fetch(`${this.haApiConfig.baseUrl}${path}`, {
+            headers: {
+                Authorization: `Bearer ${this.haApiConfig.token}`,
+            },
+        });
+        return response.json() as T;
+    }
+
     /* Only uses Home Assistant API */
     @UseGuards(JwtAuthGuard)
     @Get("/gas-temperature")
@@ -297,15 +307,8 @@ export class EnergyUsageController {
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 
-            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
-
-            const result = await got(url, {
-                headers: {
-                    Authorization: `Bearer ${this.haApiConfig.token}`,
-                },
-            }).json<GetHaSensorHistoryResponse>();
-
-            return result;
+            const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
+            return this.fetchHa<GetHaSensorHistoryResponse>(url);
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

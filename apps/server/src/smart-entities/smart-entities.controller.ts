@@ -44,19 +44,21 @@ export class SmartEntitiesController {
         };
     }
 
-    async fetchHa(path: string): Promise<unknown> {
+    async fetchHa<T>(path: string): Promise<T> {
         const response = await fetch(`${this.haApiConfig.baseUrl}${path}`, {
             headers: {
                 Authorization: `Bearer ${this.haApiConfig.token}`,
             },
         });
-        return response.json();
+        return response.json() as T;
     }
 
     async fetchHaEntityState(
         entityId: string
     ): Promise<SmartEntitiesTypes.GetSmartEntitiesResponse> {
-        return this.fetchHa(`/api/states/${entityId}`);
+        return this.fetchHa<SmartEntitiesTypes.GetSmartEntitiesResponse>(
+            `/api/states/${entityId}`
+        );
     }
 
     @UseGuards(JwtAuthGuard)
@@ -69,19 +71,16 @@ export class SmartEntitiesController {
         );
 
         try {
-            const listOfIdsResponse: GetHaStatesResponse = await this.fetchHa(
+            const listOfIdsResponse = await this.fetchHa<GetHaStatesResponse>(
                 `/api/states/${this.haApiConfig.entityId}`
             );
-            console.log("switchIds", listOfIdsResponse);
 
             if ("message" in listOfIdsResponse && listOfIdsResponse.message) {
                 throw new Error(listOfIdsResponse.message);
             }
 
             if ("attributes" in listOfIdsResponse) {
-                const allHaStates = (await this.fetchHa(
-                    `/api/states`
-                )) as State[];
+                const allHaStates = await this.fetchHa<State[]>(`/api/states`);
                 const entities = allHaStates.filter((state) =>
                     listOfIdsResponse.attributes.entity_id.includes(
                         state.entity_id
@@ -130,9 +129,7 @@ export class SmartEntitiesController {
                     body: JSON.stringify(body),
                 }
             );
-            const data: PostServicesDomainServiceResponse =
-                await response.json();
-            console.log(data);
+            (await response.json()) as PostServicesDomainServiceResponse;
             return "received";
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);

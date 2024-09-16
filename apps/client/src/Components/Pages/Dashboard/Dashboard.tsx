@@ -52,7 +52,7 @@ const Dashboard: FC = () => {
                 <GasChart />
                 <HomeSec />
                 <UrlToMusic />
-                <SpeedTestCard />
+
                 <LogCard />
             </Grid>
             <Grid item xs={12} md>
@@ -63,6 +63,7 @@ const Dashboard: FC = () => {
                 ) : undefined}
                 <CarTabs />
                 <DockerStackListCard />
+                <SpeedTestCard />
                 <IconButton
                     color="primary"
                     onClick={() => {
