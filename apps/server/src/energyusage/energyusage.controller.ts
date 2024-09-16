@@ -384,12 +384,41 @@ export class EnergyUsageController {
             //     sensor.map((entry) => entry)
             // );
 
-            const entryToTimeslotStart = (entry: SensorEntry) => {
-                const timestampStr = entry.last_changed;
-                const timeslotStart = new Date(timestampStr.slice(0, 10));
+            const getSlotFromEntry = (timeslot: number, entry: SensorEntry) => {
+                const entryTimestampMs = new Date(entry.last_changed).getTime();
+
+                const entrySlotNr = Math.floor(entryTimestampMs / timeslot);
+                const start = entrySlotNr * timeslot;
+                const end = start + timeslot;
+
+                return { entryTimestampMs, start, end };
+            };
+
+            const entryToTimeslotStart = (
+                timeslot: number,
+                entry: SensorEntry
+            ) => {
+                // const timestampStr = entry.last_changed;
+                // const timeslotStart = new Date(timestampStr.slice(0, 10));
+
+                // const entryTimestampMs = new Date(entry.last_changed).getTime();
+
+                // const entrySlotNr = entryTimestampMs % DAY_IN_MS;
+                // const entrySlotStart = entrySlotNr * DAY_IN_MS;
+
+                const slot = getSlotFromEntry(timeslot, entry);
+                // const entrySlotEnd = entrySlotStart + DAY_IN_MS;
+                // console.log(
+                //     "n1",
+                //     entryTimestampMs,
+                //     entrySlotNr,
+                //     entrySlotStart,
+                //     entrySlotEnd
+                // );
+
                 return {
                     ...entry,
-                    last_changed: timeslotStart.toISOString(),
+                    last_changed: new Date(slot.start).toISOString(),
                 };
             };
 
@@ -409,17 +438,31 @@ export class EnergyUsageController {
                     // console.log(">", acc, next);
 
                     if (!lastTimestampStr) {
-                        return [entryToTimeslotStart(next)];
+                        return [entryToTimeslotStart(timeslot, next)];
                     }
-                    const timeslotStartMs = new Date(
-                        lastTimestampStr.slice(0, 10)
-                    ).getTime();
 
-                    const timeslotEndMs = timeslotStartMs + timeslot;
+                    // const timeslotStartMs = new Date(
+                    //     lastTimestampStr.slice(0, 10)
+                    // ).getTime();
 
-                    const nextTimestampMs = new Date(
-                        next.last_changed
-                    ).getTime();
+                    // const timeslotEndMs = timeslotStartMs + timeslot;
+
+                    // const nextTimestampMs = new Date(
+                    //     next.last_changed
+                    // ).getTime();
+
+                    // const nextSlotNr = nextTimestampMs % DAY_IN_MS;
+                    // const nextSlotStart = nextSlotNr * DAY_IN_MS;
+                    // const nextSlotEnd = nextSlotStart + DAY_IN_MS;
+                    const lastSlot = getSlotFromEntry(timeslot, last);
+                    const nextSlot = getSlotFromEntry(timeslot, next);
+                    console.log(
+                        "n1",
+                        nextSlot.entryTimestampMs,
+                        // nextSlotNr,
+                        nextSlot.start,
+                        nextSlot.end
+                    );
 
                     // console.log(
                     //     ">>",
@@ -427,7 +470,7 @@ export class EnergyUsageController {
                     //     timeslotEndMs,
                     //     nextTimestampMs
                     // );
-                    if (nextTimestampMs <= timeslotEndMs) {
+                    if (nextSlot.entryTimestampMs <= lastSlot.end) {
                         const head = acc.slice(0, -1);
                         const states = [
                             ...(last.states ?? [last.state]),
@@ -443,11 +486,11 @@ export class EnergyUsageController {
                         ];
                     }
 
-                    return [...acc, entryToTimeslotStart(next)];
+                    return [...acc, entryToTimeslotStart(timeslot, next)];
                 };
 
             const foo = mockSensorEntries.reduce(
-                reduceSensorEntriesByTimeslot(DAY_IN_MS),
+                reduceSensorEntriesByTimeslot(DAY_IN_MS / 2),
                 []
             );
             console.log(
