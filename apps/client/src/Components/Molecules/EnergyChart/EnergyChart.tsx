@@ -8,6 +8,7 @@ import {
     ResponsiveContainer,
     Tooltip,
     XAxis,
+    XAxisProps,
     YAxis,
     YAxisProps,
     type BarProps,
@@ -15,13 +16,14 @@ import {
 } from "recharts";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
-interface SensorItem {
+export interface SensorItem {
     time: number;
 }
 
 interface SensorConfig {
     lines?: Omit<LineProps, "ref">[];
     bars?: Omit<BarProps, "ref">[];
+    xAxis?: XAxisProps;
     leftYAxis?: YAxisProps;
     rightYAxis?: YAxisProps;
     tickCount?: number;
@@ -106,29 +108,30 @@ export const EnergyChart: FC<{
                                 }}
                             >
                                 <XAxis
-                                    dataKey="time"
                                     angle={-25}
+                                    dataKey="time"
+                                    domain={["auto", "auto"]}
                                     interval={0}
                                     style={{ fontSize: "10px" }}
+                                    tickCount={config.tickCount}
                                     tickFormatter={
                                         config.axisDateTimeFormat ??
                                         axisDateTimeFormatHour
                                     }
                                     type="number"
-                                    domain={["auto", "auto"]}
-                                    tickCount={config.tickCount}
+                                    {...config.xAxis}
                                 />
                                 <YAxis
-                                    yAxisId="left"
-                                    style={{ fontSize: "10px" }}
                                     domain={["auto", "auto"]}
+                                    style={{ fontSize: "10px" }}
+                                    yAxisId="left"
                                     {...config.leftYAxis}
                                 />
                                 <YAxis
-                                    yAxisId="right"
+                                    domain={["auto", "auto"]}
                                     orientation="right"
                                     style={{ fontSize: "10px" }}
-                                    domain={["auto", "auto"]}
+                                    yAxisId="right"
                                     {...config.rightYAxis}
                                 />
                                 <Tooltip
@@ -154,7 +157,10 @@ export const EnergyChart: FC<{
                                 {chartLines}
                                 {/* TODO https://github.com/recharts/recharts/issues/2099 */}
                                 <Brush
+                                    stroke="#2c6296"
+                                    fill="#0d2a46"
                                     dataKey="time"
+                                    type={config.xAxis?.type ?? "number"}
                                     tickFormatter={
                                         config.axisDateTimeFormat ??
                                         axisDateTimeFormatHour

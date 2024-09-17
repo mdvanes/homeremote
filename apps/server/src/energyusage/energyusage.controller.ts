@@ -203,49 +203,13 @@ const exportJsonToRow =
         }
     };
 
-const mockSensorEntries: GetHaSensorHistoryResponse[0] = [
-    {
-        entity_id: "sensor.temperatures",
-        attributes: { device_class: "temperature" },
-        last_changed: "2024-09-06T03:10:43.172659+00:00",
-        state: "20.0",
-    },
-    {
-        entity_id: "sensor.temperatures",
-        attributes: { device_class: "temperature" },
-        last_changed: "2024-09-06T04:10:43.314813+00:00",
-        state: "21.0",
-    },
-    {
-        entity_id: "sensor.temperatures",
-        attributes: { device_class: "temperature" },
-        last_changed: "2024-09-07T03:10:43.172659+00:00",
-        state: "22.0",
-    },
-    {
-        entity_id: "sensor.temperatures",
-        attributes: { device_class: "temperature" },
-        last_changed: "2024-09-07T04:10:43.314813+00:00",
-        state: "24.0",
-    },
-    {
-        entity_id: "sensor.temperatures",
-        attributes: { device_class: "temperature" },
-        last_changed: "2024-09-07T15:10:43.314813+00:00",
-        state: "26.0",
-    },
-    {
-        entity_id: "sensor.temperatures",
-        attributes: { device_class: "temperature" },
-        last_changed: "2024-09-07T16:10:43.314813+00:00",
-        state: "28.0",
-    },
-];
-
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 const SIX_HOURS_IN_MS = DAY_IN_MS / 4;
 
-type SensorEntry = GetHaSensorHistoryResponse[0][0] & { states?: string[] };
+type SensorEntry = GetHaSensorHistoryResponse[0][0] & {
+    states?: string[];
+    cumulativeState?: string;
+};
 
 const getSlotFromEntry = (timeslot: number, entry: SensorEntry) => {
     const entryTimestampMs = new Date(entry.last_changed).getTime();
@@ -267,10 +231,11 @@ const entryToTimeslotStart = (timeslot: number, entry: SensorEntry) => {
 };
 
 const avgString = (list: string[]) => {
-    const sum: number = list.reduce((acc: number, next: string) => {
-        return acc + parseFloat(next);
+    const nrList = list.map((n) => parseFloat(n)).filter((n) => !isNaN(n));
+    const sum: number = nrList.reduce((acc: number, next: number) => {
+        return acc + next;
     }, 0);
-    return sum / list.length;
+    return sum / nrList.length;
 };
 
 // timeslot is ms, the first timeslot of each day starts at 00:00
@@ -302,6 +267,34 @@ const reduceSensorEntriesByTimeslot =
 
         return [...acc, entryToTimeslotStart(timeslot, next)];
     };
+
+const reduceSensorEntriesToDeltas = (
+    acc: SensorEntry[],
+    next: SensorEntry
+): SensorEntry[] => {
+    const last = acc.at(-1);
+
+    if (!last?.cumulativeState) {
+        return [
+            ...acc,
+            {
+                ...next,
+                state: undefined,
+                cumulativeState: next.state,
+            },
+        ];
+    }
+    return [
+        ...acc,
+        {
+            ...next,
+            cumulativeState: next.state,
+            state: (
+                parseFloat(next.state) - parseFloat(last.cumulativeState)
+            ).toString(),
+        },
+    ];
+};
 
 @Controller("api/energyusage")
 export class EnergyUsageController {
@@ -410,13 +403,28 @@ export class EnergyUsageController {
             const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
             const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
 
-            const reduced = result.map((sensorEntries) =>
-                // Reduce by timeslot, timeslot is SIX_HOURS_IN_MS, from 00:00
-                sensorEntries.reduce(
-                    reduceSensorEntriesByTimeslot(SIX_HOURS_IN_MS),
-                    []
+            const reduced = result
+
+                .map((sensorEntries) =>
+                    // Reduce by timeslot, timeslot is SIX_HOURS_IN_MS, from 00:00
+                    sensorEntries.reduce(
+                        // reduceSensorEntriesByTimeslot(SIX_HOURS_IN_MS),
+                        reduceSensorEntriesByTimeslot(DAY_IN_MS),
+                        []
+                    )
                 )
-            );
+                .map((sensorEntries) => {
+                    if (
+                        sensorEntries.length > 0 &&
+                        sensorEntries[0].attributes.device_class === "gas"
+                    ) {
+                        return sensorEntries.reduce(
+                            reduceSensorEntriesToDeltas,
+                            []
+                        );
+                    }
+                    return sensorEntries;
+                });
 
             return reduced;
         } catch (err) {

@@ -2,6 +2,7 @@ import { Card, CardContent } from "@mui/material";
 import { FC } from "react";
 import {
     Bar,
+    BarProps,
     ComposedChart,
     Line,
     ResponsiveContainer,
@@ -12,11 +13,14 @@ import {
 import { useGetGasUsageQuery } from "../../../Services/energyUsageApi";
 import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
-import EnergyChart, { axisDateTimeFormatDay } from "../EnergyChart/EnergyChart";
+import EnergyChart, {
+    SensorItem,
+    axisDateTimeFormatDay,
+} from "../EnergyChart/EnergyChart";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
-const temperatureLineColors = ["#66bb6a", "#ff9100"];
+const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
 
 const GasTemperaturesChart: FC = () => {
     const mode: "day" | "month" = "month" as "day" | "month";
@@ -41,39 +45,55 @@ const GasTemperaturesChart: FC = () => {
     const sensors =
         gasTemperatureResponse?.flatMap((sensor) => sensor[0]) ?? [];
 
-    const entries =
-        gasTemperatureResponse?.flatMap((sensor) =>
-            sensor.map((item) => ({
-                time: new Date(item?.last_changed ?? 0).getTime(),
-                [`${item.attributes?.friendly_name}`]: item.state,
-            }))
-        ) ?? [];
+    const entriesBySensor = (
+        gasTemperatureResponse?.flatMap(
+            (sensor) =>
+                sensor.map((item) => ({
+                    time: new Date(item?.last_changed ?? 0).getTime(),
+                    [`${item.attributes?.friendly_name ?? item?.entity_id}`]:
+                        parseFloat(item.state ?? ""),
+                }))
+            // .slice(-1 * (mode === "day" ? 24 : 30))
+        ) ?? []
+    ).toSorted((a, b) => {
+        return a.time - b.time;
+    });
+    const entriesByTimestamp = entriesBySensor.reduce<
+        Record<number, SensorItem>
+    >((acc: Record<number, SensorItem>, item: SensorItem) => {
+        acc[item.time] = { ...acc[item.time], ...item };
+        return acc;
+    }, {});
+    const entries = Object.values(entriesByTimestamp);
 
     const lines = sensors.slice(0, 2).map((sensor, i) => ({
-        dataKey: sensor?.attributes?.friendly_name,
+        dataKey: sensor.attributes?.friendly_name ?? sensor?.entity_id,
         stroke: temperatureLineColors[i],
         unit: "°C",
     }));
+
+    const bars: Omit<BarProps, "ref">[] = sensors
+        .filter((sensor) => sensor?.attributes?.device_class === "gas")
+        .map((sensor, i) => ({
+            dataKey:
+                sensor.attributes?.friendly_name ?? sensor.entity_id ?? "gas",
+            fill: temperatureLineColors[i + lines.length],
+            unit: "m³",
+        }));
 
     return (
         <EnergyChart
             data={entries}
             config={{
                 lines,
-                bars: [
-                    {
-                        dataKey: sensors?.[2]?.attributes?.friendly_name ?? "",
-                        fill: "#66bb6a",
-                        unit: "m³",
-                    },
-                ],
-                leftYAxis: {
-                    unit: "m³",
-                },
+                bars,
                 rightYAxis: {
                     unit: "°",
+                    domain: [0, "auto"],
                 },
-                tickCount: mode === "day" ? 24 : 30,
+                xAxis: {
+                    type: "category",
+                },
                 axisDateTimeFormat:
                     mode === "day" ? undefined : axisDateTimeFormatDay,
             }}
@@ -132,7 +152,7 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                             <ComposedChart
                                 data={
                                     isBig
-                                        ? gasUsageResponse.result
+                                        ? gasUsageResponse.result.slice(-11) // TODO revert
                                         : gasUsageResponse.result.slice(-7)
                                 }
                                 margin={{
