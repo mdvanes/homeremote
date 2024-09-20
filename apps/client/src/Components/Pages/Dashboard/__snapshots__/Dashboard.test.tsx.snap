@@ -9,11 +9,8 @@ exports[`Dashboard page contains all the control components 1`] = `
       <div
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-iv7vbz-MuiGrid-root"
       >
-        <div
-          class="switch-bar-list-wrapper"
-        >
-          <mock-switch-bar-list />
-        </div>
+        <mock-switches-card />
+        <mock-climatesensor-card />
         <mock-gaschart />
         <mock-homesec />
         <mock-url-to-music />
@@ -89,6 +86,7 @@ exports[`Dashboard page contains all the control components 1`] = `
           style="margin-bottom: 20px;"
         />
         <mock-dockerstacklist-card />
+        <mock-speedtest-card />
         <button
           class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root"
           tabindex="0"

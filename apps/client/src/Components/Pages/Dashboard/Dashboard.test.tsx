@@ -34,6 +34,18 @@ jest.mock(
     "../../Molecules/DockerStackList/DockerStackListCard",
     () => "mock-dockerstacklist-card"
 );
+jest.mock(
+    "../../Molecules/SwitchesCard/SwitchesCard",
+    () => "mock-switches-card"
+);
+jest.mock(
+    "../../Molecules/ClimateSensorsCard/ClimateSensorsCard",
+    () => "mock-climatesensor-card"
+);
+jest.mock(
+    "../../Molecules/SpeedTestCard/SpeedTestCard",
+    () => "mock-speedtest-card"
+);
 
 describe("Dashboard page", () => {
     it("contains all the control components", () => {

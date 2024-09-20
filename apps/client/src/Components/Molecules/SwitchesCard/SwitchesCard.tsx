@@ -47,3 +47,5 @@ export const SwitchesCard: FC = () => {
         </List>
     );
 };
+
+export default SwitchesCard;

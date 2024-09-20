@@ -47,3 +47,5 @@ export const ClimateSensorsCard: FC = () => {
         </List>
     );
 };
+
+export default ClimateSensorsCard;

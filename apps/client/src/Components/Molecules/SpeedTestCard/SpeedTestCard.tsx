@@ -120,3 +120,5 @@ export const SpeedTestCard: FC = () => {
         </Card>
     );
 };
+
+export default SpeedTestCard;
