@@ -4,18 +4,14 @@
  */
 
 export interface paths {
-    "/api/history/period/timestamp": {
+    "/api/smart-entities": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get Home Assistant Sensor History
-         * @description Get Home Assistant Sensor History
-         */
-        get: operations["getHaSensorHistory"];
+        get: operations["getSmartEntities"];
         put?: never;
         post?: never;
         delete?: never;
@@ -24,66 +20,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/states": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Returns an array of state objects. Each state object contains entity ID, state, and attributes.
-         * @description Returns an array of state objects. Each state object contains entity ID, state, and attributes.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Successful response */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["States"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/states/{entity_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Home Assistant States
-         * @description Get Home Assistant States
-         */
-        get: operations["getHaStates"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/services/{domain}/{service}": {
+    "/api/smart-entities/{entity_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -92,7 +29,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["postServicesDomainService"];
+        post: operations["updateSmartEntity"];
         delete?: never;
         options?: never;
         head?: never;
@@ -122,45 +59,10 @@ export interface components {
              */
             code?: number;
         };
-        GetHaSensorHistoryResponse: {
-            /** @example sensor.tz3000_amqudjr0_ts0201_humidity */
-            entity_id?: string;
-            /** @example 65.9 */
-            state?: string;
-            attributes?: {
-                /** @example measurement */
-                state_class?: string;
-                /** @example % */
-                unit_of_measurement?: string;
-                /** @example humidity */
-                device_class?: string;
-                /** @example Woox TempHumid 1 Humidity */
-                friendly_name?: string;
-            };
-            /**
-             * Format: date-time
-             * @example 2024-05-05T17:05:08.795455+00:00
-             */
-            last_changed?: string;
-            /**
-             * Format: date-time
-             * @example 2024-05-05T17:05:08.795455+00:00
-             */
-            last_reported?: string;
-            /**
-             * Format: date-time
-             * @example 2024-05-05T17:05:08.795455+00:00
-             */
-            last_updated?: string;
-            context?: {
-                /** @example 01HWQC2MBD01BVZJP660G9JKXA */
-                id?: string;
-                /** Format: nullable */
-                parent_id?: string;
-                /** Format: nullable */
-                user_id?: string;
-            };
-        }[][];
+        /** @description Get smart entities response */
+        GetSmartEntitiesResponse: {
+            entities?: components["schemas"]["State"][];
+        };
         State: {
             /** @example light.favorites */
             entity_id?: string;
@@ -219,13 +121,14 @@ export interface components {
                 user_id?: string;
             };
         };
-        /** @description An array of state objects. Each state object contains entity ID, state, attributes, and last changed time. */
-        States: components["schemas"]["State"][];
-        PostServicesDomainServiceBody: {
-            /** @example light.favorites */
-            entity_id?: string;
+        UpdateSmartEntityBody: {
+            /**
+             * @description Target state, on or off
+             * @enum {string}
+             */
+            state?: "on" | "off";
         };
-        ServiceResponse: unknown[];
+        UpdateSmartEntityResponse: string;
     };
     responses: never;
     parameters: never;
@@ -235,7 +138,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    getHaSensorHistory: {
+    getSmartEntities: {
         parameters: {
             query?: never;
             header?: never;
@@ -244,54 +147,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description SensorHistory */
+            /** @description getSmartEntities */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GetHaSensorHistoryResponse"];
-                };
-            };
-            /** @description Bad request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-            /** @description Unauthorized */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorResponse"];
-                };
-            };
-        };
-    };
-    getHaStates: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Entity ID */
-                entity_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description State */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["State"];
+                    "application/json": components["schemas"]["GetSmartEntitiesResponse"];
                 };
             };
             /** @description Bad request. */
@@ -314,31 +176,29 @@ export interface operations {
             };
         };
     };
-    postServicesDomainService: {
+    updateSmartEntity: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                /** @description domain can be device class, e.g. switch */
-                domain: string;
-                /** @description New state for the domain, e.g. turn_on or turn_off */
-                service: string;
+                /** @description Entity ID */
+                entity_id: string;
             };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["PostServicesDomainServiceBody"];
+                "application/json": components["schemas"]["UpdateSmartEntityBody"];
             };
         };
         responses: {
-            /** @description Update State Response */
+            /** @description updateSmartEntity */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ServiceResponse"];
+                    "application/json": components["schemas"]["UpdateSmartEntityResponse"];
                 };
             };
             /** @description Bad request. */

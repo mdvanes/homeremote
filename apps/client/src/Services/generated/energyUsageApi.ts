@@ -26,7 +26,10 @@ const injectedRtkApi = api
                 GetGasTemperaturesApiResponse,
                 GetGasTemperaturesApiArg
             >({
-                query: () => ({ url: `/api/energyusage/gas-temperature` }),
+                query: (queryArg) => ({
+                    url: `/api/energyusage/gas-temperature`,
+                    params: { range: queryArg.range },
+                }),
                 providesTags: ["gas-temperature"],
             }),
             getWater: build.query<GetWaterApiResponse, GetWaterApiArg>({
@@ -50,10 +53,12 @@ export type GetTemperaturesApiArg = {
 };
 export type GetGasTemperaturesApiResponse =
     /** status 200 GasTemperatures */ GetGasTemperaturesResponse;
-export type GetGasTemperaturesApiArg = void;
+export type GetGasTemperaturesApiArg = {
+    range?: Range;
+};
 export type GetWaterApiResponse = /** status 200 Water */ GetWaterResponse;
 export type GetWaterApiArg = {
-    range?: "day" | "month";
+    range?: Range;
 };
 export type GetElectricExportsResponse = {
     exportName?: string;
@@ -122,6 +127,7 @@ export type GetGasTemperaturesResponse = {
         user_id?: string;
     };
 }[][];
+export type Range = "day" | "week" | "month";
 export type GetWaterResponse = {
     entity_id?: string;
     state?: string;

@@ -1,5 +1,6 @@
-import { Button, Card, CardContent } from "@mui/material";
+import { Button, Card, CardContent, Grid, Link } from "@mui/material";
 import { FC, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import {
     Bar,
     Brush,
@@ -8,6 +9,7 @@ import {
     ResponsiveContainer,
     Tooltip,
     XAxis,
+    XAxisProps,
     YAxis,
     YAxisProps,
     type BarProps,
@@ -15,17 +17,22 @@ import {
 } from "recharts";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
-interface SensorItem {
+export interface SensorItem {
     time: number;
 }
 
 interface SensorConfig {
     lines?: Omit<LineProps, "ref">[];
     bars?: Omit<BarProps, "ref">[];
+    xAxis?: XAxisProps;
     leftYAxis?: YAxisProps;
     rightYAxis?: YAxisProps;
     tickCount?: number;
     axisDateTimeFormat?: (val: string) => string;
+    hideBrush?: boolean;
+    hideToggleDots?: boolean;
+    aspect?: number;
+    moreLink?: string;
 }
 
 const axisDateTimeFormatHour = (val: string): string => {
@@ -39,6 +46,16 @@ const axisDateTimeFormatHour = (val: string): string => {
 };
 
 export const axisDateTimeFormatDay = (val: string): string => {
+    const date = new Date(val);
+
+    const formattedDate = date.toLocaleString("en-uk", {
+        day: "numeric",
+        month: "2-digit",
+    });
+    return formattedDate;
+};
+
+export const axisDateTimeFormatDayHour = (val: string): string => {
     const date = new Date(val);
 
     const formattedDate = date.toLocaleString("en-uk", {
@@ -97,7 +114,10 @@ export const EnergyChart: FC<{
                             margin: "0 -10px",
                         }}
                     >
-                        <ResponsiveContainer width="100%" aspect={4}>
+                        <ResponsiveContainer
+                            width="100%"
+                            aspect={config.aspect ?? 4}
+                        >
                             <ComposedChart
                                 data={data}
                                 margin={{
@@ -106,29 +126,30 @@ export const EnergyChart: FC<{
                                 }}
                             >
                                 <XAxis
-                                    dataKey="time"
                                     angle={-25}
+                                    dataKey="time"
+                                    domain={["auto", "auto"]}
                                     interval={0}
                                     style={{ fontSize: "10px" }}
+                                    tickCount={config.tickCount}
                                     tickFormatter={
                                         config.axisDateTimeFormat ??
                                         axisDateTimeFormatHour
                                     }
                                     type="number"
-                                    domain={["auto", "auto"]}
-                                    tickCount={config.tickCount}
+                                    {...config.xAxis}
                                 />
                                 <YAxis
-                                    yAxisId="left"
-                                    style={{ fontSize: "10px" }}
                                     domain={["auto", "auto"]}
+                                    style={{ fontSize: "10px" }}
+                                    yAxisId="left"
                                     {...config.leftYAxis}
                                 />
                                 <YAxis
-                                    yAxisId="right"
+                                    domain={["auto", "auto"]}
                                     orientation="right"
                                     style={{ fontSize: "10px" }}
-                                    domain={["auto", "auto"]}
+                                    yAxisId="right"
                                     {...config.rightYAxis}
                                 />
                                 <Tooltip
@@ -153,25 +174,42 @@ export const EnergyChart: FC<{
                                 {chartBars}
                                 {chartLines}
                                 {/* TODO https://github.com/recharts/recharts/issues/2099 */}
-                                <Brush
-                                    dataKey="time"
-                                    tickFormatter={
-                                        config.axisDateTimeFormat ??
-                                        axisDateTimeFormatHour
-                                    }
-                                />
+                                {!config.hideBrush && (
+                                    <Brush
+                                        stroke="#2c6296"
+                                        fill="#0d2a46"
+                                        dataKey="time"
+                                        type={config.xAxis?.type ?? "number"}
+                                        tickFormatter={
+                                            config.axisDateTimeFormat ??
+                                            axisDateTimeFormatHour
+                                        }
+                                    />
+                                )}
                             </ComposedChart>
                         </ResponsiveContainer>
                     </div>
                 )}
 
-                <Button
-                    onClick={() => {
-                        setShowDot((prev) => !prev);
-                    }}
-                >
-                    Toggle Dots
-                </Button>
+                {!config.hideToggleDots && (
+                    <Button
+                        onClick={() => {
+                            setShowDot((prev) => !prev);
+                        }}
+                    >
+                        Toggle Dots
+                    </Button>
+                )}
+
+                {config.moreLink && (
+                    <Grid container justifyContent="flex-end" my={-2}>
+                        <Grid item>
+                            <Link component={RouterLink} to={config.moreLink}>
+                                more
+                            </Link>
+                        </Grid>
+                    </Grid>
+                )}
             </CardContent>
         </Card>
     );

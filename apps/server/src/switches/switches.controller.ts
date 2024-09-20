@@ -5,8 +5,6 @@ import {
     HomeRemoteHaSwitch,
     HomeRemoteSwitch,
     SwitchesResponse,
-    UpdateHaSwitchArgs,
-    UpdateHaSwitchResponse,
 } from "@homeremote/types";
 import {
     Body,
@@ -137,6 +135,7 @@ export class SwitchesController {
     private readonly haApiConfig: {
         baseUrl: string;
         token: string;
+        entityId: string;
     };
 
     constructor(private configService: ConfigService) {
@@ -146,9 +145,13 @@ export class SwitchesController {
             baseUrl:
                 this.configService.get<string>("HOMEASSISTANT_BASE_URL") || "",
             token: this.configService.get<string>("HOMEASSISTANT_TOKEN") || "",
+            entityId:
+                this.configService.get<string>("HOMEASSISTANT_SWITCHES_ID") ||
+                "",
         };
     }
 
+    /** @deprecated */
     getHaLightFavoritesAsSwitches = async (): Promise<HomeRemoteHaSwitch[]> => {
         try {
             // TODO remove. This fetch randomly fails.
@@ -168,6 +171,7 @@ export class SwitchesController {
             const haFavoriteIds =
                 (await haFavoritesResponse.json()) as GetHaStatesResponse;
 
+            // @ts-expect-error old function
             const haStatesPromises = haFavoriteIds.attributes.entity_id.map(
                 async (entity) => {
                     // TODO remove. This fetch randomly fails. Maybe because of multiple requests at once?
@@ -188,7 +192,7 @@ export class SwitchesController {
             const haStates = await Promise.all(haStatesPromises);
 
             const haSwitches: HomeRemoteHaSwitch[] = haStates
-                // @ts-expect-error fix message type on entity
+
                 .filter((e) => e.message !== "Entity not found.")
                 .map<HomeRemoteHaSwitch>((entity) => ({
                     origin: "home-assistant",
@@ -210,6 +214,7 @@ export class SwitchesController {
 
     @UseGuards(JwtAuthGuard)
     @Get()
+    /** @deprecated */
     async getSwitches(
         @Request() req: AuthenticatedRequest
     ): Promise<SwitchesResponse> {
@@ -292,18 +297,20 @@ export class SwitchesController {
     @Post("/ha/:entityId")
     async updateHaSwitch(
         @Param("entityId") entityId: string,
-        @Body() args: UpdateHaSwitchArgs,
+        @Body() args: any,
         @Request() req: AuthenticatedRequest
-    ): Promise<UpdateHaSwitchResponse> {
+    ): Promise<any> {
         this.logger.verbose(
             `[${req.user.name}] Call to /switch/ha/${entityId} state: ${args.state}`
         );
 
         try {
+            const [entityType] = entityId.split(".");
+            const pathType = entityType === "light" ? "light" : "switch";
             await fetch(
                 `${
                     this.haApiConfig.baseUrl
-                }/api/services/light/turn_${args.state.toLowerCase()}`,
+                }/api/services/${pathType}/turn_${args.state.toLowerCase()}`,
                 {
                     method: "POST",
                     headers: {

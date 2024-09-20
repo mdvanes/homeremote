@@ -1,12 +1,13 @@
+import { Stack } from "@mui/material";
 import { FC } from "react";
-import GasChart from "../../Molecules/GasChart/GasChart";
-import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
+import ClimateSensorsCard from "../../Molecules/ClimateSensorsCard/ClimateSensorsCard";
+import SwitchesCard from "../../Molecules/SwitchesCard/SwitchesCard";
 
 const HomeAutomation: FC = () => (
-    <>
-        <SwitchBarList />
-        <GasChart isBig />
-    </>
+    <Stack gap={1}>
+        <SwitchesCard />
+        <ClimateSensorsCard />
+    </Stack>
 );
 
 export default HomeAutomation;

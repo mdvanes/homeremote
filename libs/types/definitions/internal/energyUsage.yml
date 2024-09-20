@@ -73,6 +73,11 @@ paths:
             summary: Get gas and temperatures
             description: Get gas and temperatures
             operationId: getGasTemperatures
+            parameters:
+                - in: query
+                  name: range
+                  schema:
+                      $ref: "#/components/schemas/Range"
             responses:
                 "200":
                     description: GasTemperatures
@@ -103,10 +108,7 @@ paths:
                 - in: query
                   name: range
                   schema:
-                      type: string
-                      enum:
-                          - day
-                          - month
+                      $ref: "#/components/schemas/Range"
             responses:
                 "200":
                     description: Water
@@ -128,6 +130,12 @@ paths:
                                 $ref: "#/components/schemas/ErrorResponse"
 components:
     schemas:
+        Range:
+            type: string
+            enum:
+                - day
+                - week
+                - month
         ErrorResponse:
             type: object
             properties:

@@ -1,0 +1,119 @@
+# npx mock-to-openapi ./libs/types/examples
+# https://editor.swagger.io/
+
+openapi: 3.0.1
+info:
+    title: Smart Entities Controller API
+    description: Smart Home interface has entities, which can be switches, sensors, etc.
+    version: 1.0.0
+servers:
+    - url: http://localhost:4200
+      description: Homeremote local server
+tags:
+    - name: smartEntities
+      description: Smart entity state changed
+paths:
+    /api/smart-entities:
+        get:
+            operationId: getSmartEntities
+            tags:
+                - smartEntities
+            responses:
+                "200":
+                    description: getSmartEntities
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetSmartEntitiesResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/smart-entities/{entity_id}:
+        post:
+            operationId: updateSmartEntity
+            tags:
+                - smartEntities
+            parameters:
+                - name: entity_id
+                  in: path
+                  description: Entity ID
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/UpdateSmartEntityBody"
+
+            responses:
+                "200":
+                    description: updateSmartEntity
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UpdateSmartEntityResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+components:
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: Time when error happened
+                status:
+                    type: integer
+                    description: Code describing the error
+                    format: int32
+                error:
+                    type: string
+                    description: Short error name
+                message:
+                    type: string
+                    description: Message explaining the error
+                code:
+                    type: integer
+                    description: Code of the error
+                    format: int32
+            description: Error information details
+        GetSmartEntitiesResponse:
+            type: object
+            properties:
+                entities:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/State"
+            description: Get smart entities response
+        State:
+            $ref: "../external/homeAssistant.yml#/components/schemas/State"
+        UpdateSmartEntityBody:
+            type: object
+            properties:
+                state:
+                    type: string
+                    description: Target state, on or off
+                    enum: [on, off]
+        UpdateSmartEntityResponse:
+            type: string

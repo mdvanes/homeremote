@@ -91,6 +91,12 @@ export interface EnergyUsageGetGasUsageResponse {
 export type EnergyUsageGetWaterResponse =
     operations["getWater"]["responses"]["200"]["content"]["application/json"];
 
+export type EnergyUsageGetGasTemperatureQueryParams =
+    operations["getGasTemperatures"]["parameters"]["query"];
+
+export type EnergyUsageGetGasTemperatureResponse =
+    operations["getGasTemperatures"]["responses"]["200"]["content"]["application/json"];
+
 export type EnergyUsageGetTemperatureResponse =
     operations["getTemperatures"]["responses"]["200"]["content"]["application/json"];
 

@@ -3,6 +3,7 @@ import { Grid, IconButton } from "@mui/material";
 import { FC, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { CarTabs } from "../../Molecules/CarTabs/CarTabs";
+import ClimateSensorsCard from "../../Molecules/ClimateSensorsCard/ClimateSensorsCard";
 import DockerStackListCard from "../../Molecules/DockerStackList/DockerStackListCard";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import GasChart from "../../Molecules/GasChart/GasChart";
@@ -13,8 +14,9 @@ import Monit from "../../Molecules/Monit/Monit";
 import Nextup from "../../Molecules/Nextup/Nextup";
 import Schedule from "../../Molecules/Schedule/Schedule";
 import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
+import SpeedTestCard from "../../Molecules/SpeedTestCard/SpeedTestCard";
 import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
-import SwitchBarList from "../../Molecules/SwitchBarList/SwitchBarList";
+import SwitchesCard from "../../Molecules/SwitchesCard/SwitchesCard";
 import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Docker from "../Docker/Docker";
@@ -41,12 +43,13 @@ const Dashboard: FC = () => {
     return (
         <Grid container spacing={2} className={classes.container}>
             <Grid item xs={12} md={3}>
-                <div className="switch-bar-list-wrapper">
-                    <SwitchBarList />
-                </div>
+                <SwitchesCard />
+                <ClimateSensorsCard />
+
                 <GasChart />
                 <HomeSec />
                 <UrlToMusic />
+
                 <LogCard />
             </Grid>
             <Grid item xs={12} md>
@@ -57,6 +60,7 @@ const Dashboard: FC = () => {
                 ) : undefined}
                 <CarTabs />
                 <DockerStackListCard />
+                <SpeedTestCard />
                 <IconButton
                     color="primary"
                     onClick={() => {

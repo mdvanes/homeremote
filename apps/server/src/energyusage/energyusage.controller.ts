@@ -1,6 +1,8 @@
 import type {
     EnergyUsageGasItem,
     EnergyUsageGetElectricExportsResponse,
+    EnergyUsageGetGasTemperatureQueryParams,
+    EnergyUsageGetGasTemperatureResponse,
     EnergyUsageGetGasUsageResponse,
     EnergyUsageGetTemperatureResponse,
     EnergyUsageGetWaterResponse,
@@ -36,8 +38,32 @@ interface SensorConfig {
     idx: string;
 }
 
-const DAY = 1000 * 60 * 60 * 24;
+const DAY_IN_MS = 1000 * 60 * 60 * 24;
 const MONTH = 1000 * 60 * 60 * 24 * 30;
+const OFFSET = 19800000 - 1000 * 60 * 60; // 5:30 in millis
+const TIMEPOINTS = new Array(288)
+    .fill(0)
+    .map((n, i) => OFFSET + 1000 * 60 * 5 * i)
+    .map((n) =>
+        new Date(n).toLocaleTimeString("nl-NL", {
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+    );
+
+const getStartOffsetFromRange = (
+    range: EnergyUsageGetGasTemperatureQueryParams["range"]
+) => {
+    if (range === "day") {
+        return DAY_IN_MS;
+    }
+    if (range === "week") {
+        return DAY_IN_MS * 7;
+    }
+    if (range === "month") {
+        return DAY_IN_MS * 30;
+    }
+};
 
 const strToConfigs = (sensorConfig: string): SensorConfig[] => {
     const sensorStrings = sensorConfig.split(";");
@@ -107,17 +133,6 @@ const findUsePerDayTotalByDate = (
 ) => {
     return total.find((e) => e.d === date);
 };
-
-const OFFSET = 19800000 - 1000 * 60 * 60; // 5:30 in millis
-const TIMEPOINTS = new Array(288)
-    .fill(0)
-    .map((n, i) => OFFSET + 1000 * 60 * 5 * i)
-    .map((n) =>
-        new Date(n).toLocaleTimeString("nl-NL", {
-            hour: "2-digit",
-            minute: "2-digit",
-        })
-    );
 
 const getNormalizedEntries =
     (jsonExport: GetDomoticzJsonExport) => (timepoint: string) => {
@@ -203,6 +218,96 @@ const exportJsonToRow =
         }
     };
 
+type SensorEntry = GetHaSensorHistoryResponse[0][0] & {
+    states?: string[];
+    cumulativeState?: string;
+};
+
+const getSlotFromEntry = (timeslot: number, entry: SensorEntry) => {
+    const entryTimestampMs = new Date(entry.last_changed).getTime();
+
+    const entrySlotNr = Math.floor(entryTimestampMs / timeslot);
+    const start = entrySlotNr * timeslot;
+    const end = start + timeslot;
+
+    return { entryTimestampMs, start, end };
+};
+
+const entryToTimeslotStart = (timeslot: number, entry: SensorEntry) => {
+    const slot = getSlotFromEntry(timeslot, entry);
+
+    return {
+        ...entry,
+        last_changed: new Date(slot.start).toISOString(),
+    };
+};
+
+const avgString = (list: string[]) => {
+    const nrList = list.map((n) => parseFloat(n)).filter((n) => !isNaN(n));
+    const sum: number = nrList.reduce((acc: number, next: number) => {
+        return acc + next;
+    }, 0);
+    return sum / nrList.length;
+};
+
+// timeslot is ms, the first timeslot of each day starts at 00:00
+const reduceSensorEntriesByTimeslot =
+    (timeslot: number) =>
+    (acc: SensorEntry[], next: SensorEntry): SensorEntry[] => {
+        const last = acc.at(-1);
+        const lastTimestampStr = last?.last_changed;
+
+        if (!lastTimestampStr) {
+            return [entryToTimeslotStart(timeslot, next)];
+        }
+
+        const lastSlot = getSlotFromEntry(timeslot, last);
+        const nextSlot = getSlotFromEntry(timeslot, next);
+
+        if (nextSlot.entryTimestampMs <= lastSlot.end) {
+            const head = acc.slice(0, -1);
+            const states = [...(last.states ?? [last.state]), next.state];
+            return [
+                ...head,
+                {
+                    ...last,
+                    states,
+                    state: avgString(states).toString(),
+                },
+            ];
+        }
+
+        return [...acc, entryToTimeslotStart(timeslot, next)];
+    };
+
+const reduceSensorEntriesToDeltas = (
+    acc: SensorEntry[],
+    next: SensorEntry
+): SensorEntry[] => {
+    const last = acc.at(-1);
+
+    if (!last?.cumulativeState) {
+        return [
+            ...acc,
+            {
+                ...next,
+                state: undefined,
+                cumulativeState: next.state,
+            },
+        ];
+    }
+    return [
+        ...acc,
+        {
+            ...next,
+            cumulativeState: next.state,
+            state: (
+                parseFloat(next.state) - parseFloat(last.cumulativeState)
+            ).toString(),
+        },
+    ];
+};
+
 @Controller("api/energyusage")
 export class EnergyUsageController {
     private readonly logger: Logger;
@@ -249,6 +354,7 @@ export class EnergyUsageController {
         };
     }
 
+    // @deprecated use fetchHa
     getAPI(sensorConfig: SensorConfig) {
         return `${this.apiConfig.baseUrl}/json.htm?type=graph&sensor=${sensorConfig.type}&idx=${sensorConfig.idx}&range=month`;
     }
@@ -265,6 +371,7 @@ export class EnergyUsageController {
         const haTemperaturesIds =
             (await haTemperaturesIdsResponse.json()) as GetHaStatesResponse;
 
+        // @ts-expect-error response can contain error message
         const firstHaTemperatureId = haTemperaturesIds.attributes.entity_id[0];
         const time = Date.now();
         const startOffset = MONTH;
@@ -280,31 +387,60 @@ export class EnergyUsageController {
         return firstHaTemperatureResponse;
     };
 
+    async fetchHa<T>(path: string): Promise<T> {
+        const response = await fetch(`${this.haApiConfig.baseUrl}${path}`, {
+            headers: {
+                Authorization: `Bearer ${this.haApiConfig.token}`,
+            },
+        });
+        return response.json() as T;
+    }
+
     /* Only uses Home Assistant API */
     @UseGuards(JwtAuthGuard)
     @Get("/gas-temperature")
     async getGasTemperature(
-        @Request() req: AuthenticatedRequest
-    ): Promise<GetHaSensorHistoryResponse> {
+        @Request() req: AuthenticatedRequest,
+        @Query("range") range: EnergyUsageGetGasTemperatureQueryParams["range"]
+    ): Promise<EnergyUsageGetGasTemperatureResponse> {
         this.logger.verbose(
             `[${req.user.name}] GET to /api/energyusage/gas-temperature`
         );
 
         try {
             const time = Date.now();
-            const startOffset = MONTH;
+            const startOffset = getStartOffsetFromRange(range);
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 
-            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
+            const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.gasTemperatureSensorId}`;
+            const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
 
-            const result = await got(url, {
-                headers: {
-                    Authorization: `Bearer ${this.haApiConfig.token}`,
-                },
-            }).json<GetHaSensorHistoryResponse>();
+            const reduced = result
 
-            return result;
+                .map((sensorEntries) =>
+                    // Reduce by timeslot, timeslot is RANGE, from 00:00
+                    sensorEntries.reduce(
+                        reduceSensorEntriesByTimeslot(
+                            range === "day" ? DAY_IN_MS / 24 : DAY_IN_MS
+                        ),
+                        []
+                    )
+                )
+                .map((sensorEntries) => {
+                    if (
+                        sensorEntries.length > 0 &&
+                        sensorEntries[0].attributes.device_class === "gas"
+                    ) {
+                        return sensorEntries.reduce(
+                            reduceSensorEntriesToDeltas,
+                            []
+                        );
+                    }
+                    return sensorEntries;
+                });
+
+            return reduced;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(
@@ -387,7 +523,7 @@ export class EnergyUsageController {
 
         try {
             const time = Date.now();
-            const startOffset = range === "month" ? MONTH : DAY;
+            const startOffset = range === "month" ? MONTH : DAY_IN_MS;
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 
@@ -421,7 +557,7 @@ export class EnergyUsageController {
             // TODO The API call crashes when the startDate is too far into the past. At this time 2024-04-30 is the earliest that works. Docs: https://developers.home-assistant.io/docs/api/rest/
 
             const time = Date.now();
-            const startOffset = range === "month" ? MONTH : DAY;
+            const startOffset = range === "month" ? MONTH : DAY_IN_MS;
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 

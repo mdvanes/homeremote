@@ -19,6 +19,7 @@ import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import { logError, logInfo } from "../LogCard/logSlice";
+import { RssiIcon } from "./RssiIcon";
 import SimpleHomeSecListItem from "./SimpleHomeSecListItem";
 
 const statusClass: Record<HomesecStatusResponse["status"] | "Error", string> = {
@@ -105,7 +106,12 @@ export const HomeSec: FC = () => {
                     slowUpdateMs={6000}
                 />
                 {isError && (
-                    <ErrorRetry retry={() => refetch()}>
+                    <ErrorRetry
+                        retry={() => {
+                            setIsSkippingBecauseError(false);
+                            refetch();
+                        }}
+                    >
                         HomeSec could not load
                     </ErrorRetry>
                 )}
@@ -172,7 +178,9 @@ export const HomeSec: FC = () => {
                                                     </Icon>
                                                 )}
                                             </div>
-                                            <div>{sensor.rssi}</div>
+                                            <div>
+                                                <RssiIcon rssi={sensor.rssi} />
+                                            </div>
                                         </div>
                                     </div>
                                 }

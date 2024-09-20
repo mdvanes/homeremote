@@ -11,10 +11,10 @@ const config: ConfigFile = {
             exportName: "energyUsageApi",
             tag: true,
         },
-        "./apps/client/src/Services/generated/switchesApi.ts": {
+        "./apps/client/src/Services/generated/smartEntitiesApi.ts": {
             apiFile: "./apps/client/src/Services/emptyApi.ts",
-            schemaFile: "./libs/types/definitions/internal/switches.yml",
-            exportName: "switchesApi",
+            schemaFile: "./libs/types/definitions/internal/smartEntities.yml",
+            exportName: "smartEntitiesApi",
             tag: true,
         },
     },

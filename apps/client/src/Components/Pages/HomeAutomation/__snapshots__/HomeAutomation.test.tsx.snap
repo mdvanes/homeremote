@@ -3,10 +3,12 @@
 exports[`HomeAutomation page contains the SwitchBarList 1`] = `
 <body>
   <div>
-    <mock-switch-bar-list />
-    <mock-gaschart
-      isbig="true"
-    />
+    <div
+      class="css-hwnj0i-MuiStack-root"
+    >
+      <mock-switches-list />
+      <mock-climatesensors-list />
+    </div>
   </div>
 </body>
 `;

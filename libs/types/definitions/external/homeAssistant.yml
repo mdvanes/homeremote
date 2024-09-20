@@ -1,11 +1,14 @@
 openapi: 3.0.1
 info:
     title: HomeRemote API
-    description: HomeRemote
+    description: From https://github.com/brittonhayes/homeassistant-ts/blob/main/openapi.yaml
+    contact:
+        name: "brittonhayes"
+        url: "https://github.com/brittonhayes/homeassistant-ts"
     version: 1.0.0
 servers:
-    - url: https://example.com
-      description: Generated server url
+    - url: "http://localhost:8123/api"
+      description: "Home Assistant"
 paths:
     /api/history/period/timestamp:
         get:
@@ -22,17 +25,28 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/GetHaSensorHistoryResponse"
                 "400":
-                    description: Bad request.
+                    description: Bad request
                     content:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/ErrorResponse"
                 "401":
-                    description: Unauthorized.
+                    description: Unauthorized
                     content:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/ErrorResponse"
+    /api/states:
+        get:
+            summary: "Returns an array of state objects. Each state object contains entity ID, state, and attributes."
+            description: "Returns an array of state objects. Each state object contains entity ID, state, and attributes."
+            responses:
+                "200":
+                    description: "Successful response"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/States"
     /api/states/{entity_id}:
         get:
             tags:
@@ -49,11 +63,54 @@ paths:
                       type: string
             responses:
                 "200":
-                    description: HaStates
+                    description: State
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/GetHaStatesResponse"
+                                $ref: "#/components/schemas/State"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/services/{domain}/{service}:
+        post:
+            operationId: postServicesDomainService
+            tags:
+                - homeAssistant
+            parameters:
+                - name: domain
+                  in: path
+                  description: domain can be device class, e.g. switch
+                  required: true
+                  schema:
+                      type: string
+                - name: service
+                  in: path
+                  description: New state for the domain, e.g. turn_on or turn_off
+                  required: true
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PostServicesDomainServiceBody"
+            responses:
+                "200":
+                    description: Update State Response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ServiceResponse"
                 "400":
                     description: Bad request.
                     content:
@@ -141,7 +198,7 @@ components:
                                 user_id:
                                     type: string
                                     format: nullable
-        GetHaStatesResponse:
+        State:
             type: object
             properties:
                 entity_id:
@@ -179,6 +236,17 @@ components:
                             type: integer
                             format: int32
                             example: 0
+                        device_class:
+                            description: "Undefined for switches. Can also be e.g. `temperature`."
+                            type: string
+                            format: nullable
+                        state_class:
+                            type: string
+                            example: measurement
+                        unit_of_measurement:
+                            type: string
+                            format: nullable
+                            example: "°C"
                 last_changed:
                     type: string
                     format: date-time
@@ -194,12 +262,25 @@ components:
                 context:
                     type: object
                     properties:
-                    id:
-                        type: string
-                        example: 01HYDMQE5DJ7QP3F5ADKNKXFDQ
-                    parent_id:
-                        type: string
-                        format: nullable
-                    user_id:
-                        type: string
-                        format: nullable
+                        id:
+                            type: string
+                            example: 01HYDMQE5DJ7QP3F5ADKNKXFDQ
+                        parent_id:
+                            type: string
+                            format: nullable
+                        user_id:
+                            type: string
+                            format: nullable
+        States:
+            type: array
+            description: "An array of state objects. Each state object contains entity ID, state, attributes, and last changed time."
+            items:
+                $ref: "#/components/schemas/State"
+        PostServicesDomainServiceBody:
+            type: object
+            properties:
+                entity_id:
+                    type: string
+                    example: light.favorites
+        ServiceResponse:
+            type: array
