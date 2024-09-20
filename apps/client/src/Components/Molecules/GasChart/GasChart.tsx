@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@mui/material";
-import { FC } from "react";
+import { Button, Card, CardContent, Stack } from "@mui/material";
+import { FC, useState } from "react";
 import {
     Bar,
     BarProps,
@@ -22,8 +22,8 @@ import LoadingDot from "../LoadingDot/LoadingDot";
 
 const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
 
-const GasTemperaturesChart: FC = () => {
-    const mode: "day" | "month" = "month" as "day" | "month";
+const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
+    const [range, setRange] = useState<"day" | "week" | "month">("week");
 
     // TODO retry? see homesecApi.ts
     const {
@@ -32,7 +32,7 @@ const GasTemperaturesChart: FC = () => {
         isLoading,
         isFetching,
         refetch,
-    } = useGetGasTemperaturesQuery();
+    } = useGetGasTemperaturesQuery({ range });
 
     if (error || !gasTemperatureResponse) {
         return (
@@ -82,23 +82,56 @@ const GasTemperaturesChart: FC = () => {
         }));
 
     return (
-        <EnergyChart
-            data={entries}
-            config={{
-                lines,
-                bars,
-                rightYAxis: {
-                    unit: "°",
-                    domain: [0, "auto"],
-                },
-                xAxis: {
-                    type: "category",
-                },
-                axisDateTimeFormat:
-                    mode === "day" ? undefined : axisDateTimeFormatDay,
-            }}
-            isLoading={isLoading || isFetching}
-        />
+        <>
+            {/* TODO when on small screen, hide Stack and set range to "Week" and also hide Brush */}
+            {isBig && (
+                <Stack direction="row" spacing={1} marginBottom={1}>
+                    <Button
+                        variant={range === "day" ? "contained" : "outlined"}
+                        onClick={() => {
+                            setRange("day");
+                        }}
+                    >
+                        24H
+                    </Button>
+                    <Button
+                        variant={range === "week" ? "contained" : "outlined"}
+                        onClick={() => {
+                            setRange("week");
+                        }}
+                    >
+                        Week
+                    </Button>
+
+                    <Button
+                        variant={range === "month" ? "contained" : "outlined"}
+                        onClick={() => {
+                            setRange("month");
+                        }}
+                    >
+                        Month
+                    </Button>
+                </Stack>
+            )}
+
+            <EnergyChart
+                data={entries}
+                config={{
+                    lines,
+                    bars,
+                    rightYAxis: {
+                        unit: "°",
+                        domain: [0, "auto"],
+                    },
+                    xAxis: {
+                        type: "category",
+                    },
+                    axisDateTimeFormat:
+                        range === "day" ? undefined : axisDateTimeFormatDay,
+                }}
+                isLoading={isLoading || isFetching}
+            />
+        </>
     );
 };
 
@@ -152,7 +185,7 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                             <ComposedChart
                                 data={
                                     isBig
-                                        ? gasUsageResponse.result.slice(-11) // TODO revert
+                                        ? gasUsageResponse.result.slice(-11) // TODO revert _
                                         : gasUsageResponse.result.slice(-7)
                                 }
                                 margin={{
@@ -230,7 +263,7 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     return (
         <>
             {oldChart}
-            {isBig && <GasTemperaturesChart />}
+            <GasTemperaturesChart isBig={isBig} />
         </>
     );
 };

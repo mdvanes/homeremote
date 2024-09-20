@@ -84,6 +84,8 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @enum {string} */
+        Range: "day" | "week" | "month";
         /** @description Error information details */
         ErrorResponse: {
             /** @description Time when error happened */
@@ -337,7 +339,9 @@ export interface operations {
     };
     getGasTemperatures: {
         parameters: {
-            query?: never;
+            query?: {
+                range?: components["schemas"]["Range"];
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -376,7 +380,7 @@ export interface operations {
     getWater: {
         parameters: {
             query?: {
-                range?: "day" | "month";
+                range?: components["schemas"]["Range"];
             };
             header?: never;
             path?: never;

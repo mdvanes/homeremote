@@ -1,6 +1,8 @@
 import type {
     EnergyUsageGasItem,
     EnergyUsageGetElectricExportsResponse,
+    EnergyUsageGetGasTemperatureQueryParams,
+    EnergyUsageGetGasTemperatureResponse,
     EnergyUsageGetGasUsageResponse,
     EnergyUsageGetTemperatureResponse,
     EnergyUsageGetWaterResponse,
@@ -36,8 +38,32 @@ interface SensorConfig {
     idx: string;
 }
 
-const DAY = 1000 * 60 * 60 * 24;
+const DAY_IN_MS = 1000 * 60 * 60 * 24;
 const MONTH = 1000 * 60 * 60 * 24 * 30;
+const OFFSET = 19800000 - 1000 * 60 * 60; // 5:30 in millis
+const TIMEPOINTS = new Array(288)
+    .fill(0)
+    .map((n, i) => OFFSET + 1000 * 60 * 5 * i)
+    .map((n) =>
+        new Date(n).toLocaleTimeString("nl-NL", {
+            hour: "2-digit",
+            minute: "2-digit",
+        })
+    );
+
+const getStartOffsetFromRange = (
+    range: EnergyUsageGetGasTemperatureQueryParams["range"]
+) => {
+    if (range === "day") {
+        return DAY_IN_MS;
+    }
+    if (range === "week") {
+        return DAY_IN_MS * 7;
+    }
+    if (range === "month") {
+        return DAY_IN_MS * 30;
+    }
+};
 
 const strToConfigs = (sensorConfig: string): SensorConfig[] => {
     const sensorStrings = sensorConfig.split(";");
@@ -107,17 +133,6 @@ const findUsePerDayTotalByDate = (
 ) => {
     return total.find((e) => e.d === date);
 };
-
-const OFFSET = 19800000 - 1000 * 60 * 60; // 5:30 in millis
-const TIMEPOINTS = new Array(288)
-    .fill(0)
-    .map((n, i) => OFFSET + 1000 * 60 * 5 * i)
-    .map((n) =>
-        new Date(n).toLocaleTimeString("nl-NL", {
-            hour: "2-digit",
-            minute: "2-digit",
-        })
-    );
 
 const getNormalizedEntries =
     (jsonExport: GetDomoticzJsonExport) => (timepoint: string) => {
@@ -202,9 +217,6 @@ const exportJsonToRow =
             return undefined;
         }
     };
-
-const DAY_IN_MS = 1000 * 60 * 60 * 24;
-const SIX_HOURS_IN_MS = DAY_IN_MS / 4;
 
 type SensorEntry = GetHaSensorHistoryResponse[0][0] & {
     states?: string[];
@@ -388,15 +400,16 @@ export class EnergyUsageController {
     @UseGuards(JwtAuthGuard)
     @Get("/gas-temperature")
     async getGasTemperature(
-        @Request() req: AuthenticatedRequest
-    ): Promise<GetHaSensorHistoryResponse> {
+        @Request() req: AuthenticatedRequest,
+        @Query("range") range: EnergyUsageGetGasTemperatureQueryParams["range"]
+    ): Promise<EnergyUsageGetGasTemperatureResponse> {
         this.logger.verbose(
             `[${req.user.name}] GET to /api/energyusage/gas-temperature`
         );
 
         try {
             const time = Date.now();
-            const startOffset = MONTH;
+            const startOffset = getStartOffsetFromRange(range);
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 
@@ -406,10 +419,11 @@ export class EnergyUsageController {
             const reduced = result
 
                 .map((sensorEntries) =>
-                    // Reduce by timeslot, timeslot is SIX_HOURS_IN_MS, from 00:00
+                    // Reduce by timeslot, timeslot is RANGE, from 00:00
                     sensorEntries.reduce(
-                        // reduceSensorEntriesByTimeslot(SIX_HOURS_IN_MS),
-                        reduceSensorEntriesByTimeslot(DAY_IN_MS),
+                        reduceSensorEntriesByTimeslot(
+                            range === "day" ? DAY_IN_MS / 24 : DAY_IN_MS
+                        ),
                         []
                     )
                 )
@@ -509,7 +523,7 @@ export class EnergyUsageController {
 
         try {
             const time = Date.now();
-            const startOffset = range === "month" ? MONTH : DAY;
+            const startOffset = range === "month" ? MONTH : DAY_IN_MS;
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 
@@ -543,7 +557,7 @@ export class EnergyUsageController {
             // TODO The API call crashes when the startDate is too far into the past. At this time 2024-04-30 is the earliest that works. Docs: https://developers.home-assistant.io/docs/api/rest/
 
             const time = Date.now();
-            const startOffset = range === "month" ? MONTH : DAY;
+            const startOffset = range === "month" ? MONTH : DAY_IN_MS;
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 
