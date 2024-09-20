@@ -1,5 +1,5 @@
 import { Card, CardContent, Stack } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
     Bar,
     BarProps,
@@ -13,6 +13,7 @@ import {
 import { useGetGasUsageQuery } from "../../../Services/energyUsageApi";
 import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { useAppDispatch } from "../../../store";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import EnergyChart, {
     SensorItem,
@@ -20,26 +21,54 @@ import EnergyChart, {
 } from "../EnergyChart/EnergyChart";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
+import { logError } from "../LogCard/logSlice";
 import { RangeButtons } from "./RangeButtons";
 
 const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
 
-const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
-    const [range, setRange] = useState<"day" | "week" | "month">("week");
+const UPDATE_INTERVAL_MS = 60 * 60 * 1000; // 1 x per hour
 
-    // TODO retry? see homesecApi.ts
+const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
+    const dispatch = useAppDispatch();
+    const [range, setRange] = useState<"day" | "week" | "month">("week");
+    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
+
     const {
         data: gasTemperatureResponse,
         error,
         isLoading,
         isFetching,
         refetch,
-    } = useGetGasTemperaturesQuery({ range });
+        isError,
+    } = useGetGasTemperaturesQuery(
+        { range },
+        {
+            pollingInterval: isSkippingBecauseError
+                ? undefined
+                : UPDATE_INTERVAL_MS,
+        }
+    );
+
+    useEffect(() => {
+        if (isError && error) {
+            setIsSkippingBecauseError(true);
+            dispatch(
+                logError(
+                    `GasTemperaturesChart failed: ${getErrorMessage(error)}`
+                )
+            );
+        }
+    }, [dispatch, error, isError]);
 
     if (error || !gasTemperatureResponse) {
         return (
-            <ErrorRetry retry={() => refetch()}>
-                GasChart: {getErrorMessage(error ?? Error("empty response"))}
+            <ErrorRetry
+                retry={() => {
+                    setIsSkippingBecauseError(false);
+                    refetch();
+                }}
+            >
+                GasTemperaturesChart could not load
             </ErrorRetry>
         );
     }
