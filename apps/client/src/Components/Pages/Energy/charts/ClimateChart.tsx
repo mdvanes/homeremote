@@ -3,7 +3,7 @@ import { Button, Chip, IconButton, Stack } from "@mui/material";
 import { FC, useState } from "react";
 import { useGetTemperaturesQuery } from "../../../../Services/generated/energyUsageApi";
 import EnergyChart, {
-    axisDateTimeFormatDay,
+    axisDateTimeFormatDayHour,
 } from "../../../Molecules/EnergyChart/EnergyChart";
 
 const COLORS = [
@@ -99,7 +99,7 @@ export const ClimateChart: FC = () => {
                     },
                     tickCount: mode === "day" ? 24 : 30,
                     axisDateTimeFormat:
-                        mode === "day" ? undefined : axisDateTimeFormatDay,
+                        mode === "day" ? undefined : axisDateTimeFormatDayHour,
                 }}
                 isLoading={isLoading || isFetching}
             />

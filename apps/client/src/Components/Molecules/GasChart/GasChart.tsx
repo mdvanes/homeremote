@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, Stack } from "@mui/material";
+import { Card, CardContent, Stack } from "@mui/material";
 import { FC, useState } from "react";
 import {
     Bar,
@@ -13,12 +13,14 @@ import {
 import { useGetGasUsageQuery } from "../../../Services/energyUsageApi";
 import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import EnergyChart, {
     SensorItem,
     axisDateTimeFormatDay,
 } from "../EnergyChart/EnergyChart";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 import LoadingDot from "../LoadingDot/LoadingDot";
+import { RangeButtons } from "./RangeButtons";
 
 const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
 
@@ -83,36 +85,7 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
 
     return (
         <>
-            {/* TODO when on small screen, hide Stack and set range to "Week" and also hide Brush */}
-            {isBig && (
-                <Stack direction="row" spacing={1} marginBottom={1}>
-                    <Button
-                        variant={range === "day" ? "contained" : "outlined"}
-                        onClick={() => {
-                            setRange("day");
-                        }}
-                    >
-                        24H
-                    </Button>
-                    <Button
-                        variant={range === "week" ? "contained" : "outlined"}
-                        onClick={() => {
-                            setRange("week");
-                        }}
-                    >
-                        Week
-                    </Button>
-
-                    <Button
-                        variant={range === "month" ? "contained" : "outlined"}
-                        onClick={() => {
-                            setRange("month");
-                        }}
-                    >
-                        Month
-                    </Button>
-                </Stack>
-            )}
+            {isBig && <RangeButtons range={range} setRange={setRange} />}
 
             <EnergyChart
                 data={entries}
@@ -128,6 +101,10 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                     },
                     axisDateTimeFormat:
                         range === "day" ? undefined : axisDateTimeFormatDay,
+                    hideBrush: !isBig,
+                    hideToggleDots: !isBig,
+                    aspect: isBig ? undefined : 2,
+                    moreLink: isBig ? undefined : "/energy?tab=2",
                 }}
                 isLoading={isLoading || isFetching}
             />
@@ -137,6 +114,8 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
 
 // TODO replace old GasChart by new EnergyChart. Need to fix displaying of gas usage first.
 const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
     const {
         data: gasUsageResponse,
         isLoading,
@@ -185,7 +164,7 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                             <ComposedChart
                                 data={
                                     isBig
-                                        ? gasUsageResponse.result.slice(-11) // TODO revert _
+                                        ? gasUsageResponse.result
                                         : gasUsageResponse.result.slice(-7)
                                 }
                                 margin={{
@@ -262,8 +241,17 @@ const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
 
     return (
         <>
-            {oldChart}
             <GasTemperaturesChart isBig={isBig} />
+
+            {isOpen && <Stack mt={2}>{oldChart}</Stack>}
+
+            {isBig && (
+                <CardExpandBar
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    hint={`more`}
+                />
+            )}
         </>
     );
 };
