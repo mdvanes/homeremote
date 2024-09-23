@@ -1,0 +1,72 @@
+# npx mock-to-openapi ./libs/types/examples
+# https://editor.swagger.io/
+
+openapi: 3.0.1
+info:
+    title: Speedtest Controller API
+    description: Get Speedtest info
+    version: 1.0.0
+servers:
+    - url: http://localhost:4200
+      description: Homeremote local server
+tags:
+    - name: speedtest
+      description: Speedtest state changed
+paths:
+    /api/speedtest/latest:
+        get:
+            operationId: getSpeedtest
+            tags:
+                - speedtest
+            responses:
+                "200":
+                    description: getSpeedtest
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetSpeedtestResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"    
+components:
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: Time when error happened
+                status:
+                    type: integer
+                    description: Code describing the error
+                    format: int32
+                error:
+                    type: string
+                    description: Short error name
+                message:
+                    type: string
+                    description: Message explaining the error
+                code:
+                    type: integer
+                    description: Code of the error
+                    format: int32
+            description: Error information details
+        GetSpeedtestResponse:
+          type: object
+          properties:
+              message:
+                  type: string
+              data:
+                  $ref: "#/components/schemas/SpeedTestResult"
+        SpeedTestResult:
+            $ref: "../external/speedTestTracker.yml#/components/schemas/SpeedTestResult"
+        

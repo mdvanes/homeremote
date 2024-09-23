@@ -20,6 +20,7 @@ import { PwToHashController } from "../pw-to-hash/pw-to-hash.controller";
 import { ScheduleController } from "../schedule/schedule.controller";
 import { ServiceLinksController } from "../service-links/service-links.controller";
 import { SmartEntitiesController } from "../smart-entities/smart-entities.controller";
+import { SpeedtestController } from "../speedtest/speedtest.controller";
 import { StacksController } from "../stacks/stacks.controller";
 import { StatusController } from "../status/status.controller";
 import { SwitchesController } from "../switches/switches.controller";
@@ -67,6 +68,7 @@ import { AppService } from "./app.service";
         ScheduleController,
         ServiceLinksController,
         SmartEntitiesController,
+        SpeedtestController,
         StacksController,
         StatusController,
         SwitchesController,

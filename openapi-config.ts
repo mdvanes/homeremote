@@ -17,6 +17,12 @@ const config: ConfigFile = {
             exportName: "smartEntitiesApi",
             tag: true,
         },
+        "./apps/client/src/Services/generated/speedTestApi.ts": {
+            apiFile: "./apps/client/src/Services/emptyApi.ts",
+            schemaFile: "./libs/types/definitions/internal/speedTest.yml",
+            exportName: "speedTestApi",
+            tag: true,
+        },
     },
     hooks: true,
 };

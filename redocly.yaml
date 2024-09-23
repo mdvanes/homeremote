@@ -7,6 +7,10 @@ apis:
         root: ./libs/types/definitions/external/homeAssistant.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/external/generated/homeAssistant.ts
+    speedTestTracker@v1:
+        root: ./libs/types/definitions/external/speedTestTracker.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/speedTestTracker.ts
     energyUsage@v1:
         root: ./libs/types/definitions/internal/energyUsage.yml
         x-openapi-ts:
@@ -15,3 +19,7 @@ apis:
         root: ./libs/types/definitions/internal/smartEntities.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/generated/smartEntities.ts
+    speedTest@v1:
+        root: ./libs/types/definitions/internal/speedTest.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/generated/speedTest.ts

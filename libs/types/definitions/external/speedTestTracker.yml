@@ -1,0 +1,106 @@
+openapi: 3.0.1
+info:
+    title: SpeedTestTracker API
+    version: 0.21.2
+servers:
+    - url: "http://localhost:8089/api"
+      description: "SpeedTestTracker API"
+paths:
+    /api/speedtest/latest:
+        get:
+            tags:
+                - speedtest
+            summary: Get Latest SpeedTest score
+            description: Get Latest SpeedTest score
+            operationId: getSpeedTestTrackerLatest
+            responses:
+                "200":
+                    description: Latest SpeedTest score
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/LatestSpeedtestResponse"
+                "400":
+                    description: Bad request
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+components:
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: Time when error happened
+                status:
+                    type: integer
+                    description: Code describing the error
+                    format: int32
+                error:
+                    type: string
+                    description: Short error name
+                message:
+                    type: string
+                    description: Message explaining the error
+                code:
+                    type: integer
+                    description: Code of the error
+                    format: int32
+            description: Error information details
+        LatestSpeedtestResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+                data:
+                    $ref: "#/components/schemas/SpeedTestResult"
+        SpeedTestResult:
+            type: object
+            properties:
+                id:
+                    type: string
+                    example: 1
+                download:
+                    type: number
+                    format: float
+                    example: 100.0
+                upload:
+                    type: number
+                    format: float
+                    example: 100.0
+                ping:
+                    type: number
+                    format: float
+                    example: 100.0
+                server_id:
+                    type: number
+                    example: "SpeedTestServer"
+                server_host:
+                    type: string
+                    example: "a.speedtest.net"
+                server_name:
+                    type: string
+                    example: "SpeedTestServer"
+                url:
+                    type: string
+                    example: "https://www.speedtest.net/result/c/1"
+                scheduled:
+                    type: boolean
+                failed:
+                    type: boolean
+                created_at:
+                    type: string
+                    format: date-time
+                    example: 2024-05-05T17:05:08.795455+00:00
+                updated_at:
+                    type: string
+                    format: date-time
+                    example: 2024-05-05T17:05:08.795455+00:00
