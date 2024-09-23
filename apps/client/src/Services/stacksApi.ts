@@ -1,9 +1,5 @@
 import { StacksResponse } from "@homeremote/types";
-import {
-    createApi,
-    fetchBaseQuery,
-    retry,
-} from "@reduxjs/toolkit/dist/query/react";
+import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
 import { willAddCredentials } from "../devUtils";
 
 export interface ToggleArgs {

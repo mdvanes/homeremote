@@ -9,8 +9,8 @@ import { carTwinApi } from "../Services/carTwinApi";
 import { dataloraApi } from "../Services/dataloraApi";
 import { dockerListApi } from "../Services/dockerListApi";
 import { downloadListApi } from "../Services/downloadListApi";
+import { emptySplitApi } from "../Services/emptyApi";
 import { energyUsageApi } from "../Services/energyUsageApi";
-import { energyUsageApi as newEnergyUsageApi } from "../Services/generated/energyUsageApi";
 import { homesecApi } from "../Services/homesecApi";
 import { jukeboxApi } from "../Services/jukeboxApi";
 import { monitApi } from "../Services/monitApi";
@@ -33,7 +33,6 @@ const rootReducer = combineReducers({
     [dockerListApi.reducerPath]: dockerListApi.reducer,
     [downloadListApi.reducerPath]: downloadListApi.reducer,
     [energyUsageApi.reducerPath]: energyUsageApi.reducer,
-    [newEnergyUsageApi.reducerPath]: newEnergyUsageApi.reducer,
     [homesecApi.reducerPath]: homesecApi.reducer,
     [jukeboxApi.reducerPath]: jukeboxApi.reducer,
     [monitApi.reducerPath]: monitApi.reducer,
@@ -43,6 +42,7 @@ const rootReducer = combineReducers({
     [serviceLinksApi.reducerPath]: serviceLinksApi.reducer,
     [stacksApi.reducerPath]: stacksApi.reducer,
     [urlToMusicApi.reducerPath]: urlToMusicApi.reducer,
+    [emptySplitApi.reducerPath]: emptySplitApi.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

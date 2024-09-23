@@ -1,5 +1,5 @@
 import { DockerListResponse } from "@homeremote/types";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { willAddCredentials } from "../devUtils";
 
 interface ToggleArgs {

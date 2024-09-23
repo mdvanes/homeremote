@@ -28,6 +28,7 @@ const HotKeyCoach = () => {
             <IconButton onClick={handleClick}>
                 <HelpIcon />
             </IconButton>
+            {/* @ts-expect-error Popper needs to be updated */}
             <Popper id="simple-popper" open={open} anchorEl={anchorEl}>
                 <Box sx={{ p: 1, bgcolor: "background.paper" }}>
                     <List>

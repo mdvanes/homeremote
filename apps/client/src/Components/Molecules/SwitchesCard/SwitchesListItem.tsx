@@ -20,6 +20,7 @@ interface SwitchesListItemProps {
 
 export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
     const dispatch = useAppDispatch();
+    // TAG does not invalidate?
     const [updateSwitch] = useUpdateSmartEntityMutation();
 
     const setState = (state: "on" | "off") => async () => {

@@ -10,7 +10,7 @@ import {
     Tooltip,
 } from "@mui/material";
 import { SerializedError } from "@reduxjs/toolkit";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import { FC, useEffect, useState } from "react";
 import { useGetHomesecStatusQuery } from "../../../Services/homesecApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";

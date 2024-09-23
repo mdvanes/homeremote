@@ -9,7 +9,7 @@ import {
     LinearProgress,
     TextField,
 } from "@mui/material";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { skipToken } from "@reduxjs/toolkit/query";
 import React, { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
