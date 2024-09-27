@@ -61,7 +61,7 @@ const getStartOffsetFromRange = (
         return DAY_IN_MS * 7;
     }
     if (range === "month") {
-        return DAY_IN_MS * 30;
+        return DAY_IN_MS * 31;
     }
 };
 

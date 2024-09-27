@@ -78,14 +78,14 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         gasTemperatureResponse?.flatMap((sensor) => sensor[0]) ?? [];
 
     const entriesBySensor = (
-        gasTemperatureResponse?.flatMap(
-            (sensor) =>
-                sensor.map((item) => ({
+        gasTemperatureResponse?.flatMap((sensor) =>
+            sensor
+                .map((item) => ({
                     time: new Date(item?.last_changed ?? 0).getTime(),
                     [`${item.attributes?.friendly_name ?? item?.entity_id}`]:
                         parseFloat(item.state ?? ""),
                 }))
-            // .slice(-1 * (mode === "day" ? 24 : 30))
+                .slice(1)
         ) ?? []
     ).toSorted((a, b) => {
         return a.time - b.time;
