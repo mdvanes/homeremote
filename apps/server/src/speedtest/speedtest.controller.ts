@@ -68,7 +68,6 @@ export class SpeedtestController {
                 `http://192.168.0.8:8089/api/speedtest/latest`
             );
             const data = (await response.json()) as GetSpeedTestTrackerResponse;
-            console.log(data);
 
             return data;
         } catch (err) {
