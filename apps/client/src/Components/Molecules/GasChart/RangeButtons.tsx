@@ -1,6 +1,6 @@
 import { Button, Stack } from "@mui/material";
 import { FC } from "react";
-import { Range } from "../../../Services/generated/energyUsageApi";
+import { Range } from "../../../Services/generated/energyUsageApiWithRetry";
 
 const rangeButtonLabel: Record<Range, string> = {
     day: "24H",

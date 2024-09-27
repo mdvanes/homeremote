@@ -11,7 +11,7 @@ import {
     YAxis,
 } from "recharts";
 import { useGetGasUsageQuery } from "../../../Services/energyUsageApi";
-import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApi";
+import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApiWithRetry";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";

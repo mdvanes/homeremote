@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { FC } from "react";
-import { GetElectricExportsApiResponse } from "../../../../Services/generated/energyUsageApi";
+import { GetElectricExportsApiResponse } from "../../../../Services/generated/energyUsageApiWithRetry";
 import EnergyChart from "../../../Molecules/EnergyChart/EnergyChart";
 
 export type Row = GetElectricExportsApiResponse[0];

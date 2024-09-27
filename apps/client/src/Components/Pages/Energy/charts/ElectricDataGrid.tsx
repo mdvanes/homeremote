@@ -4,7 +4,7 @@ import { FC, useState } from "react";
 import {
     GetElectricExportsApiResponse,
     useGetElectricExportsQuery,
-} from "../../../../Services/generated/energyUsageApi";
+} from "../../../../Services/generated/energyUsageApiWithRetry";
 import { ElectricChartCompareAvg, Row } from "./ElectricChartCompareAvg";
 import { ElectricChartForRow } from "./ElectricChartForRow";
 import { ElectricChartRow, getAreSomeEmpty } from "./ElectricChartRow";

@@ -10,7 +10,7 @@ import {
     TableRow,
 } from "@mui/material";
 import { FC, useEffect } from "react";
-import { useGetSpeedtestQuery } from "../../../Services/generated/speedTestApi";
+import { useGetSpeedtestQuery } from "../../../Services/generated/speedTestApiWithRetry";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";

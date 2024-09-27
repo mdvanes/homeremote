@@ -1,7 +1,7 @@
-import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const emptySplitApi = createApi({
+export const emptyApi = createApi({
     reducerPath: "homeremoteGeneratedApi",
-    baseQuery: retry(fetchBaseQuery({ baseUrl: "/" })),
+    baseQuery: fetchBaseQuery({ baseUrl: "/" }),
     endpoints: () => ({}),
 });

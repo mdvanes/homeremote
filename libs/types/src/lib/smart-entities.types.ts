@@ -4,7 +4,7 @@ export type UpdateSmartEntityArgs =
     operations["updateSmartEntity"]["requestBody"]["content"]["application/json"];
 
 export type UpdateSmartEntityResponse =
-    operations["updateSmartEntity"]["responses"]["200"]["content"]["application/json"];
+    operations["updateSmartEntity"]["responses"]["201"]["content"]["application/json"];
 
 export type GetSmartEntitiesResponse =
     operations["getSmartEntities"]["responses"]["200"]["content"]["application/json"];

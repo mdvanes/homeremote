@@ -1,4 +1,4 @@
-import { emptySplitApi as api } from "../emptyApi";
+import { emptyApiWithRetry as api } from "../emptyApiWithRetry";
 export const addTagTypes = ["speedtest"] as const;
 const injectedRtkApi = api
     .enhanceEndpoints({
@@ -16,7 +16,7 @@ const injectedRtkApi = api
         }),
         overrideExisting: false,
     });
-export { injectedRtkApi as speedTestApi };
+export { injectedRtkApi as speedTestApiWithRetry };
 export type GetSpeedtestApiResponse =
     /** status 200 getSpeedtest */ GetSpeedtestResponse;
 export type GetSpeedtestApiArg = void;

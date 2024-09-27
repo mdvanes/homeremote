@@ -5,10 +5,8 @@ import {
 import { ListItem, ListItemText } from "@mui/material";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FC } from "react";
-import {
-    State,
-    useUpdateSmartEntityMutation,
-} from "../../../Services/generated/smartEntitiesApi";
+import { State } from "../../../Services/generated/smartEntitiesApiWithRetry";
+import { useUpdateSmartEntityMutation } from "../../../Services/smartEntitiesApiEnhanced";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
 import { logError } from "../LogCard/logSlice";
@@ -20,8 +18,7 @@ interface SwitchesListItemProps {
 
 export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
     const dispatch = useAppDispatch();
-    // TAG does not invalidate?
-    const [updateSwitch] = useUpdateSmartEntityMutation();
+    const [updateSwitch, { isLoading }] = useUpdateSmartEntityMutation();
 
     const setState = (state: "on" | "off") => async () => {
         try {
@@ -29,7 +26,7 @@ export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
                 await updateSwitch({
                     entityId: item.entity_id,
                     updateSmartEntityBody: { state },
-                });
+                }).unwrap();
             }
         } catch (error) {
             dispatch(
@@ -47,6 +44,7 @@ export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
             <SwitchesListItemButton
                 onClick={setState("on")}
                 selected={item.state === "on"}
+                disabled={isLoading}
             >
                 <RadioButtonCheckedIcon />
             </SwitchesListItemButton>
@@ -61,6 +59,7 @@ export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
             <SwitchesListItemButton
                 onClick={setState("off")}
                 selected={item.state === "off"}
+                disabled={isLoading}
             >
                 <RadioButtonUncheckedIcon />
             </SwitchesListItemButton>

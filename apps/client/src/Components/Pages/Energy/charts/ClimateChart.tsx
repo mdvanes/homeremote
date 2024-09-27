@@ -1,7 +1,7 @@
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Button, Chip, IconButton, Stack } from "@mui/material";
 import { FC, useState } from "react";
-import { useGetTemperaturesQuery } from "../../../../Services/generated/energyUsageApi";
+import { useGetTemperaturesQuery } from "../../../../Services/generated/energyUsageApiWithRetry";
 import EnergyChart, {
     axisDateTimeFormatDayHour,
 } from "../../../Molecules/EnergyChart/EnergyChart";

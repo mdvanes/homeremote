@@ -1,4 +1,4 @@
-import { State } from "../../../Services/generated/smartEntitiesApi";
+import { State } from "../../../Services/generated/smartEntitiesApiWithRetry";
 
 // device_class is undefined for switches
 export const isSwitch = (s: State) =>
