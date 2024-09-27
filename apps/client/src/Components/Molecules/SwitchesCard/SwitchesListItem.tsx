@@ -5,8 +5,8 @@ import {
 import { ListItem, ListItemText } from "@mui/material";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FC } from "react";
+import { useUpdateSmartEntityMutation } from "../../../Services/generated/smartEntitiesApi";
 import { State } from "../../../Services/generated/smartEntitiesApiWithRetry";
-import { useUpdateSmartEntityMutation } from "../../../Services/smartEntitiesApiEnhanced";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
 import { logError } from "../LogCard/logSlice";
