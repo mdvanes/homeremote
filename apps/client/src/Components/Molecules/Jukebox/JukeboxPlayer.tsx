@@ -5,7 +5,7 @@ import {
     Forward10 as Forward10Icon,
 } from "@mui/icons-material";
 import { IconButton, Stack, Typography } from "@mui/material";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { skipToken } from "@reduxjs/toolkit/query";
 import { FC, RefObject, useCallback, useEffect } from "react";
 import {
     useGetPlaylistQuery,

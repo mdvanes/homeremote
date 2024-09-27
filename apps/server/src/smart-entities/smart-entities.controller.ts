@@ -9,6 +9,7 @@ import {
     Body,
     Controller,
     Get,
+    HttpCode,
     HttpException,
     HttpStatus,
     Logger,
@@ -104,6 +105,7 @@ export class SmartEntitiesController {
 
     @UseGuards(JwtAuthGuard)
     @Post("/:entityId")
+    @HttpCode(201)
     async updateSmartEntity(
         @Param("entityId") entityId: string,
         @Body() args: SmartEntitiesTypes.UpdateSmartEntityArgs,
@@ -130,7 +132,7 @@ export class SmartEntitiesController {
                 }
             );
             (await response.json()) as PostServicesDomainServiceResponse;
-            return "received";
+            return {};
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

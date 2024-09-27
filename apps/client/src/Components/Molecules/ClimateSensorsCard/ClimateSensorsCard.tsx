@@ -1,6 +1,6 @@
 import { List, Paper } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import { useGetSmartEntitiesQuery } from "../../../Services/generated/smartEntitiesApi";
+import { useGetSmartEntitiesQuery } from "../../../Services/generated/smartEntitiesApiWithRetry";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";

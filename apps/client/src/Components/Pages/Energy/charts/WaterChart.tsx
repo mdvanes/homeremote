@@ -4,7 +4,7 @@ import { FC, useState } from "react";
 import {
     useGetWaterQuery,
     type GetWaterResponse,
-} from "../../../../Services/generated/energyUsageApi";
+} from "../../../../Services/generated/energyUsageApiWithRetry";
 import EnergyChart, {
     axisDateTimeFormatDayHour,
 } from "../../../Molecules/EnergyChart/EnergyChart";

@@ -57,7 +57,7 @@ paths:
                             $ref: "#/components/schemas/UpdateSmartEntityBody"
 
             responses:
-                "200":
+                "201":
                     description: updateSmartEntity
                     content:
                         application/json:
@@ -116,4 +116,4 @@ components:
                     description: Target state, on or off
                     enum: [on, off]
         UpdateSmartEntityResponse:
-            type: string
+            type: object

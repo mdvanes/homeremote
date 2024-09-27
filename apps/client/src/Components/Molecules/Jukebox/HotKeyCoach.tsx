@@ -28,7 +28,14 @@ const HotKeyCoach = () => {
             <IconButton onClick={handleClick}>
                 <HelpIcon />
             </IconButton>
-            <Popper id="simple-popper" open={open} anchorEl={anchorEl}>
+            <Popper
+                id="simple-popper"
+                open={open}
+                anchorEl={anchorEl}
+                placeholder={undefined}
+                onPointerEnterCapture={undefined}
+                onPointerLeaveCapture={undefined}
+            >
                 <Box sx={{ p: 1, bgcolor: "background.paper" }}>
                     <List>
                         {hotKeyMapEntries.map(([k, v]) => {

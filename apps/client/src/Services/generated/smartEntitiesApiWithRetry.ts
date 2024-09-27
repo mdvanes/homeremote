@@ -1,4 +1,4 @@
-import { emptyApi as api } from "../emptyApi";
+import { emptyApiWithRetry as api } from "../emptyApiWithRetry";
 export const addTagTypes = ["smartEntities"] as const;
 const injectedRtkApi = api
     .enhanceEndpoints({
@@ -13,31 +13,13 @@ const injectedRtkApi = api
                 query: () => ({ url: `/api/smart-entities` }),
                 providesTags: ["smartEntities"],
             }),
-            updateSmartEntity: build.mutation<
-                UpdateSmartEntityApiResponse,
-                UpdateSmartEntityApiArg
-            >({
-                query: (queryArg) => ({
-                    url: `/api/smart-entities/${queryArg.entityId}`,
-                    method: "POST",
-                    body: queryArg.updateSmartEntityBody,
-                }),
-                invalidatesTags: ["smartEntities"],
-            }),
         }),
         overrideExisting: false,
     });
-export { injectedRtkApi as smartEntitiesApi };
+export { injectedRtkApi as smartEntitiesApiWithRetry };
 export type GetSmartEntitiesApiResponse =
     /** status 200 getSmartEntities */ GetSmartEntitiesResponse;
 export type GetSmartEntitiesApiArg = void;
-export type UpdateSmartEntityApiResponse =
-    /** status 201 updateSmartEntity */ UpdateSmartEntityResponse;
-export type UpdateSmartEntityApiArg = {
-    /** Entity ID */
-    entityId: string;
-    updateSmartEntityBody: UpdateSmartEntityBody;
-};
 export type State = {
     entity_id?: string;
     state?: string;
@@ -78,10 +60,4 @@ export type ErrorResponse = {
     /** Code of the error */
     code?: number;
 };
-export type UpdateSmartEntityResponse = object;
-export type UpdateSmartEntityBody = {
-    /** Target state, on or off */
-    state?: "on" | "off";
-};
-export const { useGetSmartEntitiesQuery, useUpdateSmartEntityMutation } =
-    injectedRtkApi;
+export const { useGetSmartEntitiesQuery } = injectedRtkApi;

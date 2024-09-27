@@ -2,7 +2,7 @@ import DeviceThermostatIcon from "@mui/icons-material/DeviceThermostat";
 import WaterIcon from "@mui/icons-material/Water";
 import { ListItemIcon, ListItemText, Stack } from "@mui/material";
 import { FC } from "react";
-import { State } from "../../../Services/generated/smartEntitiesApi";
+import { State } from "../../../Services/generated/smartEntitiesApiWithRetry";
 
 interface ClimateSensorsListItemProps {
     sensors: State[];

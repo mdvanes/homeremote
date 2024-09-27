@@ -1,4 +1,4 @@
-import { emptySplitApi as api } from "../emptyApi";
+import { emptyApiWithRetry as api } from "../emptyApiWithRetry";
 export const addTagTypes = ["temperature", "gas-temperature", "water"] as const;
 const injectedRtkApi = api
     .enhanceEndpoints({
@@ -42,7 +42,7 @@ const injectedRtkApi = api
         }),
         overrideExisting: false,
     });
-export { injectedRtkApi as energyUsageApi };
+export { injectedRtkApi as energyUsageApiWithRetry };
 export type GetElectricExportsApiResponse =
     /** status 200 ElectricExports */ GetElectricExportsResponse;
 export type GetElectricExportsApiArg = void;

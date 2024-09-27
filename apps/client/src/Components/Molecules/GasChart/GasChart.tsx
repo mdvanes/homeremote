@@ -11,7 +11,7 @@ import {
     YAxis,
 } from "recharts";
 import { useGetGasUsageQuery } from "../../../Services/energyUsageApi";
-import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApi";
+import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApiWithRetry";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
@@ -28,6 +28,7 @@ const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
 
 const UPDATE_INTERVAL_MS = 60 * 60 * 1000; // 1 x per hour
 
+// TODO values are off. Also shows too few items for month range.
 const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     const dispatch = useAppDispatch();
     const [range, setRange] = useState<"day" | "week" | "month">("week");
@@ -77,14 +78,14 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         gasTemperatureResponse?.flatMap((sensor) => sensor[0]) ?? [];
 
     const entriesBySensor = (
-        gasTemperatureResponse?.flatMap(
-            (sensor) =>
-                sensor.map((item) => ({
+        gasTemperatureResponse?.flatMap((sensor) =>
+            sensor
+                .map((item) => ({
                     time: new Date(item?.last_changed ?? 0).getTime(),
                     [`${item.attributes?.friendly_name ?? item?.entity_id}`]:
                         parseFloat(item.state ?? ""),
                 }))
-            // .slice(-1 * (mode === "day" ? 24 : 30))
+                .slice(1)
         ) ?? []
     ).toSorted((a, b) => {
         return a.time - b.time;

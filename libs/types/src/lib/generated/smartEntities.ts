@@ -128,7 +128,7 @@ export interface components {
              */
             state?: "on" | "off";
         };
-        UpdateSmartEntityResponse: string;
+        UpdateSmartEntityResponse: Record<string, never>;
     };
     responses: never;
     parameters: never;
@@ -193,7 +193,7 @@ export interface operations {
         };
         responses: {
             /** @description updateSmartEntity */
-            200: {
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -7,7 +7,7 @@ import {
     ListItemIcon,
     ListItemText,
 } from "@mui/material";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
+import { skipToken } from "@reduxjs/toolkit/query";
 import { FC, RefObject } from "react";
 import { useGetPlaylistQuery } from "../../../Services/jukeboxApi";
 import { LAST_SONG } from "./JukeboxPlayer";
