@@ -35,7 +35,10 @@ export const SwitchesCard: FC = () => {
 
     return (
         <List component={Paper}>
-            <LoadingDot isLoading={isLoading || isFetching} />
+            <LoadingDot
+                isLoading={isLoading || isFetching}
+                slowUpdateMs={4_000}
+            />
             {isError && (
                 <ErrorRetry retry={() => refetch()}>
                     SwitchesCard could not load

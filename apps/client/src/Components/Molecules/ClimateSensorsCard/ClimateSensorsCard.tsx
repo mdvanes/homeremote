@@ -36,8 +36,11 @@ export const ClimateSensorsCard: FC = () => {
     }, [dispatch, error, isError]);
 
     return (
-        <List component={Paper}>
-            <LoadingDot isLoading={isLoading || isFetching} />
+        <List component={Paper} onClick={() => refetch()}>
+            <LoadingDot
+                isLoading={isLoading || isFetching}
+                slowUpdateMs={4_000}
+            />
             {isError && (
                 <ErrorRetry retry={() => refetch()}>
                     ClimateSensorsCard could not load

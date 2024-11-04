@@ -61,6 +61,7 @@ const getStartOffsetFromRange = (
         return DAY_IN_MS * 7;
     }
     if (range === "month") {
+        // By default only 10 days are kept in the database. https://www.home-assistant.io/integrations/recorder/#purge_keep_days
         return DAY_IN_MS * 31;
     }
 };

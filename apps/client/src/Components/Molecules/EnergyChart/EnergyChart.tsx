@@ -102,6 +102,8 @@ export const EnergyChart: FC<{
         <Bar key={config.dataKey?.toString()} yAxisId="left" {...config} />
     ));
 
+    const isMobile = window.innerWidth < 600;
+
     return (
         <Card>
             <CardContent>
@@ -116,7 +118,7 @@ export const EnergyChart: FC<{
                     >
                         <ResponsiveContainer
                             width="100%"
-                            aspect={config.aspect ?? 4}
+                            aspect={config.aspect ?? (isMobile ? 1 : 4)}
                         >
                             <ComposedChart
                                 data={data}
