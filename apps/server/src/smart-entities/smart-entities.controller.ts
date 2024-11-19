@@ -21,9 +21,6 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
-import { wait } from "../util/wait";
-
-const waitRandom = () => wait(Math.floor(Math.random() * 1000) + 500);
 
 @Controller("api/smart-entities")
 export class SmartEntitiesController {
@@ -74,8 +71,6 @@ export class SmartEntitiesController {
             `[${req.user.name}] GET to /smart-entities for entityId ${this.haApiConfig.entityId}`
         );
 
-        await waitRandom();
-
         try {
             const listOfIdsResponse = await this.fetchHa<GetHaStatesResponse>(
                 `/api/states/${this.haApiConfig.entityId}`
@@ -85,8 +80,6 @@ export class SmartEntitiesController {
                 throw new Error(listOfIdsResponse.message);
             }
             // After this point fails sometimes on Dev, but often on Prod. Prod is faster. Maybe to quickly subsequent requests?
-
-            await waitRandom();
 
             if ("attributes" in listOfIdsResponse) {
                 const allHaStates = await this.fetchHa<State[]>(`/api/states`);

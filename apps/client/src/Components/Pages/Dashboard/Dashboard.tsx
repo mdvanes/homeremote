@@ -1,6 +1,6 @@
 import AppsIcon from "@mui/icons-material/Apps";
 import { Grid, IconButton } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { CarTabs } from "../../Molecules/CarTabs/CarTabs";
 import ClimateSensorsCard from "../../Molecules/ClimateSensorsCard/ClimateSensorsCard";
@@ -36,6 +36,26 @@ const useStyles = makeStyles()((theme) => ({
     },
 }));
 
+// NOTE: Stagger calls to Home Assistant API on mount
+const DelayComponent: FC<PropsWithChildren<{ delayMs: number }>> = ({
+    children,
+    delayMs,
+}) => {
+    const [showChildren, setShowChildren] = useState(false);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setShowChildren(true);
+        }, delayMs);
+    }, [setShowChildren, delayMs]);
+
+    if (!showChildren) {
+        return null;
+    }
+
+    return <>{children}</>;
+};
+
 const Dashboard: FC = () => {
     const { classes } = useStyles();
     const [isLiteMode, setIsLiteMode] = useState(false);
@@ -44,9 +64,13 @@ const Dashboard: FC = () => {
         <Grid container spacing={2} className={classes.container}>
             <Grid item xs={12} md={3}>
                 <SwitchesCard />
-                <ClimateSensorsCard />
+                <DelayComponent delayMs={500}>
+                    <ClimateSensorsCard />
+                </DelayComponent>
 
-                <GasChart />
+                <DelayComponent delayMs={1000}>
+                    <GasChart />
+                </DelayComponent>
                 <HomeSec />
                 <UrlToMusic />
 
