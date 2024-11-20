@@ -6,6 +6,17 @@ export interface DockerContainerInfo {
     Labels: {
         "com.docker.compose.project": string | null;
     };
+    Ports?: {
+        IP?: "0.0.0.0" | "::";
+        PrivatePort?: number;
+        PublicPort: number;
+        Type?: "tcp" | "udp";
+    }[];
+}
+
+export interface DockerContainerUIInfo extends DockerContainerInfo {
+    url?: string;
+    icon?: string;
 }
 
 export type AllResponse = DockerContainerInfo[];
@@ -16,5 +27,5 @@ export interface DockerListArgs {
 
 export interface DockerListResponse {
     status: "received" | "error";
-    containers?: DockerContainerInfo[];
+    containers?: DockerContainerUIInfo[];
 }

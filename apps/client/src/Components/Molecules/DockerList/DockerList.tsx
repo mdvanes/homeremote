@@ -1,4 +1,4 @@
-import { DockerContainerInfo } from "@homeremote/types";
+import { DockerContainerUIInfo } from "@homeremote/types";
 import { Box, Grid } from "@mui/material";
 import { Stack } from "@mui/system";
 import { FC, useEffect, useState } from "react";
@@ -12,7 +12,29 @@ import ContainerDot from "./ContainerDot";
 
 const UPDATE_INTERVAL_MS = 30000;
 
-const mapInfo = (c: DockerContainerInfo) => <DockerInfo key={c.Id} info={c} />;
+const mapInfo = (c: DockerContainerUIInfo) => (
+    <DockerInfo key={c.Id} info={c} />
+);
+
+const sortContainers = (
+    container1: DockerContainerUIInfo,
+    container2: DockerContainerUIInfo
+): number => {
+    if (container1.State === "running" && container2.State !== "running") {
+        return -1;
+    }
+    if (container1.State !== "running" && container2.State === "running") {
+        return 1;
+    }
+
+    if (container1.Names[0] < container2.Names[0]) {
+        return -1;
+    }
+    if (container1.Names[0] > container2.Names[0]) {
+        return 1;
+    }
+    return 0;
+};
 
 interface DockerListProps {
     onError: (err: string) => void;
@@ -47,17 +69,18 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
         return null;
     }
 
-    const allContainers = data.containers ?? [];
-    const runningContainers = (data.containers ?? []).filter(
-        (c) => c.State === "running"
+    const allContainers = (data.containers ?? []).toSorted(sortContainers);
+    const isPrimaryContainer = (c: DockerContainerUIInfo) =>
+        typeof c.icon !== "undefined";
+
+    const primaryContainers = allContainers.filter(isPrimaryContainer);
+    const secondaryContainers = allContainers.filter(
+        (c) => !isPrimaryContainer(c)
     );
-    const notRunningContainers = (data.containers ?? []).filter(
-        (c) => c.State !== "running"
-    );
-    const containerDots = runningContainers.map((c) => (
+    const containerDots = secondaryContainers.map((c) => (
         <ContainerDot key={c.Id} info={c} />
     ));
-    const containers = isOpen ? allContainers : notRunningContainers;
+    const containers = isOpen ? allContainers : primaryContainers;
     const containers1 = containers.slice(0, Math.ceil(containers.length / 2));
     const containers2 = containers.slice(Math.ceil(containers.length / 2));
 
@@ -85,7 +108,7 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
             <CardExpandBar
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
-                hint={`and ${allContainers.length - containers.length} running`}
+                hint={`and ${allContainers.length - containers.length} more`}
             />
         </>
     );

@@ -9,7 +9,8 @@ const ContainerDot: FC<{ info: DockerContainerInfo }> = ({ info }) => (
             display: "inline-block",
             width: 8,
             height: 8,
-            backgroundColor: "info.main",
+            backgroundColor:
+                info.State === "running" ? "info.main" : "error.main",
             marginRight: 0.25,
             borderRadius: "50%",
         }}

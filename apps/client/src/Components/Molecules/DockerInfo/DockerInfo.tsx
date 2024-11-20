@@ -14,6 +14,7 @@ import {
     useStartDockerMutation,
     useStopDockerMutation,
 } from "../../../Services/dockerListApi";
+import { DockerInfoIcon } from "./DockerInfoIcon";
 
 const DockerInfo: FC<{ info: DockerContainerInfo }> = ({ info }) => {
     const [startDocker] = useStartDockerMutation();
@@ -48,13 +49,21 @@ const DockerInfo: FC<{ info: DockerContainerInfo }> = ({ info }) => {
                 onClick={handleClickOpen}
                 sx={{
                     cursor: "pointer",
+                    "& .MuiAlert-message": {
+                        display: "flex",
+                        width: "100%",
+                        justifyContent: "space-between",
+                    },
                 }}
             >
-                {name}{" "}
-                {Labels["com.docker.compose.project"]
-                    ? `(${Labels["com.docker.compose.project"]})`
-                    : ""}{" "}
-                | {Status}
+                <div>
+                    {name}{" "}
+                    {Labels["com.docker.compose.project"]
+                        ? `(${Labels["com.docker.compose.project"]})`
+                        : ""}{" "}
+                    | {Status}
+                </div>
+                <DockerInfoIcon info={info} />
             </Alert>
             <Dialog
                 open={open}
