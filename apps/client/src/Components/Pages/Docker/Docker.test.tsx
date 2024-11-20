@@ -27,6 +27,7 @@ const mockDockerListResponse: DockerListResponse = {
             Labels: {
                 "com.docker.compose.project": null,
             },
+            icon: "some-icon",
         },
         {
             Id: "124",
@@ -58,14 +59,14 @@ describe("Docker", () => {
                 <LogCard />
             </MockStoreProvider>
         );
-        await screen.findByText(/and 1 running/);
-        expect(screen.getByText(/some-stopped/)).toBeVisible();
-        expect(screen.queryByText("some-name")).not.toBeInTheDocument();
+        await screen.findByText(/and 1 more/);
+        expect(screen.getByText(/some-name/)).toBeVisible();
+        expect(screen.queryByText("some-stopped")).not.toBeInTheDocument();
         const buttonElem = screen.getAllByRole("button")[0];
         userEvent.click(buttonElem);
-        await screen.findByText(/some-name/);
-        expect(screen.getByText(/some-name/)).toBeVisible();
+        await screen.findByText(/some-stopped/);
         expect(screen.getByText(/some-stopped/)).toBeVisible();
+        expect(screen.getByText(/some-name/)).toBeVisible();
     });
 
     it("forwards an error to log", async () => {

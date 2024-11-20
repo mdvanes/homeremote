@@ -74,7 +74,8 @@ export class DockerlistController {
             DEFAULT_SOCKET_PATH;
         this.baseUrl = this.configService.get<string>("DOCKER_BASE_URL");
 
-        const iconsConfig = this.configService.get<string>("DOCKER_ICONS");
+        const iconsConfig =
+            this.configService.get<string>("DOCKER_ICONS") ?? "";
         const iconsStrings = iconsConfig.split(";");
         const iconsEntries = iconsStrings.map((str) => {
             const [label, icon] = str.split(",");

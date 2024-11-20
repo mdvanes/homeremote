@@ -10,8 +10,6 @@ exports[`Dashboard page contains all the control components 1`] = `
         class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-iv7vbz-MuiGrid-root"
       >
         <mock-switches-card />
-        <mock-climatesensor-card />
-        <mock-gaschart />
         <mock-homesec />
         <mock-url-to-music />
         <mock-log-card />
