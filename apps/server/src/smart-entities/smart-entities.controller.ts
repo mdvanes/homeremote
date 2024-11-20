@@ -32,6 +32,8 @@ export class SmartEntitiesController {
         entityId: string;
     };
 
+    private listOfIdsResponse: GetHaStatesResponse;
+
     constructor(private configService: ConfigService) {
         this.logger = new Logger(SmartEntitiesController.name);
 
@@ -43,6 +45,14 @@ export class SmartEntitiesController {
                 this.configService.get<string>("HOMEASSISTANT_SWITCHES_ID") ||
                 "",
         };
+
+        const run = async () => {
+            this.listOfIdsResponse = await this.fetchHa<GetHaStatesResponse>(
+                `/api/states/${this.haApiConfig.entityId}`
+            );
+        };
+
+        run();
     }
 
     async fetchHa<T>(path: string): Promise<T> {
@@ -72,9 +82,7 @@ export class SmartEntitiesController {
         );
 
         try {
-            const listOfIdsResponse = await this.fetchHa<GetHaStatesResponse>(
-                `/api/states/${this.haApiConfig.entityId}`
-            );
+            const listOfIdsResponse = this.listOfIdsResponse;
 
             if ("message" in listOfIdsResponse && listOfIdsResponse.message) {
                 throw new Error(listOfIdsResponse.message);
