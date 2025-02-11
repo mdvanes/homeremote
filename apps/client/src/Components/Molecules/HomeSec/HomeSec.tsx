@@ -36,6 +36,7 @@ const typeIcon: Record<TypeF, string> = {
     IR: "animation",
     "Remote Controller": "settings_remote",
     Siren: "notifications",
+    CO: "smoking_rooms",
 };
 
 const UPDATE_INTERVAL_MS = 2 * 60 * 1000;

@@ -28,7 +28,7 @@ const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
 
 const UPDATE_INTERVAL_MS = 60 * 60 * 1000; // 1 x per hour
 
-// TODO values are off. Also shows too few items for month range.
+// TODO values have descrepancies with Home Assistant
 const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     const dispatch = useAppDispatch();
     const [range, setRange] = useState<"day" | "week" | "month">("week");
@@ -122,6 +122,10 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                 config={{
                     lines,
                     bars,
+                    leftYAxis: {
+                        // unit: "m3",
+                        domain: [0, "auto"],
+                    },
                     rightYAxis: {
                         unit: "°",
                         domain: [0, "auto"],
