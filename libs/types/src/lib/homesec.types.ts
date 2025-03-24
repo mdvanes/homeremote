@@ -4,7 +4,8 @@ export type TypeF =
     | "Keypad"
     | "IR"
     | "Remote Controller"
-    | "Siren";
+    | "Siren"
+    | "CO";
 
 interface SensorRow {
     area: number;

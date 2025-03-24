@@ -56,6 +56,7 @@ export class SmartEntitiesController {
     }
 
     async fetchHa<T>(path: string): Promise<T> {
+        // If this gives an unexpected error, check if the VPN is turned off.
         const response = await fetch(`${this.haApiConfig.baseUrl}${path}`, {
             headers: {
                 Authorization: `Bearer ${this.haApiConfig.token}`,
