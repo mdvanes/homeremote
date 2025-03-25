@@ -30,7 +30,15 @@ const MOCK_ROWS = [
     { _value: "[1,2]", _time: "123" },
     { _value: 111, _time: "123" },
 ];
-const MOCK_DATA = [{ loc: [1, 2], time: "123" }];
+const MOCK_DATA = [
+    [
+        {
+            loc: [1, 2],
+            time: "123",
+            name: "name",
+        },
+    ],
+];
 
 describe("Datalora Controller", () => {
     let controller: DataloraController;
@@ -64,7 +72,19 @@ describe("Datalora Controller", () => {
 
     it("returns coords for /GET with ?type=24h", async () => {
         fetchMock.mockResponse(
-            JSON.stringify([[{ state: "[2,1]", last_changed: "123" }]])
+            JSON.stringify([
+                [
+                    {
+                        state: "[2,1]",
+                        last_changed: "123",
+                        attributes: {
+                            friendly_name: "name",
+                            latitude: 1,
+                            longitude: 2,
+                        },
+                    },
+                ],
+            ])
         );
         // mockCollectRows.mockImplementation(collectRowsCreator(MOCK_ROWS));
 

@@ -111,7 +111,6 @@ export class DataloraController {
             const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.trackerIds}`;
             const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
 
-            // console.log(result);
             // console.log(result[0].at(-1));
             // [
             //     [

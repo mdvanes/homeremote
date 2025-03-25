@@ -32,7 +32,7 @@ export const EnergyListItems: FC<{
         chargingSystemStatus,
     } = energy;
 
-    const isCharging = estimatedChargingTime?.value !== "0";
+    const isCharging = false; // estimatedChargingTime?.value !== "0";
 
     const chargingIcon = () => {
         if (
