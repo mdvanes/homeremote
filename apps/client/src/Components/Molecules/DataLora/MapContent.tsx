@@ -1,5 +1,5 @@
 import { TrackerItem } from "@homeremote/types";
-import { polygon } from "leaflet";
+import { Icon, IconOptions, polygon } from "leaflet";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
 
@@ -13,19 +13,45 @@ const TILES_LAYER_DARK =
     "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
 interface Props {
-    coords: TrackerItem[];
+    coords: TrackerItem[][];
 }
 
+const LINE_COLORS = ["#3488ff", "green", "red", "yellow", "purple"] as const;
+
+const baseIconProps: IconOptions = {
+    iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+    shadowUrl:
+        "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+};
+
+const blueIcon = new Icon(baseIconProps);
+
+const greenIcon = new Icon({
+    ...baseIconProps,
+    iconUrl:
+        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
+});
+
+const MARKER_ICONS = [blueIcon, greenIcon];
+
 const MapContent: FC<Props> = ({ coords }) => {
-    const [marker, setMarker] = useState<TrackerItem | null>(null);
+    const [markers, setMarkers] = useState<TrackerItem[] | null>(null);
     const map = useMap();
 
     const updateBoundsAndMarker = useCallback(() => {
-        if (coords.length > 0) {
-            const newPoly = polygon(coords.map(({ loc }) => loc));
+        const firstDeviceCoords = coords?.[0] ?? [];
+        if (firstDeviceCoords.length > 0) {
+            const newPoly = polygon(firstDeviceCoords.map(({ loc }) => loc));
             map.fitBounds(newPoly.getBounds());
-            const last = coords[coords.length - 1];
-            setMarker(last);
+            const last: TrackerItem[] = coords
+                .map((deviceCoords) => deviceCoords.at(-1))
+                .filter((item) => item !== undefined) as TrackerItem[];
+            setMarkers(last);
         }
     }, [coords, map]);
 
@@ -39,14 +65,26 @@ const MapContent: FC<Props> = ({ coords }) => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url={TILES_LAYER_DARK}
             />
-            <Polyline positions={coords.map((coord) => coord.loc)} />
-            {marker && (
-                <Marker position={marker.loc}>
+            {coords.map((deviceCoords, i) => {
+                return (
+                    <Polyline
+                        color={LINE_COLORS[i]}
+                        positions={deviceCoords.map(
+                            (deviceCoord) => deviceCoord.loc
+                        )}
+                    />
+                );
+            })}
+            {markers?.map((marker, i) => (
+                <Marker position={marker.loc} icon={MARKER_ICONS[i]}>
                     <Popup>
-                        {new Date(marker.time).toLocaleString("nl-nl")}
+                        <div>{marker.name}</div>
+                        <div>
+                            {new Date(marker.time).toLocaleString("nl-nl")}
+                        </div>
                     </Popup>
                 </Marker>
-            )}
+            ))}
         </>
     );
 };

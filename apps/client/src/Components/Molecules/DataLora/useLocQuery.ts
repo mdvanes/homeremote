@@ -5,7 +5,7 @@ import { useGetCoordsQuery } from "../../../Services/dataloraApi";
 const UPDATE_INTERVAL_MS = 1000 * 60 * 60; // 1000 ms / 60 seconds / 60 minutes = 1x per hour
 
 interface LocQuery {
-    coords: TrackerItem[];
+    coords: TrackerItem[][];
     update: () => Promise<void>;
     toggleQueryType: () => void;
     isLoading: boolean;
@@ -36,7 +36,7 @@ export const useLocQuery = (): LocQuery => {
     };
 
     return {
-        coords: coords || [],
+        coords: coords ?? [],
         update,
         isLoading: isLoading || isFetching,
         toggleQueryType,

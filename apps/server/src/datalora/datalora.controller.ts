@@ -95,8 +95,10 @@ export class DataloraController {
     async getCoords(
         @Request() req: AuthenticatedRequest,
         @Query() query: { type: TrackerQueryType }
-    ): Promise<{ data: TrackerItem[] }> {
+    ): Promise<{ data: TrackerItem[][] }> {
         this.logger.verbose(`GET to /api/datalora`);
+
+        // TODO set type=24H as default or handle type=ALL
 
         try {
             const time = Date.now();
@@ -109,45 +111,56 @@ export class DataloraController {
             const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.trackerIds}`;
             const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
 
-            const tracker0 = result[0].map<TrackerItem>((r) => {
-                const [lon, lat] = JSON.parse(r.state);
-                // TODO return attributes
-                // const {
-                //     charge,
-                //     speed,
-                //     odometer,
-                //     altitude,
-                //     icon,
-                //     friendly_name,
-                //     latitude,
-                //     longitude,
-                // } = r.attributes as {
-                //     charge: string;
-                //     speed: string;
-                //     odometer: string;
-                //     altitude: string;
-                //     icon: string;
-                //     friendly_name: string;
-                //     latitude: string;
-                //     longitude: string;
-                // };
-                return {
-                    loc: [lat, lon],
-                    time: r.last_changed,
-                };
-            });
+            // console.log(result);
+            // console.log(result[0].at(-1));
+            // [
+            //     [
+            //       {
+            //         entity_id: 'sensor.tracker0',
+            //         state: '[3, 50]',
+            //         attributes: [Object],
+            //         last_changed: '2025-03-23T08:17:54.899000+00:00',
+            //         last_reported: '2025-03-23T08:17:54.899000+00:00',
+            //         last_updated: '2025-03-23T08:17:54.899000+00:00',
+            //         context: [Object]
+            //       }
+            //     ]
+            //   ]
 
-            // TODO also return tracker1
-            // const tracker1 = result[0].map<TrackerItem>((r) => {
-            //     const [lon, lat] = JSON.parse(r.state);
-            //     return {
-            //         loc: [lat, lon],
-            //         time: r.last_changed,
-            //     };
-            // });
+            const data = result.map((device) =>
+                device.map<TrackerItem>((entry) => {
+                    // console.log(entry);
+                    // const [lon, lat] = JSON.parse(entry.state);
+                    // TODO return attributes
+                    const {
+                        // charge,
+                        // speed,
+                        // odometer,
+                        // altitude,
+                        // icon,
+                        friendly_name,
+                        latitude,
+                        longitude,
+                    } = entry.attributes as {
+                        // charge: string;
+                        // speed: string;
+                        // odometer: string;
+                        // altitude: string;
+                        // icon: string;
+                        friendly_name: string;
+                        latitude: number;
+                        longitude: number;
+                    };
+                    return {
+                        loc: [latitude, longitude],
+                        time: entry.last_changed,
+                        name: friendly_name,
+                    };
+                })
+            );
 
             return {
-                data: tracker0,
+                data,
             };
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
