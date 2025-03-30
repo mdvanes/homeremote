@@ -1,29 +1,31 @@
 import { CarTwinResponse } from "@homeremote/types";
-import {
-    Filter1 as Filter1Icon,
-    Filter2 as Filter2Icon,
-    Speed as SpeedIcon,
-} from "@mui/icons-material";
+import { Speed as SpeedIcon } from "@mui/icons-material";
 import { Alert, Tooltip } from "@mui/material";
 import { FC } from "react";
 import { StatisticsListItem } from "./StatisticsListItem";
 
 export const StatisticsListItems: FC<{
     statistics: CarTwinResponse["connected"]["statistics"];
-    handleAuthConnected: () => void;
-}> = ({ statistics, handleAuthConnected }) => {
+    // handleAuthConnected: () => void;
+}> = ({
+    statistics,
+    // handleAuthConnected
+}) => {
     const tripMeterInfo =
         "NOTE: This number is multiplied by 100 as a correction, and should be accurate to 100 km instead 1 km.";
 
     return (
         <>
             {!statistics || statistics === "ERROR" ? (
-                <Alert severity="warning" onClick={handleAuthConnected}>
+                <Alert
+                    severity="warning"
+                    // onClick={handleAuthConnected}
+                >
                     Statistics failed: authenticate connected vehicle
                 </Alert>
             ) : (
                 <>
-                    <StatisticsListItem
+                    {/* <StatisticsListItem
                         icon={
                             <Tooltip title="Trip Meter 1 (Manual)">
                                 <Filter1Icon />
@@ -46,7 +48,7 @@ export const StatisticsListItems: FC<{
                             100
                         } km`}
                         info={tripMeterInfo}
-                    />
+                    /> */}
                     <StatisticsListItem
                         icon={
                             <Tooltip title="Average Speed">

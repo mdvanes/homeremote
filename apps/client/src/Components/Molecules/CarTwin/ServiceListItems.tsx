@@ -27,11 +27,17 @@ const hoursToDaysHours = (hoursString: string) => {
 
 export const ServiceListItems: FC<{
     diagnostics: CarTwinResponse["connected"]["diagnostics"];
-    handleAuthConnected: () => void;
-}> = ({ diagnostics, handleAuthConnected }) => {
+    // handleAuthConnected: () => void;
+}> = ({
+    diagnostics,
+    // handleAuthConnected
+}) => {
     if (!diagnostics || diagnostics === "ERROR") {
         return (
-            <Alert severity="warning" onClick={handleAuthConnected}>
+            <Alert
+                severity="warning"
+                // onClick={handleAuthConnected}
+            >
                 Diagnostics failed: authenticate connected vehicle
             </Alert>
         );

@@ -1,4 +1,4 @@
-import { CarTwinArgs, CarTwinResponse } from "@homeremote/types";
+import { CarTwinResponse } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { willAddCredentials } from "../devUtils";
 
@@ -10,17 +10,23 @@ export const carTwinApi = createApi({
     }),
     endpoints: (builder) => ({
         // NOTE: must be mutation/POST, when sending token from the front-end, because it's too long for the URL
-        getCarTwin: builder.mutation<CarTwinResponse, CarTwinArgs>({
-            query: ({ connectedToken, energyToken }) => ({
+        // getCarTwin: builder.mutation<CarTwinResponse, CarTwinArgs>({
+        //     query: ({ connectedToken, energyToken }) => ({
+        //         url: "/",
+        //         method: "POST",
+        //         body: {
+        //             connectedToken,
+        //             energyToken,
+        //         },
+        //     }),
+        // }),
+        getCarTwin: builder.query<CarTwinResponse, undefined>({
+            query: () => ({
                 url: "/",
-                method: "POST",
-                body: {
-                    connectedToken,
-                    energyToken,
-                },
+                method: "GET",
             }),
         }),
     }),
 });
 
-export const { useGetCarTwinMutation } = carTwinApi;
+export const { useGetCarTwinQuery } = carTwinApi;

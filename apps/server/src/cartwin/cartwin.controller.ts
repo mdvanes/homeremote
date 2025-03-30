@@ -1,10 +1,10 @@
 import { CarTwinResponse, State } from "@homeremote/types";
 import {
     Controller,
+    Get,
     HttpException,
     HttpStatus,
     Logger,
-    Post,
     Request,
     UseGuards,
 } from "@nestjs/common";
@@ -57,7 +57,7 @@ export class CarTwinController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post()
+    @Get()
     async getCarTwin(
         @Request() req: AuthenticatedRequest
         // @Body()
