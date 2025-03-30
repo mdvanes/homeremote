@@ -7,7 +7,7 @@ const DataLoraPage: FC = () => {
     const { classes } = useStyles();
     return (
         <Paper className={classes.page}>
-            <Map />
+            <Map showChart />
         </Paper>
     );
 };

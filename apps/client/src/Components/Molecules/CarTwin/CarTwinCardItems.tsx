@@ -4,8 +4,8 @@ import { FC } from "react";
 import { EnergyListItems } from "./EnergyListItems";
 import { OdoListItem } from "./OdoListItem";
 import { StatisticsListItems } from "./StatisticsListItems";
+import carImage from "./car.jpg";
 import { ERROR } from "./constants";
-import carImage from "./xc40.jpg";
 
 export const CarTwinCardItems: FC<{
     data: CarTwinResponse;

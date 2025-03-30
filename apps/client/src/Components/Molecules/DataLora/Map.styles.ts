@@ -29,6 +29,12 @@ const useStyles = makeStyles()(() => ({
             },
         },
     },
+    chart: {
+        zIndex: 1000,
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+    },
 }));
 
 export default useStyles;

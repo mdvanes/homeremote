@@ -111,28 +111,12 @@ export class DataloraController {
             const url = `/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.trackerIds}`;
             const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
 
-            // console.log(result[0].at(-1));
-            // [
-            //     [
-            //       {
-            //         entity_id: 'sensor.tracker0',
-            //         state: '[3, 50]',
-            //         attributes: [Object],
-            //         last_changed: '2025-03-23T08:17:54.899000+00:00',
-            //         last_reported: '2025-03-23T08:17:54.899000+00:00',
-            //         last_updated: '2025-03-23T08:17:54.899000+00:00',
-            //         context: [Object]
-            //       }
-            //     ]
-            //   ]
-
             const data = result.map((device) =>
                 device.map<TrackerItem>((entry) => {
-                    // console.log(entry);
-                    // const [lon, lat] = JSON.parse(entry.state);
+                    console.log(entry.attributes);
                     // TODO return attributes
                     const {
-                        // charge,
+                        charge,
                         // speed,
                         // odometer,
                         // altitude,
@@ -141,7 +125,7 @@ export class DataloraController {
                         latitude,
                         longitude,
                     } = entry.attributes as {
-                        // charge: string;
+                        charge: string;
                         // speed: string;
                         // odometer: string;
                         // altitude: string;
@@ -154,6 +138,7 @@ export class DataloraController {
                         loc: [latitude, longitude],
                         time: entry.last_changed,
                         name: friendly_name,
+                        batteryLevel: charge ? parseFloat(charge) : undefined,
                     };
                 })
             );
