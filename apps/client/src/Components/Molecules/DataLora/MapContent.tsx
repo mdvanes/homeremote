@@ -39,6 +39,11 @@ const greenIcon = new Icon({
 
 const MARKER_ICONS = [blueIcon, greenIcon];
 
+const hasValidCoords = (item: TrackerItem): item is TrackerItem =>
+    item.loc.length > 1 &&
+    typeof item.loc[0] === "number" &&
+    typeof item.loc[1] === "number";
+
 const MapContent: FC<Props> = ({ coords }) => {
     const [markers, setMarkers] = useState<TrackerItem[] | null>(null);
     const map = useMap();
@@ -68,15 +73,16 @@ const MapContent: FC<Props> = ({ coords }) => {
             {coords.map((deviceCoords, i) => {
                 return (
                     <Polyline
+                        key={i}
                         color={LINE_COLORS[i]}
-                        positions={deviceCoords.map(
-                            (deviceCoord) => deviceCoord.loc
-                        )}
+                        positions={deviceCoords
+                            .filter(hasValidCoords)
+                            .map((deviceCoord) => deviceCoord.loc)}
                     />
                 );
             })}
-            {markers?.map((marker, i) => (
-                <Marker position={marker.loc} icon={MARKER_ICONS[i]}>
+            {markers?.filter(hasValidCoords).map((marker, i) => (
+                <Marker key={i} position={marker.loc} icon={MARKER_ICONS[i]}>
                     <Popup>
                         <div>{marker.name}</div>
                         <div>
