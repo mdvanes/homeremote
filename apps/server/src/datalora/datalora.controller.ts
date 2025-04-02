@@ -113,27 +113,17 @@ export class DataloraController {
 
             const data = result.map((device) =>
                 device.map<TrackerItem>((entry) => {
-                    console.log(entry.attributes);
-                    // TODO return attributes
-                    const {
-                        charge,
-                        // speed,
-                        // odometer,
-                        // altitude,
-                        // icon,
-                        friendly_name,
-                        latitude,
-                        longitude,
-                    } = entry.attributes as {
-                        charge: string;
-                        // speed: string;
-                        // odometer: string;
-                        // altitude: string;
-                        // icon: string;
-                        friendly_name: string;
-                        latitude: number;
-                        longitude: number;
-                    };
+                    const { charge, friendly_name, latitude, longitude } =
+                        entry.attributes as {
+                            charge: string;
+                            // speed: string;
+                            // odometer: string;
+                            // altitude: string;
+                            // icon: string;
+                            friendly_name: string;
+                            latitude: number;
+                            longitude: number;
+                        };
                     return {
                         loc: [latitude, longitude],
                         time: entry.last_changed,
