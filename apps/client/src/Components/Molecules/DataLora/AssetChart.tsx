@@ -5,15 +5,20 @@ import useStyles from "./Map.styles";
 
 interface Props {
     coords: TrackerItem[][];
+    setActiveMarkerTimestamp: (timestamp: string) => void;
 }
 
-export const AssetsChart: FC<Props> = ({ coords }) => {
+export const AssetsChart: FC<Props> = ({
+    coords,
+    setActiveMarkerTimestamp,
+}) => {
     const { classes } = useStyles();
 
     const asset1 = coords[0]; // Traccar is not sending batteryLevel attribute.
     const data = asset1
         ? asset1.map((item) => ({
               battery: item.batteryLevel, // ? parseInt(item.battery, 10) : -1,
+              time: item.time,
               // temperature: item.temperature, // ? parseInt(item.temperature, 10) : -1,
           }))
         : [];
@@ -27,6 +32,15 @@ export const AssetsChart: FC<Props> = ({ coords }) => {
                     dataKey="battery"
                     stroke="#8884d8"
                     dot={false}
+                    activeDot={{
+                        onMouseOver: (_fn, point) => {
+                            const p = point as { payload?: { time?: string } };
+                            setActiveMarkerTimestamp(p?.payload?.time ?? "");
+                        },
+                        onMouseOut: (_fn, point) => {
+                            setActiveMarkerTimestamp("");
+                        },
+                    }}
                 />
                 <YAxis
                     yAxisId="left"
@@ -35,20 +49,19 @@ export const AssetsChart: FC<Props> = ({ coords }) => {
                     width={75}
                     domain={[0, 100]}
                 />
-                {/* <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="temperature"
-                    stroke="#888400"
-                /> */}
-                {/* <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    label="°C"
-                    width={75}
-                /> */}
-                <XAxis dataKey="time" />
+                <XAxis
+                    dataKey="time"
+                    tickFormatter={(value) =>
+                        new Date(value.toString()).toLocaleString("en-uk", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        })
+                    }
+                />
                 <Tooltip
+                    labelFormatter={(value) =>
+                        new Date(value.toString()).toLocaleString("en-uk")
+                    }
                     formatter={(value, name) => {
                         if (name === "battery") {
                             return `${value}%`;

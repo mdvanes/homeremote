@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { MapContainer } from "react-leaflet";
 import { AssetsChart } from "./AssetChart";
 import useStyles from "./Map.styles";
@@ -14,10 +14,16 @@ const Map: FC<Props> = ({ showChart = false }) => {
     const { coords, update, isLoading, toggleQueryType, queryType } =
         useLocQuery();
 
+    const [activeMarkerTimestamp, setActiveMarkerTimestamp] =
+        useState<string>("");
+
     return (
         <div className={classes.map}>
             <MapContainer zoom={20}>
-                <MapContent coords={coords} />
+                <MapContent
+                    coords={coords}
+                    activeMarkerTimestamp={activeMarkerTimestamp}
+                />
             </MapContainer>
             <div className="custom-controls">
                 <button onClick={() => update()} disabled={isLoading}>
@@ -27,7 +33,12 @@ const Map: FC<Props> = ({ showChart = false }) => {
                     {queryType}
                 </button>
             </div>
-            {showChart && coords && <AssetsChart coords={coords} />}
+            {showChart && coords && (
+                <AssetsChart
+                    coords={coords}
+                    setActiveMarkerTimestamp={setActiveMarkerTimestamp}
+                />
+            )}
         </div>
     );
 };

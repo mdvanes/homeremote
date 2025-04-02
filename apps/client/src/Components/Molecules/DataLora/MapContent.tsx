@@ -14,6 +14,7 @@ const TILES_LAYER_DARK =
 
 interface Props {
     coords: TrackerItem[][];
+    activeMarkerTimestamp: string;
 }
 
 const LINE_COLORS = ["#3488ff", "green", "red", "yellow", "purple"] as const;
@@ -44,7 +45,7 @@ const hasValidCoords = (item: TrackerItem): item is TrackerItem =>
     typeof item.loc[0] === "number" &&
     typeof item.loc[1] === "number";
 
-const MapContent: FC<Props> = ({ coords }) => {
+const MapContent: FC<Props> = ({ coords, activeMarkerTimestamp }) => {
     const [markers, setMarkers] = useState<TrackerItem[] | null>(null);
     const map = useMap();
 
@@ -63,6 +64,25 @@ const MapContent: FC<Props> = ({ coords }) => {
     useEffect(() => {
         updateBoundsAndMarker();
     }, [coords, updateBoundsAndMarker]);
+
+    useEffect(() => {
+        setMarkers((prevMarkers) => {
+            if (prevMarkers) {
+                const activeCoord = coords[0].find(
+                    (item) => item.time === activeMarkerTimestamp
+                );
+                const [firstMarker, ...otherMarkers] = prevMarkers;
+                return [
+                    {
+                        ...firstMarker,
+                        loc: activeCoord?.loc ?? firstMarker.loc,
+                    },
+                    ...otherMarkers,
+                ];
+            }
+            return prevMarkers;
+        });
+    }, [activeMarkerTimestamp, coords]);
 
     return (
         <>
