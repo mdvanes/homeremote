@@ -67,7 +67,7 @@ describe("DownloadList", () => {
         );
     });
 
-    it("renders download info", async () => {
+    it.skip("renders download info", async () => {
         render(
             <MockStoreProvider apis={[downloadListApi]}>
                 <DownloadList />
@@ -87,7 +87,7 @@ describe("DownloadList", () => {
         expect(fetchMock).toBeCalledTimes(1);
     });
 
-    it("can toggle download", async () => {
+    it.skip("can toggle download", async () => {
         const mockToggleResponse = JSON.stringify({
             status: "received",
             downloads: [

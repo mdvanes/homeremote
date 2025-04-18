@@ -14,7 +14,7 @@ export const AssetsChart: FC<Props> = ({
 }) => {
     const { classes } = useStyles();
 
-    const asset1 = coords[0]; // Traccar is not sending batteryLevel attribute.
+    const asset1 = coords[0]; // Traccar batteryLevel is not in an attribute but in a seperate sensor entity. Even then, it only stores the last value. It could be solved to create a template sensor in HASS that combines the loc and battery.
     const data = asset1
         ? asset1.map((item) => ({
               battery: item.batteryLevel, // ? parseInt(item.battery, 10) : -1,
@@ -32,15 +32,6 @@ export const AssetsChart: FC<Props> = ({
                     dataKey="battery"
                     stroke="#8884d8"
                     dot={false}
-                    activeDot={{
-                        onMouseOver: (_fn, point) => {
-                            const p = point as { payload?: { time?: string } };
-                            setActiveMarkerTimestamp(p?.payload?.time ?? "");
-                        },
-                        onMouseOut: (_fn, point) => {
-                            setActiveMarkerTimestamp("");
-                        },
-                    }}
                 />
                 <YAxis
                     yAxisId="left"
@@ -62,7 +53,11 @@ export const AssetsChart: FC<Props> = ({
                     labelFormatter={(value) =>
                         new Date(value.toString()).toLocaleString("en-uk")
                     }
-                    formatter={(value, name) => {
+                    formatter={(value, name, entry) => {
+                        if (entry.payload.time) {
+                            setActiveMarkerTimestamp(entry.payload?.time ?? "");
+                        }
+
                         if (name === "battery") {
                             return `${value}%`;
                         }
