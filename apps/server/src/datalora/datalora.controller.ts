@@ -98,8 +98,6 @@ export class DataloraController {
     ): Promise<{ data: TrackerItem[][] }> {
         this.logger.verbose(`GET to /api/datalora`);
 
-        // TODO set type=24H as default or handle type=ALL
-
         try {
             const time = Date.now();
             // See energyusage.controller.ts /gas-temperature

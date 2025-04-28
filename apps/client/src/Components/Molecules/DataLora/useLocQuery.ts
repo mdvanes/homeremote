@@ -57,7 +57,7 @@ export const useLocQuery = (): LocQuery => {
     };
 
     return {
-        coords: coords ?? [[], []],
+        coords: coords ?? [],
         update,
         isLoading: isLoading || isFetching,
         toggleQueryType,

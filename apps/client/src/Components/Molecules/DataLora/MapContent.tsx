@@ -3,7 +3,12 @@ import { Icon, IconOptions, polygon } from "leaflet";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
 
-// const DEFAULT_CENTER: LatLngTuple = [52, 5.1];
+// const DEFAULT_CENTER: [number, number] = [52, 5.1];
+
+const DEFAULT_BOUNDS = polygon([
+    [52, 4],
+    [52, 6],
+]).getBounds();
 
 // const TILES_LAYER_DEFAULT =
 //     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -58,6 +63,8 @@ const MapContent: FC<Props> = ({ coords, activeMarkerTimestamp }) => {
                 .map((deviceCoords) => deviceCoords.at(-1))
                 .filter((item) => item !== undefined) as TrackerItem[];
             setMarkers(last);
+        } else {
+            map.fitBounds(DEFAULT_BOUNDS);
         }
     }, [coords, map]);
 
