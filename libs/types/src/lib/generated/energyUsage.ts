@@ -80,6 +80,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/energyusage/electric": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get electric
+         * @description Get electric
+         */
+        get: operations["getElectric"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -224,6 +244,48 @@ export interface components {
                 /** @example water */
                 device_class?: string;
                 /** @example liters */
+                friendly_name?: string;
+            };
+            /**
+             * Format: date-time
+             * @example 2024-05-06T00:00:00+00:00
+             */
+            last_changed?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-06T00:00:00+00:00
+             */
+            last_reported?: string;
+            /**
+             * Format: date-time
+             * @example 2024-05-06T00:00:00+00:00
+             */
+            last_updated?: string;
+            context?: {
+                /** @example 01HWQC2MBD01BVZJP660G9JKXA */
+                id?: string;
+                /** Format: nullable */
+                parent_id?: string;
+                /** Format: nullable */
+                user_id?: string;
+            };
+        }[][];
+        GetElectricResponse: {
+            /** @example sensor.domoticz_t1 */
+            entity_id?: string;
+            /**
+             * Format: date
+             * @example 3201
+             */
+            state?: string;
+            attributes?: {
+                /** @example total */
+                state_class?: string;
+                /** @example kWh */
+                unit_of_measurement?: string;
+                /** @example electric */
+                device_class?: string;
+                /** @example kWh */
                 friendly_name?: string;
             };
             /**
@@ -395,6 +457,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetWaterResponse"];
+                };
+            };
+            /** @description Bad request. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unauthorized. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    getElectric: {
+        parameters: {
+            query?: {
+                range?: components["schemas"]["Range"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Electric */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetElectricResponse"];
                 };
             };
             /** @description Bad request. */

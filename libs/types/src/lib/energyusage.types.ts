@@ -102,3 +102,6 @@ export type EnergyUsageGetTemperatureResponse =
 
 export type EnergyUsageGetElectricExportsResponse =
     operations["getElectricExports"]["responses"]["200"]["content"]["application/json"];
+
+export type EnergyUsageGetElectricResponse =
+    operations["getElectric"]["responses"]["200"]["content"]["application/json"];

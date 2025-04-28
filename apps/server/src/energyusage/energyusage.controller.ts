@@ -1,9 +1,9 @@
 import type {
     EnergyUsageGasItem,
     EnergyUsageGetElectricExportsResponse,
+    EnergyUsageGetElectricResponse,
     EnergyUsageGetGasTemperatureQueryParams,
     EnergyUsageGetGasTemperatureResponse,
-    EnergyUsageGetGasUsageResponse,
     EnergyUsageGetTemperatureResponse,
     EnergyUsageGetWaterResponse,
     GasUsageItem,
@@ -11,7 +11,6 @@ import type {
     GetDomoticzUsePerDayResponse,
     GetHaSensorHistoryResponse,
     GetHaStatesResponse,
-    GotGasUsageResponse,
     GotTempResponse,
 } from "@homeremote/types";
 import {
@@ -323,6 +322,7 @@ export class EnergyUsageController {
         temperatureSensorId: string;
         gasTemperatureSensorId: string;
         waterSensorId: string;
+        electraSensorId: string;
     };
 
     constructor(private configService: ConfigService) {
@@ -351,6 +351,10 @@ export class EnergyUsageController {
             waterSensorId:
                 this.configService.get<string>(
                     "HOMEASSISTANT_WATER_SENSOR_ID"
+                ) || "",
+            electraSensorId:
+                this.configService.get<string>(
+                    "HOMEASSISTANT_ELECTRA_SENSOR_ID"
                 ) || "",
         };
     }
@@ -442,67 +446,6 @@ export class EnergyUsageController {
                 });
 
             return reduced;
-        } catch (err) {
-            this.logger.error(`[${req.user.name}] ${err}`);
-            throw new HttpException(
-                "failed to receive downstream data",
-                HttpStatus.INTERNAL_SERVER_ERROR
-            );
-        }
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Get("/gas")
-    async getGas(
-        @Request() req: AuthenticatedRequest
-    ): Promise<EnergyUsageGetGasUsageResponse> {
-        this.logger.verbose(`[${req.user.name}] GET to /api/energyusage/gas`);
-
-        try {
-            // NOTE: it's assumed that the first sensor is the baseline, the gas counter
-            const [gasSensor, ...temperatureSensors] = this.apiConfig.sensors;
-
-            const gasCounterResponse: GotGasUsageResponse = await got(
-                this.getAPI(gasSensor)
-            ).json();
-
-            const temperaturePromises = temperatureSensors.map(
-                (sensor): Promise<GotTempResponse> => {
-                    return got(this.getAPI(sensor)).json();
-                }
-            );
-            const temperatureResponses = await Promise.all<GotTempResponse>(
-                temperaturePromises
-            );
-
-            const firstHaTemperatureResponse =
-                await this.getFirstHaTemperatureResponse();
-
-            const now = Date.now();
-            const NR_OF_DAYS = 31;
-            const lastMonth = new Date(now - 1000 * 60 * 60 * 24 * NR_OF_DAYS);
-            const dateRange = new Array(NR_OF_DAYS)
-                .fill(0)
-                .map((n, index) =>
-                    new Date(
-                        lastMonth.getTime() + 1000 * 60 * 60 * 24 * (index + 1)
-                    )
-                        .toISOString()
-                        .slice(0, 10)
-                );
-            const aggregated: EnergyUsageGetGasUsageResponse = {
-                ...gasCounterResponse,
-                result: dateRange.map(
-                    sensorResultsToAggregated(
-                        gasCounterResponse.result,
-                        temperatureSensors,
-                        temperatureResponses,
-                        firstHaTemperatureResponse
-                    )
-                ),
-            };
-
-            return aggregated;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(
@@ -635,6 +578,41 @@ export class EnergyUsageController {
                 );
 
             return usagePerDay.filter(isDefined);
+        } catch (err) {
+            this.logger.error(`[${req.user.name}] ${err}`);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("/electric")
+    async getElectric(
+        @Request() req: AuthenticatedRequest,
+        @Query("range") range: "day" | "month"
+    ): Promise<EnergyUsageGetElectricResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/energyusage/electric`
+        );
+
+        try {
+            // const time = Date.now();
+            // const startOffset = range === "month" ? MONTH : DAY_IN_MS;
+            // const startTime = new Date(time - startOffset).toISOString();
+            // const endTime = new Date(time).toISOString();
+
+            // const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.electraSensorId}`;
+
+            // const result = await got(url, {
+            //     headers: {
+            //         Authorization: `Bearer ${this.haApiConfig.token}`,
+            //     },
+            // }).json<GetHaSensorHistoryResponse>();
+
+            // return result;
+            return [];
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

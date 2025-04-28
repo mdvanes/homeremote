@@ -6,6 +6,7 @@ import Tab from "@mui/material/Tab";
 import { FC, useEffect, useState } from "react";
 import GasChart from "../../Molecules/GasChart/GasChart";
 import { ClimateChart } from "./charts/ClimateChart";
+import { ElectricChart } from "./charts/ElectricChart";
 import { ElectricDataGrid } from "./charts/ElectricDataGrid";
 import { WaterChart } from "./charts/WaterChart";
 
@@ -42,6 +43,7 @@ export const Energy: FC = () => {
                         <Tab label="Gas" value="2" />
                         <Tab label="Electric" value="3" />
                         <Tab label="Water" value="4" />
+                        <Tab label="Electric Exports" value="5" />
                     </TabList>
                 </Box>
                 <TabPanel value="1">
@@ -51,10 +53,13 @@ export const Energy: FC = () => {
                     <GasChart isBig />
                 </TabPanel>
                 <TabPanel value="3">
-                    <ElectricDataGrid />
+                    <ElectricChart />
                 </TabPanel>
                 <TabPanel value="4">
                     <WaterChart />
+                </TabPanel>
+                <TabPanel value="5">
+                    <ElectricDataGrid />
                 </TabPanel>
             </TabContext>
         </Box>

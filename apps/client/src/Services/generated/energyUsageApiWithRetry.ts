@@ -1,5 +1,10 @@
 import { emptyApiWithRetry as api } from "../emptyApiWithRetry";
-export const addTagTypes = ["temperature", "gas-temperature", "water"] as const;
+export const addTagTypes = [
+    "temperature",
+    "gas-temperature",
+    "water",
+    "electric",
+] as const;
 const injectedRtkApi = api
     .enhanceEndpoints({
         addTagTypes,
@@ -39,6 +44,15 @@ const injectedRtkApi = api
                 }),
                 providesTags: ["water"],
             }),
+            getElectric: build.query<GetElectricApiResponse, GetElectricApiArg>(
+                {
+                    query: (queryArg) => ({
+                        url: `/api/energyusage/electric`,
+                        params: { range: queryArg.range },
+                    }),
+                    providesTags: ["electric"],
+                }
+            ),
         }),
         overrideExisting: false,
     });
@@ -58,6 +72,11 @@ export type GetGasTemperaturesApiArg = {
 };
 export type GetWaterApiResponse = /** status 200 Water */ GetWaterResponse;
 export type GetWaterApiArg = {
+    range?: Range;
+};
+export type GetElectricApiResponse =
+    /** status 200 Electric */ GetElectricResponse;
+export type GetElectricApiArg = {
     range?: Range;
 };
 export type GetElectricExportsResponse = {
@@ -146,9 +165,28 @@ export type GetWaterResponse = {
         user_id?: string;
     };
 }[][];
+export type GetElectricResponse = {
+    entity_id?: string;
+    state?: string;
+    attributes?: {
+        state_class?: string;
+        unit_of_measurement?: string;
+        device_class?: string;
+        friendly_name?: string;
+    };
+    last_changed?: string;
+    last_reported?: string;
+    last_updated?: string;
+    context?: {
+        id?: string;
+        parent_id?: string;
+        user_id?: string;
+    };
+}[][];
 export const {
     useGetElectricExportsQuery,
     useGetTemperaturesQuery,
     useGetGasTemperaturesQuery,
     useGetWaterQuery,
+    useGetElectricQuery,
 } = injectedRtkApi;

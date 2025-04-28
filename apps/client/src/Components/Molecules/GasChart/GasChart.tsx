@@ -1,16 +1,5 @@
-import { Card, CardContent, Stack } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import {
-    Bar,
-    BarProps,
-    ComposedChart,
-    Line,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from "recharts";
-import { useGetGasUsageQuery } from "../../../Services/energyUsageApi";
+import { BarProps } from "recharts";
 import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApiWithRetry";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";
@@ -20,7 +9,6 @@ import EnergyChart, {
     axisDateTimeFormatDay,
 } from "../EnergyChart/EnergyChart";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
-import LoadingDot from "../LoadingDot/LoadingDot";
 import { logError } from "../LogCard/logSlice";
 import { RangeButtons } from "./RangeButtons";
 
@@ -28,7 +16,7 @@ const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
 
 const UPDATE_INTERVAL_MS = 60 * 60 * 1000; // 1 x per hour
 
-// TODO values have descrepancies with Home Assistant
+// TODO values have descrepencies with Home Assistant
 const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     const dispatch = useAppDispatch();
     const [range, setRange] = useState<"day" | "week" | "month">("week");
@@ -146,138 +134,13 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     );
 };
 
-// TODO replace old GasChart by new EnergyChart. Need to fix displaying of gas usage first.
+// TODO replace old GasChart by new EnergyChart. Need to fix displaying of gas usage in new EnergyChart.
 const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     const [isOpen, setIsOpen] = useState(false);
-
-    const {
-        data: gasUsageResponse,
-        isLoading,
-        isFetching,
-        error,
-        refetch,
-    } = useGetGasUsageQuery(undefined);
-
-    if (error || !gasUsageResponse) {
-        return (
-            <ErrorRetry retry={() => refetch()}>
-                GasChart: {getErrorMessage(error ?? Error("empty response"))}
-            </ErrorRetry>
-        );
-    }
-
-    const temperatureLines = Object.keys(gasUsageResponse.result[0].temp).map(
-        (name, index) => (
-            <Line
-                key={name}
-                name={`avg ${name}`}
-                yAxisId="right"
-                type="monotone"
-                dataKey={`temp.${name}.avg`}
-                stroke={temperatureLineColors[index]}
-            />
-        )
-    );
-
-    const oldChart = (
-        <Card>
-            <CardContent>
-                <LoadingDot isLoading={isLoading || isFetching} noMargin />
-
-                {gasUsageResponse?.status === "OK" && (
-                    <div
-                        style={{
-                            width: "calc(100% + 20px)",
-                            margin: "0 -10px",
-                        }}
-                    >
-                        <ResponsiveContainer
-                            width="100%"
-                            aspect={isBig ? 4 : 1.7}
-                        >
-                            <ComposedChart
-                                data={
-                                    isBig
-                                        ? gasUsageResponse.result
-                                        : gasUsageResponse.result.slice(-7)
-                                }
-                                margin={{
-                                    left: -35,
-                                    right: -35,
-                                }}
-                            >
-                                {/* <CartesianGrid strokeDasharray="3 3" /> */}
-                                <XAxis
-                                    dataKey="day"
-                                    angle={-25}
-                                    interval={0}
-                                    style={{ fontSize: "10px" }}
-                                />
-                                <YAxis
-                                    yAxisId="left"
-                                    // unit="m³"
-                                    style={{ fontSize: "10px" }}
-                                />
-                                <YAxis
-                                    yAxisId="right"
-                                    unit="°"
-                                    orientation="right"
-                                    style={{ fontSize: "10px" }}
-                                />
-                                <Tooltip
-                                    labelFormatter={(val) => {
-                                        const [year, month, day] =
-                                            val.split("-");
-
-                                        const date = new Date(
-                                            year,
-                                            month - 1,
-                                            day
-                                        );
-
-                                        const formattedDate =
-                                            date.toLocaleDateString("en-uk", {
-                                                weekday: "short",
-                                                day: "numeric",
-                                                month: "2-digit",
-                                                year: "numeric",
-                                            });
-                                        return formattedDate;
-                                    }}
-                                    formatter={(val) => {
-                                        // Temperature is number, gas usage is string
-                                        if (typeof val === "number") {
-                                            return val.toFixed(1) + "°C";
-                                        }
-                                        return val + "m³";
-                                    }}
-                                    wrapperStyle={{
-                                        border: "none",
-                                    }}
-                                    contentStyle={{
-                                        border: "none",
-                                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                                    }}
-                                />
-                                <Bar
-                                    yAxisId="left"
-                                    dataKey="used" // m3 on this day
-                                    fill="#2d6196"
-                                />
-                                {temperatureLines}
-                            </ComposedChart>
-                        </ResponsiveContainer>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
-    );
 
     return (
         <>
             <GasTemperaturesChart isBig={isBig} />
-
-            {isOpen && <Stack mt={2}>{oldChart}</Stack>}
 
             {isBig && (
                 <CardExpandBar
