@@ -478,7 +478,17 @@ export class EnergyUsageController {
                 },
             }).json<GetHaSensorHistoryResponse>();
 
-            return result;
+            const reduced = result.map((sensorEntries) =>
+                // Reduce by timeslot, timeslot is RANGE, from 00:00
+                sensorEntries.reduce(
+                    reduceSensorEntriesByTimeslot(
+                        range === "day" ? DAY_IN_MS / 24 : DAY_IN_MS
+                    ),
+                    []
+                )
+            );
+
+            return reduced;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

@@ -1,20 +1,35 @@
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Button, Chip, IconButton, Stack } from "@mui/material";
 import { FC, useState } from "react";
-import { useGetTemperaturesQuery } from "../../../../Services/generated/energyUsageApiWithRetry";
+import { LineProps } from "recharts";
+import {
+    GetTemperaturesResponse,
+    useGetTemperaturesQuery,
+} from "../../../../Services/generated/energyUsageApiWithRetry";
 import EnergyChart, {
+    SensorItem,
     axisDateTimeFormatDayHour,
 } from "../../../Molecules/EnergyChart/EnergyChart";
 
 const COLORS = [
     "#66bb6a",
+    "#66bb6a",
     "#ff9100",
+    "#ff9100",
+    "#159bff",
     "#159bff",
     "#bb47d3",
     "#a0ff00",
+    "#a0ff00",
+    "#ff0021",
     "#ff0021",
     "#00ffa5",
+    "#00ffa5",
+    "#aa9100",
 ];
+
+const isTemperature = (sensor: GetTemperaturesResponse[0][0]) =>
+    sensor?.attributes?.device_class === "temperature";
 
 export const ClimateChart: FC = () => {
     const [mode, setMode] = useState<"day" | "month">("day");
@@ -24,18 +39,36 @@ export const ClimateChart: FC = () => {
 
     const sensors = data?.flatMap((sensor) => sensor[0]) ?? [];
 
-    const entries =
+    const entriesBySensor = (
         data?.flatMap((sensor) =>
-            sensor.map((item) => ({
-                time: new Date(item?.last_changed ?? 0).getTime(),
-                [`${item.attributes?.friendly_name}`]: item.state,
-            }))
-        ) ?? [];
+            sensor
+                .map((item) => ({
+                    time: new Date(item?.last_changed ?? 0).getTime(),
+                    [`${item.attributes?.friendly_name ?? item?.entity_id} ${
+                        isTemperature(item) ? "T" : "H"
+                    }`]: parseFloat(item.state ?? ""),
+                }))
+                .slice(1)
+        ) ?? []
+    ).toSorted((a, b) => {
+        return a.time - b.time;
+    });
+    const entriesByTimestamp = entriesBySensor.reduce<
+        Record<number, SensorItem>
+    >((acc: Record<number, SensorItem>, item: SensorItem) => {
+        acc[item.time] = { ...acc[item.time], ...item };
+        return acc;
+    }, {});
+    const entries = Object.values(entriesByTimestamp);
 
-    const lines = sensors.slice(2).map((sensor, i) => ({
-        dataKey: sensor?.attributes?.friendly_name,
-        stroke: COLORS[i + 2],
-        unit: "°C",
+    const lines: LineProps[] = sensors.map((sensor, i) => ({
+        dataKey: `${sensor.attributes?.friendly_name ?? sensor?.entity_id} ${
+            isTemperature(sensor) ? "T" : "H"
+        }`,
+        stroke: COLORS[i],
+        unit: isTemperature(sensor) ? "°C" : "%",
+        yAxisId: isTemperature(sensor) ? "right" : "left",
+        strokeDasharray: isTemperature(sensor) ? "0" : "3 3",
     }));
 
     return (
@@ -65,36 +98,38 @@ export const ClimateChart: FC = () => {
                 >
                     <RefreshIcon />
                 </IconButton>
-                {sensors.map((sensor, i) => (
-                    <Chip
-                        key={sensor.entity_id}
-                        label={sensor.attributes?.friendly_name}
-                        style={{
-                            color: COLORS[i],
-                        }}
-                    />
-                ))}
+                {sensors
+                    .reduce<
+                        (GetTemperaturesResponse[0][0] & { hide: boolean })[]
+                    >((acc, next) => {
+                        const hasNameAlready = acc.some(
+                            (item) =>
+                                item.attributes?.friendly_name ===
+                                next.attributes?.friendly_name
+                        );
+                        return [...acc, { ...next, hide: hasNameAlready }];
+                    }, [])
+                    .map((sensor, i) => (
+                        <Chip
+                            key={sensor.entity_id}
+                            label={sensor.attributes?.friendly_name}
+                            style={{
+                                color: COLORS[i],
+                                display: sensor.hide ? "none" : undefined,
+                            }}
+                        />
+                    ))}
             </Stack>
             <EnergyChart
                 data={entries}
                 config={{
-                    lines: [
-                        {
-                            dataKey: sensors[0]?.attributes?.friendly_name,
-                            stroke: COLORS[0],
-                            unit: "°C",
-                        },
-                        {
-                            dataKey: sensors[1]?.attributes?.friendly_name,
-                            stroke: COLORS[1],
-                            unit: "%",
-                            yAxisId: "left",
-                        },
-                    ].concat(lines),
+                    lines,
                     leftYAxis: {
+                        domain: [0, 100],
                         unit: "%",
                     },
                     rightYAxis: {
+                        domain: [0, 50],
                         unit: "°",
                     },
                     tickCount: mode === "day" ? 24 : 30,
