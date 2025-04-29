@@ -422,7 +422,6 @@ export class EnergyUsageController {
             const result = await this.fetchHa<GetHaSensorHistoryResponse>(url);
 
             const reduced = result
-
                 .map((sensorEntries) =>
                     // Reduce by timeslot, timeslot is RANGE, from 00:00
                     sensorEntries.reduce(
@@ -598,21 +597,43 @@ export class EnergyUsageController {
         );
 
         try {
-            // const time = Date.now();
-            // const startOffset = range === "month" ? MONTH : DAY_IN_MS;
-            // const startTime = new Date(time - startOffset).toISOString();
-            // const endTime = new Date(time).toISOString();
+            const time = Date.now();
+            const startOffset = range === "month" ? MONTH : DAY_IN_MS;
+            const startTime = new Date(time - startOffset).toISOString();
+            const endTime = new Date(time).toISOString();
 
-            // const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.electraSensorId}`;
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.electraSensorId}`;
 
-            // const result = await got(url, {
-            //     headers: {
-            //         Authorization: `Bearer ${this.haApiConfig.token}`,
-            //     },
-            // }).json<GetHaSensorHistoryResponse>();
+            const result = await got(url, {
+                headers: {
+                    Authorization: `Bearer ${this.haApiConfig.token}`,
+                },
+            }).json<GetHaSensorHistoryResponse>();
 
-            // return result;
-            return [];
+            const reduced = result
+                .map((sensorEntries) =>
+                    // Reduce by timeslot, timeslot is RANGE, from 00:00
+                    sensorEntries.reduce(
+                        reduceSensorEntriesByTimeslot(
+                            range === "day" ? DAY_IN_MS / 24 : DAY_IN_MS
+                        ),
+                        []
+                    )
+                )
+                .map((sensorEntries) => {
+                    if (
+                        sensorEntries.length > 0 &&
+                        sensorEntries[0].attributes.device_class === "energy"
+                    ) {
+                        return sensorEntries.reduce(
+                            reduceSensorEntriesToDeltas,
+                            []
+                        );
+                    }
+                    return sensorEntries;
+                });
+
+            return reduced;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

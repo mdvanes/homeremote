@@ -1,18 +1,11 @@
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Button, Chip, IconButton, Stack } from "@mui/material";
 import { FC, useState } from "react";
-import {
-    useGetElectricQuery,
-    type GetElectricResponse,
-} from "../../../../Services/generated/energyUsageApiWithRetry";
+import { useGetElectricQuery } from "../../../../Services/generated/energyUsageApiWithRetry";
 import EnergyChart, {
+    SensorItem,
     axisDateTimeFormatDayHour,
 } from "../../../Molecules/EnergyChart/EnergyChart";
-
-type ElectricSensorItem = GetElectricResponse[0][0] & {
-    delta?: number;
-    liters?: number;
-};
 
 const COLORS = [
     "#66bb6a",
@@ -24,27 +17,6 @@ const COLORS = [
     "#00ffa5",
 ];
 
-const INTERVAL_24_HOURS = 1000 * 60 * 60 * 24;
-const INTERVAL_5_MIN = 1000 * 60 * 5;
-
-const aggregateByInterval =
-    (interval: number) =>
-    (
-        acc: ElectricSensorItem[],
-        next: ElectricSensorItem
-    ): ElectricSensorItem[] => {
-        const prevEntry = acc.at(-1) ?? next;
-        const prevTime = new Date(prevEntry.last_changed ?? "0").getTime();
-        const nextTime = new Date(next.last_changed ?? "0").getTime();
-        if (nextTime <= prevTime + interval) {
-            return [
-                ...acc.slice(0, -1),
-                { ...prevEntry, liters: (prevEntry.liters ?? 0) + 1 },
-            ];
-        }
-        return [...acc, { ...next, liters: (next.liters ?? 0) + 1 }];
-    };
-
 export const ElectricChart: FC = () => {
     const [mode, setMode] = useState<"day" | "month">("day");
     const { data, isLoading, isFetching, refetch } = useGetElectricQuery({
@@ -53,42 +25,30 @@ export const ElectricChart: FC = () => {
 
     const sensors = data?.flatMap((sensor) => sensor[0]) ?? [];
 
-    // const sensorEntries = (data?.flatMap((sensor) => sensor[0]) ?? []).map(
-    //     (item) => ({
-    //         time: new Date(item?.last_changed ?? 0).getTime(),
-    //         [`${item.attributes?.friendly_name}`]: item.state,
-    //     })
-    // );
-
-    const sensorEntries =
-        data
-            ?.flatMap((sensor) =>
-                sensor.map((item) => ({
+    const entriesBySensor = (
+        data?.flatMap((sensor) =>
+            sensor
+                .map((item) => ({
                     time: new Date(item?.last_changed ?? 0).getTime(),
-                    [`${item.attributes?.friendly_name}`]:
-                        typeof item.state === "string"
-                            ? Math.floor(parseInt(item.state) / 1000)
-                            : 1,
+                    [`${item.attributes?.friendly_name ?? item?.entity_id}`]:
+                        parseFloat(item.state ?? ""),
                 }))
-            )
-            .slice(0, 100) ?? [];
+                .slice(1)
+        ) ?? []
+    ).toSorted((a, b) => {
+        return a.time - b.time;
+    });
+    const entriesByTimestamp = entriesBySensor.reduce<
+        Record<number, SensorItem>
+    >((acc: Record<number, SensorItem>, item: SensorItem) => {
+        acc[item.time] = { ...acc[item.time], ...item };
+        return acc;
+    }, {});
+    const entries = Object.values(entriesByTimestamp);
 
-    const interval = mode === "month" ? INTERVAL_24_HOURS : INTERVAL_5_MIN;
-
-    // const aggregatedByInterval = sensorEntries.reduce<ElectricSensorItem[]>(
-    //     aggregateByInterval(interval),
-    //     []
-    // );
-
-    // {
-    //     dataKey: "liters",
-    //     fill: "#66bb6a",
-    //     unit: "l",
-    // },
-
-    const bars = sensors.map((sensor, i) => ({
-        dataKey: sensor?.attributes?.friendly_name ?? "",
-        fill: COLORS[i],
+    const lines = sensors.slice(0, 4).map((sensor, i) => ({
+        dataKey: sensor.attributes?.friendly_name ?? sensor?.entity_id,
+        stroke: COLORS[i],
         unit: "kWh",
     }));
 
@@ -128,24 +88,11 @@ export const ElectricChart: FC = () => {
                         }}
                     />
                 ))}
-                {/* {data &&
-                    data.length &&
-                    data.map((sensor) => (
-                        <Chip
-                            key={sensor[0].entity_id}
-                            label={sensor[0].attributes?.friendly_name}
-                        />
-                    ))} */}
             </Stack>
             <EnergyChart
-                data={sensorEntries}
-                // data={aggregatedByInterval.map((item) => ({
-                //     time: new Date(item.last_changed ?? "0").getTime() ?? 1,
-                //     liters: item.liters,
-                //     state: item.state,
-                // }))}
+                data={entries}
                 config={{
-                    bars,
+                    lines,
                     rightYAxis: {
                         unit: "kWh",
                     },
