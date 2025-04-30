@@ -118,7 +118,7 @@ export const EnergyChart: FC<{
                     >
                         <ResponsiveContainer
                             width="100%"
-                            aspect={config.aspect ?? (isMobile ? 1 : 4)}
+                            aspect={config.aspect ?? (isMobile ? 1 : 3)}
                         >
                             <ComposedChart
                                 data={data}

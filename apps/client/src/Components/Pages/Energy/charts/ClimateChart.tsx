@@ -68,8 +68,12 @@ export const ClimateChart: FC = () => {
         stroke: COLORS[i],
         unit: isTemperature(sensor) ? "°C" : "%",
         yAxisId: isTemperature(sensor) ? "right" : "left",
-        strokeDasharray: isTemperature(sensor) ? "0" : "3 3",
+        strokeDasharray: isTemperature(sensor) ? undefined : "3 3",
     }));
+
+    if (!data) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
@@ -125,11 +129,11 @@ export const ClimateChart: FC = () => {
                 config={{
                     lines,
                     leftYAxis: {
-                        domain: [0, 100],
+                        domain: [-20, 100],
                         unit: "%",
                     },
                     rightYAxis: {
-                        domain: [0, 50],
+                        domain: [0, 60],
                         unit: "°",
                     },
                     tickCount: mode === "day" ? 24 : 30,
