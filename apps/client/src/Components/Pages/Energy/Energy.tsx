@@ -25,9 +25,13 @@ export const Energy: FC = () => {
         _event: React.SyntheticEvent,
         newValue: string
     ) => {
-        const params = new URL(document.location.href).searchParams;
-        params.set("tab", newValue);
-        document.location.search = params.toString();
+        const { searchParams, pathname } = new URL(document.location.href);
+        searchParams.set("tab", newValue);
+        window.history.replaceState(
+            "",
+            "",
+            `${pathname}?${searchParams.toString()}`
+        );
         setValue(newValue);
     };
 

@@ -23,6 +23,10 @@ export const ElectricChart: FC = () => {
         range: mode,
     });
 
+    if (!data) {
+        return <div>Loading...</div>;
+    }
+
     const sensors = data?.flatMap((sensor) => sensor[0]) ?? [];
 
     const entriesBySensor = (
