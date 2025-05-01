@@ -514,7 +514,7 @@ export class EnergyUsageController {
             const startTime = new Date(time - startOffset).toISOString();
             const endTime = new Date(time).toISOString();
 
-            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.waterSensorId}&minimal_response`;
+            const url = `${this.haApiConfig.baseUrl}/api/history/period/${startTime}?end_time=${endTime}&filter_entity_id=${this.haApiConfig.waterSensorId}`;
 
             const result = await got(url, {
                 headers: {
@@ -522,7 +522,30 @@ export class EnergyUsageController {
                 },
             }).json<GetHaSensorHistoryResponse>();
 
-            return result;
+            const reduced = result
+                .map((sensorEntries) =>
+                    // Reduce by timeslot, timeslot is RANGE, from 00:00
+                    sensorEntries.reduce(
+                        reduceSensorEntriesByTimeslot(
+                            range === "day" ? DAY_IN_MS / 24 : DAY_IN_MS
+                        ),
+                        []
+                    )
+                )
+                .map((sensorEntries) => {
+                    if (
+                        sensorEntries.length > 0 &&
+                        sensorEntries[0].attributes.device_class === "water"
+                    ) {
+                        return sensorEntries.reduce(
+                            reduceSensorEntriesToDeltas,
+                            []
+                        );
+                    }
+                    return sensorEntries;
+                });
+
+            return reduced;
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

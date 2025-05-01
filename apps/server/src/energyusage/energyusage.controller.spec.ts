@@ -43,7 +43,7 @@ describe("EnergyUsage Controller", () => {
                     entity_id: "water_id",
                     state: "1",
                     attributes: {},
-                    last_changed: "123",
+                    last_changed: "2025-04-30T06:00:00.000Z",
                     last_updated: "124",
                 },
             ],
@@ -62,14 +62,14 @@ describe("EnergyUsage Controller", () => {
                     entity_id: "water_id",
                     state: "1",
                     attributes: {},
-                    last_changed: "123",
+                    last_changed: "2025-04-30T06:00:00.000Z",
                     last_updated: "124",
                 },
             ],
         ]);
         expect(mockGot).toBeCalledTimes(1);
         expect(mockGot).toBeCalledWith(
-            "/api/history/period/2024-04-24T00:00:00.000Z?end_time=2024-04-25T00:00:00.000Z&filter_entity_id=&minimal_response",
+            "/api/history/period/2024-04-24T00:00:00.000Z?end_time=2024-04-25T00:00:00.000Z&filter_entity_id=",
             {
                 headers: {
                     Authorization: "Bearer ",
