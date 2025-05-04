@@ -10,6 +10,7 @@ import EnergyChart, {
     SensorItem,
     axisDateTimeFormatDayHour,
 } from "../../../Molecules/EnergyChart/EnergyChart";
+import { CurrentTemperatures, isTemperature } from "./CurrentTemperatures";
 
 const COLORS = [
     "#66bb6a",
@@ -27,9 +28,6 @@ const COLORS = [
     "#00ffa5",
     "#aa9100",
 ];
-
-const isTemperature = (sensor: GetTemperaturesResponse[0][0]) =>
-    sensor?.attributes?.device_class === "temperature";
 
 export const ClimateChart: FC = () => {
     const [mode, setMode] = useState<"day" | "month">("day");
@@ -142,6 +140,7 @@ export const ClimateChart: FC = () => {
                 }}
                 isLoading={isLoading || isFetching}
             />
+            <CurrentTemperatures data={data} />
         </>
     );
 };

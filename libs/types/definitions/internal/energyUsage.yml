@@ -96,7 +96,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/ErrorResponse"                                
+                                $ref: "#/components/schemas/ErrorResponse"
     /api/energyusage/water:
         get:
             tags:
@@ -158,7 +158,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/ErrorResponse"                                
+                                $ref: "#/components/schemas/ErrorResponse"
 components:
     schemas:
         Range:
