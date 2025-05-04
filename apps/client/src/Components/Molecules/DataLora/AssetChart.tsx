@@ -23,9 +23,11 @@ export const AssetsChart: FC<Props> = ({
           }))
         : [];
 
+    const isMobile = window.innerWidth < 600;
+
     return (
         <div className={classes.chart}>
-            <LineChart width={500} height={150} data={data}>
+            <LineChart width={isMobile ? 360 : 500} height={150} data={data}>
                 <Line
                     yAxisId="left"
                     type="monotone"
