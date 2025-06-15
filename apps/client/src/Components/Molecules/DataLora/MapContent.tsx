@@ -3,7 +3,7 @@ import { Icon, IconOptions, polygon } from "leaflet";
 import { FC, useCallback, useEffect, useState } from "react";
 import { Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
 
-// const DEFAULT_CENTER: [number, number] = [52, 5.1];
+const DEFAULT_CENTER: [number, number] = [52, 5.1];
 
 const DEFAULT_BOUNDS = polygon([
     [52, 4],
@@ -56,7 +56,10 @@ const MapContent: FC<Props> = ({ coords, activeMarkerTimestamp }) => {
 
     const updateBoundsAndMarker = useCallback(() => {
         const firstDeviceCoords = coords?.[0] ?? [];
-        if (firstDeviceCoords.length > 0) {
+        if (
+            firstDeviceCoords.length > 0 &&
+            hasValidCoords(firstDeviceCoords[0])
+        ) {
             const newPoly = polygon(firstDeviceCoords.map(({ loc }) => loc));
             map.fitBounds(newPoly.getBounds());
             const last: TrackerItem[] = coords
