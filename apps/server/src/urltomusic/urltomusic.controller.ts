@@ -26,7 +26,10 @@ import { execFile } from "child_process";
 import { chmodSync, chownSync } from "fs";
 import got from "got";
 import nodeID3 from "node-id3";
-import youtubeDlExec, { YtFlags } from "youtube-dl-exec";
+import youtubeDlExec, {
+    type Flags as YtFlags,
+    type Payload as YtPayload,
+} from "youtube-dl-exec";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
 
@@ -58,12 +61,12 @@ const getInfo = async (url: string): Promise<UrlToMusicGetInfoResponse> => {
         dumpSingleJson: true,
     });
 
-    const [artist, title] = getArtistTitle(info.title);
+    const [artist, title] = getArtistTitle((info as YtPayload).title);
 
     return {
         artist,
         title,
-        streamUrl: info.formats.map((f) => f.url),
+        streamUrl: (info as YtPayload).formats.map((f) => f.url),
         versionInfo: info["_version"].version,
     };
 };
@@ -73,11 +76,10 @@ const searchByTerms = async (terms: string, nrOfResults: number) => {
         `ytsearch${nrOfResults}:${terms}`,
         {
             ...ydlFlags,
-            dumpSingleJson: true,
-            getId: true,
-            getTitle: true,
-            // TODO also get description? it's not built-in
-        }
+            flatPlaylist: true,
+            // yt-dlp supports multiple --print flags; not yet typed in youtube-dl-exec
+            print: ["%(title)s", "%(id)s"],
+        } as unknown as YtFlags
     );
 
     // NOTE: in this case the result type is a string, but this is not (yet) in the typings
@@ -109,11 +111,9 @@ const getLatestBinVersion = async (): Promise<string> => {
     if (!YOUTUBE_DL_HOST || !YOUTUBE_DL_FILE) {
         throw Error("DL HOST constant not found");
     }
-    const [{ tag_name }] = await got(YOUTUBE_DL_HOST).json<
-        {
-            tag_name: string;
-        }[]
-    >();
+    const { tag_name } = await got(YOUTUBE_DL_HOST).json<{
+        tag_name: string;
+    }>();
     return tag_name;
 };
 
@@ -279,7 +279,9 @@ export class UrltomusicController {
                 }
                 return info;
             } catch (err) {
-                this.logger.verbose("getInfo failed: " + err);
+                this.logger.error(
+                    `getInfo failed: ${err instanceof Error ? `${err.message}\n${err.stack}` : String(err)}`
+                );
                 this.updateBin();
                 throw new HttpException(
                     "binary outdated or broken, trying to update",
@@ -373,7 +375,15 @@ export class UrltomusicController {
                     searchResults: searchResults,
                 };
             } catch (err) {
-                this.logger.verbose("getSearch failed: " + err);
+                const extra =
+                    err && typeof err === "object"
+                        ? ` stdout=[${(err as Record<string, unknown>).stdout}] stderr=[${(err as Record<string, unknown>).stderr}]`
+                        : "";
+                const message =
+                    err instanceof Error
+                        ? `${err.message}\n${err.stack}`
+                        : String(err);
+                this.logger.error(`getSearch failed: ${message}${extra}`);
                 throw new HttpException(
                     "getSearch failed",
                     HttpStatus.INTERNAL_SERVER_ERROR
