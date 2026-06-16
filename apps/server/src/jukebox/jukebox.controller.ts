@@ -307,6 +307,34 @@ export class JukeboxController {
         }
     }
 
+    async getSubDirForCurrentYear(
+        songDirItems: SongDirItem[],
+        currentYear: number
+    ): Promise<SongDirItem> {
+        const decadeDirTitle = `${Math.floor(currentYear / 10) * 10}s`;
+        const decadeDir = songDirItems
+            .filter((child) => child.isDir)
+            .find((child) => child.title === decadeDirTitle);
+
+        if (decadeDir) {
+            const decadeDirContentUrl = this.getAPI(
+                "getMusicDirectory",
+                `&id=${decadeDir.id}`
+            );
+            const decadeDirContent = await got(decadeDirContentUrl).json();
+            const decadeSubDirs = (
+                decadeDirContent["subsonic-response"].directory
+                    .child as SongDirItem[]
+            ).filter((child) => child.isDir);
+            const subdirForCurrentYear = decadeSubDirs.find(
+                (subdir) => subdir.title === `${currentYear}`
+            );
+            if (subdirForCurrentYear) {
+                return subdirForCurrentYear;
+            }
+        }
+    }
+
     @UseGuards(JwtAuthGuard)
     @Get("songdir")
     async getSongDir(): Promise<SongDirResponse> {
@@ -346,16 +374,26 @@ export class JukeboxController {
                 `&id=${this.songDirId}`
             );
             const songDirResponse = await got(songDirUrl).json();
-            const songDir = (
-                songDirResponse["subsonic-response"].directory
-                    .child as SongDirItem[]
-            )
+            const songDirItems = songDirResponse["subsonic-response"].directory
+                .child as SongDirItem[];
+            const songDir = songDirItems
                 .filter((child) => child.isDir)
                 .find((child) => child.title === `${currentYear}`);
+            const songSubDir = await this.getSubDirForCurrentYear(
+                songDirItems,
+                currentYear
+            );
+
+            const targetDir = songDir || songSubDir;
+
+            if (!targetDir) {
+                const message = `no song directory found for current year ${currentYear}`;
+                throw new HttpException(message, HttpStatus.NOT_FOUND);
+            }
 
             const songDirContentUrl = this.getAPI(
                 "getMusicDirectory",
-                `&id=${songDir.id}`
+                `&id=${targetDir.id}`
             );
             const songDirContent = await got(songDirContentUrl).json();
             const content = (
@@ -363,7 +401,7 @@ export class JukeboxController {
                     .child as SongDirItem[]
             ).filter((child) => !child.isDir);
 
-            return { status: "received", dir: songDir, content };
+            return { status: "received", dir: targetDir, content };
         } catch (err) {
             this.logger.error(err);
             throw new HttpException(
