@@ -1,7 +1,7 @@
 import { LinearProgress, Paper, Typography } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 
-const URL = `${process.env.NX_BASE_URL}/api/video-stream`;
+const URL = `${process.env.NX_PUBLIC_BASE_URL}/api/video-stream`;
 
 const VideoStream: FC = () => {
     const [isLoading, setIsLoading] = useState(true);

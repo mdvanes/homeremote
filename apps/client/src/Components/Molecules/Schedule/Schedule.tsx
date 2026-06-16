@@ -36,7 +36,7 @@ const scheduleItemToListItem =
                 <ListItemText
                     sx={{
                         color: typeToColor[type],
-                        backgroundImage: `url(${process.env.NX_BASE_URL}/api/schedule/thumbnail/${indexerid})`,
+                        backgroundImage: `url(${process.env.NX_PUBLIC_BASE_URL}/api/schedule/thumbnail/${indexerid})`,
                         backgroundSize: "contain",
                         backgroundRepeat: "no-repeat",
                         backgroundPositionX: "right",

@@ -5,7 +5,7 @@ import { willAddCredentials } from "../devUtils";
 export const monitApi = createApi({
     reducerPath: "monitApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.NX_BASE_URL}/api/monit`,
+        baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/monit`,
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({

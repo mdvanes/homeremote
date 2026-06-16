@@ -23,7 +23,7 @@ const Docker: FC = () => {
                 />
             </CardContent>
             {/* <DockerList
-                    url={process.env.NX_BASE_URL || ""}
+                    url={process.env.NX_PUBLIC_BASE_URL || ""}
                     onError={(err: string) =>
                         dispatch(
                             logError(`Dockerlist failure: ${err.toString()}`)

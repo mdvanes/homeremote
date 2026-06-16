@@ -28,7 +28,7 @@ export const NextupListItem: FC<{
                 <ListItemAvatar>
                     <Avatar
                         alt={`Screenshot for ${Name}`}
-                        src={`${process.env.NX_BASE_URL}/api/nextup/thumbnail/${Id}?imageTagsPrimary=${ImageTags.Primary}&big=off`}
+                        src={`${process.env.NX_PUBLIC_BASE_URL}/api/nextup/thumbnail/${Id}?imageTagsPrimary=${ImageTags.Primary}&big=off`}
                     />
                 </ListItemAvatar>
                 <ListItemText

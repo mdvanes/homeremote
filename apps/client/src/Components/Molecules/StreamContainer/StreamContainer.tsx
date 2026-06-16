@@ -10,7 +10,7 @@ const StreamContainer: FC = () => {
     return (
         <StyledStreamPlayer>
             <HomeremoteStreamPlayer
-                url={process.env.NX_BASE_URL || ""}
+                url={process.env.NX_PUBLIC_BASE_URL || ""}
                 setPorts={setPorts}
             />
             <PreviouslyPlayedCard />

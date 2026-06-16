@@ -25,7 +25,7 @@ export const stacksApi = createApi({
     reducerPath: "stacksApi",
     baseQuery: retry(
         fetchBaseQuery({
-            baseUrl: `${process.env.NX_BASE_URL}/api/stacks`,
+            baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/stacks`,
             credentials: willAddCredentials(),
         }),
         { maxRetries: 0, backoff: slowerBackOff(BACKOFF_DELAY) }

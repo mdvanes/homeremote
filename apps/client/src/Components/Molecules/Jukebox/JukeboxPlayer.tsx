@@ -108,7 +108,7 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                 <audio
                     ref={audioElemRef}
                     controls
-                    src={`${process.env.NX_BASE_URL}/api/jukebox/song/${song.id}?hash=${hash}`}
+                    src={`${process.env.NX_PUBLIC_BASE_URL}/api/jukebox/song/${song.id}?hash=${hash}`}
                     onEnded={handlePlayNext}
                 />
 

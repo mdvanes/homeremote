@@ -38,7 +38,7 @@ const GetSearchForm: FC = () => {
 
     const handlePrefill = async () => {
         const nowplaying: { artist: string; title: string } = await fetch(
-            `${process.env.NX_BASE_URL}/api/nowplaying/radio2`
+            `${process.env.NX_PUBLIC_BASE_URL}/api/nowplaying/radio2`
         ).then((data) => data.json());
         const newTerm = `${nowplaying.artist} ${nowplaying.title}`;
         setTerms(newTerm);
