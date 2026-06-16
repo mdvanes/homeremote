@@ -1,10 +1,16 @@
-{
-  "/api": {
+[
+  {
+    "context": [
+      "/api"
+    ],
     "target": "http://localhost:3333",
     "secure": false
   },
-  "/auth": {
+  {
+    "context": [
+      "/auth"
+    ],
     "target": "http://localhost:3333",
     "secure": false
   }
-}
+]

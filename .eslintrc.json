@@ -27,12 +27,14 @@
         {
             "files": ["*.ts", "*.tsx"],
             "extends": ["plugin:@nx/typescript"],
-            "rules": {}
+            "rules": {
+                "@typescript-eslint/no-extra-semi": "error",
+                "no-extra-semi": "off"
+            }
         },
         {
             "files": ["*.tsx"],
             "rules": {
-                // Sometimes wrapping a child in fragment is needed for typing
                 "react/jsx-no-useless-fragment": [
                     1,
                     {
@@ -44,7 +46,10 @@
         {
             "files": ["*.js", "*.jsx"],
             "extends": ["plugin:@nx/javascript"],
-            "rules": {}
+            "rules": {
+                "@typescript-eslint/no-extra-semi": "error",
+                "no-extra-semi": "off"
+            }
         }
     ]
 }

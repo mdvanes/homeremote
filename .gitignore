@@ -54,5 +54,6 @@ libs/types/examples/
 NOTES.md
 
 .nx/cache
+.nx/workspace-data
 
 0_electric_exports
