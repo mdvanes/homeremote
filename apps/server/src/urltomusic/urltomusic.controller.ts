@@ -55,6 +55,9 @@ const ydlFlags: YtFlags = {
     addHeader: ["referer:youtube.com", "user-agent:googlebot"],
 };
 
+// youtube-dl-exec's typings don't (yet) include yt-dlp's `--print` flag
+type YtFlagsWithPrint = YtFlags & { print?: string[] };
+
 const getInfo = async (url: string): Promise<UrlToMusicGetInfoResponse> => {
     const info = await youtubeDlExec(url, {
         ...ydlFlags,
@@ -72,18 +75,22 @@ const getInfo = async (url: string): Promise<UrlToMusicGetInfoResponse> => {
 };
 
 const searchByTerms = async (terms: string, nrOfResults: number) => {
+    const flags: YtFlagsWithPrint = {
+        ...ydlFlags,
+        flatPlaylist: true,
+        print: ["%(title)s", "%(id)s"],
+    };
     const searchResult = await youtubeDlExec(
         `ytsearch${nrOfResults}:${terms}`,
-        {
-            ...ydlFlags,
-            flatPlaylist: true,
-            // yt-dlp supports multiple --print flags; not yet typed in youtube-dl-exec
-            print: ["%(title)s", "%(id)s"],
-        } as unknown as YtFlags
+        flags
     );
 
-    // NOTE: in this case the result type is a string, but this is not (yet) in the typings
-    const searchLinesAll = (searchResult as unknown as string).split("\n");
+    // With the `--print` flag, yt-dlp emits plain text lines instead of JSON
+    if (typeof searchResult !== "string") {
+        throw new Error("Expected text output from yt-dlp search");
+    }
+
+    const searchLinesAll = searchResult.split("\n");
     // For each search result, the first line is the title and the second line is the id
     const searchLines = searchLinesAll.slice(0, nrOfResults * 2);
     const searchResultNew = searchLines.reduce<SearchResultItem[]>(
