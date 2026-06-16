@@ -4,7 +4,9 @@
             "@nx/react/babel",
             {
                 "modules": false,
-                "targets": { "esmodules": true }
+                "targets": {
+                    "esmodules": true
+                }
             }
         ]
     ]

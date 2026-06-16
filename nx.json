@@ -64,6 +64,5 @@
         ]
     },
     "useInferencePlugins": false,
-    "defaultBase": "main",
-    "useLegacyCache": true
+    "defaultBase": "main"
 }

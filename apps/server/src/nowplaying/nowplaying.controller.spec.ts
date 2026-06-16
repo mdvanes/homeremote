@@ -50,8 +50,8 @@ describe("Nowplaying Controller", () => {
     it("returns radio 2 info on /GET", async () => {
         const response = await controller.getRadio2();
         expect(response?.title).toBe("Some Title");
-        expect(mockGetNowPlaying).toBeCalledTimes(1);
-        expect(mockGetNowPlaying).toBeCalledWith(ChannelName.RADIO2);
+        expect(mockGetNowPlaying).toHaveBeenCalledTimes(1);
+        expect(mockGetNowPlaying).toHaveBeenCalledWith(ChannelName.RADIO2);
     });
 
     it("throws error on /GET radio 2 info failure", async () => {
@@ -93,21 +93,21 @@ describe("Nowplaying Controller", () => {
     it("returns radio 3 info on /GET", async () => {
         const response = await controller.getRadio3();
         expect(response?.title).toBe("Some Title");
-        expect(mockGetNowPlaying).toBeCalledTimes(1);
-        expect(mockGetNowPlaying).toBeCalledWith(ChannelName.RADIO3);
+        expect(mockGetNowPlaying).toHaveBeenCalledTimes(1);
+        expect(mockGetNowPlaying).toHaveBeenCalledWith(ChannelName.RADIO3);
     });
 
     it("returns sky info on /GET", async () => {
         const response = await controller.getSky();
         expect(response?.title).toBe("Some Title");
-        expect(mockGetNowPlaying).toBeCalledTimes(1);
-        expect(mockGetNowPlaying).toBeCalledWith(ChannelName.SKY);
+        expect(mockGetNowPlaying).toHaveBeenCalledTimes(1);
+        expect(mockGetNowPlaying).toHaveBeenCalledWith(ChannelName.SKY);
     });
 
     it("returns pinguin info on /GET", async () => {
         const response = await controller.getPinguin();
         expect(response?.title).toBe("Some Title");
-        expect(mockGetNowPlaying).toBeCalledTimes(1);
-        expect(mockGetNowPlaying).toBeCalledWith(ChannelName.PINGUIN);
+        expect(mockGetNowPlaying).toHaveBeenCalledTimes(1);
+        expect(mockGetNowPlaying).toHaveBeenCalledWith(ChannelName.PINGUIN);
     });
 });

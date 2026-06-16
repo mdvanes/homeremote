@@ -80,7 +80,7 @@ describe("DataLora", () => {
         expect(
             await screen.findByText(/\[\[52\.1,4\.11\],\[52\.1,4\.31\]\]/)
         ).toBeVisible();
-        expect(fetchMock).toBeCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
         expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
             "http://localhost/api/datalora?type=24h"
         );
@@ -104,7 +104,7 @@ describe("DataLora", () => {
         expect(
             await screen.findByText(/\[\[1,1\],\[52\.1,4\.31\]\]/)
         ).toBeVisible();
-        expect(fetchMock).toBeCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
         expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
             "http://localhost/api/datalora?type=all"
         );
@@ -128,7 +128,7 @@ describe("DataLora", () => {
         expect(
             await screen.findByText(/\[\[1,1\],\[52\.1,4\.31\]\]/)
         ).toBeVisible();
-        expect(fetchMock).toBeCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
         expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
             "http://localhost/api/datalora?type=24h"
         );

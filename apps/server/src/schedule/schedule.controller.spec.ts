@@ -63,8 +63,10 @@ describe("ScheduleController", () => {
             json: () => Promise.resolve(mockScheduleResponse),
         } as CancelableRequest<Response>);
         const response = await controller.getSchedule(mockAuthenticatedRequest);
-        expect(mockGot).toBeCalledTimes(1);
-        expect(mockGot).toBeCalledWith("http://someurl/api/key/?cmd=future");
+        expect(mockGot).toHaveBeenCalledTimes(1);
+        expect(mockGot).toHaveBeenCalledWith(
+            "http://someurl/api/key/?cmd=future"
+        );
         expect(response).toEqual(mockScheduleResponse);
     });
 });

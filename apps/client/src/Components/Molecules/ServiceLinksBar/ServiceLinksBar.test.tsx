@@ -47,7 +47,7 @@ describe("ServiceLinksBar", () => {
             "http://someurl.example.com"
         );
 
-        expect(fetchMock).toBeCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
         expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
             "http://localhost/api/servicelinks"
         );

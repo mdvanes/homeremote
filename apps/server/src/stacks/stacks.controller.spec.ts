@@ -53,8 +53,8 @@ describe("Stacks Controller", () => {
                 EndpointId: 456,
             },
         ]);
-        expect(mockGot).toBeCalledTimes(1);
-        expect(mockGot).toBeCalledWith("/api/stacks", {
+        expect(mockGot).toHaveBeenCalledTimes(1);
+        expect(mockGot).toHaveBeenCalledWith("/api/stacks", {
             headers: {
                 "X-API-KEY": "",
             },

@@ -83,7 +83,7 @@ describe("Docker", () => {
             /ERROR: Dockerlist failure: \[FETCH_ERROR\] Error: getDockerList rejected/
         );
         expect(elem).toBeInTheDocument();
-        expect(fetchMock).toBeCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(getCalledUrl(0)).toBe("http://localhost/api/dockerlist");
     });
 });

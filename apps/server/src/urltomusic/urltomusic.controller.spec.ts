@@ -80,7 +80,7 @@ describe("Urltomusic Controller", () => {
             });
 
             const result = await controller.getInfo("some_url");
-            expect(youtubeDlExecSpy).toBeCalledWith(
+            expect(youtubeDlExecSpy).toHaveBeenCalledWith(
                 "some_url",
                 expect.anything()
             );
@@ -151,7 +151,7 @@ describe("Urltomusic Controller", () => {
                 "some_title",
                 "some_album"
             );
-            expect(youtubeDlExecSpy).toBeCalledWith("some_url", {
+            expect(youtubeDlExecSpy).toHaveBeenCalledWith("some_url", {
                 addHeader: ["referer:youtube.com", "user-agent:googlebot"],
                 audioFormat: "mp3",
                 audioQuality: 0,
@@ -165,8 +165,8 @@ describe("Urltomusic Controller", () => {
             // Wait for detached promise to finish
             await new Promise(process.nextTick);
 
-            expect(id3WriteSpy).toBeCalledTimes(1);
-            expect(id3WriteSpy).toBeCalledWith(
+            expect(id3WriteSpy).toHaveBeenCalledTimes(1);
+            expect(id3WriteSpy).toHaveBeenCalledWith(
                 {
                     artist: "some_artist",
                     title: "some_title",
@@ -174,13 +174,13 @@ describe("Urltomusic Controller", () => {
                 },
                 "/some_path/some_artist - some_title.mp3"
             );
-            expect(fs.chmodSync).toBeCalledTimes(1);
-            expect(fs.chmodSync).toBeCalledWith(
+            expect(fs.chmodSync).toHaveBeenCalledTimes(1);
+            expect(fs.chmodSync).toHaveBeenCalledWith(
                 "/some_path/some_artist - some_title.mp3",
                 "664"
             );
-            expect(fs.chownSync).toBeCalledTimes(1);
-            expect(fs.chownSync).toBeCalledWith(
+            expect(fs.chownSync).toHaveBeenCalledTimes(1);
+            expect(fs.chownSync).toHaveBeenCalledWith(
                 "/some_path/some_artist - some_title.mp3",
                 1000,
                 1000
