@@ -287,7 +287,11 @@ export class UrltomusicController {
                 return info;
             } catch (err) {
                 this.logger.error(
-                    `getInfo failed: ${err instanceof Error ? `${err.message}\n${err.stack}` : String(err)}`
+                    `getInfo failed: ${
+                        err instanceof Error
+                            ? `${err.message}\n${err.stack}`
+                            : String(err)
+                    }`
                 );
                 this.updateBin();
                 throw new HttpException(
@@ -384,7 +388,11 @@ export class UrltomusicController {
             } catch (err) {
                 const extra =
                     err && typeof err === "object"
-                        ? ` stdout=[${(err as Record<string, unknown>).stdout}] stderr=[${(err as Record<string, unknown>).stderr}]`
+                        ? ` stdout=[${
+                              (err as Record<string, unknown>).stdout
+                          }] stderr=[${
+                              (err as Record<string, unknown>).stderr
+                          }]`
                         : "";
                 const message =
                     err instanceof Error
