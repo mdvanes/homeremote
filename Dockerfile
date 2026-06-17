@@ -39,29 +39,23 @@ ARG INSTALL_TIMEOUT
 
 WORKDIR /app
 
-# For bcrypt build that works on Alpine
-RUN apk --no-cache add --virtual .builds-deps build-base python3 jq
-
-# Set a symlink because some deps need `python` to rebuild
-# RUN ln -s /usr/bin/python3 /usr/bin/python # Suddenly, python is included in the image?
+# jq is used below to strip devDependencies
+RUN apk --no-cache add --virtual .builds-deps jq
 
 # Copy the files needed before npm install
 COPY --from=build-env /home/node/code/package.json /home/node/code/package-lock.json ./
 COPY --from=build-env /home/node/code/dist/apps/server ./dist/apps/server
 
-# Yarn does not properly support the --prod flag, npm fails with timeout, and reinstall of node_modules is neccesary for bcrypt. npm rebuild instead of reinstall does not seem to work.
+# Yarn does not properly support the --prod flag and npm fails with timeout.
 # So manually strip devDependencies from package.json
 RUN jq 'del(.devDependencies)' package.json > tmp.json && mv tmp.json package.json
-
-# Skip only postinstall here. The --ignore-scripts flag also ignores build for the bcrypt dependency
-# RUN npm set-script postinstall ""
 
 # NOTE: timeout settings seem to have no effect, but disabling VPN does (timeout after 1796s instead of 110s) But still fails and is incredibly slow. Disabling DNS proxy also seems to help.
 # Install only production dependencies
 RUN npm ci $INSTALL_TIMEOUT
 
 # Clean up build artifacts
-RUN apk del jq
+RUN apk del .builds-deps
 
 #### RUNTIME STAGE ####
 FROM node:24-alpine
