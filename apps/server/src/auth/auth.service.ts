@@ -54,7 +54,7 @@ export class AuthService {
     }: LoginRequest["user"]): [
         typeof AUTHENTICATION_COOKIE_NAME,
         string,
-        CookieOptions
+        CookieOptions,
     ] {
         const payload = { sub: id, username: name };
         const token = this.jwtService.sign(payload);

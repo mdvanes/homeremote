@@ -106,8 +106,10 @@ export interface MonitService {
     };
 }
 
-export interface MonitFilesystemService
-    extends Omit<MonitService, "block" | "port"> {
+export interface MonitFilesystemService extends Omit<
+    MonitService,
+    "block" | "port"
+> {
     block: NonNullable<MonitService["block"]>;
 }
 

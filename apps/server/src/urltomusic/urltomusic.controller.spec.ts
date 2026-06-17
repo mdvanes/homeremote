@@ -137,9 +137,8 @@ describe("Urltomusic Controller", () => {
 
     describe("getMusic POST", () => {
         it("returns a path when complete", async () => {
-            const progressBefore = await controller.getMusicProgress(
-                "some_url"
-            );
+            const progressBefore =
+                await controller.getMusicProgress("some_url");
             expect(progressBefore).toEqual({
                 state: "idle",
                 url: "some_url",
@@ -215,9 +214,8 @@ describe("Urltomusic Controller", () => {
         });
 
         it("throws error when rootPath not configured", async () => {
-            const progressBefore = await controller.getMusicProgress(
-                "some_url"
-            );
+            const progressBefore =
+                await controller.getMusicProgress("some_url");
             expect(progressBefore).toEqual({
                 state: "idle",
                 url: "some_url",
@@ -249,9 +247,8 @@ describe("Urltomusic Controller", () => {
         });
 
         it("throws error on remote error", async () => {
-            const progressBefore = await controller.getMusicProgress(
-                "some_url"
-            );
+            const progressBefore =
+                await controller.getMusicProgress("some_url");
             expect(progressBefore).toEqual({
                 state: "idle",
                 url: "some_url",

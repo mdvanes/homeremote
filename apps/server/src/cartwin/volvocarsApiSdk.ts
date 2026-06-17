@@ -51,9 +51,10 @@ export const volvocarsApiSdk = ({
         CarTwinResponse["connected"]["odometer"]
     > => {
         try {
-            const response = await gotConnected<
-                VolvoConnectedSchemas["OdometerResponse"]
-            >("/odometer");
+            const response =
+                await gotConnected<VolvoConnectedSchemas["OdometerResponse"]>(
+                    "/odometer"
+                );
             return response.data.odometer;
         } catch {
             return ERROR;
@@ -64,9 +65,10 @@ export const volvocarsApiSdk = ({
         CarTwinResponse["connected"]["doors"]
     > => {
         try {
-            const response = await gotConnected<
-                VolvoConnectedSchemas["DoorStatusResponse"]
-            >("/doors");
+            const response =
+                await gotConnected<VolvoConnectedSchemas["DoorStatusResponse"]>(
+                    "/doors"
+                );
             return response.data;
         } catch {
             return ERROR;
@@ -77,9 +79,10 @@ export const volvocarsApiSdk = ({
         CarTwinResponse["connected"]["statistics"]
     > => {
         try {
-            const response = await gotConnected<
-                VolvoConnectedSchemas["StatisticResponse"]
-            >("/statistics");
+            const response =
+                await gotConnected<VolvoConnectedSchemas["StatisticResponse"]>(
+                    "/statistics"
+                );
             return response.data;
         } catch {
             return ERROR;
@@ -90,9 +93,10 @@ export const volvocarsApiSdk = ({
         CarTwinResponse["connected"]["vehicleMetadata"]
     > => {
         try {
-            const response = await gotVehicle<
-                VolvoConnectedSchemas["VehicleDetailResponse"]
-            >("");
+            const response =
+                await gotVehicle<
+                    VolvoConnectedSchemas["VehicleDetailResponse"]
+                >("");
             return response.data;
         } catch (err) {
             return ERROR;
@@ -103,9 +107,10 @@ export const volvocarsApiSdk = ({
         CarTwinResponse["connected"]["diagnostics"]
     > => {
         try {
-            const response = await gotConnected<
-                VolvoConnectedSchemas["DiagnosticResponse"]
-            >("/diagnostics");
+            const response =
+                await gotConnected<VolvoConnectedSchemas["DiagnosticResponse"]>(
+                    "/diagnostics"
+                );
             return response.data;
         } catch {
             return ERROR;
@@ -116,9 +121,10 @@ export const volvocarsApiSdk = ({
         CarTwinResponse["connected"]["tyres"]
     > => {
         try {
-            const response = await gotConnected<
-                VolvoConnectedSchemas["TyrePressureResponse"]
-            >("/tyres");
+            const response =
+                await gotConnected<
+                    VolvoConnectedSchemas["TyrePressureResponse"]
+                >("/tyres");
             return response.data;
         } catch {
             return ERROR;
@@ -150,9 +156,8 @@ export const volvocarsApiSdk = ({
 
     const getEnergy = async (): Promise<CarTwinResponse["energy"]> => {
         try {
-            const response = await gotEnergy<
-                VolvoEnergySchemas["RechargeStatusResponse"]
-            >();
+            const response =
+                await gotEnergy<VolvoEnergySchemas["RechargeStatusResponse"]>();
             return response.data;
         } catch {
             return ERROR;
