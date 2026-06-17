@@ -156,15 +156,25 @@ export const EnergyChart: FC<{
                                 />
                                 <Tooltip
                                     formatter={(val) => {
-                                        if ((val as number).toLocaleString) {
-                                            return val.toLocaleString("en-uk", {
+                                        if (
+                                            val !== undefined &&
+                                            (val as number).toLocaleString
+                                        ) {
+                                            return (
+                                                val as number
+                                            ).toLocaleString("en-uk", {
                                                 minimumFractionDigits: 0,
                                                 maximumFractionDigits: 2,
                                             });
                                         }
                                         return val;
                                     }}
-                                    labelFormatter={dateTimeFormat}
+                                    labelFormatter={(label) => {
+                                        if (typeof label !== "string") {
+                                            return label;
+                                        }
+                                        return dateTimeFormat(label);
+                                    }}
                                     wrapperStyle={{
                                         border: "none",
                                     }}
