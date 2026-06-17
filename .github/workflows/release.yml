@@ -2,20 +2,14 @@ name: Bump Version and Release
 
 on:
   workflow_dispatch:
-    inputs:
-      version_type:
-        description: 'Version bump type'
-        required: true
-        default: 'patch'
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
+  push:
+    branches:
+      - main
 
 jobs:
   bump_and_tag:
     runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'chore: bump version')"
     permissions:
       contents: write
     steps:
@@ -35,8 +29,29 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Determine version bump from conventional commits
+        id: bump
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            LOG=$(git log --pretty=format:"%s%n%b" --no-merges)
+          else
+            LOG=$(git log "${PREV_TAG}..HEAD" --pretty=format:"%s%n%b" --no-merges)
+          fi
+
+          if echo "$LOG" | grep -qE "^BREAKING CHANGE:|^[a-z]+(\([^)]+\))?!:"; then
+            BUMP_TYPE="major"
+          elif echo "$LOG" | grep -qE "^feat(\([^)]+\))?:"; then
+            BUMP_TYPE="minor"
+          else
+            BUMP_TYPE="patch"
+          fi
+
+          echo "type=${BUMP_TYPE}" >> $GITHUB_OUTPUT
+          echo "Determined bump type: ${BUMP_TYPE}"
+
       - name: Bump version in package.json
-        run: npm version ${{ inputs.version_type }} --no-git-tag-version
+        run: npm version ${{ steps.bump.outputs.type }} --no-git-tag-version
 
       - name: Commit, tag and push
         run: |

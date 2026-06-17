@@ -94,14 +94,14 @@ Publishing is fully automated via GitHub Actions. Make sure the following secret
 
 **Normal flow:**
 
-1. Merge changes to the main branch
-2. Go to **Actions → Bump Version and Release → Run workflow**, choose `patch`, `minor`, or `major`
-3. The workflow will:
+1. Merge changes to the main branch — the release workflow triggers automatically
+2. The workflow will:
+    - Determine the version bump type from commit messages since the last tag using [conventional commits](https://www.conventionalcommits.org/): `BREAKING CHANGE` or `type!:` → major, `feat:` → minor, anything else → patch
     - Bump the version in `package.json` and commit it
     - Create and push an annotated tag `vX.Y.Z`
     - Trigger the publish workflow, which builds and pushes the Docker image to [Docker Hub](https://hub.docker.com/r/mdworld/homeremote) and [GHCR](https://ghcr.io/mdvanes/homeremote)
     - Create a GitHub Release titled `Release vX.Y.Z` with the commit messages since the previous tag as release notes
-4. On the target server, update the version in `docker-compose.yml` and run `docker-compose up -d`
+3. On the target server, update the version in `docker-compose.yml` and run `docker-compose up -d`
 
 **Manual fallback** (if CI is unavailable):
 
