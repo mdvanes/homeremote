@@ -3,14 +3,14 @@ import {
     Download as DownloadIcon,
     FormatQuote as FormatQuoteIcon,
     Info as InfoIcon,
-    MusicNote as MusicNoteIcon,
     Search as SearchIcon,
 } from "@mui/icons-material";
 import {
     Alert,
     Box,
     Button,
-    CircularProgress,
+    Grid,
+    IconButton,
     InputAdornment,
     LinearProgress,
     List,
@@ -18,6 +18,8 @@ import {
     ListItemText,
     Stack,
     TextField,
+    Tooltip,
+    Typography,
 } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { FC, useEffect, useState } from "react";
@@ -166,11 +168,16 @@ const UrlToMusicForm: FC = () => {
         formContext.reset();
     };
 
-    const isDownloading = isMusicFetching || isPolling;
+    const isBusy =
+        isSearching || isInfoFetching || isMusicFetching || isPolling;
+    const statusError = infoError || musicError || progressError;
 
     return (
-        <Stack spacing={2}>
-            {/* Search */}
+        <Stack spacing={1.5}>
+            {/* Top-anchored progress, reserves height so it never shifts content */}
+            <Box sx={{ height: 4 }}>{isBusy && <LinearProgress />}</Box>
+
+            {/* Search: single compact row with inline action buttons */}
             <Box
                 component="form"
                 onSubmit={(ev) => {
@@ -183,6 +190,7 @@ const UrlToMusicForm: FC = () => {
                     label="Search terms"
                     name="terms"
                     fullWidth
+                    size="small"
                     value={terms}
                     variant="standard"
                     onChange={(ev) => setTerms(ev.target.value)}
@@ -190,157 +198,214 @@ const UrlToMusicForm: FC = () => {
                         input: {
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    <MusicNoteIcon />
+                                    <Tooltip title="search">
+                                        <IconButton
+                                            type="submit"
+                                            aria-label="search"
+                                            size="small"
+                                            color="primary"
+                                        >
+                                            <SearchIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="prefill from now playing">
+                                        <IconButton
+                                            aria-label="prefill"
+                                            size="small"
+                                            color="primary"
+                                            onClick={handlePrefill}
+                                        >
+                                            <FormatQuoteIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="reset">
+                                        <IconButton
+                                            aria-label="reset"
+                                            size="small"
+                                            color="warning"
+                                            onClick={handleReset}
+                                        >
+                                            <CloseIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
                                 </InputAdornment>
                             ),
                         },
                     }}
                 />
-                <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-                    <Button
-                        type="submit"
-                        startIcon={<SearchIcon />}
-                        color="primary"
-                    >
-                        search
-                    </Button>
-                    <Button
-                        startIcon={<FormatQuoteIcon />}
-                        color="primary"
-                        onClick={handlePrefill}
-                    >
-                        prefill
-                    </Button>
-                    <Button
-                        startIcon={<CloseIcon />}
-                        color="warning"
-                        onClick={handleReset}
-                    >
-                        reset
-                    </Button>
-                </Stack>
             </Box>
 
-            {searchError && (
-                <Alert severity="error">{getErrorMessage(searchError)}</Alert>
-            )}
-            {isSearching ? (
-                <CircularProgress />
-            ) : (
-                searchQuery &&
-                searchResult?.searchResults && (
-                    <List dense>
-                        {searchResult.searchResults.map((item, index) => (
-                            <ListItemButton
-                                key={index}
-                                sx={{ gap: 2 }}
-                                onClick={() =>
-                                    setValue(
-                                        "url",
-                                        `https://youtube.com/watch?v=${item.id}`
-                                    )
-                                }
-                            >
-                                <ListItemText primary={item.title} />
-                            </ListItemButton>
-                        ))}
-                    </List>
-                )
-            )}
-
-            {/* Music form */}
-            <FormContainer formContext={formContext} onSuccess={handleGetMusic}>
-                <Stack spacing={1}>
-                    <TextFieldElement
-                        name="url"
-                        label="URL"
-                        fullWidth
-                        variant="standard"
-                        slotProps={{ htmlInput: { "data-testid": "url" } }}
-                    />
-                    <Box>
-                        <Button
-                            data-testid="get-info"
-                            color="primary"
-                            startIcon={<InfoIcon />}
-                            onClick={handleGetInfo}
+            {searchQuery && searchResult?.searchResults && (
+                <List
+                    dense
+                    sx={{
+                        maxHeight: 160,
+                        overflow: "auto",
+                        border: 1,
+                        borderColor: "divider",
+                        borderRadius: 1,
+                        py: 0,
+                    }}
+                >
+                    {searchResult.searchResults.map((item, index) => (
+                        <ListItemButton
+                            key={index}
+                            onClick={() =>
+                                setValue(
+                                    "url",
+                                    `https://youtube.com/watch?v=${item.id}`
+                                )
+                            }
                         >
-                            Get Info
-                        </Button>
-                    </Box>
+                            <ListItemText primary={item.title} />
+                        </ListItemButton>
+                    ))}
+                </List>
+            )}
 
-                    {infoError && (
-                        <Alert severity="error">
-                            {getErrorMessage(infoError)}
-                        </Alert>
-                    )}
-                    {url && (
-                        <ReactPlayer
-                            style={{
-                                aspectRatio: "16/9",
-                                maxWidth: "1100px",
-                            }}
-                            height="auto"
-                            width="100%"
-                            url={url}
-                        />
-                    )}
-                    {isInfoFetching && <CircularProgress />}
-
-                    {showMusicFields && (
-                        <>
-                            <TextFieldElement
-                                name="title"
-                                label="Title"
-                                fullWidth
-                                variant="standard"
-                                slotProps={{
-                                    htmlInput: { "data-testid": "title" },
-                                }}
-                            />
-                            <TextFieldElement
-                                name="artist"
-                                label="Artist"
-                                fullWidth
-                                variant="standard"
-                                slotProps={{
-                                    htmlInput: { "data-testid": "artist" },
-                                }}
-                            />
+            {/* Music form: two columns (fields left, compact preview right) */}
+            <FormContainer formContext={formContext} onSuccess={handleGetMusic}>
+                <Grid container spacing={2} sx={{ alignItems: "flex-start" }}>
+                    <Grid size={{ xs: 12, md: 7 }}>
+                        <Stack spacing={1}>
+                            <Stack
+                                direction="row"
+                                spacing={1}
+                                sx={{ alignItems: "flex-end" }}
+                            >
+                                <TextFieldElement
+                                    name="url"
+                                    label="URL"
+                                    fullWidth
+                                    size="small"
+                                    variant="standard"
+                                    slotProps={{
+                                        htmlInput: { "data-testid": "url" },
+                                    }}
+                                />
+                                <Button
+                                    data-testid="get-info"
+                                    color="primary"
+                                    size="small"
+                                    startIcon={<InfoIcon />}
+                                    onClick={handleGetInfo}
+                                    sx={{ flexShrink: 0 }}
+                                >
+                                    Get Info
+                                </Button>
+                            </Stack>
+                            <Grid container spacing={1}>
+                                <Grid size={{ xs: 12, sm: 6 }}>
+                                    <TextFieldElement
+                                        name="title"
+                                        label="Title"
+                                        fullWidth
+                                        size="small"
+                                        variant="standard"
+                                        disabled={!showMusicFields}
+                                        slotProps={{
+                                            htmlInput: {
+                                                "data-testid": "title",
+                                            },
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6 }}>
+                                    <TextFieldElement
+                                        name="artist"
+                                        label="Artist"
+                                        fullWidth
+                                        size="small"
+                                        variant="standard"
+                                        disabled={!showMusicFields}
+                                        slotProps={{
+                                            htmlInput: {
+                                                "data-testid": "artist",
+                                            },
+                                        }}
+                                    />
+                                </Grid>
+                            </Grid>
                             <TextFieldElement
                                 name="album"
                                 label="Album"
                                 fullWidth
+                                size="small"
                                 variant="standard"
+                                disabled={!showMusicFields}
                             />
-                            <Box>
-                                <Button
-                                    data-testid="get-music"
-                                    type="submit"
-                                    color="primary"
-                                    startIcon={<DownloadIcon />}
+                        </Stack>
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 5 }}>
+                        <Box
+                            sx={{
+                                aspectRatio: "16 / 9",
+                                maxHeight: 180,
+                                width: "100%",
+                                borderRadius: 1,
+                                overflow: "hidden",
+                                bgcolor: "action.hover",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
+                            {url ? (
+                                <ReactPlayer
+                                    width="100%"
+                                    height="100%"
+                                    url={url}
+                                />
+                            ) : (
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
                                 >
-                                    Get Music
-                                </Button>
-                            </Box>
-                        </>
-                    )}
+                                    Preview appears here
+                                </Typography>
+                            )}
+                        </Box>
+                    </Grid>
+                </Grid>
 
-                    {musicError && (
+                {/* Reserved status area so alerts swap in place without jumping */}
+                <Box sx={{ minHeight: 48, mt: 1 }}>
+                    {statusError && (
                         <Alert severity="error">
-                            {getErrorMessage(musicError)}
+                            {getErrorMessage(statusError)}
                         </Alert>
                     )}
-                    {progressError && (
-                        <Alert severity="error">
-                            {getErrorMessage(progressError)}
-                        </Alert>
-                    )}
-                    {isDownloading && <LinearProgress />}
-                    {resultPath && (
+                    {!statusError && resultPath && (
                         <Alert severity="success">Result in {resultPath}</Alert>
                     )}
-                </Stack>
+                </Box>
+
+                {/* Sticky action bar keeps the primary action reachable */}
+                <Box
+                    sx={{
+                        position: "sticky",
+                        bottom: 0,
+                        borderTop: 1,
+                        borderColor: "divider",
+                        pt: 1,
+                        mt: 1,
+                        display: "flex",
+                        justifyContent: "flex-end",
+                    }}
+                >
+                    <Button
+                        data-testid="get-music"
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        startIcon={<DownloadIcon />}
+                        disabled={
+                            !showMusicFields || isMusicFetching || isPolling
+                        }
+                    >
+                        Get Music
+                    </Button>
+                </Box>
             </FormContainer>
         </Stack>
     );

@@ -70,9 +70,7 @@ describe("UrlToMusic", () => {
         );
 
         const urlInput = await screen.findByRole("textbox", { name: "URL" });
-        expect(
-            screen.queryByRole("textbox", { name: "Title" })
-        ).not.toBeInTheDocument();
+        expect(screen.getByRole("textbox", { name: "Title" })).toBeDisabled();
 
         fireEvent.change(urlInput, { target: { value: "Some URL" } });
 
@@ -101,12 +99,10 @@ describe("UrlToMusic", () => {
         fetchMock.mockResponse(JSON.stringify(mockGetInfoResponse));
         userEvent.click(getInfoButton);
 
-        const titleInput = await screen.findByRole("textbox", {
-            name: "Title",
-        });
+        const titleInput = await screen.findByDisplayValue("Some Title");
 
         expect(urlInput).toHaveValue("Some URL");
-        expect(titleInput).toHaveValue("Some Title");
+        expect(titleInput).toBeEnabled();
         expect(screen.getByRole("textbox", { name: "Artist" })).toHaveValue(
             "Some Artist"
         );
@@ -132,9 +128,7 @@ describe("UrlToMusic", () => {
         fetchMock.mockResponse(JSON.stringify(mockGetInfoResponse));
         userEvent.click(getInfoButton);
 
-        const titleInput = await screen.findByRole("textbox", {
-            name: "Title",
-        });
+        const titleInput = await screen.findByDisplayValue("Some Title");
 
         fireEvent.change(titleInput, {
             target: { value: "Some Other Title" },

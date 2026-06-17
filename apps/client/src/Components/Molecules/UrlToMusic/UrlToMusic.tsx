@@ -30,6 +30,7 @@ const UrlToMusic: FC = () => {
                 onClose={() => setOpen(false)}
                 fullWidth
                 maxWidth="md"
+                scroll="paper"
             >
                 <DialogTitle
                     sx={{
@@ -46,7 +47,7 @@ const UrlToMusic: FC = () => {
                         <CloseIcon />
                     </IconButton>
                 </DialogTitle>
-                <DialogContent>
+                <DialogContent dividers sx={{ minHeight: 360 }}>
                     <UrlToMusicForm />
                 </DialogContent>
             </Dialog>
