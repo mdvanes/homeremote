@@ -35,7 +35,7 @@ const renderDrawerMenu = (initialState: MockRootState) =>
     );
 
 // https://codeburst.io/module-mocking-in-jest-ff174397e5ff
-jest.mock("react-router-dom", () => ({
+jest.mock("react-router", () => ({
     // Needed to overwite default in this syntax
     __esModule: true,
     default: "mock-default",
