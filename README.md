@@ -85,33 +85,37 @@ Building / Run in production:
     -   https://github.com/yarnpkg/yarn/issues/5259
     -   Solved by setting `RUN yarn install --frozen-lockfile --network-timeout 1000000` in Dockerfile
 
-Publishing:
+### Publishing
 
-Publishing is done automatically when tagging on the main branch. So make sure to set up
+Publishing is fully automated via GitHub Actions. Make sure the following secrets and permissions are configured in the repository settings:
 
--   secrets.DOCKER_USERNAME
--   secrets.DOCKER_PASSWORD
+- `secrets.DOCKER_USERNAME` and `secrets.DOCKER_PASSWORD` (Docker Hub)
+- Actions → General → Workflow permissions set to **Read and write** (required for GHCR and GitHub Releases)
 
-1. Merge changes to main branch
-2. Update version in package.json to `X.Y.Z`, e.g. 3.0.0
-3. Tag with GitHub UI or with `git tag -a vX.Y.Z -m "publish version X.Y.Z"` and push `git push --tags`
-4. Wait for CI to finish, and all tests are OK. This will automatically build and push to the docker registry. To do this by hand, do this:
+**Normal flow:**
 
--   ONLY WHEN MANUAL: On dev machine, build image with correct version: `docker build -t mdworld/homeremote:X.Y.Z .` (on mac `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:X.Y.Z .`)
--   ONLY WHEN MANUAL: On dev machine, push image to registry:
-    -   Note: should also work with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub
+1. Merge changes to the main branch
+2. Go to **Actions → Bump Version and Release → Run workflow**, choose `patch`, `minor`, or `major`
+3. The workflow will:
+    - Bump the version in `package.json` and commit it
+    - Create and push an annotated tag `vX.Y.Z`
+    - Trigger the publish workflow, which builds and pushes the Docker image to [Docker Hub](https://hub.docker.com/r/mdworld/homeremote) and [GHCR](https://ghcr.io/mdvanes/homeremote)
+    - Create a GitHub Release titled `Release vX.Y.Z` with the commit messages since the previous tag as release notes
+4. On the target server, update the version in `docker-compose.yml` and run `docker-compose up -d`
+
+**Manual fallback** (if CI is unavailable):
+
+-   Build image: `docker build -t mdworld/homeremote:X.Y.Z .` (on Mac: `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:X.Y.Z .`)
+-   Push to registry (note: also works with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub):
     -   `docker login --username=yourhubusername`
     -   `docker push mdworld/homeremote:X.Y.Z`
     -   `docker logout`
 
-7. On the target server, set up:
+**First-time target server setup:**
 
 -   ~/homeremote/settings/auth (use apps/server/auth.json.example as base)
 -   ~/homeremote/settings/.env (use apps/server/.env.example as base)
 -   ~/homeremote/docker-compose.yml (copy docker-compose.yml from this project)
-
-8. Update the version in docker-compose.yml
-9. On the target server: `docker-compose up -d`
 
 ## Generate types
 
