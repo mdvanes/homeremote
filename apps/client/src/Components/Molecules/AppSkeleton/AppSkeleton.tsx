@@ -31,7 +31,11 @@ const AppSkeleton: FC = () => (
                 </Toolbar>
             </AppBar>
             <Container maxWidth="xl">
-                <Box mt={3}>
+                <Box
+                    sx={{
+                        mt: 3,
+                    }}
+                >
                     <Grid container spacing={2}>
                         <Grid
                             size={{

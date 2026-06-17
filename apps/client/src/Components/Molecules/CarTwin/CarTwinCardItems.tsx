@@ -53,7 +53,12 @@ export const CarTwinCardItems: FC<{
                         Meta failed: authenticate connected vehicle
                     </Alert>
                 ) : (
-                    <Grid container flexDirection="row">
+                    <Grid
+                        container
+                        sx={{
+                            flexDirection: "row",
+                        }}
+                    >
                         <Grid>
                             <img
                                 alt="car exterior"

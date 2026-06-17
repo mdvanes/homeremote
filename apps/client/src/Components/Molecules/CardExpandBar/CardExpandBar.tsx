@@ -10,7 +10,12 @@ interface CardExpandBarProps {
 
 const CardExpandBar: FC<CardExpandBarProps> = ({ isOpen, setIsOpen, hint }) => {
     return (
-        <Grid container justifyContent="flex-end">
+        <Grid
+            container
+            sx={{
+                justifyContent: "flex-end",
+            }}
+        >
             <Grid>
                 {!isOpen ? (
                     <span>

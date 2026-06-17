@@ -107,12 +107,14 @@ const GetSearchForm: FC = () => {
                 value={terms ?? ""}
                 variant="standard"
                 onChange={handleTermsChange}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <MusicNoteIcon />
-                        </InputAdornment>
-                    ),
+                slotProps={{
+                    input: {
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <MusicNoteIcon />
+                            </InputAdornment>
+                        ),
+                    },
                 }}
             />
             {isLoading || isFetching ? (

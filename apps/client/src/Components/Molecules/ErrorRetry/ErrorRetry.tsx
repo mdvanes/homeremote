@@ -14,21 +14,24 @@ export const ErrorRetry: FC<Props> = ({
 }) => {
     return (
         <Box
-            mx={noMargin ? -2 : undefined}
             component={Alert}
             severity="error"
             square
             sx={{
+                mx: noMargin ? -2 : undefined,
+
                 ".MuiAlert-message": {
                     width: "100%",
                 },
             }}
         >
             <Box
-                display="flex"
-                flex={1}
-                flexDirection="row"
-                justifyContent="space-between"
+                sx={{
+                    display: "flex",
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                }}
             >
                 <div>{children}</div>
                 <Tooltip title="Retry">

@@ -23,11 +23,11 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             Search terms
           </label>
           <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-13jchr1-MuiInputBase-root-MuiInput-root"
+            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-1ob4rtt-MuiInputBase-root-MuiInput-root"
           >
             <input
               aria-invalid="false"
-              class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1yrc8ca-MuiInputBase-input-MuiInput-input"
+              class="MuiInputBase-input MuiInput-input css-1yrc8ca-MuiInputBase-input-MuiInput-input"
               id="_r_6_"
               name="terms"
               type="text"
@@ -54,12 +54,12 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           class="MuiCardActions-root MuiCardActions-spacing css-1q4nm6f-MuiCardActions-root"
         >
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-1jsvysz-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             <span
-              class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1sh91j5-MuiButton-startIcon"
+              class="MuiButton-icon MuiButton-startIcon css-1lxyhll-MuiButton-startIcon"
             >
               <svg
                 aria-hidden="true"
@@ -76,12 +76,12 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             search
           </button>
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-1jsvysz-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             <span
-              class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1sh91j5-MuiButton-startIcon"
+              class="MuiButton-icon MuiButton-startIcon css-1lxyhll-MuiButton-startIcon"
             >
               <svg
                 aria-hidden="true"
@@ -98,12 +98,12 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             prefill
           </button>
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorWarning css-cotep3-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorWarning css-1hsv73j-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             <span
-              class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1sh91j5-MuiButton-startIcon"
+              class="MuiButton-icon MuiButton-startIcon css-1lxyhll-MuiButton-startIcon"
             >
               <svg
                 aria-hidden="true"
@@ -135,7 +135,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             URL
           </label>
           <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-13jchr1-MuiInputBase-root-MuiInput-root"
+            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1ob4rtt-MuiInputBase-root-MuiInput-root"
           >
             <input
               aria-invalid="false"
@@ -151,7 +151,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           class="MuiCardActions-root MuiCardActions-spacing css-1q4nm6f-MuiCardActions-root"
         >
           <button
-            class="MuiButtonBase-root Mui-focusVisible MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root Mui-focusVisible MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
             data-testid="get-info"
             tabindex="0"
             type="button"
@@ -161,7 +161,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
               class="MuiTouchRipple-root css-r3djoj-MuiTouchRipple-root"
             >
               <span
-                class="css-y4cjyz-MuiTouchRipple-ripple MuiTouchRipple-ripple MuiTouchRipple-rippleVisible"
+                class="css-lzntsc-MuiTouchRipple-ripple MuiTouchRipple-ripple MuiTouchRipple-rippleVisible"
                 style="width: 2.8284271247461903px; height: 2.8284271247461903px; top: -1.4142135623730951px; left: -1.4142135623730951px;"
               >
                 <span
@@ -169,7 +169,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
                 />
               </span>
               <span
-                class="css-y4cjyz-MuiTouchRipple-ripple MuiTouchRipple-ripple MuiTouchRipple-rippleVisible MuiTouchRipple-ripplePulsate"
+                class="css-lzntsc-MuiTouchRipple-ripple MuiTouchRipple-ripple MuiTouchRipple-rippleVisible MuiTouchRipple-ripplePulsate"
                 style="width: 1px; height: 1px; top: -0.5px; left: -0.5px;"
               >
                 <span
@@ -205,7 +205,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             Title
           </label>
           <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-13jchr1-MuiInputBase-root-MuiInput-root"
+            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1ob4rtt-MuiInputBase-root-MuiInput-root"
           >
             <input
               aria-invalid="false"
@@ -230,7 +230,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             Artist
           </label>
           <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-13jchr1-MuiInputBase-root-MuiInput-root"
+            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1ob4rtt-MuiInputBase-root-MuiInput-root"
           >
             <input
               aria-invalid="false"
@@ -254,7 +254,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             Album
           </label>
           <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-13jchr1-MuiInputBase-root-MuiInput-root"
+            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1ob4rtt-MuiInputBase-root-MuiInput-root"
           >
             <input
               aria-invalid="false"
@@ -270,7 +270,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           class="MuiCardActions-root MuiCardActions-spacing css-1q4nm6f-MuiCardActions-root"
         >
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
             data-testid="get-music"
             tabindex="0"
             type="button"
@@ -307,11 +307,11 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
             Search terms
           </label>
           <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-13jchr1-MuiInputBase-root-MuiInput-root"
+            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl MuiInputBase-adornedEnd css-1ob4rtt-MuiInputBase-root-MuiInput-root"
           >
             <input
               aria-invalid="false"
-              class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1yrc8ca-MuiInputBase-input-MuiInput-input"
+              class="MuiInputBase-input MuiInput-input css-1yrc8ca-MuiInputBase-input-MuiInput-input"
               id="_r_0_"
               name="terms"
               type="text"
@@ -338,12 +338,12 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
           class="MuiCardActions-root MuiCardActions-spacing css-1q4nm6f-MuiCardActions-root"
         >
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-1jsvysz-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             <span
-              class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1sh91j5-MuiButton-startIcon"
+              class="MuiButton-icon MuiButton-startIcon css-1lxyhll-MuiButton-startIcon"
             >
               <svg
                 aria-hidden="true"
@@ -360,12 +360,12 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
             search
           </button>
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-1jsvysz-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             <span
-              class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1sh91j5-MuiButton-startIcon"
+              class="MuiButton-icon MuiButton-startIcon css-1lxyhll-MuiButton-startIcon"
             >
               <svg
                 aria-hidden="true"
@@ -382,12 +382,12 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
             prefill
           </button>
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textWarning MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorWarning css-cotep3-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorWarning css-1hsv73j-MuiButtonBase-root-MuiButton-root"
             tabindex="0"
             type="button"
           >
             <span
-              class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1sh91j5-MuiButton-startIcon"
+              class="MuiButton-icon MuiButton-startIcon css-1lxyhll-MuiButton-startIcon"
             >
               <svg
                 aria-hidden="true"
@@ -419,7 +419,7 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
             URL
           </label>
           <div
-            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-13jchr1-MuiInputBase-root-MuiInput-root"
+            class="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-fullWidth MuiInputBase-formControl css-1ob4rtt-MuiInputBase-root-MuiInput-root"
           >
             <input
               aria-invalid="false"
@@ -435,7 +435,7 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
           class="MuiCardActions-root MuiCardActions-spacing css-1q4nm6f-MuiCardActions-root"
         >
           <button
-            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
+            class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-sizeMedium MuiButton-colorPrimary css-1uent87-MuiButtonBase-root-MuiButton-root"
             data-testid="get-info"
             tabindex="0"
             type="button"

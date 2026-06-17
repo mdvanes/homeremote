@@ -59,7 +59,11 @@ export const DockerStackItem: FC<DockerStackItemProps> = ({ stack }) => {
                     cursor: "pointer",
                 }}
             >
-                <Box display="flex">
+                <Box
+                    sx={{
+                        display: "flex",
+                    }}
+                >
                     {isLoading && (
                         <CircularProgress
                             size={18}

@@ -78,7 +78,14 @@ export const DoorsAndTyres: FC<{
     };
 
     return (
-        <Grid container gap={2} alignItems="center" justifyContent="center">
+        <Grid
+            container
+            sx={{
+                gap: 2,
+                alignItems: "center",
+                justifyContent: "center",
+            }}
+        >
             <Grid>{carLock()}</Grid>
             <Grid>
                 <div className={classes.car}>

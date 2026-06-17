@@ -34,7 +34,7 @@ exports[`Dashboard page contains all the control components 1`] = `
             style="overflow: hidden; margin-bottom: 0px;"
           >
             <div
-              class="MuiTabs-list MuiTabs-flexContainer css-hzcega-MuiTabs-list"
+              class="MuiTabs-list css-hzcega-MuiTabs-list"
               role="tablist"
             >
               <button
@@ -80,7 +80,7 @@ exports[`Dashboard page contains all the control components 1`] = `
         <mock-dockerstacklist-card />
         <mock-speedtest-card />
         <button
-          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium css-1svfwy9-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium css-23key4-MuiButtonBase-root-MuiIconButton-root"
           tabindex="0"
           title="Toggle light mode"
           type="button"

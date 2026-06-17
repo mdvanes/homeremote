@@ -47,7 +47,12 @@ export const DockerStackList: FC = () => {
     return (
         <>
             <LoadingDot isLoading={isLoading || isFetching} noMargin />
-            <Grid container gap={0.5}>
+            <Grid
+                container
+                sx={{
+                    gap: 0.5,
+                }}
+            >
                 <Grid size="grow">
                     {data && (
                         <Stack spacing={0.5}>

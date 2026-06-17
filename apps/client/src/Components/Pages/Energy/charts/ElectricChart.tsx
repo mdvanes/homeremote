@@ -58,7 +58,13 @@ export const ElectricChart: FC = () => {
 
     return (
         <>
-            <Stack direction="row" spacing={1} marginBottom={1}>
+            <Stack
+                direction="row"
+                spacing={1}
+                sx={{
+                    marginBottom: 1,
+                }}
+            >
                 <Button
                     variant={mode === "day" ? "contained" : "outlined"}
                     onClick={() => {

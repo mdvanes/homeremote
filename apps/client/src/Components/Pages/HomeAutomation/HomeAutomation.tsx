@@ -4,7 +4,11 @@ import ClimateSensorsCard from "../../Molecules/ClimateSensorsCard/ClimateSensor
 import SwitchesCard from "../../Molecules/SwitchesCard/SwitchesCard";
 
 const HomeAutomation: FC = () => (
-    <Stack gap={1}>
+    <Stack
+        sx={{
+            gap: 1,
+        }}
+    >
         <SwitchesCard />
         <ClimateSensorsCard />
     </Stack>

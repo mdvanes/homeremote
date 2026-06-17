@@ -37,7 +37,12 @@ const MonitInstance: FC<{
         <>
             <Typography variant="h5">{monit.localhostname}</Typography>
             <Typography variant="subtitle2">uptime: {monit.uptime}</Typography>
-            <Grid container gap={0.5}>
+            <Grid
+                container
+                sx={{
+                    gap: 0.5,
+                }}
+            >
                 <Grid size={xsFromMediaQuery}>
                     <Typography>Other</Typography>
                     {other.map((item) => (
@@ -59,7 +64,12 @@ const MonitInstance: FC<{
                 </Grid>
             </Grid>
             <Typography>Host</Typography>
-            <Grid container gap={0.5}>
+            <Grid
+                container
+                sx={{
+                    gap: 0.5,
+                }}
+            >
                 <Grid size={xsFromMediaQuery}>
                     {hosts1.map((item, index) => (
                         <MonitHostServiceInstance item={item} key={index} />

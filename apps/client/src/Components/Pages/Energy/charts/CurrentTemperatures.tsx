@@ -29,9 +29,11 @@ export const CurrentTemperatures: FC<{
             <Stack
                 direction={isMobile ? "column" : "row"}
                 spacing={1}
-                marginBottom={1}
-                justifyContent="center"
-                gap={10}
+                sx={{
+                    marginBottom: 1,
+                    justifyContent: "center",
+                    gap: 10,
+                }}
             >
                 <div>
                     {temperatures.map((sensor) => {
