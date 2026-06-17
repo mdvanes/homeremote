@@ -43,13 +43,11 @@ const GlobalSnackbar: FC = () => {
             autoHideDuration={3000}
             message={
                 <Grid container direction="row" alignItems="center" spacing={1}>
-                    <Grid item>
+                    <Grid>
                         <Warning />
                     </Grid>
-                    <Grid item xs>
-                        {line && line.message}
-                    </Grid>
-                    <Grid item>
+                    <Grid size="grow">{line && line.message}</Grid>
+                    <Grid>
                         <IconButton
                             onClick={handleClose}
                             color="inherit"

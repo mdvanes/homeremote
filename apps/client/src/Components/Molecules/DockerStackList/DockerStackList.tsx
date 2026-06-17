@@ -48,7 +48,7 @@ export const DockerStackList: FC = () => {
         <>
             <LoadingDot isLoading={isLoading || isFetching} noMargin />
             <Grid container gap={0.5}>
-                <Grid item xs>
+                <Grid size="grow">
                     {data && (
                         <Stack spacing={0.5}>
                             {stacks1.map((stack) => (
@@ -57,7 +57,7 @@ export const DockerStackList: FC = () => {
                         </Stack>
                     )}
                 </Grid>
-                <Grid item xs>
+                <Grid size="grow">
                     <Stack spacing={0.5}>
                         {stacks2.map((stack) => (
                             <DockerStackItem key={stack.Id} stack={stack} />

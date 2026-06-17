@@ -33,16 +33,36 @@ const AppSkeleton: FC = () => (
             <Container maxWidth="xl">
                 <Box mt={3}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={3}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: 3,
+                            }}
+                        >
                             <Skeleton variant="rectangular" height={300} />
                         </Grid>
-                        <Grid item xs={12} md>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: "grow",
+                            }}
+                        >
                             <Skeleton variant="rectangular" height={300} />
                         </Grid>
-                        <Grid item xs={12} md={2}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: 2,
+                            }}
+                        >
                             <Skeleton variant="rectangular" height={300} />
                         </Grid>
-                        <Grid item xs={12} md={2}>
+                        <Grid
+                            size={{
+                                xs: 12,
+                                md: 2,
+                            }}
+                        >
                             <Skeleton variant="rectangular" height={300} />
                         </Grid>
                     </Grid>

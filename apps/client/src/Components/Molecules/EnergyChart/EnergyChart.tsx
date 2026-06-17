@@ -205,7 +205,7 @@ export const EnergyChart: FC<{
 
                 {config.moreLink && (
                     <Grid container justifyContent="flex-end" my={-2}>
-                        <Grid item>
+                        <Grid>
                             <Link component={RouterLink} to={config.moreLink}>
                                 more
                             </Link>

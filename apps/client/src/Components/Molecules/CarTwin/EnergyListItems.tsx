@@ -73,12 +73,12 @@ export const EnergyListItems: FC<{
 
     return (
         <Grid container>
-            <Grid item>
+            <Grid>
                 <Tooltip title="Range">
                     <BatteryFullIcon />
                 </Tooltip>
             </Grid>
-            <Grid item>
+            <Grid>
                 {electricRange?.value}{" "}
                 {electricRange?.unit === "kilometers"
                     ? "km"
@@ -86,12 +86,12 @@ export const EnergyListItems: FC<{
             </Grid>
             {isCharging && (
                 <>
-                    <Grid item>
+                    <Grid>
                         <Tooltip title="Estimated Charging Time">
                             {chargingIcon()}
                         </Tooltip>
                     </Grid>
-                    <Grid item>
+                    <Grid>
                         {chargingLabel()}
                         chargingConnectionStatus:{" "}
                         {chargingConnectionStatus?.value}
@@ -101,12 +101,12 @@ export const EnergyListItems: FC<{
             )}
             {!isCharging && (
                 <>
-                    <Grid item>
+                    <Grid>
                         <Tooltip title="Remaining Charge">
                             {chargeIcon()}
                         </Tooltip>
                     </Grid>
-                    <Grid item>{batteryChargeLevel?.value}%</Grid>
+                    <Grid>{batteryChargeLevel?.value}%</Grid>
                 </>
             )}
         </Grid>
