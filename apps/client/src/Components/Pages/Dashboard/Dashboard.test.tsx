@@ -11,7 +11,6 @@ jest.mock(
     "../../Molecules/DownloadList/DownloadList",
     () => "mock-download-list"
 );
-jest.mock("@mdworld/homeremote-stream-player", () => "mock-stream-player");
 jest.mock("../../Pages/Docker/Docker", () => "mock-docker");
 jest.mock("../../Molecules/DataLora/DataLora", () => "mock-datalora");
 jest.mock("../../Molecules/VideoStream/VideoStream", () => "mock-video-stream");
@@ -19,7 +18,6 @@ jest.mock(
     "../../Molecules/ServiceLinksBar/ServiceLinksBar",
     () => "mock-service-links-bar"
 );
-jest.mock("../../Molecules/Jukebox/Jukebox", () => "mock-jukebox");
 jest.mock("../../Molecules/Monit/Monit", () => "mock-monit");
 jest.mock("../../Molecules/Schedule/Schedule", () => "mock-schedule");
 jest.mock("../../Molecules/Nextup/Nextup", () => "mock-nextup");

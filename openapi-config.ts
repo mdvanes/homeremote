@@ -11,6 +11,13 @@ const config: ConfigFile = {
             exportName: "energyUsageApiWithRetry",
             tag: true,
         },
+        "./apps/client/src/Services/generated/nowplayingApi.ts": {
+            apiFile: "./apps/client/src/Services/emptyApi.ts",
+            schemaFile: "./libs/types/definitions/internal/nowplaying.yml",
+            exportName: "nowplayingApi",
+            apiImport: "emptyApi",
+            tag: true,
+        },
         "./apps/client/src/Services/generated/smartEntitiesApiWithRetry.ts": {
             apiFile: "./apps/client/src/Services/emptyApiWithRetry.ts",
             schemaFile: "./libs/types/definitions/internal/smartEntities.yml",

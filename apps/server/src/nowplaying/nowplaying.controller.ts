@@ -1,8 +1,7 @@
-import { PreviouslyResponse } from "@homeremote/types";
+import { NowPlayingResponse, PreviouslyResponse } from "@homeremote/types";
 import {
     ChannelName,
     getNowPlaying,
-    NowPlayingResponse,
 } from "@mdworld/homeremote-stream-player-server";
 import { getRadioMetaData } from "@mdworld/radio-metadata";
 import {

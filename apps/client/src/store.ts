@@ -13,7 +13,6 @@ import { homesecApi } from "./Services/homesecApi";
 import { jukeboxApi } from "./Services/jukeboxApi";
 import { monitApi } from "./Services/monitApi";
 import { nextupApi } from "./Services/nextupApi";
-import { nowplayingApi } from "./Services/nowplayingApi";
 import { scheduleApi } from "./Services/scheduleApi";
 import { serviceLinksApi } from "./Services/serviceLinksApi";
 import { stacksApi } from "./Services/stacksApi";
@@ -33,7 +32,6 @@ export const store = configureStore({
             jukeboxApi.middleware,
             monitApi.middleware,
             nextupApi.middleware,
-            nowplayingApi.middleware,
             scheduleApi.middleware,
             serviceLinksApi.middleware,
             stacksApi.middleware

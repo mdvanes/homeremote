@@ -1,0 +1,243 @@
+# npx mock-to-openapi ./libs/types/examples
+# https://editor.swagger.io/
+
+openapi: 3.0.1
+info:
+    title: Nowplaying Controller API
+    description: Retrieve "now playing" and "previously played" metadata for radio streams.
+    version: 1.0.0
+servers:
+    - url: http://localhost:4200
+      description: Homeremote local server
+tags:
+    - name: nowplaying
+      description: Radio stream now-playing and previously-played metadata
+paths:
+    /api/nowplaying/radio2:
+        get:
+            operationId: getRadio2
+            tags:
+                - nowplaying
+            responses:
+                "200":
+                    description: getRadio2
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/NowPlayingResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "500":
+                    description: Internal server error.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/nowplaying/radio2previously:
+        get:
+            operationId: getRadio2Previously
+            tags:
+                - nowplaying
+            responses:
+                "200":
+                    description: getRadio2Previously
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PreviouslyResponseList"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "500":
+                    description: Internal server error.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/nowplaying/radio3:
+        get:
+            operationId: getRadio3
+            tags:
+                - nowplaying
+            responses:
+                "200":
+                    description: getRadio3
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/NowPlayingResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "500":
+                    description: Internal server error.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/nowplaying/sky:
+        get:
+            operationId: getSky
+            tags:
+                - nowplaying
+            responses:
+                "200":
+                    description: getSky
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/NowPlayingResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "500":
+                    description: Internal server error.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/nowplaying/pinguin:
+        get:
+            operationId: getPinguin
+            tags:
+                - nowplaying
+            responses:
+                "200":
+                    description: getPinguin
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/NowPlayingResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "500":
+                    description: Internal server error.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+components:
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: Time when error happened
+                status:
+                    type: integer
+                    description: Code describing the error
+                    format: int32
+                error:
+                    type: string
+                    description: Short error name
+                message:
+                    type: string
+                    description: Message explaining the error
+                code:
+                    type: integer
+                    description: Code of the error
+                    format: int32
+            description: Error information details
+        NowPlayingResponse:
+            type: object
+            required:
+                - artist
+                - title
+                - last_updated
+                - songImageUrl
+                - name
+                - imageUrl
+            properties:
+                artist:
+                    type: string
+                title:
+                    type: string
+                last_updated:
+                    type: string
+                songImageUrl:
+                    type: string
+                name:
+                    type: string
+                imageUrl:
+                    type: string
+            description: Now playing information for a radio stream
+        RadioMetadataTime:
+            type: object
+            properties:
+                start:
+                    type: string
+                end:
+                    type: string
+            description: Start/end ISO timestamps for a played track
+        RadioMetadataBroadcast:
+            type: object
+            properties:
+                title:
+                    type: string
+                presenters:
+                    type: string
+                imageUrl:
+                    type: string
+            description: Broadcast/programme information for a played track
+        RadioMetadataSong:
+            type: object
+            properties:
+                artist:
+                    type: string
+                title:
+                    type: string
+                imageUrl:
+                    type: string
+                listenUrl:
+                    type: string
+            description: Song information for a played track
+        RadioMetadata:
+            type: object
+            required:
+                - song
+            properties:
+                time:
+                    $ref: "#/components/schemas/RadioMetadataTime"
+                broadcast:
+                    $ref: "#/components/schemas/RadioMetadataBroadcast"
+                song:
+                    $ref: "#/components/schemas/RadioMetadataSong"
+            description: Metadata for a single track played on the radio
+        PreviouslyResponse:
+            allOf:
+                - $ref: "#/components/schemas/NowPlayingResponse"
+                - type: object
+                  required:
+                      - broadcast
+                      - time
+                  properties:
+                      broadcast:
+                          $ref: "#/components/schemas/RadioMetadataBroadcast"
+                      time:
+                          $ref: "#/components/schemas/RadioMetadataTime"
+                      listenUrl:
+                          type: string
+            description: A previously played radio track
+        PreviouslyResponseList:
+            type: array
+            items:
+                $ref: "#/components/schemas/PreviouslyResponse"
+            description: List of previously played radio tracks

@@ -38,6 +38,8 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
         setHandlePlayNext,
         handleSkipRadio,
         isSkipRadioActive,
+        setIsJukeboxPlaying,
+        setJukeboxImageUrl,
     } = useHotKeyContext();
     const { data: playlists } = useGetPlaylistsQuery(undefined);
     const playlistId = currentPlaylist?.id;
@@ -93,6 +95,21 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
         setHandlePlayNext(() => handlePlayNext);
     }, [handlePlayNext, setHandlePlayNext]);
 
+    // Expose the current playlist's cover art to the bottom bar as the jukebox
+    // "now playing" image.
+    useEffect(() => {
+        if (currentPlaylist) {
+            const { id, type, name } = currentPlaylist;
+            setJukeboxImageUrl(
+                `${
+                    process.env.NX_PUBLIC_BASE_URL
+                }/api/jukebox/coverart/${id}?type=${type}&hash=${encodeURIComponent(
+                    name
+                )}`
+            );
+        }
+    }, [currentPlaylist, setJukeboxImageUrl]);
+
     return (
         <div>
             <Typography sx={{ height: "44px" }}>
@@ -110,6 +127,8 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                     controls
                     src={`${process.env.NX_PUBLIC_BASE_URL}/api/jukebox/song/${song.id}?hash=${hash}`}
                     onEnded={handlePlayNext}
+                    onPlay={() => setIsJukeboxPlaying(true)}
+                    onPause={() => setIsJukeboxPlaying(false)}
                 />
 
                 <IconButton title="Next track (d)" onClick={handlePlayNext}>
@@ -121,7 +140,10 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
                         <Forward10Icon color="secondary" />
                     </IconButton>
                 ) : (
-                    <IconButton title="Skip radio" onClick={handleSkipRadio}>
+                    <IconButton
+                        title="Skip radio until the next song (f)"
+                        onClick={handleSkipRadio}
+                    >
                         <Forward10Icon />
                     </IconButton>
                 )}

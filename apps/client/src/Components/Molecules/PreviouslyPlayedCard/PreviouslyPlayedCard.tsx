@@ -8,7 +8,7 @@ import {
     useTheme,
 } from "@mui/material";
 import { FC, useState } from "react";
-import { useGetRadio2PreviouslyQuery } from "../../../Services/nowplayingApi";
+import { useGetRadio2PreviouslyQuery } from "../../../Services/generated/nowplayingApi";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
 // Update every 3 minutes

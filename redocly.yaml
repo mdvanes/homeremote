@@ -15,6 +15,10 @@ apis:
         root: ./libs/types/definitions/internal/energyUsage.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/generated/energyUsage.ts
+    nowplaying@v1:
+        root: ./libs/types/definitions/internal/nowplaying.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/generated/nowplaying.ts
     smartEntities@v1:
         root: ./libs/types/definitions/internal/smartEntities.yml
         x-openapi-ts:
