@@ -66,7 +66,7 @@
         "react-is": "^19.2.7",
         "react-player": "^2.11.0",
         "react-refresh": "^0.10.0",
-        "recharts": "^2.15.4",
+        "recharts": "^3.8.1",
         "reflect-metadata": "^0.1.13",
         "regenerator-runtime": "0.13.7",
         "rxjs": "^7.0.0",
@@ -75,6 +75,11 @@
         "tss-react": "^4.9.18",
         "web-vitals": "^0.2.4",
         "youtube-dl-exec": "^3.1.7"
+    },
+    "overrides": {
+        "form-data": "^4.0.6",
+        "tmp": "^0.2.7",
+        "minimatch@9.0.3": "9.0.7"
     },
     "devDependencies": {
         "@babel/core": "^7.14.5",
