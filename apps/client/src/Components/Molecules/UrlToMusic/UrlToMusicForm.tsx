@@ -227,6 +227,7 @@ const UrlToMusicForm: FC = () => {
             {isSearching ? (
                 <CircularProgress />
             ) : (
+                searchQuery &&
                 searchResult?.searchResults && (
                     <List dense>
                         {searchResult.searchResults.map((item, index) => (

@@ -2,8 +2,9 @@ import {
     UrlToMusicGetInfoResponse,
     UrlToMusicGetMusicProgressResponse,
     UrlToMusicGetMusicResponse,
+    UrlToMusicGetSearchResponse,
 } from "@homeremote/types";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
@@ -161,5 +162,37 @@ describe("UrlToMusic", () => {
         expect(getCalledUrl(1)).toBe(
             "/api/urltomusic/getmusic/Some%20URL/progress"
         );
+    });
+
+    it("clears the search result list when reset is clicked", async () => {
+        const mockGetSearchResponse: UrlToMusicGetSearchResponse = {
+            searchResults: [{ title: "Some Search Result", id: "abc123" }],
+        };
+
+        render(<UrlToMusic />, { wrapper: Wrapper });
+
+        await userEvent.click(
+            screen.getByRole("button", { name: /URL to Music/i })
+        );
+
+        const termsInput = await screen.findByRole("textbox", {
+            name: "Search terms",
+        });
+        fireEvent.change(termsInput, { target: { value: "some terms" } });
+
+        fetchMock.mockResponse(JSON.stringify(mockGetSearchResponse));
+        userEvent.click(screen.getByRole("button", { name: "search" }));
+
+        const resultItem = await screen.findByText("Some Search Result");
+        expect(resultItem).toBeVisible();
+
+        userEvent.click(screen.getByRole("button", { name: "reset" }));
+
+        await waitFor(() =>
+            expect(
+                screen.queryByText("Some Search Result")
+            ).not.toBeInTheDocument()
+        );
+        expect(termsInput).toHaveValue("");
     });
 });
