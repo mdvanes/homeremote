@@ -1,28 +1,37 @@
-export interface UrlToMusicGetInfoResponse {
-    title: string;
-    artist: string;
-    streamUrl: string[];
-    versionInfo: string;
-}
+import { components, operations } from "./generated/urlToMusic";
 
-export interface UrlToMusicGetInfoArgs {
-    url: string;
-}
+export type SearchResultItem = components["schemas"]["SearchResultItem"];
 
+export type UrlToMusicGetSearchResponse =
+    components["schemas"]["UrlToMusicGetSearchResponse"];
+
+export type UrlToMusicGetInfoResponse =
+    components["schemas"]["UrlToMusicGetInfoResponse"];
+
+export type UrlToMusicGetMusicResponse =
+    components["schemas"]["UrlToMusicGetMusicResponse"];
+
+export type UrlToMusicGetMusicProgressResponse =
+    components["schemas"]["UrlToMusicGetMusicProgressResponse"];
+
+export type UrlToMusicGetSearchArgs =
+    operations["getSearch"]["parameters"]["path"];
+
+export type UrlToMusicGetInfoArgs =
+    operations["getInfo"]["parameters"]["path"];
+
+export type UrlToMusicGetMusicArgs =
+    operations["getMusic"]["parameters"]["path"] &
+        operations["getMusic"]["parameters"]["query"];
+
+// Controller-internal download state (mirrors the progress response state enum)
+export type UrlToMusicState =
+    components["schemas"]["UrlToMusicGetMusicProgressResponse"]["state"];
+
+// Controller-internal helper types (not part of the public API)
 export interface UrlToMusicSetMetadataResponse {
     path: string;
     fileName: string;
-}
-
-export interface UrlToMusicGetMusicResponse {
-    url: string;
-}
-
-export interface UrlToMusicGetMusicArgs {
-    url: string;
-    title: string;
-    artist: string;
-    album: string;
 }
 
 export interface UrlToMusicYdlExecArgs {
@@ -39,29 +48,3 @@ export interface UrlToMusicSetMetadataArgs {
     artist: string;
     album: string;
 }
-
-export interface SearchResultItem {
-    title?: string;
-    id?: string;
-}
-
-export interface UrlToMusicGetSearchResponse {
-    searchResults: SearchResultItem[];
-}
-
-export interface UrlToMusicGetSearchArgs {
-    terms: string;
-}
-
-export type UrlToMusicState = "idle" | "downloading" | "finished" | "error";
-
-export type UrlToMusicGetMusicProgressResponse =
-    | {
-          url: string;
-          state: "idle" | "downloading";
-      }
-    | {
-          url: string;
-          state: "finished";
-          path: string;
-      };

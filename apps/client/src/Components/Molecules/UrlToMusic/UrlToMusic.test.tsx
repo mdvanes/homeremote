@@ -2,12 +2,13 @@ import {
     UrlToMusicGetInfoResponse,
     UrlToMusicGetMusicProgressResponse,
     UrlToMusicGetMusicResponse,
+    UrlToMusicGetSearchResponse,
 } from "@homeremote/types";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
-import { urlToMusicApi } from "../../../Services/urlToMusicApi";
+import { urlToMusicApi } from "../../../Services/generated/urlToMusicApi";
 import {
     MockStoreProvider,
     MockStoreProviderApi,
@@ -15,15 +16,15 @@ import {
 } from "../../../testHelpers";
 import loglinesReducer from "../../Molecules/LogCard/logSlice";
 import UrlToMusic from "./UrlToMusic";
-import urlToMusicReducer from "./urlToMusicSlice";
 
 enableFetchMocks();
 
 const getCalledUrl = (callNr: number) => createGetCalledUrl(fetchMock)(callNr);
 
-const urlToMusicSliceFakeApi: MockStoreProviderApi = {
-    reducerPath: "urlToMusic",
-    reducer: urlToMusicReducer,
+const urlToMusicFakeApi: MockStoreProviderApi = {
+    reducerPath: urlToMusicApi.reducerPath,
+    reducer: urlToMusicApi.reducer,
+    middleware: urlToMusicApi.middleware,
 };
 
 const loglinesFakeApi: MockStoreProviderApi = {
@@ -33,9 +34,7 @@ const loglinesFakeApi: MockStoreProviderApi = {
 
 const Wrapper: FC<{ children: ReactNode }> = ({ children }) => {
     return (
-        <MockStoreProvider
-            apis={[urlToMusicApi, urlToMusicSliceFakeApi, loglinesFakeApi]}
-        >
+        <MockStoreProvider apis={[urlToMusicFakeApi, loglinesFakeApi]}>
             {children}
         </MockStoreProvider>
     );
@@ -46,29 +45,34 @@ describe("UrlToMusic", () => {
         fetchMock.resetMocks();
     });
 
-    it("shows the GetInfo form", () => {
+    it("opens the dialog from a button", async () => {
         const { asFragment } = render(<UrlToMusic />, { wrapper: Wrapper });
 
+        expect(
+            screen.queryByRole("textbox", { name: "URL" })
+        ).not.toBeInTheDocument();
+
+        await userEvent.click(
+            screen.getByRole("button", { name: /URL to Music/i })
+        );
+
+        expect(
+            await screen.findByRole("textbox", { name: "URL" })
+        ).toBeInTheDocument();
         expect(asFragment()).toMatchSnapshot();
     });
 
-    const expectSetUrl = async () => {
+    const openDialogAndSetUrl = async () => {
         const rendered = render(<UrlToMusic />, { wrapper: Wrapper });
 
-        const urlInput = screen.getByRole("textbox", { name: "URL" });
-        expect(
-            screen.queryByRole("textbox", {
-                name: "Title",
-            })
-        ).not.toBeInTheDocument();
+        await userEvent.click(
+            screen.getByRole("button", { name: /URL to Music/i })
+        );
 
-        if (!urlInput) {
-            throw Error("missing input");
-        }
+        const urlInput = await screen.findByRole("textbox", { name: "URL" });
+        expect(screen.getByRole("textbox", { name: "Title" })).toBeDisabled();
 
         fireEvent.change(urlInput, { target: { value: "Some URL" } });
-        // userEvent.type(urlInput, "Some URL");
-        // userEvent.tab();
 
         expect(fetchMock).not.toHaveBeenCalled();
         const getInfoButton = screen.getByRole("button", { name: "Get Info" });
@@ -90,32 +94,24 @@ describe("UrlToMusic", () => {
     };
 
     it("can submit the getinfo form", async () => {
-        const { urlInput, getInfoButton, rendered } = await expectSetUrl();
+        const { urlInput, getInfoButton } = await openDialogAndSetUrl();
 
         fetchMock.mockResponse(JSON.stringify(mockGetInfoResponse));
         userEvent.click(getInfoButton);
 
-        const titleInput = await screen.findByRole("textbox", {
-            name: "Title",
-        });
+        const titleInput = await screen.findByDisplayValue("Some Title");
 
         expect(urlInput).toHaveValue("Some URL");
-        expect(rendered.asFragment()).toMatchSnapshot(
-            "shows the GetMusic form"
-        );
-
-        expect(titleInput).toHaveValue("Some Title");
+        expect(titleInput).toBeEnabled();
         expect(screen.getByRole("textbox", { name: "Artist" })).toHaveValue(
             "Some Artist"
         );
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        expect(getCalledUrl(0)).toBe(
-            "http://localhost/api/urltomusic/getinfo/Some%20URL"
-        );
+        expect(getCalledUrl(0)).toBe("/api/urltomusic/getinfo/Some%20URL");
     });
 
     it("can handle getinfo error", async () => {
-        const { getInfoButton } = await expectSetUrl();
+        const { getInfoButton } = await openDialogAndSetUrl();
 
         fetchMock.mockReject(Error("some getinfo error"));
         userEvent.click(getInfoButton);
@@ -127,27 +123,22 @@ describe("UrlToMusic", () => {
     });
 
     it("can submit the getmusic form", async () => {
-        const { getInfoButton } = await expectSetUrl();
+        const { getInfoButton } = await openDialogAndSetUrl();
 
         fetchMock.mockResponse(JSON.stringify(mockGetInfoResponse));
         userEvent.click(getInfoButton);
 
-        const titleInput = await screen.findByRole("textbox", {
-            name: "Title",
-        });
+        const titleInput = await screen.findByDisplayValue("Some Title");
 
-        if (titleInput) {
-            fireEvent.change(titleInput, {
-                target: { value: "Some Other Title" },
-            });
-        }
+        fireEvent.change(titleInput, {
+            target: { value: "Some Other Title" },
+        });
 
         const getMusicButton = screen.getByRole("button", {
             name: "Get Music",
         });
 
         fetchMock.mockReset();
-
         fetchMock.mockResponses(
             JSON.stringify(mockGetMusicResponse),
             JSON.stringify(mockGetMusicProgressResponse)
@@ -159,12 +150,43 @@ describe("UrlToMusic", () => {
         );
         expect(resultText).toBeVisible();
 
-        expect(fetchMock).toHaveBeenCalledTimes(2);
         expect(getCalledUrl(0)).toBe(
-            "http://localhost/api/urltomusic/getmusic/Some%20URL?artist=Some%20Artist&title=Some%20Other%20Title&album=Songs%20from%202026"
+            "/api/urltomusic/getmusic/Some%20URL?artist=Some+Artist&title=Some+Other+Title&album=Songs+from+2026"
         );
         expect(getCalledUrl(1)).toBe(
-            "http://localhost/api/urltomusic/getmusic/Some%20URL/progress"
+            "/api/urltomusic/getmusic/Some%20URL/progress"
         );
+    });
+
+    it("clears the search result list when reset is clicked", async () => {
+        const mockGetSearchResponse: UrlToMusicGetSearchResponse = {
+            searchResults: [{ title: "Some Search Result", id: "abc123" }],
+        };
+
+        render(<UrlToMusic />, { wrapper: Wrapper });
+
+        await userEvent.click(
+            screen.getByRole("button", { name: /URL to Music/i })
+        );
+
+        const termsInput = await screen.findByRole("textbox", {
+            name: "Search terms",
+        });
+        fireEvent.change(termsInput, { target: { value: "some terms" } });
+
+        fetchMock.mockResponse(JSON.stringify(mockGetSearchResponse));
+        userEvent.click(screen.getByRole("button", { name: "search" }));
+
+        const resultItem = await screen.findByText("Some Search Result");
+        expect(resultItem).toBeVisible();
+
+        userEvent.click(screen.getByRole("button", { name: "reset" }));
+
+        await waitFor(() =>
+            expect(
+                screen.queryByText("Some Search Result")
+            ).not.toBeInTheDocument()
+        );
+        expect(termsInput).toHaveValue("");
     });
 });

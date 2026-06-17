@@ -32,6 +32,13 @@ const config: ConfigFile = {
             exportName: "speedTestApiWithRetry",
             tag: true,
         },
+        "./apps/client/src/Services/generated/urlToMusicApi.ts": {
+            apiFile: "./apps/client/src/Services/emptyApi.ts",
+            schemaFile: "./libs/types/definitions/internal/urlToMusic.yml",
+            exportName: "urlToMusicApi",
+            apiImport: "emptyApi",
+            tag: true,
+        },
     },
     hooks: true,
 };
