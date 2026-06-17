@@ -26,11 +26,11 @@ const useStyles = makeStyles()((theme) => ({
         "& .card-dashboard-height": {
             minHeight: "374px",
         },
-        "& > .MuiGrid-item > .MuiPaper-root, & > .MuiGrid-item > .switch-bar-list-wrapper, & > .MuiGrid-item > .MuiContainer-root":
+        "& > .MuiGrid-root > .MuiPaper-root, & > .MuiGrid-root > .switch-bar-list-wrapper, & > .MuiGrid-root > .MuiContainer-root":
             {
                 marginBottom: theme.spacing(2),
             },
-        "& > .MuiGrid-item > .switch-bar-list-wrapper > .MuiPaper-root": {
+        "& > .MuiGrid-root > .switch-bar-list-wrapper > .MuiPaper-root": {
             marginBottom: theme.spacing(1),
         },
     },
