@@ -1,0 +1,241 @@
+# npx mock-to-openapi ./libs/types/examples
+# https://editor.swagger.io/
+
+openapi: 3.0.1
+info:
+    title: UrlToMusic Controller API
+    description: Search, inspect and download music from a URL as an mp3 with metadata.
+    version: 1.0.0
+servers:
+    - url: http://localhost:4200
+      description: Homeremote local server
+tags:
+    - name: urlToMusic
+      description: Convert a URL to a music file
+paths:
+    /api/urltomusic/getsearch/{terms}:
+        get:
+            operationId: getSearch
+            tags:
+                - urlToMusic
+            parameters:
+                - name: terms
+                  in: path
+                  description: Search terms
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: getSearch
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UrlToMusicGetSearchResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/urltomusic/getinfo/{url}:
+        get:
+            operationId: getInfo
+            tags:
+                - urlToMusic
+            parameters:
+                - name: url
+                  in: path
+                  description: URL-encoded source URL
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: getInfo
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UrlToMusicGetInfoResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/urltomusic/getmusic/{url}:
+        get:
+            operationId: getMusic
+            tags:
+                - urlToMusic
+            parameters:
+                - name: url
+                  in: path
+                  description: URL-encoded source URL
+                  required: true
+                  schema:
+                      type: string
+                - name: artist
+                  in: query
+                  description: Artist for the mp3 metadata
+                  required: true
+                  schema:
+                      type: string
+                - name: title
+                  in: query
+                  description: Title for the mp3 metadata
+                  required: true
+                  schema:
+                      type: string
+                - name: album
+                  in: query
+                  description: Album for the mp3 metadata
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: getMusic
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UrlToMusicGetMusicResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/urltomusic/getmusic/{url}/progress:
+        get:
+            operationId: getMusicProgress
+            tags:
+                - urlToMusic
+            parameters:
+                - name: url
+                  in: path
+                  description: URL-encoded source URL
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: getMusicProgress
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UrlToMusicGetMusicProgressResponse"
+                "400":
+                    description: Bad request.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+components:
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                timestamp:
+                    type: string
+                    description: Time when error happened
+                status:
+                    type: integer
+                    description: Code describing the error
+                    format: int32
+                error:
+                    type: string
+                    description: Short error name
+                message:
+                    type: string
+                    description: Message explaining the error
+                code:
+                    type: integer
+                    description: Code of the error
+                    format: int32
+            description: Error information details
+        SearchResultItem:
+            type: object
+            properties:
+                title:
+                    type: string
+                id:
+                    type: string
+            description: A single search result
+        UrlToMusicGetSearchResponse:
+            type: object
+            required:
+                - searchResults
+            properties:
+                searchResults:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/SearchResultItem"
+            description: Get search response
+        UrlToMusicGetInfoResponse:
+            type: object
+            required:
+                - title
+                - artist
+                - streamUrl
+                - versionInfo
+            properties:
+                title:
+                    type: string
+                artist:
+                    type: string
+                streamUrl:
+                    type: array
+                    items:
+                        type: string
+                versionInfo:
+                    type: string
+            description: Get info response
+        UrlToMusicGetMusicResponse:
+            type: object
+            required:
+                - url
+            properties:
+                url:
+                    type: string
+            description: Get music response
+        UrlToMusicGetMusicProgressResponse:
+            type: object
+            required:
+                - url
+                - state
+            properties:
+                url:
+                    type: string
+                state:
+                    type: string
+                    description: Current download state
+                    enum: [idle, downloading, finished, error]
+                path:
+                    type: string
+                    description: Path to the resulting file, present when state is finished
+            description: Get music progress response

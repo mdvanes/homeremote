@@ -23,3 +23,7 @@ apis:
         root: ./libs/types/definitions/internal/speedTest.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/generated/speedTest.ts
+    urlToMusic@v1:
+        root: ./libs/types/definitions/internal/urlToMusic.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/generated/urlToMusic.ts

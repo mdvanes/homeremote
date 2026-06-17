@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { urlToMusicApi } from "../../../Services/urlToMusicApi";
+import { urlToMusicApi } from "../../../Services/generated/urlToMusicApi";
 
 export enum Severity {
     INFO,
