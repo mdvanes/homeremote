@@ -23,7 +23,7 @@ const MonitInstance: FC<{
     readonly monit: MonitItem;
 }> = ({ monit }) => {
     const isBig = useMediaQuery<Theme>((theme) => theme.breakpoints.up("md"));
-    const xsFromMediaQuery = isBig ? true : 12;
+    const xsFromMediaQuery = isBig ? "grow" : 12;
     const services: MonitService[] = monit.services.slice();
     services.sort(sortByName);
     const filesystems = services.filter(isFilesystemService);
@@ -37,9 +37,13 @@ const MonitInstance: FC<{
         <>
             <Typography variant="h5">{monit.localhostname}</Typography>
             <Typography variant="subtitle2">uptime: {monit.uptime}</Typography>
-
-            <Grid container gap={0.5}>
-                <Grid item xs={xsFromMediaQuery}>
+            <Grid
+                container
+                sx={{
+                    gap: 0.5,
+                }}
+            >
+                <Grid size={xsFromMediaQuery}>
                     <Typography>Other</Typography>
                     {other.map((item) => (
                         <MonitStatusAlert
@@ -49,7 +53,7 @@ const MonitInstance: FC<{
                         />
                     ))}
                 </Grid>
-                <Grid item xs={xsFromMediaQuery}>
+                <Grid size={xsFromMediaQuery}>
                     <Typography>Filesystem</Typography>
                     {filesystems.map((item, index) => (
                         <MonitFilesystemServiceInstance
@@ -59,15 +63,19 @@ const MonitInstance: FC<{
                     ))}
                 </Grid>
             </Grid>
-
             <Typography>Host</Typography>
-            <Grid container gap={0.5}>
-                <Grid item xs={xsFromMediaQuery}>
+            <Grid
+                container
+                sx={{
+                    gap: 0.5,
+                }}
+            >
+                <Grid size={xsFromMediaQuery}>
                     {hosts1.map((item, index) => (
                         <MonitHostServiceInstance item={item} key={index} />
                     ))}
                 </Grid>
-                <Grid item xs={xsFromMediaQuery}>
+                <Grid size={xsFromMediaQuery}>
                     {hosts2.map((item, index) => (
                         <MonitHostServiceInstance item={item} key={index} />
                     ))}

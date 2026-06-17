@@ -5,7 +5,7 @@ import { willAddCredentials } from "../devUtils";
 export const nowplayingApi = createApi({
     reducerPath: "nowplayingApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.NX_BASE_URL}/api/nowplaying`,
+        baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/nowplaying`,
         credentials: willAddCredentials(),
     }),
     tagTypes: ["Previously"],

@@ -5,7 +5,7 @@ import { willAddCredentials } from "../devUtils";
 export const nextupApi = createApi({
     reducerPath: "nextupApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.NX_BASE_URL}/api/nextup`,
+        baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/nextup`,
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({

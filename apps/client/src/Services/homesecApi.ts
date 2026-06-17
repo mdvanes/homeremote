@@ -6,7 +6,7 @@ export const homesecApi = createApi({
     reducerPath: "homesecApi",
     baseQuery: retry(
         fetchBaseQuery({
-            baseUrl: `${process.env.NX_BASE_URL}/api/homesec`,
+            baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/homesec`,
             credentials: willAddCredentials(),
         })
     ),

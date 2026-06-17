@@ -9,7 +9,7 @@ interface ToggleArgs {
 export const dockerListApi = createApi({
     reducerPath: "dockerListApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.NX_BASE_URL}/api/dockerlist`,
+        baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/dockerlist`,
         credentials: willAddCredentials(),
     }),
     tagTypes: ["DockerItem"],

@@ -1,8 +1,8 @@
 import {
     Icon,
     IconButton,
+    ListItemButton,
     ListItemIcon,
-    MenuItem,
     SvgIcon,
     Theme,
     Tooltip,
@@ -55,12 +55,12 @@ export const ServiceLink: FC<Props> = ({ label, iconName, url, children }) => {
                     {iconResult}
                 </IconButton>
             ) : (
-                <MenuItem component="a" href={url}>
+                <ListItemButton component="a" href={url}>
                     <ListItemIcon className={buttonClasses.icon}>
                         {iconResult}
                     </ListItemIcon>
                     <Typography>{label}</Typography>
-                </MenuItem>
+                </ListItemButton>
             )}
         </Tooltip>
     );

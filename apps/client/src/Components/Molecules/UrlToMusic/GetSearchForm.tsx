@@ -38,7 +38,7 @@ const GetSearchForm: FC = () => {
 
     const handlePrefill = async () => {
         const nowplaying: { artist: string; title: string } = await fetch(
-            `${process.env.NX_BASE_URL}/api/nowplaying/radio2`
+            `${process.env.NX_PUBLIC_BASE_URL}/api/nowplaying/radio2`
         ).then((data) => data.json());
         const newTerm = `${nowplaying.artist} ${nowplaying.title}`;
         setTerms(newTerm);
@@ -107,12 +107,14 @@ const GetSearchForm: FC = () => {
                 value={terms ?? ""}
                 variant="standard"
                 onChange={handleTermsChange}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <MusicNoteIcon />
-                        </InputAdornment>
-                    ),
+                slotProps={{
+                    input: {
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <MusicNoteIcon />
+                            </InputAdornment>
+                        ),
+                    },
                 }}
             />
             {isLoading || isFetching ? (

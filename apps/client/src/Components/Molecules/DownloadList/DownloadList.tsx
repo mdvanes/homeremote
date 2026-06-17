@@ -1,5 +1,5 @@
 import { List, Paper } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { FC, JSX, useEffect, useState } from "react";
 import { useGetDownloadListQuery } from "../../../Services/downloadListApi";
 import { getErrorMessage } from "../../../Utils/getErrorMessage";
 import { useAppDispatch } from "../../../store";

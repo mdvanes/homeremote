@@ -74,7 +74,7 @@ export const SelectedItemDialogContent: FC<{ item?: ShowNextUpItem }> = ({
                 <PreviewImg onClick={() => setIsVideoVisible(true)}>
                     <img
                         alt={`Screenshot for ${Name}`}
-                        src={`${process.env.NX_BASE_URL}/api/nextup/thumbnail/${Id}?imageTagsPrimary=${ImageTags.Primary}&big=on`}
+                        src={`${process.env.NX_PUBLIC_BASE_URL}/api/nextup/thumbnail/${Id}?imageTagsPrimary=${ImageTags.Primary}&big=on`}
                         style={{
                             cursor: "pointer",
                         }}
@@ -94,7 +94,7 @@ export const SelectedItemDialogContent: FC<{ item?: ShowNextUpItem }> = ({
                         autoPlay
                         controls
                         preload="metadata"
-                        src={`${process.env.NX_BASE_URL}/api/nextup/video/${Id}`}
+                        src={`${process.env.NX_PUBLIC_BASE_URL}/api/nextup/video/${Id}`}
                         width="100%"
                     />
                 </>

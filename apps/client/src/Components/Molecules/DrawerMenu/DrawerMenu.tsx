@@ -4,11 +4,12 @@ import {
     IconButton,
     List,
     ListItem,
+    ListItemButton,
     ListItemText,
     PaletteMode,
 } from "@mui/material";
 import { FC } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router";
 import { useAppDispatch } from "../../../store";
 import {
     FetchAuthType,
@@ -28,47 +29,46 @@ const DrawerMenu: FC<Props> = ({ closeDrawer, colorMode, toggleColorMode }) => {
     return (
         <div role="presentation" onClick={closeDrawer}>
             <List>
-                <ListItem button component={RouterLink} to="/">
+                <ListItemButton component={RouterLink} to="/">
                     <ListItemText primary="Home Automation" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/dashboard">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/dashboard">
                     <ListItemText primary="Dashboard" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/music">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/music">
                     <ListItemText primary="Music" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/gears">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/gears">
                     <ListItemText primary="Gears" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/streams">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/streams">
                     <ListItemText primary="Streams" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/jukebox">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/jukebox">
                     <ListItemText primary="Jukebox" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/docker">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/docker">
                     <ListItemText primary="Docker" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/datalora">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/datalora">
                     <ListItemText primary="Tracker" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/cartwin">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/cartwin">
                     <ListItemText primary="CarTwin" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/energy">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/energy">
                     <ListItemText primary="Energy" />
-                </ListItem>
-                <ListItem button component={RouterLink} to="/about">
+                </ListItemButton>
+                <ListItemButton component={RouterLink} to="/about">
                     <ListItemText primary="About" />
-                </ListItem>
-                <ListItem
-                    button
+                </ListItemButton>
+                <ListItemButton
                     onClick={(): void => {
                         dispatch(fetchAuth({ type: FetchAuthType.Logout }));
                     }}
                 >
                     <ListItemText primary="Log out" />
-                </ListItem>
+                </ListItemButton>
                 <ListItem>
                     <IconButton
                         aria-label="toggle-dark-mode"

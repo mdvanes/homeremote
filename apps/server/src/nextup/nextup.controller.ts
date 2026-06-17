@@ -75,9 +75,8 @@ export class NextupController {
                     got(tvShowNextUpUrl).json();
                 return response;
             });
-            const seriesNextupResponses = await Promise.all(
-                seriesNextupPromises
-            );
+            const seriesNextupResponses =
+                await Promise.all(seriesNextupPromises);
 
             const result = seriesNextupResponses
                 .map((response) => response.Items[0] ?? undefined)

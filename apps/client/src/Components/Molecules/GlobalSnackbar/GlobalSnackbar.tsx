@@ -42,14 +42,19 @@ const GlobalSnackbar: FC = () => {
             anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
             autoHideDuration={3000}
             message={
-                <Grid container direction="row" alignItems="center" spacing={1}>
-                    <Grid item>
+                <Grid
+                    container
+                    direction="row"
+                    spacing={1}
+                    sx={{
+                        alignItems: "center",
+                    }}
+                >
+                    <Grid>
                         <Warning />
                     </Grid>
-                    <Grid item xs>
-                        {line && line.message}
-                    </Grid>
-                    <Grid item>
+                    <Grid size="grow">{line && line.message}</Grid>
+                    <Grid>
                         <IconButton
                             onClick={handleClose}
                             color="inherit"
@@ -62,13 +67,15 @@ const GlobalSnackbar: FC = () => {
             }
             open={isOpen}
             onClose={handleClose}
-            ContentProps={{
-                classes: {
-                    root:
-                        line && line.severity === Severity.ERROR
-                            ? classes.error
-                            : classes.info,
-                    message: classes.message,
+            slotProps={{
+                content: {
+                    classes: {
+                        root:
+                            line && line.severity === Severity.ERROR
+                                ? classes.error
+                                : classes.info,
+                        message: classes.message,
+                    },
                 },
             }}
         />

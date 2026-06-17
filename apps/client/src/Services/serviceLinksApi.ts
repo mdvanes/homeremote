@@ -5,7 +5,7 @@ import { willAddCredentials } from "../devUtils";
 export const serviceLinksApi = createApi({
     reducerPath: "serviceLinksApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.NX_BASE_URL}/api/servicelinks`,
+        baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/servicelinks`,
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({

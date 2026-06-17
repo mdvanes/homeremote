@@ -574,9 +574,15 @@ describe("MonitController", () => {
             text: () => Promise.resolve(mockXmlResponse),
         } as CancelableRequest<Response>);
         const result = await controller.getMonit(mockAuthenticatedRequest);
-        expect(mockGot).toBeCalledTimes(2);
-        expect(mockGot).toBeCalledWith("c", { password: "b", username: "a" });
-        expect(mockGot).toBeCalledWith("f", { password: "e", username: "d" });
+        expect(mockGot).toHaveBeenCalledTimes(2);
+        expect(mockGot).toHaveBeenCalledWith("c", {
+            password: "b",
+            username: "a",
+        });
+        expect(mockGot).toHaveBeenCalledWith("f", {
+            password: "e",
+            username: "d",
+        });
         expect(result).toEqual({
             monitlist: [
                 {

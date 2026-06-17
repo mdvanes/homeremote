@@ -1,6 +1,5 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import {
-    Hidden,
     IconButton,
     AppBar as MuiAppBar,
     Toolbar,
@@ -39,16 +38,20 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Hidden smUp>
-                        <Typography variant="h6" className={classes.title}>
-                            HR
-                        </Typography>
-                    </Hidden>
-                    <Hidden smDown>
-                        <Typography variant="h6" className={classes.title}>
-                            HomeRemote
-                        </Typography>
-                    </Hidden>
+                    <Typography
+                        variant="h6"
+                        className={classes.title}
+                        sx={{ display: { xs: "block", sm: "none" } }}
+                    >
+                        HR
+                    </Typography>
+                    <Typography
+                        variant="h6"
+                        className={classes.title}
+                        sx={{ display: { xs: "none", sm: "block" } }}
+                    >
+                        HomeRemote
+                    </Typography>
                     <Typography variant="body2" className={classes.currentUser}>
                         {greeting}
                     </Typography>

@@ -27,26 +27,25 @@ const scheduleItemToListItem =
         season,
         ep_name,
         indexerid,
-    }: ScheduleItem): ReactNode =>
-        (
-            <ListItem
-                key={`${show_name}-${season}x${episode}`}
-                title={`${show_name} = ${show_status} | ${type}`}
+    }: ScheduleItem): ReactNode => (
+        <ListItem
+            key={`${show_name}-${season}x${episode}`}
+            title={`${show_name} = ${show_status} | ${type}`}
+        >
+            <ListItemText
+                sx={{
+                    color: typeToColor[type],
+                    backgroundImage: `url(${process.env.NX_PUBLIC_BASE_URL}/api/schedule/thumbnail/${indexerid})`,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPositionX: "right",
+                }}
             >
-                <ListItemText
-                    sx={{
-                        color: typeToColor[type],
-                        backgroundImage: `url(${process.env.NX_BASE_URL}/api/schedule/thumbnail/${indexerid})`,
-                        backgroundSize: "contain",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPositionX: "right",
-                    }}
-                >
-                    {airdate}&nbsp; <strong>{show_name}</strong>&nbsp; {season}x
-                    {episode} "{ep_name}"
-                </ListItemText>
-            </ListItem>
-        );
+                {airdate}&nbsp; <strong>{show_name}</strong>&nbsp; {season}x
+                {episode} "{ep_name}"
+            </ListItemText>
+        </ListItem>
+    );
 
 const Schedule: FC = () => {
     const { data, isLoading, isFetching } = useGetScheduleQuery(undefined, {

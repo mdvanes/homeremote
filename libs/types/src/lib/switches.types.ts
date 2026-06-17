@@ -7,7 +7,7 @@ export const DomoticzTypeOptions = {
 } as const;
 
 export type DomoticzType =
-    typeof DomoticzTypeOptions[keyof typeof DomoticzTypeOptions];
+    (typeof DomoticzTypeOptions)[keyof typeof DomoticzTypeOptions];
 
 export type DomoticzSendType = "switchscene" | "switchlight" | "selector";
 

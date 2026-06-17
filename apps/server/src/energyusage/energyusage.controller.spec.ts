@@ -32,9 +32,6 @@ describe("EnergyUsage Controller", () => {
     });
 
     it("returns stacks on /GET", async () => {
-        Object.defineProperty(global, "performance", {
-            writable: true,
-        });
         jest.useFakeTimers().setSystemTime(new Date("2024-04-25"));
 
         const mockWaterResponse: EnergyUsageGetWaterResponse = [
@@ -67,8 +64,8 @@ describe("EnergyUsage Controller", () => {
                 },
             ],
         ]);
-        expect(mockGot).toBeCalledTimes(1);
-        expect(mockGot).toBeCalledWith(
+        expect(mockGot).toHaveBeenCalledTimes(1);
+        expect(mockGot).toHaveBeenCalledWith(
             "/api/history/period/2024-04-24T00:00:00.000Z?end_time=2024-04-25T00:00:00.000Z&filter_entity_id=",
             {
                 headers: {

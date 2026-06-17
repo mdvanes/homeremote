@@ -1,23 +1,23 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Streams page contains the stream player 1`] = `
 <body>
   <div>
     <div
-      class="MuiContainer-root MuiContainer-maxWidthLg css-d93ppg-MuiContainer-root"
+      class="MuiContainer-root MuiContainer-maxWidthLg css-8wuzov-MuiContainer-root"
     >
       <mock-stream-player
         url="http://localhost"
       />
       <button
         aria-label="up"
-        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-4s6wym-MuiButtonBase-root-MuiIconButton-root"
+        class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-oavrz9-MuiButtonBase-root-MuiIconButton-root"
         tabindex="0"
         type="button"
       >
         <svg
           aria-hidden="true"
-          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+          class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
           data-testid="ArrowDropDownIcon"
           focusable="false"
           viewBox="0 0 24 24"
@@ -26,9 +26,6 @@ exports[`Streams page contains the stream player 1`] = `
             d="m7 10 5 5 5-5z"
           />
         </svg>
-        <span
-          class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-        />
       </button>
     </div>
   </div>

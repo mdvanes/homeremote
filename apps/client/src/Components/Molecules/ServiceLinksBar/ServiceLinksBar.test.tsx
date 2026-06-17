@@ -42,12 +42,12 @@ describe("ServiceLinksBar", () => {
         render(<ServiceLinksBar />, { wrapper: Wrapper });
 
         expect(await screen.findByText("My Label")).toBeVisible();
-        expect(screen.getByRole("menuitem")).toHaveAttribute(
+        expect(screen.getByRole("link")).toHaveAttribute(
             "href",
             "http://someurl.example.com"
         );
 
-        expect(fetchMock).toBeCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
         expect((fetchMock.mock.calls[0][0] as Request).url).toBe(
             "http://localhost/api/servicelinks"
         );

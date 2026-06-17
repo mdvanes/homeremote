@@ -81,7 +81,7 @@ const Jukebox: FC = () => {
                                                     <Avatar
                                                         src={`${
                                                             process.env
-                                                                .NX_BASE_URL
+                                                                .NX_PUBLIC_BASE_URL
                                                         }/api/jukebox/coverart/${id}?type=${type}&hash=${encodeURIComponent(
                                                             name
                                                         )}`}

@@ -5,7 +5,7 @@ import { willAddCredentials } from "../devUtils";
 export const scheduleApi = createApi({
     reducerPath: "scheduleApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.NX_BASE_URL}/api/schedule`,
+        baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/schedule`,
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({

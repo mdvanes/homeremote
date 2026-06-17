@@ -24,7 +24,13 @@ export const TokenForm: FC<TokenFormProps> = ({
     handleEnterSubmit,
 }) => {
     return (
-        <Grid container gap={2} alignItems="baseline">
+        <Grid
+            container
+            sx={{
+                gap: 2,
+                alignItems: "baseline",
+            }}
+        >
             <TextField
                 label="Connected Vehicle Token"
                 value={connectedTokenVal}
@@ -33,17 +39,19 @@ export const TokenForm: FC<TokenFormProps> = ({
                     setConnectedTokenVal(ev.target.value);
                 }}
                 onKeyDown={handleEnterSubmit}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment
-                            position="end"
-                            onClick={() => {
-                                setConnectedTokenVal("");
-                            }}
-                        >
-                            <CancelIcon />
-                        </InputAdornment>
-                    ),
+                slotProps={{
+                    input: {
+                        endAdornment: (
+                            <InputAdornment
+                                position="end"
+                                onClick={() => {
+                                    setConnectedTokenVal("");
+                                }}
+                            >
+                                <CancelIcon />
+                            </InputAdornment>
+                        ),
+                    },
                 }}
             />
             <TextField
@@ -54,17 +62,19 @@ export const TokenForm: FC<TokenFormProps> = ({
                     setEnergyTokenVal(ev.target.value);
                 }}
                 onKeyDown={handleEnterSubmit}
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment
-                            position="end"
-                            onClick={() => {
-                                setEnergyTokenVal("");
-                            }}
-                        >
-                            <CancelIcon />
-                        </InputAdornment>
-                    ),
+                slotProps={{
+                    input: {
+                        endAdornment: (
+                            <InputAdornment
+                                position="end"
+                                onClick={() => {
+                                    setEnergyTokenVal("");
+                                }}
+                            >
+                                <CancelIcon />
+                            </InputAdornment>
+                        ),
+                    },
                 }}
             />
             <Tooltip title="open link to API in new tab">

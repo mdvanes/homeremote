@@ -94,11 +94,16 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
                     </Box>
                 )}
             </>
-            <Grid container gap={0.5}>
-                <Grid item xs>
+            <Grid
+                container
+                sx={{
+                    gap: 0.5,
+                }}
+            >
+                <Grid size="grow">
                     <Stack spacing={0.5}>{containers1.map(mapInfo)}</Stack>
                 </Grid>
-                <Grid item xs>
+                <Grid size="grow">
                     <Stack spacing={0.5}>
                         {containers2.map(mapInfo)}
                         {!isOpen && <div>{containerDots}</div>}

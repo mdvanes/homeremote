@@ -26,11 +26,11 @@ const useStyles = makeStyles()((theme) => ({
         "& .card-dashboard-height": {
             minHeight: "374px",
         },
-        "& > .MuiGrid-item > .MuiPaper-root, & > .MuiGrid-item > .switch-bar-list-wrapper, & > .MuiGrid-item > .MuiContainer-root":
+        "& > .MuiGrid-root > .MuiPaper-root, & > .MuiGrid-root > .switch-bar-list-wrapper, & > .MuiGrid-root > .MuiContainer-root":
             {
                 marginBottom: theme.spacing(2),
             },
-        "& > .MuiGrid-item > .switch-bar-list-wrapper > .MuiPaper-root": {
+        "& > .MuiGrid-root > .switch-bar-list-wrapper > .MuiPaper-root": {
             marginBottom: theme.spacing(1),
         },
     },
@@ -62,7 +62,12 @@ const Dashboard: FC = () => {
 
     return (
         <Grid container spacing={2} className={classes.container}>
-            <Grid item xs={12} md={3}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: 3,
+                }}
+            >
                 <SwitchesCard />
                 <DelayComponent delayMs={500}>
                     <ClimateSensorsCard />
@@ -76,7 +81,12 @@ const Dashboard: FC = () => {
 
                 <LogCard />
             </Grid>
-            <Grid item xs={12} md>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: "grow",
+                }}
+            >
                 <StreamContainer />
                 <Jukebox />
                 {(localStorage.getItem("showVideoStream") ?? "") === "true" ? (
@@ -95,7 +105,12 @@ const Dashboard: FC = () => {
                     <AppsIcon />
                 </IconButton>
             </Grid>
-            <Grid item xs={12} md={5}>
+            <Grid
+                size={{
+                    xs: 12,
+                    md: 5,
+                }}
+            >
                 <ServiceLinksBar />
                 <Docker />
                 {!isLiteMode && <Schedule />}

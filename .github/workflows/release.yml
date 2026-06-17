@@ -1,0 +1,63 @@
+name: Bump Version and Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  bump_and_tag:
+    runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, 'chore: bump version')"
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repo 🛎️
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Determine version bump from conventional commits
+        id: bump
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            LOG=$(git log --pretty=format:"%s%n%b" --no-merges)
+          else
+            LOG=$(git log "${PREV_TAG}..HEAD" --pretty=format:"%s%n%b" --no-merges)
+          fi
+
+          if echo "$LOG" | grep -qE "^BREAKING CHANGE:|^[a-z]+(\([^)]+\))?!:"; then
+            BUMP_TYPE="major"
+          elif echo "$LOG" | grep -qE "^feat(\([^)]+\))?:"; then
+            BUMP_TYPE="minor"
+          else
+            BUMP_TYPE="patch"
+          fi
+
+          echo "type=${BUMP_TYPE}" >> $GITHUB_OUTPUT
+          echo "Determined bump type: ${BUMP_TYPE}"
+
+      - name: Bump version in package.json
+        run: npm version ${{ steps.bump.outputs.type }} --no-git-tag-version
+
+      - name: Commit, tag and push
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          git add package.json package-lock.json
+          git commit -m "chore: bump version to v${VERSION}"
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+          git push
+          git push --tags

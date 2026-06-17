@@ -84,7 +84,7 @@ describe("DownloadList", () => {
         expect(screen.getByText(/4GB/)).toBeVisible();
         expect(screen.getByText(/50%/)).toBeVisible();
         expect(screen.getByText(/100H remaining/)).toBeVisible();
-        expect(fetchMock).toBeCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
     it.skip("can toggle download", async () => {
@@ -121,7 +121,7 @@ describe("DownloadList", () => {
 
         const someElem = await screen.findByText("SomePausedState");
         expect(someElem).toBeVisible();
-        expect(fetchMock).toBeCalledTimes(2);
+        expect(fetchMock).toHaveBeenCalledTimes(2);
         expect(getCalledUrl(0)).toBe(
             "http://localhost/api/downloadlist/pauseDownload/14"
         );

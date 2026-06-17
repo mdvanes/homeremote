@@ -30,7 +30,13 @@ export const RangeButtons: FC<{
     setRange: (_: Range) => void;
 }> = (props) => {
     return (
-        <Stack direction="row" spacing={1} marginBottom={1}>
+        <Stack
+            direction="row"
+            spacing={1}
+            sx={{
+                marginBottom: 1,
+            }}
+        >
             <RangeButton {...props} option="day" />
             <RangeButton {...props} option="week" />
             <RangeButton {...props} option="month" />

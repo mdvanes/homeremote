@@ -5,7 +5,7 @@ import { willAddCredentials } from "../devUtils";
 export const carTwinApi = createApi({
     reducerPath: "carTwinApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.NX_BASE_URL}/api/cartwin`,
+        baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/cartwin`,
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({

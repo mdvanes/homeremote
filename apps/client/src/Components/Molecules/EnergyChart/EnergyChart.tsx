@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, Grid, Link } from "@mui/material";
 import { FC, useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router";
 import {
     Bar,
     Brush,
@@ -204,8 +204,14 @@ export const EnergyChart: FC<{
                 )}
 
                 {config.moreLink && (
-                    <Grid container justifyContent="flex-end" my={-2}>
-                        <Grid item>
+                    <Grid
+                        container
+                        sx={{
+                            justifyContent: "flex-end",
+                            my: -2,
+                        }}
+                    >
+                        <Grid>
                             <Link component={RouterLink} to={config.moreLink}>
                                 more
                             </Link>

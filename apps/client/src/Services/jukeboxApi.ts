@@ -12,7 +12,7 @@ import { willAddCredentials } from "../devUtils";
 export const jukeboxApi = createApi({
     reducerPath: "jukeboxApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.NX_BASE_URL}/api/jukebox`,
+        baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/jukebox`,
         credentials: willAddCredentials(),
     }),
     tagTypes: ["Playlists", "Songs", "Songdir", "Starred"],

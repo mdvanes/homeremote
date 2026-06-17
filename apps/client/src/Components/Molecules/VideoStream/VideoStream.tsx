@@ -1,7 +1,7 @@
 import { LinearProgress, Paper, Typography } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 
-const URL = `${process.env.NX_BASE_URL}/api/video-stream`;
+const URL = `${process.env.NX_PUBLIC_BASE_URL}/api/video-stream`;
 
 const VideoStream: FC = () => {
     const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +27,12 @@ const VideoStream: FC = () => {
 
     if (isLoading) {
         return (
-            <Typography variant="body1" textAlign="center">
+            <Typography
+                variant="body1"
+                sx={{
+                    textAlign: "center",
+                }}
+            >
                 VideoStream is loading
                 <LinearProgress color="primary" variant="indeterminate" />
             </Typography>
@@ -36,7 +41,12 @@ const VideoStream: FC = () => {
 
     if (hasError) {
         return (
-            <Typography variant="body1" textAlign="center">
+            <Typography
+                variant="body1"
+                sx={{
+                    textAlign: "center",
+                }}
+            >
                 VideoStream failed to load
             </Typography>
         );

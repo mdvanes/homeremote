@@ -54,5 +54,12 @@ libs/types/examples/
 NOTES.md
 
 .nx/cache
+.nx/workspace-data
 
 0_electric_exports
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md
+
+.claude/worktrees
+.nx/polygraph
+.nx/self-healing

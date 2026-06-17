@@ -16,7 +16,7 @@ interface IJukeboxSongListProps {
     currentPlaylist: IPlaylist | undefined;
     setCurrentPlaylist: (playlist: IPlaylist | undefined) => void;
     setCurrentSong: (song: ISong) => void;
-    audioElemRef: RefObject<HTMLAudioElement>;
+    audioElemRef: RefObject<HTMLAudioElement | null>;
 }
 
 const JukeboxSongList: FC<IJukeboxSongListProps> = ({

@@ -83,9 +83,8 @@ export class JukeboxController {
             }));
 
             const starredUrl = this.getAPI("getStarred");
-            const starredResponse: SubsonicGetStarredResponse = await got(
-                starredUrl
-            ).json();
+            const starredResponse: SubsonicGetStarredResponse =
+                await got(starredUrl).json();
             const starredAlbums: IPlaylist[] = starredResponse[
                 "subsonic-response"
             ].starred.album.map(({ id, title, coverArt }) => ({
@@ -144,9 +143,8 @@ export class JukeboxController {
         try {
             if (type === "album") {
                 const url = this.getAPI("getMusicDirectory", `&id=${id}`);
-                const response: SubsonicGetMusicDirectoryResponse = await got(
-                    url
-                ).json();
+                const response: SubsonicGetMusicDirectoryResponse =
+                    await got(url).json();
                 const songs: ISong[] = response[
                     "subsonic-response"
                 ].directory.child
@@ -199,9 +197,8 @@ export class JukeboxController {
 
         try {
             const url = this.getAPI("getMusicDirectory", `&id=${id}`);
-            const response: SubsonicGetMusicDirectoryResponse = await got(
-                url
-            ).json();
+            const response: SubsonicGetMusicDirectoryResponse =
+                await got(url).json();
             const songs: ISong[] = response["subsonic-response"].directory.child
                 .filter(isSubsonicSong)
                 .map(({ id, artist, title, duration }) => {
@@ -270,9 +267,8 @@ export class JukeboxController {
             const { retrievedHash, coverArtId } = await (async () => {
                 if (type === "album") {
                     const url = this.getAPI("getStarred");
-                    const response: SubsonicGetStarredResponse = await got(
-                        url
-                    ).json();
+                    const response: SubsonicGetStarredResponse =
+                        await got(url).json();
                     const { title, coverArt } = response[
                         "subsonic-response"
                     ].starred.album.find((album) => album.id === id);

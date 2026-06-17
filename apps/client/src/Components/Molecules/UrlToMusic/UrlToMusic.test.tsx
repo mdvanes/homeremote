@@ -70,7 +70,7 @@ describe("UrlToMusic", () => {
         // userEvent.type(urlInput, "Some URL");
         // userEvent.tab();
 
-        expect(fetchMock).not.toBeCalled();
+        expect(fetchMock).not.toHaveBeenCalled();
         const getInfoButton = screen.getByRole("button", { name: "Get Info" });
         return { urlInput, getInfoButton, rendered };
     };
@@ -108,7 +108,7 @@ describe("UrlToMusic", () => {
         expect(screen.getByRole("textbox", { name: "Artist" })).toHaveValue(
             "Some Artist"
         );
-        expect(fetchMock).toBeCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(getCalledUrl(0)).toBe(
             "http://localhost/api/urltomusic/getinfo/Some%20URL"
         );
@@ -159,7 +159,7 @@ describe("UrlToMusic", () => {
         );
         expect(resultText).toBeVisible();
 
-        expect(fetchMock).toBeCalledTimes(2);
+        expect(fetchMock).toHaveBeenCalledTimes(2);
         expect(getCalledUrl(0)).toBe(
             "http://localhost/api/urltomusic/getmusic/Some%20URL?artist=Some%20Artist&title=Some%20Other%20Title&album=Songs%20from%202026"
         );

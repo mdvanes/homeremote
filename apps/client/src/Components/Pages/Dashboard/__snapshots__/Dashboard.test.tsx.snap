@@ -1,13 +1,13 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Dashboard page contains all the control components 1`] = `
 <body>
   <div>
     <div
-      class="MuiGrid-root MuiGrid-container MuiGrid-spacing-xs-2 css-1ru5qmv-MuiGrid-root-container"
+      class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-2 css-nek24m-MuiGrid-root-container"
     >
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-iv7vbz-MuiGrid-root"
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-md-3 css-lvb8h-MuiGrid-root"
       >
         <mock-switches-card />
         <mock-homesec />
@@ -15,10 +15,10 @@ exports[`Dashboard page contains all the control components 1`] = `
         <mock-log-card />
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-true css-1p5zwaw-MuiGrid-root"
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-md-grow css-13jyfex-MuiGrid-root"
       >
         <div
-          class="MuiContainer-root MuiContainer-maxWidthLg css-d93ppg-MuiContainer-root"
+          class="MuiContainer-root MuiContainer-maxWidthLg css-8wuzov-MuiContainer-root"
         >
           <mock-stream-player
             url="http://localhost"
@@ -27,43 +27,37 @@ exports[`Dashboard page contains all the control components 1`] = `
         </div>
         <mock-jukebox />
         <div
-          class="MuiTabs-root css-1ujnqem-MuiTabs-root"
+          class="MuiTabs-root css-jhczcq-MuiTabs-root"
         >
           <div
-            class="MuiTabs-scroller MuiTabs-fixed css-jpln7h-MuiTabs-scroller"
+            class="MuiTabs-scroller MuiTabs-fixed css-s2t35c-MuiTabs-scroller"
             style="overflow: hidden; margin-bottom: 0px;"
           >
             <div
-              class="MuiTabs-flexContainer css-heg063-MuiTabs-flexContainer"
+              class="MuiTabs-list css-hzcega-MuiTabs-list"
               role="tablist"
             >
               <button
                 aria-selected="true"
-                class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary Mui-selected css-1h9z7r5-MuiButtonBase-root-MuiTab-root"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary Mui-selected css-1usuzwp-MuiButtonBase-root-MuiTab-root"
                 role="tab"
                 tabindex="0"
                 type="button"
               >
                 tracker
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </button>
               <button
                 aria-selected="false"
-                class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-1h9z7r5-MuiButtonBase-root-MuiTab-root"
+                class="MuiButtonBase-root MuiTab-root MuiTab-textColorPrimary css-1usuzwp-MuiButtonBase-root-MuiTab-root"
                 role="tab"
                 tabindex="-1"
                 type="button"
               >
                 car twin
-                <span
-                  class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-                />
               </button>
             </div>
             <span
-              class="MuiTabs-indicator css-1aquho2-MuiTabs-indicator"
+              class="MuiTabs-indicator css-1qltlow-MuiTabs-indicator"
               style="left: 0px; width: 0px;"
             />
           </div>
@@ -86,29 +80,26 @@ exports[`Dashboard page contains all the control components 1`] = `
         <mock-dockerstacklist-card />
         <mock-speedtest-card />
         <button
-          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium css-23key4-MuiButtonBase-root-MuiIconButton-root"
           tabindex="0"
           title="Toggle light mode"
           type="button"
         >
           <svg
             aria-hidden="true"
-            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
             data-testid="AppsIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"
+              d="M4 8h4V4H4zm6 12h4v-4h-4zm-6 0h4v-4H4zm0-6h4v-4H4zm6 0h4v-4h-4zm6-10v4h4V4zm-6 4h4V4h-4zm6 6h4v-4h-4zm0 6h4v-4h-4z"
             />
           </svg>
-          <span
-            class="MuiTouchRipple-root css-8je8zh-MuiTouchRipple-root"
-          />
         </button>
       </div>
       <div
-        class="MuiGrid-root MuiGrid-item MuiGrid-grid-xs-12 MuiGrid-grid-md-5 css-urj5pv-MuiGrid-root"
+        class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-md-5 css-16ebuf1-MuiGrid-root"
       >
         <mock-service-links-bar />
         <mock-docker />

@@ -11,13 +11,21 @@ export const ClimateSensorsListItem: FC<ClimateSensorsListItemProps> = ({
     sensors,
 }) => {
     return (
-        <Stack direction="row" flexWrap="wrap">
+        <Stack
+            direction="row"
+            sx={{
+                flexWrap: "wrap",
+            }}
+        >
             {sensors.map((t) => (
                 <Stack
                     key={t.entity_id}
                     direction="row"
-                    alignItems="center"
-                    sx={{ paddingX: 2, flexGrow: 1 }}
+                    sx={{
+                        alignItems: "center",
+                        paddingX: 2,
+                        flexGrow: 1,
+                    }}
                 >
                     <ClimateSensorsListItemContent sensor={t} />
                 </Stack>

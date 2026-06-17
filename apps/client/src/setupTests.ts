@@ -4,6 +4,17 @@
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 
+// react-router v7 references TextEncoder/TextDecoder at module load time,
+// but the jsdom test environment does not expose them as globals.
+import { TextDecoder, TextEncoder } from "util";
+
+if (typeof global.TextEncoder === "undefined") {
+    global.TextEncoder = TextEncoder as typeof global.TextEncoder;
+}
+if (typeof global.TextDecoder === "undefined") {
+    global.TextDecoder = TextDecoder as typeof global.TextDecoder;
+}
+
 // import { GenerateId, StyleSheet } from "jss";
 // type StyleSheetOptions = StyleSheet["options"];
 // interface StyleSheetOptionsWithName extends StyleSheetOptions {

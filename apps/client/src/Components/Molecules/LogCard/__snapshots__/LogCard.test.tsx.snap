@@ -1,19 +1,19 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`LogCard shows error logline with icon 1`] = `
 <p
-  class="MuiTypography-root MuiTypography-body2 css-17c3ce7-MuiTypography-root-message"
+  class="MuiTypography-root MuiTypography-body2 css-1xbdtaz-MuiTypography-root-message"
 >
   <svg
     aria-hidden="true"
-    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
     data-testid="WarningIcon"
     focusable="false"
     style="fill: red;"
     viewBox="0 0 24 24"
   >
     <path
-      d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"
+      d="M1 21h22L12 2zm12-3h-2v-2h2zm0-4h-2v-4h2z"
     />
   </svg>
   my error message
@@ -22,18 +22,18 @@ exports[`LogCard shows error logline with icon 1`] = `
 
 exports[`LogCard shows info logline with icon 1`] = `
 <p
-  class="MuiTypography-root MuiTypography-body2 css-17c3ce7-MuiTypography-root-message"
+  class="MuiTypography-root MuiTypography-body2 css-1xbdtaz-MuiTypography-root-message"
 >
   <svg
     aria-hidden="true"
-    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root"
+    class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
     data-testid="InfoOutlinedIcon"
     focusable="false"
     style="fill: grey;"
     viewBox="0 0 24 24"
   >
     <path
-      d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+      d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8"
     />
   </svg>
   my info message

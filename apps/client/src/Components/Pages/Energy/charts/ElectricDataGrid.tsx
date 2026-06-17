@@ -111,7 +111,13 @@ export const ElectricDataGrid: FC = () => {
 
     return (
         <>
-            <Stack direction="row" spacing={1} marginBottom={1}>
+            <Stack
+                direction="row"
+                spacing={1}
+                sx={{
+                    marginBottom: 1,
+                }}
+            >
                 {(chartData || dayChartRow) && (
                     <IconButton
                         onClick={() => {
@@ -148,7 +154,6 @@ export const ElectricDataGrid: FC = () => {
                     </>
                 )}
             </Stack>
-
             {chartData && (
                 <>
                     <ElectricChartCompareAvg
@@ -163,9 +168,7 @@ export const ElectricDataGrid: FC = () => {
                     />
                 </>
             )}
-
             {dayChartRow && <ElectricChartForRow row={dayChartRow} />}
-
             {!chartData && !dayChartRow && (
                 <Box className={styles["electric-chart-table"]}>
                     <table>

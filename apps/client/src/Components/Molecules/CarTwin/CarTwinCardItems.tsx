@@ -44,7 +44,7 @@ export const CarTwinCardItems: FC<{
 
     return (
         <Grid container>
-            <Grid item>
+            <Grid>
                 {!vehicleMetadata || vehicleMetadata === "ERROR" ? (
                     <Alert
                         severity="warning"
@@ -53,8 +53,13 @@ export const CarTwinCardItems: FC<{
                         Meta failed: authenticate connected vehicle
                     </Alert>
                 ) : (
-                    <Grid container flexDirection="row">
-                        <Grid item>
+                    <Grid
+                        container
+                        sx={{
+                            flexDirection: "row",
+                        }}
+                    >
+                        <Grid>
                             <img
                                 alt="car exterior"
                                 src={carImage}
@@ -91,7 +96,7 @@ export const CarTwinCardItems: FC<{
                     />
                 </List>
             </Grid> */}
-            <Grid item>
+            <Grid>
                 <List dense>
                     {data.energy && data.energy !== ERROR && (
                         <ListItem>

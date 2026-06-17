@@ -86,12 +86,12 @@ describe("HomeSec Controller", () => {
                     },
                 ],
             });
-            expect(mockGot).toBeCalledTimes(2);
-            expect(mockGot).toBeCalledWith("url/action/panelCondGet", {
+            expect(mockGot).toHaveBeenCalledTimes(2);
+            expect(mockGot).toHaveBeenCalledWith("url/action/panelCondGet", {
                 password: "pass",
                 username: "user",
             });
-            expect(mockGot).toBeCalledWith("url/action/deviceListGet", {
+            expect(mockGot).toHaveBeenCalledWith("url/action/deviceListGet", {
                 password: "pass",
                 username: "user",
             });
@@ -126,7 +126,7 @@ describe("HomeSec Controller", () => {
                 mockAuthenticatedRequest
             );
             expect(response).toEqual({ status: "Disarm", devices: [] });
-            expect(mockGot).toBeCalledTimes(2);
+            expect(mockGot).toHaveBeenCalledTimes(2);
         }, 10000);
     });
 

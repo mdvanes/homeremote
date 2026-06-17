@@ -41,8 +41,10 @@ const Nextup: FC = () => {
             </List>
             <Dialog
                 open={Boolean(selectedItem)}
-                onBackdropClick={() => {
-                    setSelectedItem(undefined);
+                onClose={(_event, reason) => {
+                    if (reason === "backdropClick") {
+                        setSelectedItem(undefined);
+                    }
                 }}
                 fullWidth
                 maxWidth="md"

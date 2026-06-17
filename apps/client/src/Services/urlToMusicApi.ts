@@ -13,7 +13,7 @@ import { willAddCredentials } from "../devUtils";
 export const urlToMusicApi = createApi({
     reducerPath: "urlToMusicApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: `${process.env.NX_BASE_URL}/api/urltomusic`,
+        baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/urltomusic`,
         credentials: willAddCredentials(),
     }),
     endpoints: (builder) => ({
