@@ -36,8 +36,8 @@ export interface HotKeyState {
     setIsRadioPlaying: (_: boolean) => void;
     ports: Ports | null;
     setPorts: (_: Ports | null) => void;
-    jukeboxElem: RefObject<HTMLAudioElement> | null;
-    setJukeboxElem: (_: RefObject<HTMLAudioElement> | null) => void;
+    jukeboxElem: RefObject<HTMLAudioElement | null> | null;
+    setJukeboxElem: (_: RefObject<HTMLAudioElement | null> | null) => void;
     handlePlayPrev: () => void;
     setHandlePlayPrev: (_: () => void) => void;
     handlePlayNext: () => void;
@@ -77,7 +77,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [isRadioPlaying, setIsRadioPlaying] = useState(false);
     const [ports, setPorts] = useState<Ports | null>(null);
     const [jukeboxElem, setJukeboxElem] =
-        useState<RefObject<HTMLAudioElement> | null>(null);
+        useState<RefObject<HTMLAudioElement | null> | null>(null);
     const [handlePlayPrev, setHandlePlayPrev] = useState(() => noop);
     const [handlePlayNext, setHandlePlayNext] = useState(() => noop);
     const [isSkipRadioActive, setIsSkipRadioActive] = useState(false);

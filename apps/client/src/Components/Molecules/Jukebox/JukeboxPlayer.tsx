@@ -18,7 +18,7 @@ import { getNextSong } from "./getNextSong";
 import { getPrevSong } from "./getPrevSong";
 
 interface IJukeboxPlayerProps {
-    audioElemRef: RefObject<HTMLAudioElement>;
+    audioElemRef: RefObject<HTMLAudioElement | null>;
     song: ISong;
     currentPlaylist: IPlaylist | undefined;
     setCurrentSong: (song: ISong) => void;

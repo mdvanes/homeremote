@@ -16,8 +16,8 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
-            for=":r2:"
-            id=":r2:-label"
+            for="_r_2_"
+            id="_r_2_-label"
           >
             Search terms
           </label>
@@ -27,7 +27,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r2:"
+              id="_r_2_"
               name="terms"
               type="text"
               value=""
@@ -137,8 +137,8 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="true"
-            for=":r3:"
-            id=":r3:-label"
+            for="_r_3_"
+            id="_r_3_-label"
           >
             URL
           </label>
@@ -148,7 +148,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r3:"
+              id="_r_3_"
               name="url"
               type="text"
               value="Some URL"
@@ -207,8 +207,8 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="true"
-            for=":r4:"
-            id=":r4:-label"
+            for="_r_4_"
+            id="_r_4_-label"
           >
             Title
           </label>
@@ -218,7 +218,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r4:"
+              id="_r_4_"
               name="title"
               type="text"
               value="Some Title"
@@ -232,8 +232,8 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="true"
-            for=":r5:"
-            id=":r5:-label"
+            for="_r_5_"
+            id="_r_5_-label"
           >
             Artist
           </label>
@@ -243,7 +243,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r5:"
+              id="_r_5_"
               name="artist"
               type="text"
               value="Some Artist"
@@ -256,8 +256,8 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard MuiFormLabel-colorPrimary MuiFormLabel-filled MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-standard css-1c2i806-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="true"
-            for=":r6:"
-            id=":r6:-label"
+            for="_r_6_"
+            id="_r_6_-label"
           >
             Album
           </label>
@@ -267,7 +267,7 @@ exports[`UrlToMusic can submit the getinfo form: shows the GetMusic form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r6:"
+              id="_r_6_"
               name="album"
               type="text"
               value="Songs from 2026"
@@ -311,8 +311,8 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
-            for=":r0:"
-            id=":r0:-label"
+            for="_r_0_"
+            id="_r_0_-label"
           >
             Search terms
           </label>
@@ -322,7 +322,7 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input MuiInputBase-inputAdornedEnd css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r0:"
+              id="_r_0_"
               name="terms"
               type="text"
               value=""
@@ -432,8 +432,8 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
           <label
             class="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard MuiFormLabel-colorPrimary MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-standard css-aqpgxn-MuiFormLabel-root-MuiInputLabel-root"
             data-shrink="false"
-            for=":r1:"
-            id=":r1:-label"
+            for="_r_1_"
+            id="_r_1_-label"
           >
             URL
           </label>
@@ -443,7 +443,7 @@ exports[`UrlToMusic shows the GetInfo form 1`] = `
             <input
               aria-invalid="false"
               class="MuiInputBase-input MuiInput-input css-1x51dt5-MuiInputBase-input-MuiInput-input"
-              id=":r1:"
+              id="_r_1_"
               name="url"
               type="text"
               value=""
