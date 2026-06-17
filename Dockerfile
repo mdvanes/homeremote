@@ -51,8 +51,10 @@ COPY --from=build-env /home/node/code/dist/apps/server ./dist/apps/server
 RUN jq 'del(.devDependencies)' package.json > tmp.json && mv tmp.json package.json
 
 # NOTE: timeout settings seem to have no effect, but disabling VPN does (timeout after 1796s instead of 110s) But still fails and is incredibly slow. Disabling DNS proxy also seems to help.
-# Install only production dependencies
-RUN npm ci $INSTALL_TIMEOUT
+# Install only production dependencies.
+# YOUTUBE_DL_SKIP_PYTHON_CHECK skips youtube-dl-exec's preinstall python check;
+# python3 is not needed at install time and is provided in the runtime stage.
+RUN YOUTUBE_DL_SKIP_PYTHON_CHECK=1 npm ci $INSTALL_TIMEOUT
 
 # Clean up build artifacts
 RUN apk del .builds-deps
