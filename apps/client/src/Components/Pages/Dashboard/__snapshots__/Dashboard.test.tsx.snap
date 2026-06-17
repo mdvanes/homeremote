@@ -11,7 +11,6 @@ exports[`Dashboard page contains all the control components 1`] = `
       >
         <mock-switches-card />
         <mock-homesec />
-        <mock-url-to-music />
         <mock-log-card />
       </div>
       <div
@@ -24,6 +23,11 @@ exports[`Dashboard page contains all the control components 1`] = `
             url="http://localhost"
           />
           <mock-previously-played-card />
+        </div>
+        <div
+          class="MuiBox-root css-1qm1lh"
+        >
+          <mock-url-to-music />
         </div>
         <mock-jukebox />
         <div

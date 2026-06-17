@@ -1,5 +1,5 @@
 import AppsIcon from "@mui/icons-material/Apps";
-import { Grid, IconButton } from "@mui/material";
+import { Box, Grid, IconButton } from "@mui/material";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { CarTabs } from "../../Molecules/CarTabs/CarTabs";
@@ -77,8 +77,6 @@ const Dashboard: FC = () => {
                     <GasChart />
                 </DelayComponent>
                 <HomeSec />
-                <UrlToMusic />
-
                 <LogCard />
             </Grid>
             <Grid
@@ -88,6 +86,9 @@ const Dashboard: FC = () => {
                 }}
             >
                 <StreamContainer />
+                <Box sx={{ mb: 2 }}>
+                    <UrlToMusic />
+                </Box>
                 <Jukebox />
                 {(localStorage.getItem("showVideoStream") ?? "") === "true" ? (
                     <VideoStream />
