@@ -4,7 +4,7 @@ exports[`HomeAutomation page contains the SwitchBarList 1`] = `
 <body>
   <div>
     <div
-      class="css-hwnj0i-MuiStack-root"
+      class="MuiStack-root css-hwnj0i-MuiStack-root"
     >
       <mock-switches-list />
       <mock-climatesensors-list />
