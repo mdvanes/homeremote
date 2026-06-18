@@ -7,6 +7,7 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
+    ListSubheader,
     Popover,
     Tooltip,
     useTheme,
@@ -17,6 +18,26 @@ import LoadingDot from "../LoadingDot/LoadingDot";
 
 // Update every 3 minutes (also keeps the shared cache warm for skip detection).
 const UPDATE_INTERVAL_MS = 3 * 60 * 1000;
+
+type Track = NonNullable<
+    ReturnType<typeof useGetRadio2PreviouslyQuery>["data"]
+>[number];
+
+// Group consecutive tracks by the hour they started, preserving order.
+const groupByHour = (tracks: Track[]): { hour: string; tracks: Track[] }[] => {
+    const groups: { hour: string; tracks: Track[] }[] = [];
+    tracks.forEach((track) => {
+        const hour = track.time?.start?.slice(11, 13) ?? "??";
+        const label = `${hour}:00`;
+        const last = groups[groups.length - 1];
+        if (last && last.hour === label) {
+            last.tracks.push(track);
+        } else {
+            groups.push({ hour: label, tracks: [track] });
+        }
+    });
+    return groups;
+};
 
 /**
  * Compact "previously played on radio" history: a single icon button that opens
@@ -52,47 +73,72 @@ const RadioHistoryButton: FC = () => {
             >
                 <Box sx={{ width: 360, maxHeight: 440, overflowY: "auto" }}>
                     <LoadingDot isLoading={isLoading || isFetching} />
-                    <List>
-                        {data?.map((track) => {
-                            const primary = `${track.artist} - ${track.title}`;
-                            const imageUrl =
-                                track?.songImageUrl ??
-                                track?.broadcast?.imageUrl;
-                            return (
-                                <ListItem key={track.time?.start}>
-                                    <ListItemAvatar>
-                                        <Avatar
-                                            variant="rounded"
-                                            src={imageUrl}
-                                            alt={track.broadcast?.title}
-                                        />
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary={
-                                            track.listenUrl ? (
-                                                <a
-                                                    style={{
-                                                        color: palette.text
-                                                            .primary,
+                    <List subheader={<li />}>
+                        {groupByHour(data ?? []).map((group) => (
+                            <li key={group.hour}>
+                                <ul style={{ padding: 0 }}>
+                                    <ListSubheader>{group.hour}</ListSubheader>
+                                    {group.tracks.map((track) => {
+                                        const primary = `${track.artist} - ${track.title}`;
+                                        const imageUrl =
+                                            track?.songImageUrl ??
+                                            track?.broadcast?.imageUrl;
+                                        return (
+                                            <ListItem key={track.time?.start}>
+                                                <ListItemAvatar
+                                                    sx={{
+                                                        mr: 2,
+                                                        minWidth: "auto",
                                                     }}
-                                                    href={track.listenUrl}
                                                 >
-                                                    {primary}
-                                                </a>
-                                            ) : (
-                                                primary
-                                            )
-                                        }
-                                        secondary={`${track.time?.start?.slice(
-                                            11,
-                                            16
-                                        )}: ${track.broadcast?.title} / ${
-                                            track.broadcast?.presenters
-                                        }`}
-                                    />
-                                </ListItem>
-                            );
-                        })}
+                                                    <Avatar
+                                                        variant="rounded"
+                                                        src={imageUrl}
+                                                        alt={
+                                                            track.broadcast
+                                                                ?.title
+                                                        }
+                                                        sx={{
+                                                            width: 56,
+                                                            height: 56,
+                                                        }}
+                                                    />
+                                                </ListItemAvatar>
+                                                <ListItemText
+                                                    primary={
+                                                        track.listenUrl ? (
+                                                            <a
+                                                                style={{
+                                                                    color: palette
+                                                                        .text
+                                                                        .primary,
+                                                                }}
+                                                                href={
+                                                                    track.listenUrl
+                                                                }
+                                                            >
+                                                                {primary}
+                                                            </a>
+                                                        ) : (
+                                                            primary
+                                                        )
+                                                    }
+                                                    secondary={`${track.time?.start?.slice(
+                                                        11,
+                                                        16
+                                                    )}: ${
+                                                        track.broadcast?.title
+                                                    } / ${
+                                                        track.broadcast
+                                                            ?.presenters
+                                                    }`}
+                                                />
+                                            </ListItem>
+                                        );
+                                    })}
+                                </ul>
+                            </li>
+                        ))}
                     </List>
                 </Box>
             </Popover>
