@@ -14,8 +14,10 @@ import AppBar from "./Components/Molecules/AppBar/AppBar";
 import DownloadList from "./Components/Molecules/DownloadList/DownloadList";
 import DrawerMenu from "./Components/Molecules/DrawerMenu/DrawerMenu";
 import GlobalSnackbar from "./Components/Molecules/GlobalSnackbar/GlobalSnackbar";
-import Jukebox from "./Components/Molecules/Jukebox/Jukebox";
 import { logUrgentInfo } from "./Components/Molecules/LogCard/logSlice";
+import MusicBar, {
+    MUSIC_BAR_HEIGHT,
+} from "./Components/Molecules/MusicBar/MusicBar";
 import UrlToMusic from "./Components/Molecules/UrlToMusic/UrlToMusic";
 import { CarTwinPage } from "./Components/Pages/CarTwin/CarTwinPage";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
@@ -24,7 +26,6 @@ import Docker from "./Components/Pages/Docker/Docker";
 import Energy from "./Components/Pages/Energy/Energy";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import Log from "./Components/Pages/Log/Log";
-import Streams from "./Components/Pages/Streams/Streams";
 import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
 import HotKeyProvider from "./Components/Providers/HotKey/HotKeyProvider";
 import createThemeWithMode from "./theme";
@@ -78,10 +79,12 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                               maxWidth: 1880,
                                               marginLeft: "auto",
                                               marginRight: "auto",
+                                              paddingBottom: `${MUSIC_BAR_HEIGHT}px`,
                                           }
                                         : {
                                               marginLeft: "16px",
                                               marginRight: "16px",
+                                              paddingBottom: `${MUSIC_BAR_HEIGHT}px`,
                                           }
                                 }
                             >
@@ -103,14 +106,6 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                         element={<Dashboard />}
                                     />
                                     <Route
-                                        path="/streams"
-                                        element={<Streams />}
-                                    />
-                                    <Route
-                                        path="/jukebox"
-                                        element={<Jukebox />}
-                                    />
-                                    <Route
                                         path="/docker"
                                         element={<Docker />}
                                     />
@@ -130,6 +125,7 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                 </Routes>
                             </Box>
                         </BrowserRouter>
+                        <MusicBar />
                         <GlobalSnackbar />
                     </ThemeProvider>
                 </StyledEngineProvider>

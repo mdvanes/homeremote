@@ -88,7 +88,6 @@
     "devDependencies": {
         "@babel/core": "^7.14.5",
         "@babel/preset-react": "^7.14.5",
-        "@mdworld/homeremote-stream-player": "^1.9.1",
         "@nestjs/schematics": "11.1.0",
         "@nestjs/testing": "11.1.27",
         "@nrwl/js": "19.8.9",

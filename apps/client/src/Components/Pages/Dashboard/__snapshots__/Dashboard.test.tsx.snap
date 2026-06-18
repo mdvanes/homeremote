@@ -17,20 +17,6 @@ exports[`Dashboard page contains all the control components 1`] = `
         class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-md-grow css-13jyfex-MuiGrid-root"
       >
         <div
-          class="MuiContainer-root MuiContainer-maxWidthLg css-8wuzov-MuiContainer-root"
-        >
-          <mock-stream-player
-            url="http://localhost"
-          />
-          <mock-previously-played-card />
-        </div>
-        <div
-          class="MuiBox-root css-1qm1lh"
-        >
-          <mock-url-to-music />
-        </div>
-        <mock-jukebox />
-        <div
           class="MuiTabs-root css-jhczcq-MuiTabs-root"
         >
           <div

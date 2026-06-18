@@ -1,5 +1,5 @@
 import AppsIcon from "@mui/icons-material/Apps";
-import { Box, Grid, IconButton } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { CarTabs } from "../../Molecules/CarTabs/CarTabs";
@@ -8,16 +8,13 @@ import DockerStackListCard from "../../Molecules/DockerStackList/DockerStackList
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import GasChart from "../../Molecules/GasChart/GasChart";
 import HomeSec from "../../Molecules/HomeSec/HomeSec";
-import Jukebox from "../../Molecules/Jukebox/Jukebox";
 import LogCard from "../../Molecules/LogCard/LogCard";
 import Monit from "../../Molecules/Monit/Monit";
 import Nextup from "../../Molecules/Nextup/Nextup";
 import Schedule from "../../Molecules/Schedule/Schedule";
 import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
 import SpeedTestCard from "../../Molecules/SpeedTestCard/SpeedTestCard";
-import StreamContainer from "../../Molecules/StreamContainer/StreamContainer";
 import SwitchesCard from "../../Molecules/SwitchesCard/SwitchesCard";
-import UrlToMusic from "../../Molecules/UrlToMusic/UrlToMusic";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
 import Docker from "../Docker/Docker";
 
@@ -85,11 +82,6 @@ const Dashboard: FC = () => {
                     md: "grow",
                 }}
             >
-                <StreamContainer />
-                <Box sx={{ mb: 2 }}>
-                    <UrlToMusic />
-                </Box>
-                <Jukebox />
                 {(localStorage.getItem("showVideoStream") ?? "") === "true" ? (
                     <VideoStream />
                 ) : undefined}

@@ -1,10 +1,4 @@
 import { IPlaylist, ISong, PlaylistArgs } from "@homeremote/types";
-import {
-    FastForward as FastForwardIcon,
-    FastRewind as FastRewindIcon,
-    Forward10 as Forward10Icon,
-} from "@mui/icons-material";
-import { IconButton, Stack, Typography } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { FC, RefObject, useCallback, useEffect } from "react";
 import {
@@ -12,8 +6,6 @@ import {
     useGetPlaylistsQuery,
 } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
-import { AddSongToPlaylistButton } from "./AddSongToPlaylistButton";
-import HotKeyCoach from "./HotKeyCoach";
 import { getNextSong } from "./getNextSong";
 import { getPrevSong } from "./getPrevSong";
 
@@ -27,6 +19,11 @@ interface IJukeboxPlayerProps {
 export const LAST_PLAYLIST = "LAST_PLAYLIST";
 export const LAST_SONG = "LAST_SONG";
 
+/**
+ * Headless jukebox engine: owns the hidden <audio> element, registers the
+ * previous/next handlers with the global hotkey provider and publishes the
+ * now-playing info. All visible transport controls live in the MusicBar.
+ */
 const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
     audioElemRef,
     song,
@@ -36,8 +33,8 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
     const {
         setHandlePlayPrev,
         setHandlePlayNext,
-        handleSkipRadio,
-        isSkipRadioActive,
+        setIsJukeboxPlaying,
+        setJukeboxInfo,
     } = useHotKeyContext();
     const { data: playlists } = useGetPlaylistsQuery(undefined);
     const playlistId = currentPlaylist?.id;
@@ -93,44 +90,32 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
         setHandlePlayNext(() => handlePlayNext);
     }, [handlePlayNext, setHandlePlayNext]);
 
+    // Publish the now-playing info (incl. the playlist cover art) to the bar.
+    useEffect(() => {
+        const imageUrl = currentPlaylist
+            ? `${
+                  process.env.NX_PUBLIC_BASE_URL
+              }/api/jukebox/coverart/${currentPlaylist.id}?type=${
+                  currentPlaylist.type
+              }&hash=${encodeURIComponent(currentPlaylist.name)}`
+            : "";
+        setJukeboxInfo({
+            title: song.title,
+            artist: song.artist,
+            album: playlistName ?? "",
+            imageUrl,
+        });
+    }, [song, playlistName, currentPlaylist, setJukeboxInfo]);
+
     return (
-        <div>
-            <Typography sx={{ height: "44px" }}>
-                {song.artist} - {song.title}
-            </Typography>
-            <Typography variant="subtitle2" sx={{ height: "34px" }}>
-                {playlistName}
-            </Typography>
-            <Stack direction="row">
-                <IconButton title="Previous track (a)" onClick={handlePlayPrev}>
-                    <FastRewindIcon />
-                </IconButton>
-                <audio
-                    ref={audioElemRef}
-                    controls
-                    src={`${process.env.NX_PUBLIC_BASE_URL}/api/jukebox/song/${song.id}?hash=${hash}`}
-                    onEnded={handlePlayNext}
-                />
-
-                <IconButton title="Next track (d)" onClick={handlePlayNext}>
-                    <FastForwardIcon />
-                </IconButton>
-
-                {isSkipRadioActive ? (
-                    <IconButton title="Skip radio in progress!">
-                        <Forward10Icon color="secondary" />
-                    </IconButton>
-                ) : (
-                    <IconButton title="Skip radio" onClick={handleSkipRadio}>
-                        <Forward10Icon />
-                    </IconButton>
-                )}
-
-                <HotKeyCoach />
-
-                <AddSongToPlaylistButton />
-            </Stack>
-        </div>
+        <audio
+            ref={audioElemRef}
+            src={`${process.env.NX_PUBLIC_BASE_URL}/api/jukebox/song/${song.id}?hash=${hash}`}
+            onEnded={handlePlayNext}
+            onPlay={() => setIsJukeboxPlaying(true)}
+            onPause={() => setIsJukeboxPlaying(false)}
+            style={{ display: "none" }}
+        />
     );
 };
 

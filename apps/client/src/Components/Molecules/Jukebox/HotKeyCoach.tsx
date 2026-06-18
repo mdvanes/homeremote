@@ -1,12 +1,14 @@
 import { Help as HelpIcon } from "@mui/icons-material";
 import {
+    Avatar,
     Box,
     IconButton,
     List,
     ListItem,
     ListItemAvatar,
     ListItemText,
-    Popper,
+    Popover,
+    Tooltip,
 } from "@mui/material";
 import { useState } from "react";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
@@ -18,30 +20,53 @@ const HotKeyCoach = () => {
     const open = Boolean(anchorEl);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(anchorEl ? null : event.currentTarget);
+        setAnchorEl(event.currentTarget);
     };
 
     const hotKeyMapEntries = Object.entries(hotKeyMap);
 
     return (
         <>
-            <IconButton onClick={handleClick}>
-                <HelpIcon />
-            </IconButton>
-            <Popper id="simple-popper" open={open} anchorEl={anchorEl}>
-                <Box sx={{ p: 1, bgcolor: "background.paper" }}>
+            <Tooltip title="Keyboard shortcuts">
+                <IconButton
+                    aria-label="Keyboard shortcuts"
+                    onClick={handleClick}
+                >
+                    <HelpIcon />
+                </IconButton>
+            </Tooltip>
+            <Popover
+                open={open}
+                anchorEl={anchorEl}
+                onClose={() => setAnchorEl(null)}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+            >
+                <Box sx={{ width: 360, maxHeight: 440, overflowY: "auto" }}>
                     <List>
                         {hotKeyMapEntries.map(([k, v]) => {
                             return (
                                 <ListItem key={k}>
-                                    <ListItemAvatar>{k}</ListItemAvatar>
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            variant="rounded"
+                                            sx={{
+                                                width: 32,
+                                                height: 32,
+                                                fontSize: "0.875rem",
+                                                textTransform: "uppercase",
+                                            }}
+                                        >
+                                            {k}
+                                        </Avatar>
+                                    </ListItemAvatar>
                                     <ListItemText>{v.description}</ListItemText>
                                 </ListItem>
                             );
                         })}
                     </List>
                 </Box>
-            </Popper>
+            </Popover>
         </>
     );
 };

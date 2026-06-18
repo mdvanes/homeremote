@@ -1,33 +1,16 @@
-interface NowPlayingResponse {
-    artist: string;
-    title: string;
-    last_updated: string;
-    songImageUrl: string;
-    name: string;
-    imageUrl: string;
-}
+import { components } from "./generated/nowplaying";
 
 export type ISOTimeString = string;
-export interface RadioMetadata {
-    time?: {
-        start?: ISOTimeString;
-        end?: ISOTimeString;
-    };
-    broadcast?: {
-        title?: string;
-        presenters?: string;
-        imageUrl?: string;
-    };
-    song: {
-        artist?: string;
-        title?: string;
-        imageUrl?: string;
-        listenUrl?: string;
-    };
-}
 
-export interface PreviouslyResponse extends NowPlayingResponse {
-    broadcast: RadioMetadata["broadcast"];
-    time: RadioMetadata["time"];
-    listenUrl: RadioMetadata["song"]["listenUrl"];
-}
+export type NowPlayingResponse = components["schemas"]["NowPlayingResponse"];
+
+export type RadioMetadataTime = components["schemas"]["RadioMetadataTime"];
+
+export type RadioMetadataBroadcast =
+    components["schemas"]["RadioMetadataBroadcast"];
+
+export type RadioMetadataSong = components["schemas"]["RadioMetadataSong"];
+
+export type RadioMetadata = components["schemas"]["RadioMetadata"];
+
+export type PreviouslyResponse = components["schemas"]["PreviouslyResponse"];
