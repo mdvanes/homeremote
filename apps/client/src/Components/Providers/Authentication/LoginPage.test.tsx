@@ -85,9 +85,22 @@ describe("LoginPage", () => {
         expect(getByText("Log in with Authentik")).toBeInTheDocument();
     });
 
-    it("hides the Authentik button when OIDC is disabled", () => {
-        const { queryByText } = renderLoginPage(false);
+    it("shows an OIDC-not-configured hint instead of the Authentik button when disabled", () => {
+        const { queryByText, getByText } = renderLoginPage(false);
         expect(queryByText("Log in with Authentik")).not.toBeInTheDocument();
+        expect(
+            getByText(/Single sign-on \(OIDC\) is not configured/)
+        ).toBeInTheDocument();
+        expect(
+            getByText(/see the .* section in the README/)
+        ).toBeInTheDocument();
+    });
+
+    it("does not show the OIDC hint when OIDC is enabled", () => {
+        const { queryByText } = renderLoginPage(true);
+        expect(
+            queryByText(/Single sign-on \(OIDC\) is not configured/)
+        ).not.toBeInTheDocument();
     });
 
     it("redirects to the OIDC endpoint when the Authentik button is clicked", () => {

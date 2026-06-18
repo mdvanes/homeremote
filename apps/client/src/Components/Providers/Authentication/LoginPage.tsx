@@ -1,4 +1,5 @@
 import {
+    Alert,
     Button,
     CssBaseline,
     Divider,
@@ -93,7 +94,7 @@ const LoginPage: FC<LoginPageProps> = ({ errorMessage }) => {
                     >
                         Log in
                     </Button>
-                    {oidcEnabled && (
+                    {oidcEnabled ? (
                         <>
                             <Divider style={{ marginBottom: 8 }}>or</Divider>
                             <Button
@@ -107,6 +108,13 @@ const LoginPage: FC<LoginPageProps> = ({ errorMessage }) => {
                                 Log in with Authentik
                             </Button>
                         </>
+                    ) : (
+                        <Alert severity="info" style={{ marginBottom: 8 }}>
+                            Single sign-on (OIDC) is not configured. You can
+                            enable login with Authentik &mdash; see the
+                            &quot;SSO / OIDC login with Authentik&quot; section
+                            in the README.
+                        </Alert>
                     )}
                     {errorMessage}
                 </form>
