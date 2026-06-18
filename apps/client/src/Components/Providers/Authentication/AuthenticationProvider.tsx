@@ -1,9 +1,19 @@
-import { Alert, AlertTitle, Button, Container, TextField } from "@mui/material";
-import { FC, FormEvent, ReactNode, useEffect, useState } from "react";
+import {
+    Alert,
+    AlertTitle,
+    Container,
+    CssBaseline,
+    ThemeProvider as MuiThemeProvider,
+    StyledEngineProvider,
+    useMediaQuery,
+} from "@mui/material";
+import { FC, ReactNode, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
 import { useAppDispatch } from "../../../store";
+import createThemeWithMode from "../../../theme";
 import AppSkeleton from "../../Molecules/AppSkeleton/AppSkeleton";
+import LoginPage from "./LoginPage";
 import {
     AuthenticationState,
     FetchAuthType,
@@ -15,23 +25,10 @@ const UNAUTHORIZED_MESSAGE = `${LOGIN_ENDPOINT} Unauthorized`;
 
 const AuthenticationProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const dispatch = useAppDispatch();
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const onSubmit = (ev: FormEvent): void => {
-        ev.preventDefault();
-        dispatch(
-            fetchAuth({
-                type: FetchAuthType.Login,
-                init: {
-                    method: "POST",
-                    body: JSON.stringify({
-                        username,
-                        password,
-                    }),
-                },
-            })
-        );
-    };
+
+    // Pre-login screens can't use the dashboard's dark/light setting, so they
+    // follow the browser preference instead.
+    const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
     const {
         error: authenticationError,
@@ -58,42 +55,24 @@ const AuthenticationProvider: FC<{ children: ReactNode }> = ({ children }) => {
     if (!isSignedIn && isLoading) {
         return <AppSkeleton />;
     } else if (!isSignedIn) {
-        return (
-            <form id="form" onSubmit={onSubmit} style={{ margin: 8 }}>
-                <TextField
-                    label="Username"
-                    variant="outlined"
-                    onChange={(ev): void => setUsername(ev.target.value)}
-                    fullWidth
-                    style={{ marginBottom: 8 }}
-                />
-                <TextField
-                    label="Password"
-                    variant="outlined"
-                    type="password"
-                    onChange={(ev): void => setPassword(ev.target.value)}
-                    fullWidth
-                    style={{ marginBottom: 8 }}
-                />
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    style={{ marginBottom: 8 }}
-                >
-                    Log in
-                </Button>
-                {errorMessageAlert}
-            </form>
-        );
+        return <LoginPage errorMessage={errorMessageAlert} />;
     } else if (isOffline) {
         return (
-            <Container style={{ marginTop: 8 }}>
-                <Alert severity="warning">
-                    <AlertTitle>You are offline.</AlertTitle>
-                    The application can't continue until you are online.
-                </Alert>
-            </Container>
+            <StyledEngineProvider injectFirst>
+                <MuiThemeProvider
+                    theme={createThemeWithMode(
+                        prefersDarkMode ? "dark" : "light"
+                    )}
+                >
+                    <CssBaseline />
+                    <Container style={{ marginTop: 8 }}>
+                        <Alert severity="warning">
+                            <AlertTitle>You are offline.</AlertTitle>
+                            The application can't continue until you are online.
+                        </Alert>
+                    </Container>
+                </MuiThemeProvider>
+            </StyledEngineProvider>
         );
     } else {
         return <>{children}</>;

@@ -20,6 +20,7 @@ const mockRootState: MockRootState = {
         isLoading: false,
         isOffline: false,
         isSignedIn: false,
+        oidcEnabled: false,
     },
     appStatus: {
         status: "",

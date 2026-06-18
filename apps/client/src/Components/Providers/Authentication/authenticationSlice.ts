@@ -7,6 +7,7 @@ export interface AuthenticationState extends ApiBaseState {
     displayName: string;
     isOffline: boolean;
     isSignedIn: boolean;
+    oidcEnabled: boolean;
 }
 
 export const initialState: AuthenticationState = {
@@ -15,6 +16,7 @@ export const initialState: AuthenticationState = {
     isLoading: false,
     isOffline: false,
     isSignedIn: false,
+    oidcEnabled: false,
     error: false,
 };
 
@@ -46,6 +48,17 @@ export const fetchAuth = createAsyncThunk<FetchAuthReturned, FetchAuthArgs>(
         fetchToJson<FetchAuthReturned>(authEndpoint[type], init)
 );
 
+interface AuthConfigResponse {
+    oidc: {
+        enabled: boolean;
+    };
+}
+
+export const fetchAuthConfig = createAsyncThunk<AuthConfigResponse>(
+    `authentication/fetchAuthConfig`,
+    async () => fetchToJson<AuthConfigResponse>("/auth/config")
+);
+
 const authenticationSlice = createSlice({
     name: "authentication",
     initialState,
@@ -70,6 +83,12 @@ const authenticationSlice = createSlice({
             draft.isSignedIn = initialState.isSignedIn;
             draft.error = error.message || "An error occurred";
         });
+        builder.addCase(
+            fetchAuthConfig.fulfilled,
+            (draft, { payload }): void => {
+                draft.oidcEnabled = payload.oidc.enabled;
+            }
+        );
     },
 });
 

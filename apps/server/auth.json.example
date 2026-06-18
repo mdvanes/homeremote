@@ -5,5 +5,18 @@
     "name": "john",
     "displayName": "John",
     "hash": "$2b$my_password_hash"
-  }]
+  }, {
+    "id": 2,
+    "name": "sso-only-user",
+    "displayName": "SSO Only User",
+    "hash": "!"
+  }],
+  "oidc": {
+    "issuer": "https://authentik.example.com/application/o/homeremote/",
+    "clientId": "my_client_id",
+    "clientSecret": "my_client_secret",
+    "callbackUrl": "https://homeremote.example.com/auth/oidc/callback",
+    "scope": "openid profile email",
+    "usernameClaim": "preferred_username"
+  }
 }

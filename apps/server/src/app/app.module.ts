@@ -2,7 +2,9 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
+import { AuthConfigController } from "../auth/auth-config.controller";
 import { AuthModule } from "../auth/auth.module";
+import { isOidcEnabled } from "../auth/oidc.config";
 import { CarTwinController } from "../cartwin/cartwin.controller";
 import { DataloraController } from "../datalora/datalora.controller";
 import { DockerlistController } from "../dockerlist/dockerlist.controller";
@@ -11,6 +13,7 @@ import { EnergyUsageController } from "../energyusage/energyusage.controller";
 import { HomesecController } from "../homesec/homesec.controller";
 import { JukeboxController } from "../jukebox/jukebox.controller";
 import { LoginController } from "../login/login.controller";
+import { OidcController } from "../login/oidc.controller";
 import { LogoutController } from "../logout/logout.controller";
 import { MonitController } from "../monit/monit.controller";
 import { NextupController } from "../nextup/nextup.controller";
@@ -51,6 +54,7 @@ import { AppService } from "./app.service";
     ],
     controllers: [
         AppController,
+        AuthConfigController,
         CarTwinController,
         DataloraController,
         DockerlistController,
@@ -74,6 +78,8 @@ import { AppService } from "./app.service";
         SwitchesController,
         UrltomusicController,
         VideoStreamController,
+        // OIDC routes are only registered when an oidc config block is present.
+        ...(isOidcEnabled() ? [OidcController] : []),
     ],
     providers: [AppService],
 })
