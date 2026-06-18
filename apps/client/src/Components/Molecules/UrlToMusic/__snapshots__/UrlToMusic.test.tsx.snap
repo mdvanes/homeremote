@@ -3,33 +3,29 @@
 exports[`UrlToMusic opens the dialog from a button 1`] = `
 <DocumentFragment>
   <button
-    class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-sizeMedium MuiButton-colorPrimary css-1blvszr-MuiButtonBase-root-MuiButton-root"
+    aria-label="URL to Music"
+    class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-53g0n7-MuiButtonBase-root-MuiIconButton-root"
     data-testid="open-urltomusic"
     tabindex="0"
     type="button"
   >
-    <span
-      class="MuiButton-icon MuiButton-startIcon css-1lxyhll-MuiButton-startIcon"
+    <svg
+      aria-hidden="true"
+      class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+      data-testid="DownloadIcon"
+      focusable="false"
+      viewBox="0 0 24 24"
     >
-      <svg
-        aria-hidden="true"
-        class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
-        data-testid="MusicNoteIcon"
-        focusable="false"
-        viewBox="0 0 24 24"
-      >
-        <path
-          d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3z"
-        />
-      </svg>
-    </span>
-    URL to Music
+      <path
+        d="M5 20h14v-2H5zM19 9h-4V3H9v6H5l7 7z"
+      />
+    </svg>
     <span
       class="MuiTouchRipple-root css-r3djoj-MuiTouchRipple-root"
     >
       <span
         class="css-lzntsc-MuiTouchRipple-ripple MuiTouchRipple-ripple MuiTouchRipple-rippleVisible"
-        style="width: 2.8284271247461903px; height: 2.8284271247461903px; top: -1.4142135623730951px; left: -1.4142135623730951px;"
+        style="width: 1px; height: 1px; top: -0.5px; left: -0.5px;"
       >
         <span
           class="MuiTouchRipple-child MuiTouchRipple-childLeaving"

@@ -12,6 +12,7 @@ const UrlToMusic: FC = () => {
     return (
         <>
             <IconButton
+                aria-label="URL to Music"
                 data-testid="open-urltomusic"
                 onClick={() => setOpen(true)}
             >
