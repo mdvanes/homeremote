@@ -1,14 +1,8 @@
 import {
     Close as CloseIcon,
-    MusicNote as MusicNoteIcon,
+    Download as DownloadIcon,
 } from "@mui/icons-material";
-import {
-    Button,
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    IconButton,
-} from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { FC, useState } from "react";
 import UrlToMusicForm from "./UrlToMusicForm";
 
@@ -17,14 +11,12 @@ const UrlToMusic: FC = () => {
 
     return (
         <>
-            <Button
+            <IconButton
                 data-testid="open-urltomusic"
-                variant="outlined"
-                startIcon={<MusicNoteIcon />}
                 onClick={() => setOpen(true)}
             >
-                URL to Music
-            </Button>
+                <DownloadIcon />
+            </IconButton>
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}

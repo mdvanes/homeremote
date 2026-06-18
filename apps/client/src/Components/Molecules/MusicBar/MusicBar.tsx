@@ -3,6 +3,7 @@ import { FC } from "react";
 import Jukebox from "../Jukebox/Jukebox";
 import RadioChannelMenu from "../RadioPlayer/RadioChannelMenu";
 import RadioEngine from "../RadioPlayer/RadioEngine";
+import UrlToMusic from "../UrlToMusic/UrlToMusic";
 import PlayerControls from "./PlayerControls";
 import RadioHistoryButton from "./RadioHistoryButton";
 import SourceArt from "./SourceArt";
@@ -48,6 +49,7 @@ const MusicBar: FC = () => {
                     <RadioChannelMenu />
                     <Jukebox />
                     <RadioHistoryButton />
+                    <UrlToMusic />
                 </Stack>
             </Stack>
 
