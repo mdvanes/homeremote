@@ -1,13 +1,21 @@
 import {
     Alert,
+    Avatar,
+    Box,
     Button,
+    Card,
+    CardContent,
     CssBaseline,
     Divider,
     ThemeProvider as MuiThemeProvider,
+    Stack,
     StyledEngineProvider,
     TextField,
+    Typography,
     useMediaQuery,
 } from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LoginIcon from "@mui/icons-material/Login";
 import { FC, FormEvent, ReactNode, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
@@ -70,54 +78,119 @@ const LoginPage: FC<LoginPageProps> = ({ errorMessage }) => {
         <StyledEngineProvider injectFirst>
             <MuiThemeProvider theme={theme}>
                 <CssBaseline />
-                <form id="form" onSubmit={onSubmit} style={{ margin: 8 }}>
-                    <TextField
-                        label="Username"
-                        variant="outlined"
-                        onChange={(ev): void => setUsername(ev.target.value)}
-                        fullWidth
-                        style={{ marginBottom: 8 }}
-                    />
-                    <TextField
-                        label="Password"
-                        variant="outlined"
-                        type="password"
-                        onChange={(ev): void => setPassword(ev.target.value)}
-                        fullWidth
-                        style={{ marginBottom: 8 }}
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        style={{ marginBottom: 8 }}
+                <Box
+                    sx={{
+                        minHeight: "100vh",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        p: 2,
+                        background: (t) =>
+                            `linear-gradient(160deg, ${t.palette.background.default} 0%, ${t.palette.background.paper} 100%)`,
+                    }}
+                >
+                    <Card
+                        elevation={8}
+                        sx={{
+                            width: "100%",
+                            maxWidth: 420,
+                            borderRadius: 3,
+                        }}
                     >
-                        Log in
-                    </Button>
-                    {oidcEnabled ? (
-                        <>
-                            <Divider style={{ marginBottom: 8 }}>or</Divider>
-                            <Button
-                                type="button"
-                                variant="outlined"
-                                color="primary"
-                                fullWidth
-                                onClick={onAuthentikLogin}
-                                style={{ marginBottom: 8 }}
+                        <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
+                            <Stack
+                                spacing={1}
+                                sx={{ alignItems: "center", mb: 3 }}
                             >
-                                Log in with Authentik
-                            </Button>
-                        </>
-                    ) : (
-                        <Alert severity="info" style={{ marginBottom: 8 }}>
-                            Single sign-on (OIDC) is not configured. You can
-                            enable login with Authentik &mdash; see the
-                            &quot;SSO / OIDC login with Authentik&quot; section
-                            in the README.
-                        </Alert>
-                    )}
-                    {errorMessage}
-                </form>
+                                <Avatar
+                                    sx={{
+                                        bgcolor: "primary.main",
+                                        width: 56,
+                                        height: 56,
+                                    }}
+                                >
+                                    <LockOutlinedIcon fontSize="large" />
+                                </Avatar>
+                                <Typography
+                                    variant="h5"
+                                    component="h1"
+                                    sx={{ fontWeight: 600 }}
+                                >
+                                    Home Remote
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                >
+                                    Sign in to continue
+                                </Typography>
+                            </Stack>
+                            <Box
+                                component="form"
+                                id="form"
+                                onSubmit={onSubmit}
+                            >
+                                <Stack spacing={2}>
+                                    <TextField
+                                        label="Username"
+                                        variant="outlined"
+                                        autoComplete="username"
+                                        autoFocus
+                                        onChange={(ev): void =>
+                                            setUsername(ev.target.value)
+                                        }
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        label="Password"
+                                        variant="outlined"
+                                        type="password"
+                                        autoComplete="current-password"
+                                        onChange={(ev): void =>
+                                            setPassword(ev.target.value)
+                                        }
+                                        fullWidth
+                                    />
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        size="large"
+                                        fullWidth
+                                        startIcon={<LoginIcon />}
+                                    >
+                                        Log in
+                                    </Button>
+                                    {oidcEnabled ? (
+                                        <>
+                                            <Divider>or</Divider>
+                                            <Button
+                                                type="button"
+                                                variant="outlined"
+                                                color="primary"
+                                                size="large"
+                                                fullWidth
+                                                onClick={onAuthentikLogin}
+                                            >
+                                                Log in with Authentik
+                                            </Button>
+                                        </>
+                                    ) : (
+                                        <Alert severity="info">
+                                            Single sign-on (OIDC) is not
+                                            configured. You can enable login
+                                            with Authentik &mdash; see the
+                                            &quot;SSO / OIDC login with
+                                            Authentik&quot; section in the
+                                            README.
+                                        </Alert>
+                                    )}
+                                    {errorMessage}
+                                </Stack>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Box>
             </MuiThemeProvider>
         </StyledEngineProvider>
     );
