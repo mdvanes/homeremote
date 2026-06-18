@@ -1,9 +1,11 @@
 import { History as HistoryIcon } from "@mui/icons-material";
 import {
+    Avatar,
     Box,
     IconButton,
     List,
     ListItem,
+    ListItemAvatar,
     ListItemText,
     Popover,
     Tooltip,
@@ -53,18 +55,19 @@ const RadioHistoryButton: FC = () => {
                     <List>
                         {data?.map((track) => {
                             const primary = `${track.artist} - ${track.title}`;
+                            const imageUrl =
+                                track?.songImageUrl ??
+                                track?.broadcast?.imageUrl;
                             return (
                                 <ListItem key={track.time?.start}>
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            variant="rounded"
+                                            src={imageUrl}
+                                            alt={track.broadcast?.title}
+                                        />
+                                    </ListItemAvatar>
                                     <ListItemText
-                                        sx={{
-                                            backgroundImage: `url(${
-                                                track?.songImageUrl ??
-                                                track?.broadcast?.imageUrl
-                                            })`,
-                                            backgroundSize: "contain",
-                                            backgroundRepeat: "no-repeat",
-                                            backgroundPositionX: "right",
-                                        }}
                                         primary={
                                             track.listenUrl ? (
                                                 <a
