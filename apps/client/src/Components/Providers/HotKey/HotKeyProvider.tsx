@@ -13,11 +13,31 @@ import React, {
 import { useDispatch } from "react-redux";
 import { useGetRadio2PreviouslyQuery } from "../../../Services/generated/nowplayingApi";
 import { logUrgentInfo } from "../../Molecules/LogCard/logSlice";
+import {
+    getInitialChannelId,
+    LAST_RADIO_CHANNEL,
+    RadioChannelId,
+} from "../../Molecules/RadioPlayer/channels";
 import { getLatestStartMs } from "./getLatestStartMs";
 
 type HotKeyMap = Record<string, { description: string; fn: () => void }>;
 
 export type MusicSource = "radio" | "jukebox";
+
+// What is shown in the unified player for a given source.
+export interface NowPlayingInfo {
+    title: string;
+    artist: string;
+    album: string;
+    imageUrl: string;
+}
+
+const emptyNowPlayingInfo: NowPlayingInfo = {
+    title: "",
+    artist: "",
+    album: "",
+    imageUrl: "",
+};
 
 const getFallbackMinutes = (): number => {
     const defaultFallbackMinutes = 20;
@@ -50,26 +70,32 @@ export interface HotKeyState {
     setIsRadioPlaying: (_: boolean) => void;
     playRadio: () => void;
     setPlayRadio: (_: () => void) => void;
-    radioImageUrl: string;
-    setRadioImageUrl: (_: string) => void;
+    radioInfo: NowPlayingInfo;
+    setRadioInfo: (_: NowPlayingInfo) => void;
+    radioChannelId: RadioChannelId;
+    setRadioChannelId: (_: RadioChannelId) => void;
 
     // Jukebox
     jukeboxElem: RefObject<HTMLAudioElement | null> | null;
     setJukeboxElem: (_: RefObject<HTMLAudioElement | null> | null) => void;
     isJukeboxPlaying: boolean;
     setIsJukeboxPlaying: (_: boolean) => void;
-    jukeboxImageUrl: string;
-    setJukeboxImageUrl: (_: string) => void;
+    jukeboxInfo: NowPlayingInfo;
+    setJukeboxInfo: (_: NowPlayingInfo) => void;
     handlePlayPrev: () => void;
     setHandlePlayPrev: (_: () => void) => void;
     handlePlayNext: () => void;
     setHandlePlayNext: (_: () => void) => void;
 
+    // Unified playback
+    isPlaying: boolean;
+    togglePlayPause: () => void;
+
     // Skip radio
     handleSkipRadio: () => void;
     isSkipRadioActive: boolean;
 
-    // The source whose image should be shown as "now playing"
+    // The source whose info should be shown as "now playing"
     currentSource: MusicSource;
 }
 
@@ -85,18 +111,22 @@ const initialState: HotKeyState = {
     setIsRadioPlaying: noop,
     playRadio: noop,
     setPlayRadio: noop,
-    radioImageUrl: "",
-    setRadioImageUrl: noop,
+    radioInfo: emptyNowPlayingInfo,
+    setRadioInfo: noop,
+    radioChannelId: getInitialChannelId(),
+    setRadioChannelId: noop,
     jukeboxElem: null,
     setJukeboxElem: noop,
     isJukeboxPlaying: false,
     setIsJukeboxPlaying: noop,
-    jukeboxImageUrl: "",
-    setJukeboxImageUrl: noop,
+    jukeboxInfo: emptyNowPlayingInfo,
+    setJukeboxInfo: noop,
     handlePlayPrev: noop,
     setHandlePlayPrev: noop,
     handlePlayNext: noop,
     setHandlePlayNext: noop,
+    isPlaying: false,
+    togglePlayPause: noop,
     handleSkipRadio: noop,
     isSkipRadioActive: false,
     currentSource: "radio",
@@ -121,10 +151,19 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [handlePlayPrev, setHandlePlayPrev] = useState(() => noop);
     const [handlePlayNext, setHandlePlayNext] = useState(() => noop);
     const [isSkipRadioActive, setIsSkipRadioActive] = useState(false);
-    const [radioImageUrl, setRadioImageUrl] = useState("");
-    const [jukeboxImageUrl, setJukeboxImageUrl] = useState("");
+    const [radioInfo, setRadioInfo] =
+        useState<NowPlayingInfo>(emptyNowPlayingInfo);
+    const [jukeboxInfo, setJukeboxInfo] =
+        useState<NowPlayingInfo>(emptyNowPlayingInfo);
+    const [radioChannelId, setRadioChannelIdState] =
+        useState<RadioChannelId>(getInitialChannelId);
     const [currentSource, setCurrentSource] = useState<MusicSource>("radio");
     const dispatch = useDispatch();
+
+    const setRadioChannelId = useCallback((id: RadioChannelId) => {
+        localStorage.setItem(LAST_RADIO_CHANNEL, id);
+        setRadioChannelIdState(id);
+    }, []);
 
     // Track the source whose image should be displayed as "now playing".
     useEffect(() => {
@@ -136,7 +175,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }, [isRadioPlaying, isJukeboxPlaying]);
 
     // Subscribe to the radio metadata. It shares the RTK Query cache with
-    // PreviouslyPlayedCard, and only polls while a skip is in progress.
+    // RadioHistoryButton, and only polls while a skip is in progress.
     const { data: previouslyData } = useGetRadio2PreviouslyQuery(undefined, {
         pollingInterval: isSkipRadioActive ? SKIP_POLL_MS : 0,
     });
@@ -194,6 +233,32 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
             playRadio();
         }
     }, [clearSkipRadio, isRadioPlaying, pauseRadio, playRadio]);
+
+    // Unified play/pause: pauses whichever source is playing, otherwise resumes
+    // the source that was last active (the one shown in the bar).
+    const isPlaying = isRadioPlaying || isJukeboxPlaying;
+
+    const togglePlayPause = useCallback(() => {
+        clearSkipRadio();
+        if (isRadioPlaying) {
+            pauseRadio();
+        } else if (isJukeboxPlaying) {
+            pauseJukebox();
+        } else if (currentSource === "jukebox") {
+            playJukebox();
+        } else {
+            playRadio();
+        }
+    }, [
+        clearSkipRadio,
+        isRadioPlaying,
+        isJukeboxPlaying,
+        currentSource,
+        pauseRadio,
+        pauseJukebox,
+        playJukebox,
+        playRadio,
+    ]);
 
     const toggleJukebox = useCallback(() => {
         clearSkipRadio();
@@ -318,18 +383,22 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setIsRadioPlaying,
         playRadio,
         setPlayRadio,
-        radioImageUrl,
-        setRadioImageUrl,
+        radioInfo,
+        setRadioInfo,
+        radioChannelId,
+        setRadioChannelId,
         jukeboxElem,
         setJukeboxElem,
         isJukeboxPlaying,
         setIsJukeboxPlaying,
-        jukeboxImageUrl,
-        setJukeboxImageUrl,
+        jukeboxInfo,
+        setJukeboxInfo,
         handlePlayPrev,
         setHandlePlayPrev,
         handlePlayNext,
         setHandlePlayNext,
+        isPlaying,
+        togglePlayPause,
         handleSkipRadio,
         isSkipRadioActive,
         currentSource,

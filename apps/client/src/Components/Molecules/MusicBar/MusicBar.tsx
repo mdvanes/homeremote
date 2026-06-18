@@ -1,17 +1,22 @@
-import { Box, Divider, Paper, Stack } from "@mui/material";
+import { Paper, Stack } from "@mui/material";
 import { FC } from "react";
 import Jukebox from "../Jukebox/Jukebox";
-import PreviouslyPlayedCard from "../PreviouslyPlayedCard/PreviouslyPlayedCard";
-import RadioPlayer from "../RadioPlayer/RadioPlayer";
-import NowPlayingSourceImage from "./NowPlayingSourceImage";
+import RadioChannelMenu from "../RadioPlayer/RadioChannelMenu";
+import RadioEngine from "../RadioPlayer/RadioEngine";
+import PlayerControls from "./PlayerControls";
+import RadioHistoryButton from "./RadioHistoryButton";
+import SourceArt from "./SourceArt";
+import TrackInfo from "./TrackInfo";
 
 // Reserve space at the bottom of the page so the fixed bar never covers content.
-export const MUSIC_BAR_HEIGHT = 180;
+export const MUSIC_BAR_HEIGHT = 96;
 
 /**
- * Persistent bottom bar that hosts the radio player, the jukebox and the
- * previously-played list. It is mounted once at the App level (outside the
- * router) so playback keeps running while navigating between pages.
+ * Persistent unified music player. Mounted once at the App level (outside the
+ * router) so playback keeps running while navigating between pages. Shows a
+ * single source image, the now-playing info and unified transport controls,
+ * with the radio channel picker, jukebox browser and history tucked away in
+ * popovers so the bar stays compact.
  */
 const MusicBar: FC = () => {
     return (
@@ -28,23 +33,26 @@ const MusicBar: FC = () => {
                 py: 1,
             }}
         >
-            <PreviouslyPlayedCard />
             <Stack
-                direction={{ xs: "column", md: "row" }}
-                spacing={2}
-                sx={{ alignItems: "center" }}
+                direction="row"
+                spacing={1.5}
+                sx={{ alignItems: "center", width: "100%" }}
             >
-                <NowPlayingSourceImage />
-                <RadioPlayer />
-                <Divider
-                    orientation="vertical"
-                    flexItem
-                    sx={{ display: { xs: "none", md: "block" } }}
-                />
-                <Box sx={{ flexGrow: 1, minWidth: 0, width: "100%" }}>
+                <SourceArt />
+                <TrackInfo />
+                <PlayerControls />
+                <Stack
+                    direction="row"
+                    sx={{ alignItems: "center", flexShrink: 0 }}
+                >
+                    <RadioChannelMenu />
                     <Jukebox />
-                </Box>
+                    <RadioHistoryButton />
+                </Stack>
             </Stack>
+
+            {/* Headless audio engine for the radio source. */}
+            <RadioEngine />
         </Paper>
     );
 };

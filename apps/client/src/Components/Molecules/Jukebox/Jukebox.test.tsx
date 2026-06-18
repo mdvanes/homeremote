@@ -1,5 +1,5 @@
 import { PlaylistsResponse } from "@homeremote/types";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
 import { jukeboxApi } from "../../../Services/jukeboxApi";
@@ -15,7 +15,12 @@ const Wrapper: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 describe("Jukebox", () => {
-    it("shows the player", async () => {
+    beforeEach(() => {
+        localStorage.clear();
+        fetchMock.resetMocks();
+    });
+
+    it("shows a browse button that lists the playlists", async () => {
         const mockPlaylistsResponse: PlaylistsResponse = {
             status: "received",
             playlists: [
@@ -25,9 +30,17 @@ describe("Jukebox", () => {
                 },
             ],
         };
-        fetchMock.mockResponse(JSON.stringify(mockPlaylistsResponse));
+        fetchMock.mockResponse((req) => {
+            if (req.url.includes("/songdir")) {
+                return Promise.resolve(JSON.stringify({ status: "error" }));
+            }
+            return Promise.resolve(JSON.stringify(mockPlaylistsResponse));
+        });
         render(<Jukebox />, { wrapper: Wrapper });
 
-        await screen.findByText("Select a song");
+        const browseButton = await screen.findByLabelText("Browse playlists");
+        fireEvent.click(browseButton);
+
+        await screen.findByText("SomePlaylist");
     });
 });

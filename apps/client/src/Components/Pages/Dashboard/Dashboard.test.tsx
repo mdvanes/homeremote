@@ -22,10 +22,6 @@ jest.mock("../../Molecules/Monit/Monit", () => "mock-monit");
 jest.mock("../../Molecules/Schedule/Schedule", () => "mock-schedule");
 jest.mock("../../Molecules/Nextup/Nextup", () => "mock-nextup");
 jest.mock("../../Molecules/GasChart/GasChart", () => "mock-gaschart");
-jest.mock(
-    "../../Molecules/PreviouslyPlayedCard/PreviouslyPlayedCard",
-    () => "mock-previously-played-card"
-);
 jest.mock("../../Molecules/CarTwin/CarTwinCard", () => "mock-cartwin-card");
 jest.mock("../../Molecules/HomeSec/HomeSec", () => "mock-homesec");
 jest.mock(
