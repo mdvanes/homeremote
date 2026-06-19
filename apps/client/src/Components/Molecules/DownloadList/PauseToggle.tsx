@@ -7,7 +7,7 @@ import {
 } from "../../../Services/downloadListApi";
 
 interface Props {
-    id: number;
+    id: number | string;
     isResumed: boolean;
 }
 
@@ -17,7 +17,7 @@ const PauseToggle: FC<Props> = ({ isResumed, id }) => {
     const [pauseDownload, { isLoading: isPausing }] =
         usePauseDownloadMutation();
 
-    const handleClick = (id: number) => () => {
+    const handleClick = (id: number | string) => () => {
         if (isResumed) {
             pauseDownload({ id });
         } else {

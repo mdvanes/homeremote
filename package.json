@@ -34,6 +34,7 @@
     "author": "M.D. van Es",
     "engine": "node >= 20.0.0",
     "dependencies": {
+        "@ctrl/qbittorrent": "^9.14.0",
         "@ctrl/transmission": "^7.4.0",
         "@emotion/react": "11.14.0",
         "@emotion/styled": "11.14.1",

@@ -8,7 +8,7 @@ import { isOidcEnabled } from "../auth/oidc.config";
 import { CarTwinController } from "../cartwin/cartwin.controller";
 import { DataloraController } from "../datalora/datalora.controller";
 import { DockerlistController } from "../dockerlist/dockerlist.controller";
-import { DownloadlistController } from "../downloadlist/downloadlist.controller";
+import { getDownloadlistControllers } from "../downloadlist/downloadlist.config";
 import { EnergyUsageController } from "../energyusage/energyusage.controller";
 import { HomesecController } from "../homesec/homesec.controller";
 import { JukeboxController } from "../jukebox/jukebox.controller";
@@ -26,7 +26,6 @@ import { SmartEntitiesController } from "../smart-entities/smart-entities.contro
 import { SpeedtestController } from "../speedtest/speedtest.controller";
 import { StacksController } from "../stacks/stacks.controller";
 import { StatusController } from "../status/status.controller";
-import { SwitchesController } from "../switches/switches.controller";
 import { UrltomusicController } from "../urltomusic/urltomusic.controller";
 import { UsersModule } from "../users/users.module";
 import { VideoStreamController } from "../video-stream/video-stream.controller";
@@ -58,7 +57,7 @@ import { AppService } from "./app.service";
         CarTwinController,
         DataloraController,
         DockerlistController,
-        DownloadlistController,
+        ...getDownloadlistControllers(),
         EnergyUsageController,
         HomesecController,
         JukeboxController,
@@ -75,7 +74,6 @@ import { AppService } from "./app.service";
         SpeedtestController,
         StacksController,
         StatusController,
-        SwitchesController,
         UrltomusicController,
         VideoStreamController,
         // OIDC routes are only registered when an oidc config block is present.
