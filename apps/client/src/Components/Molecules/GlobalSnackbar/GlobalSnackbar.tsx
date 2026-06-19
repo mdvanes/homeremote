@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { makeStyles } from "tss-react/mui";
 import { RootState } from "../../../Reducers";
 import { LogState, Severity } from "../LogCard/logSlice";
+import { MUSIC_BAR_HEIGHT } from "../MusicBar/MusicBar";
 
 const useStyles = makeStyles()((theme) => ({
     error: {
@@ -40,6 +41,7 @@ const GlobalSnackbar: FC = () => {
         <Snackbar
             data-testid="global-snackbar"
             anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            sx={{ bottom: { xs: MUSIC_BAR_HEIGHT } }}
             autoHideDuration={3000}
             message={
                 <Grid
