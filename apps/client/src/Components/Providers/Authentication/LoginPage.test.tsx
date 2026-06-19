@@ -112,6 +112,25 @@ describe("LoginPage", () => {
         );
     });
 
+    it("shows an error alert when redirected back with an OIDC error flag", () => {
+        window.history.replaceState({}, "", "/?error=oidc");
+        try {
+            const { getByText } = renderLoginPage(true);
+            expect(
+                getByText(/Error logging in with Authentik/i)
+            ).toBeInTheDocument();
+        } finally {
+            window.history.replaceState({}, "", "/");
+        }
+    });
+
+    it("does not show the OIDC error alert without the error flag", () => {
+        const { queryByText } = renderLoginPage(true);
+        expect(
+            queryByText(/Error logging in with Authentik/i)
+        ).not.toBeInTheDocument();
+    });
+
     it("requests the auth config on mount", async () => {
         renderLoginPage(false);
         await waitFor(() => {

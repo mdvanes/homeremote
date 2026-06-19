@@ -31,6 +31,15 @@ import {
 
 const OIDC_LOGIN_PATH = "/auth/oidc";
 
+// The OIDC callback redirects here with this query flag when SSO login fails,
+// so we can show a friendly message instead of a bare error page.
+const hasOidcLoginError = (): boolean => {
+    if (typeof window === "undefined") {
+        return false;
+    }
+    return new URLSearchParams(window.location.search).get("error") === "oidc";
+};
+
 interface LoginPageProps {
     errorMessage?: ReactNode;
 }
@@ -39,6 +48,7 @@ const LoginPage: FC<LoginPageProps> = ({ errorMessage }) => {
     const dispatch = useAppDispatch();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [oidcLoginError] = useState<boolean>(hasOidcLoginError);
 
     // The login page is shown before authentication, so it can't use the
     // dashboard's dark/light setting. Derive it from the browser preference.
@@ -179,6 +189,13 @@ const LoginPage: FC<LoginPageProps> = ({ errorMessage }) => {
                                             &quot;SSO / OIDC login with
                                             Authentik&quot; section in the
                                             README.
+                                        </Alert>
+                                    )}
+                                    {oidcLoginError && (
+                                        <Alert severity="error">
+                                            Error logging in with Authentik.
+                                            Please try again and check the
+                                            server logs if the problem persists.
                                         </Alert>
                                     )}
                                     {errorMessage}
