@@ -1,24 +1,36 @@
 import { UnauthorizedException } from "@nestjs/common";
-import { Client, Issuer, TokenSet } from "openid-client";
+import { Configuration, fetchUserInfo } from "openid-client";
 import { type Mock } from "vitest";
 import { StoredUser, UsersService } from "../users/users.service";
 import { OidcConfig } from "./oidc.config";
-import { OidcStrategy, oidcStrategyProvider } from "./oidc.strategy";
+import {
+    OidcStrategy,
+    OidcTokens,
+    oidcStrategyProvider,
+} from "./oidc.strategy";
 
-const buildOfflineClient = (): Client => {
-    const issuer = new Issuer({
-        issuer: "https://authentik.example.com",
-        authorization_endpoint: "https://authentik.example.com/auth",
-        token_endpoint: "https://authentik.example.com/token",
-        jwks_uri: "https://authentik.example.com/jwks",
-    });
-    return new issuer.Client({
-        client_id: "client-id",
-        client_secret: "client-secret",
-        redirect_uris: ["https://app.example.com/auth/oidc/callback"],
-        response_types: ["code"],
-    });
+// openid-client v6 exposes userinfo lookup as a standalone function rather than
+// a method on the client, so it is mocked at the module level. Everything else
+// (notably the real Configuration class, required by the passport Strategy's
+// instanceof check) is kept intact via importActual.
+vi.mock("openid-client", async (importActual) => {
+    const actual = await importActual<typeof import("openid-client")>();
+    return {
+        ...actual,
+        fetchUserInfo: vi.fn(),
+    };
+});
+
+const serverMetadata = {
+    issuer: "https://authentik.example.com",
+    authorization_endpoint: "https://authentik.example.com/auth",
+    token_endpoint: "https://authentik.example.com/token",
+    jwks_uri: "https://authentik.example.com/jwks",
+    userinfo_endpoint: "https://authentik.example.com/userinfo",
 };
+
+const buildOfflineConfiguration = (): Configuration =>
+    new Configuration(serverMetadata, "client-id", "client-secret");
 
 const config: OidcConfig = {
     issuer: "https://authentik.example.com",
@@ -29,18 +41,25 @@ const config: OidcConfig = {
     usernameClaim: "preferred_username",
 };
 
-const makeTokenset = (claims: Record<string, unknown>): TokenSet =>
-    ({ claims: () => claims }) as unknown as TokenSet;
+const makeTokens = (
+    claims: Record<string, unknown>,
+    accessToken?: string
+): OidcTokens =>
+    ({
+        claims: () => claims,
+        access_token: accessToken,
+    }) as unknown as OidcTokens;
 
 describe("OidcStrategy", () => {
     let usersService: { findOne: Mock };
     let strategy: OidcStrategy;
 
     beforeEach(() => {
+        vi.mocked(fetchUserInfo).mockReset();
         usersService = { findOne: vi.fn() };
         strategy = new OidcStrategy(
             usersService as unknown as UsersService,
-            buildOfflineClient(),
+            buildOfflineConfiguration(),
             config
         );
     });
@@ -55,7 +74,7 @@ describe("OidcStrategy", () => {
         usersService.findOne.mockResolvedValue(storedUser);
 
         const result = await strategy.validate(
-            makeTokenset({ preferred_username: "john" })
+            makeTokens({ preferred_username: "john" })
         );
 
         expect(usersService.findOne).toHaveBeenCalledWith("john");
@@ -67,26 +86,27 @@ describe("OidcStrategy", () => {
         usersService.findOne.mockResolvedValue(undefined);
 
         await expect(
-            strategy.validate(makeTokenset({ preferred_username: "mallory" }))
+            strategy.validate(makeTokens({ preferred_username: "mallory" }))
         ).rejects.toBeInstanceOf(UnauthorizedException);
     });
 
     it("rejects a token missing the username claim", async () => {
         await expect(
-            strategy.validate(makeTokenset({ sub: "abc" }))
+            strategy.validate(makeTokens({ sub: "abc" }))
         ).rejects.toBeInstanceOf(UnauthorizedException);
         expect(usersService.findOne).not.toHaveBeenCalled();
+        expect(fetchUserInfo).not.toHaveBeenCalled();
     });
 
     it("falls back to the userinfo endpoint when the ID token lacks the claim", async () => {
-        const client = buildOfflineClient();
-        vi.spyOn(client, "userinfo").mockResolvedValue({
+        vi.mocked(fetchUserInfo).mockResolvedValue({
             sub: "abc",
             preferred_username: "john",
         } as never);
+        const oidcConfiguration = buildOfflineConfiguration();
         const strategyWithUserinfo = new OidcStrategy(
             usersService as unknown as UsersService,
-            client,
+            oidcConfiguration,
             config
         );
         usersService.findOne.mockResolvedValue({
@@ -96,14 +116,15 @@ describe("OidcStrategy", () => {
             hash: "$2b$some_hash",
         });
 
-        const tokenset = {
-            claims: () => ({ sub: "abc" }),
-            access_token: "an-access-token",
-        } as unknown as TokenSet;
+        const tokens = makeTokens({ sub: "abc" }, "an-access-token");
 
-        const result = await strategyWithUserinfo.validate(tokenset);
+        const result = await strategyWithUserinfo.validate(tokens);
 
-        expect(client.userinfo).toHaveBeenCalledWith(tokenset);
+        expect(fetchUserInfo).toHaveBeenCalledWith(
+            oidcConfiguration,
+            "an-access-token",
+            "abc"
+        );
         expect(usersService.findOne).toHaveBeenCalledWith("john");
         expect(result).toEqual({ id: 1, name: "john", displayName: "John" });
     });
