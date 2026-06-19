@@ -4,7 +4,7 @@
     "license": "MIT",
     "type": "module",
     "scripts": {
-        "writeGitInfo": "node writeGitInfo.mjs",
+        "writeGitInfo": "node writeGitInfo.mts",
         "serve:all": "nx run-many --target=serve --projects=server,client --parallel",
         "start:old": "npx rescript build -with-deps && npm run writeGitInfo dev && npm run serve:all",
         "start": "npm run writeGitInfo dev && npm run serve:all",
