@@ -13,26 +13,25 @@ interface AreaGroup {
     humidity?: State;
 }
 
-function getAreaName(sensor: State): string {
-    return (sensor.attributes?.friendly_name ?? "")
+const getAreaName = (sensor: State): string =>
+    (sensor.attributes?.friendly_name ?? "")
         .replace(/\s*(temperature|humidity)\s*$/i, "")
         .trim();
-}
 
-function groupByArea(sensors: State[]): [string, AreaGroup][] {
-    const map = new Map<string, AreaGroup>();
-    for (const sensor of sensors) {
+const groupByArea = (sensors: State[]): [string, AreaGroup][] => {
+    const map = sensors.reduce<Map<string, AreaGroup>>((acc, sensor) => {
         const area = getAreaName(sensor);
-        if (!map.has(area)) map.set(area, {});
-        const group = map.get(area)!;
+        const group = acc.get(area) ?? {};
         if (sensor.attributes?.device_class === "temperature") {
             group.temperature = sensor;
         } else if (sensor.attributes?.device_class === "humidity") {
             group.humidity = sensor;
         }
-    }
+        acc.set(area, group);
+        return acc;
+    }, new Map<string, AreaGroup>());
     return [...map.entries()];
-}
+};
 
 export const ClimateSensorsListItem: FC<ClimateSensorsListItemProps> = ({
     sensors,
