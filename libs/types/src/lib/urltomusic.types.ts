@@ -17,8 +17,7 @@ export type UrlToMusicGetMusicProgressResponse =
 export type UrlToMusicGetSearchArgs =
     operations["getSearch"]["parameters"]["path"];
 
-export type UrlToMusicGetInfoArgs =
-    operations["getInfo"]["parameters"]["path"];
+export type UrlToMusicGetInfoArgs = operations["getInfo"]["parameters"]["path"];
 
 export type UrlToMusicGetMusicArgs =
     operations["getMusic"]["parameters"]["path"] &
