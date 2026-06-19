@@ -31,7 +31,7 @@ export class OidcStrategy extends PassportStrategy(
 
     constructor(
         private readonly usersService: UsersService,
-        client: Client,
+        private readonly client: Client,
         private readonly config: OidcConfig
     ) {
         super({
@@ -45,9 +45,24 @@ export class OidcStrategy extends PassportStrategy(
         const claims = tokenset.claims();
         const usernameClaim =
             this.config.usernameClaim ?? DEFAULT_USERNAME_CLAIM;
-        const username = claims[usernameClaim] as string | undefined;
+        let username = claims[usernameClaim] as string | undefined;
+        // Some providers (depending on their scope/claim configuration) do not
+        // include the profile claims in the ID token. Fall back to the userinfo
+        // endpoint before giving up.
         if (!username) {
-            this.logger.error(`OIDC token is missing claim "${usernameClaim}"`);
+            username = await this.getUsernameFromUserinfo(
+                tokenset,
+                usernameClaim
+            );
+        }
+        if (!username) {
+            this.logger.error(
+                `OIDC token is missing claim "${usernameClaim}". ` +
+                    `Claims available in the ID token: ${
+                        Object.keys(claims).join(", ") || "(none)"
+                    }. ` +
+                    `Check the provider's scope/claim mapping or set "usernameClaim" in auth.json.`
+            );
             throw new UnauthorizedException();
         }
         // Allowlist: only users present in auth.json may sign in via SSO.
@@ -61,6 +76,29 @@ export class OidcStrategy extends PassportStrategy(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { hash, ...userWithoutHash } = user;
         return userWithoutHash;
+    }
+
+    // Looks up the username from the OIDC userinfo endpoint, used when the
+    // claim is not present in the ID token. Returns undefined on any failure so
+    // the caller can surface a single UnauthorizedException.
+    private async getUsernameFromUserinfo(
+        tokenset: TokenSet,
+        usernameClaim: string
+    ): Promise<string | undefined> {
+        if (!tokenset.access_token) {
+            return undefined;
+        }
+        try {
+            const userinfo = await this.client.userinfo(tokenset);
+            return userinfo[usernameClaim] as string | undefined;
+        } catch (err) {
+            this.logger.error(
+                `OIDC userinfo lookup failed: ${
+                    err instanceof Error ? err.message : String(err)
+                }`
+            );
+            return undefined;
+        }
     }
 }
 

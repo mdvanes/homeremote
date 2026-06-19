@@ -24,6 +24,7 @@ const UrlToMusic: FC = () => {
                 fullWidth
                 maxWidth="md"
                 scroll="paper"
+                disableScrollLock
             >
                 <DialogTitle
                     sx={{

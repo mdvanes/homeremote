@@ -44,6 +44,7 @@ const RadioChannelMenu: FC = () => {
                 onClose={() => setAnchorEl(null)}
                 anchorOrigin={{ vertical: "top", horizontal: "left" }}
                 transformOrigin={{ vertical: "bottom", horizontal: "left" }}
+                disableScrollLock
             >
                 {CHANNELS.map((c) => (
                     <MenuItem
