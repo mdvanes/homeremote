@@ -37,7 +37,7 @@ export class OidcController {
         @Res() res: Response
     ): Promise<void> {
         this.logger.verbose(`oidc callback: ${JSON.stringify(req.user)}`);
-        const cookie = this.authService.getCookieWithJwtToken(req.user);
+        const cookie = this.authService.getCookieWithJwtToken(req.user, "oidc");
         res.cookie(...cookie);
         res.redirect("/");
     }

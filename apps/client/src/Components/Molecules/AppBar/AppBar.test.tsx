@@ -33,6 +33,7 @@ const mockRootState: MockRootState = {
         isLoading: false,
         isOffline: false,
         isSignedIn: false,
+        loginMethod: null,
         oidcEnabled: false,
     },
 };
@@ -60,6 +61,21 @@ describe("AppBar", () => {
     it("has the greeting", () => {
         const { getByText } = renderAppBar(mockRootState);
         expect(getByText("Hi, John!")).toBeInTheDocument();
+    });
+
+    it("shows an SSO badge when logged in via OIDC", () => {
+        const { getByText } = renderAppBar({
+            authentication: {
+                ...mockRootState.authentication,
+                loginMethod: "oidc",
+            },
+        });
+        expect(getByText("SSO")).toBeInTheDocument();
+    });
+
+    it("does not show an SSO badge for local login", () => {
+        const { queryByText } = renderAppBar(mockRootState);
+        expect(queryByText("SSO")).not.toBeInTheDocument();
     });
 
     // TODO fireEvent does not works since migration to Mui5

@@ -34,10 +34,11 @@ describe("AuthService", () => {
         expect(jwtService.sign).toHaveBeenCalledWith({
             sub: mockUser.id,
             username: mockUser.name,
+            loginMethod: "local",
         });
         expect(result).toEqual([
             "Authentication",
-            '{"sub":1,"username":"lee"}',
+            '{"sub":1,"username":"lee","loginMethod":"local"}',
             { httpOnly: true, maxAge: 2592000000, path: "/" },
         ]);
     });

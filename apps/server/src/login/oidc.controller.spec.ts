@@ -43,7 +43,8 @@ describe("OidcController", () => {
         await controller.callback({ user: mockUser } as LoginRequest, res);
 
         expect(authService.getCookieWithJwtToken).toHaveBeenCalledWith(
-            mockUser
+            mockUser,
+            "oidc"
         );
         expect(res.cookie).toHaveBeenCalledWith(...mockCookie);
         expect(res.redirect).toHaveBeenCalledWith("/");

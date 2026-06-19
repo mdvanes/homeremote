@@ -7,6 +7,7 @@ export interface AuthenticationState extends ApiBaseState {
     displayName: string;
     isOffline: boolean;
     isSignedIn: boolean;
+    loginMethod: "local" | "oidc" | null;
     oidcEnabled: boolean;
 }
 
@@ -16,6 +17,7 @@ export const initialState: AuthenticationState = {
     isLoading: false,
     isOffline: false,
     isSignedIn: false,
+    loginMethod: null,
     oidcEnabled: false,
     error: false,
 };
@@ -35,6 +37,7 @@ const authEndpoint: Record<FetchAuthType, string> = {
 interface FetchAuthReturned {
     id: number;
     displayName: string;
+    loginMethod?: "local" | "oidc";
 }
 
 interface FetchAuthArgs {
@@ -74,6 +77,7 @@ const authenticationSlice = createSlice({
             draft.displayName = payload.displayName;
             draft.isOffline = payload.displayName === "OFFLINE";
             draft.isSignedIn = payload.displayName !== "";
+            draft.loginMethod = payload.loginMethod ?? null;
         });
         builder.addCase(fetchAuth.rejected, (draft, { error }): void => {
             draft.isLoading = initialState.isLoading;
@@ -81,6 +85,7 @@ const authenticationSlice = createSlice({
             draft.displayName = initialState.displayName;
             draft.isOffline = initialState.isOffline;
             draft.isSignedIn = initialState.isSignedIn;
+            draft.loginMethod = initialState.loginMethod;
             draft.error = error.message || "An error occurred";
         });
         builder.addCase(
