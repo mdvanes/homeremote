@@ -2,7 +2,6 @@ import { Type } from "@nestjs/common";
 import { DownloadlistBravoController } from "./downloadlist-bravo.controller";
 import { DownloadlistController } from "./downloadlist.controller";
 
-// Arbitrary, neutral code names so the underlying products are never referenced.
 export type DownloadClientVariant = "alpha" | "bravo";
 
 const DEFAULT_VARIANT: DownloadClientVariant = "alpha";

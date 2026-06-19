@@ -17,11 +17,21 @@ Material Design:
 
 Requirements:
 
--   Nginx/Traefik reverse proxy with SSL
--   [Domoticz](https://www.domoticz.com/) server (optional)
--   [DataLora](https://github.com/mdvanes/datalora) (optional)
+-   Caddy reverse proxy with SSL
+-   Node backend (server) and React frontend (client), run via Docker Compose
 
--   WIP
+Optional systems that can be connected (configured in `apps/server/.env`):
+
+-   [Home Assistant](https://www.home-assistant.io/) (temperature, gas, water sensors, switches, device trackers)
+-   [Subsonic](http://www.subsonic.org/)-compatible server (jukebox / music streaming)
+-   [Portainer](https://www.portainer.io/) (Docker container management)
+-   [Monit](https://mmonit.com/monit/) (service monitoring)
+-   [Authentik](https://goauthentik.io/) or another OpenID Connect provider (SSO login)
+-   HomeSec (home security alarm)
+-   Download client
+-   Volvo car integration (Cartwin)
+-   [InfluxDB](https://www.influxdata.com/) (deprecated)
+-   [DataLora](https://github.com/mdvanes/datalora) (deprecated)
 
 ## Adding a user
 
