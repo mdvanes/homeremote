@@ -1,8 +1,8 @@
 import { HomesecStatusResponse } from "@homeremote/types";
 import { render, screen } from "@testing-library/react";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
 import { homesecApi } from "../../../Services/homesecApi";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { MockStoreProvider } from "../../../testHelpers";
 import HomeSec from "./HomeSec";
 

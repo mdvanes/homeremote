@@ -6,9 +6,9 @@ import {
 } from "@homeremote/types";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
 import { urlToMusicApi } from "../../../Services/generated/urlToMusicApi";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import {
     MockStoreProvider,
     MockStoreProviderApi,

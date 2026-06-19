@@ -75,10 +75,10 @@
             "outputs": ["{options.outputFile}"]
         },
         "test": {
-            "executor": "@nx/jest:jest",
-            "outputs": ["{workspaceRoot}/coverage/apps/client"],
+            "executor": "@nx/vitest:test",
+            "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "jestConfig": "apps/client/jest.config.ts"
+                "reportsDirectory": "../../coverage/apps/client"
             }
         }
     }

@@ -1,7 +1,8 @@
 import { fireEvent, waitFor } from "@testing-library/react";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
+import { type MockedFunction } from "vitest";
 import { redirectTo } from "../../../navigation";
 import { RootState } from "../../../Reducers";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { renderWithProviders } from "../../../testHelpers";
 import createThemeWithMode from "../../../theme";
 import authenticationReducer from "./authenticationSlice";
@@ -9,16 +10,19 @@ import LoginPage from "./LoginPage";
 
 enableFetchMocks();
 
-jest.mock("../../../navigation");
+vi.mock("../../../navigation");
 
-const mockedRedirectTo = redirectTo as jest.MockedFunction<typeof redirectTo>;
+const mockedRedirectTo = redirectTo as MockedFunction<typeof redirectTo>;
 
-jest.mock("../../../theme", () => {
-    const actual = jest.requireActual("../../../theme");
-    return { __esModule: true, default: jest.fn(actual.default) };
+vi.mock("../../../theme", async () => {
+    const actual =
+        await vi.importActual<typeof import("../../../theme")>(
+            "../../../theme"
+        );
+    return { __esModule: true, default: vi.fn(actual.default) };
 });
 
-const mockedCreateThemeWithMode = createThemeWithMode as jest.MockedFunction<
+const mockedCreateThemeWithMode = createThemeWithMode as MockedFunction<
     typeof createThemeWithMode
 >;
 
@@ -42,15 +46,15 @@ const baseAuthState: MockRootState["authentication"] = {
 };
 
 const setPrefersDarkMode = (matches: boolean): void => {
-    window.matchMedia = jest.fn().mockImplementation((query: string) => ({
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
         matches,
         media: query,
         onchange: null,
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
-        addEventListener: jest.fn(),
-        removeEventListener: jest.fn(),
-        dispatchEvent: jest.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
     }));
 };
 

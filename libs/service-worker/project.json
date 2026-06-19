@@ -41,10 +41,10 @@
             "outputs": ["{options.outputFile}"]
         },
         "test": {
-            "executor": "@nx/jest:jest",
-            "outputs": ["{workspaceRoot}/coverage/libs/service-worker"],
+            "executor": "@nx/vitest:test",
+            "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "jestConfig": "libs/service-worker/jest.config.ts"
+                "reportsDirectory": "../../coverage/libs/service-worker"
             }
         }
     }

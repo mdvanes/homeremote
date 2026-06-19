@@ -5,15 +5,15 @@ import * as Store from "../../../store";
 import LogCard from "./LogCard";
 import { Logline, Severity } from "./logSlice";
 
-jest.mock("react-redux", () => ({
-    ...jest.requireActual("react-redux"),
-    useDispatch: jest.fn(),
-    useSelector: jest.fn(),
+vi.mock("react-redux", async () => ({
+    ...(await vi.importActual<typeof import("react-redux")>("react-redux")),
+    useDispatch: vi.fn(),
+    useSelector: vi.fn(),
 }));
 
 const mockUseSelectorWith = ({ lines = [] }: { lines?: Logline[] }): void => {
-    jest.spyOn(ReactRedux, "useSelector").mockReset();
-    jest.spyOn(ReactRedux, "useSelector").mockImplementation((fn) => {
+    vi.spyOn(ReactRedux, "useSelector").mockReset();
+    vi.spyOn(ReactRedux, "useSelector").mockImplementation((fn) => {
         const mockRootState: Pick<RootState, "loglines"> = {
             loglines: {
                 lines,
@@ -25,10 +25,10 @@ const mockUseSelectorWith = ({ lines = [] }: { lines?: Logline[] }): void => {
 };
 
 describe("LogCard", () => {
-    const mockDispatch = jest.fn();
+    const mockDispatch = vi.fn();
 
     beforeEach(() => {
-        jest.spyOn(Store, "useAppDispatch").mockReturnValue(mockDispatch);
+        vi.spyOn(Store, "useAppDispatch").mockReturnValue(mockDispatch);
     });
 
     it("shows the application version", () => {

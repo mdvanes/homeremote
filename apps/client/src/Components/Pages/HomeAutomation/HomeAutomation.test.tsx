@@ -1,14 +1,12 @@
 import { render } from "@testing-library/react";
 import HomeAutomation from "./HomeAutomation";
 
-jest.mock(
-    "../../Molecules/ClimateSensorsCard/ClimateSensorsCard",
-    () => "mock-climatesensors-list"
-);
-jest.mock(
-    "../../Molecules/SwitchesCard/SwitchesCard",
-    () => "mock-switches-list"
-);
+vi.mock("../../Molecules/ClimateSensorsCard/ClimateSensorsCard", () => ({
+    default: "mock-climatesensors-list",
+}));
+vi.mock("../../Molecules/SwitchesCard/SwitchesCard", () => ({
+    default: "mock-switches-list",
+}));
 
 describe("HomeAutomation page", () => {
     it("contains the SwitchBarList", () => {

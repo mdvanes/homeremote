@@ -42,10 +42,10 @@
             "outputs": ["{options.outputFile}"]
         },
         "test": {
-            "executor": "@nx/jest:jest",
-            "outputs": ["{workspaceRoot}/coverage/apps/server"],
+            "executor": "@nx/vitest:test",
+            "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "jestConfig": "apps/server/jest.config.ts"
+                "reportsDirectory": "../../coverage/apps/server"
             }
         }
     }

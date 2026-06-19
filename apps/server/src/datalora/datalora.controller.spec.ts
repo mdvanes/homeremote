@@ -1,20 +1,27 @@
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
+import { http, HttpResponse } from "msw";
+import { setupServer } from "msw/node";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { DataloraController } from "./datalora.controller";
 
-enableFetchMocks();
+const server = setupServer();
 
-const mockCollectRows = jest.fn().mockResolvedValue([]);
+beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
-jest.mock("@influxdata/influxdb-client", () => {
+const mockCollectRows = vi.fn().mockResolvedValue([]);
+
+vi.mock("@influxdata/influxdb-client", () => {
     return {
-        InfluxDB: jest.fn().mockImplementation(() => ({
-            getQueryApi: jest.fn().mockReturnValue({
-                collectRows: mockCollectRows,
-            }),
-        })),
+        InfluxDB: vi.fn().mockImplementation(function () {
+            return {
+                getQueryApi: vi.fn().mockReturnValue({
+                    collectRows: mockCollectRows,
+                }),
+            };
+        }),
     };
 });
 
@@ -45,17 +52,24 @@ describe("Datalora Controller", () => {
     let configService: ConfigService;
 
     beforeEach(async () => {
+        // The controller reads its Home Assistant base URL in its constructor,
+        // so the config mock must already resolve it before `compile()`.
+        const configGet = vi.fn((envName: string) =>
+            envName === "HOMEASSISTANT_BASE_URL"
+                ? "http://homeassistant.test"
+                : undefined
+        );
         const module: TestingModule = await Test.createTestingModule({
             controllers: [DataloraController],
             providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
+                { provide: ConfigService, useValue: { get: configGet } },
             ],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<DataloraController>(DataloraController);
 
-        jest.spyOn(configService, "get").mockImplementation((envName) => {
+        vi.spyOn(configService, "get").mockImplementation((envName) => {
             if (envName === "INFLUX_URL") {
                 return "some.url";
             }
@@ -65,26 +79,31 @@ describe("Datalora Controller", () => {
             if (envName === "INFLUX_ORG") {
                 return "some.url";
             }
+            if (envName === "HOMEASSISTANT_BASE_URL") {
+                return "http://homeassistant.test";
+            }
         });
 
         mockCollectRows.mockReset();
     });
 
     it("returns coords for /GET with ?type=24h", async () => {
-        fetchMock.mockResponse(
-            JSON.stringify([
-                [
-                    {
-                        state: "[2,1]",
-                        last_changed: "123",
-                        attributes: {
-                            friendly_name: "name",
-                            latitude: 1,
-                            longitude: 2,
+        server.use(
+            http.all("*", () =>
+                HttpResponse.json([
+                    [
+                        {
+                            state: "[2,1]",
+                            last_changed: "123",
+                            attributes: {
+                                friendly_name: "name",
+                                latitude: 1,
+                                longitude: 2,
+                            },
                         },
-                    },
-                ],
-            ])
+                    ],
+                ])
+            )
         );
         // mockCollectRows.mockImplementation(collectRowsCreator(MOCK_ROWS));
 

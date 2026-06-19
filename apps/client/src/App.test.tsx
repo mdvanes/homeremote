@@ -1,11 +1,11 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { waitFor } from "@testing-library/react";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import App, { AppProps } from "./App";
 import appStatusReducer from "./Components/Molecules/AppStatusButton/appStatusSlice";
 import authenticationReducer from "./Components/Providers/Authentication/authenticationSlice";
 import { RootState } from "./Reducers";
 import { emptyApi } from "./Services/emptyApi";
+import fetchMock, { enableFetchMocks } from "./test/mswFetchMock";
 import { renderWithProviders } from "./testHelpers";
 
 enableFetchMocks();
@@ -55,21 +55,23 @@ const renderApp = (initialState: MockRootState) =>
         }),
     });
 
-jest.mock(
-    "./Components/Molecules/GlobalSnackbar/GlobalSnackbar",
-    () => "mock-global-snackbar"
-);
+vi.mock("./Components/Molecules/GlobalSnackbar/GlobalSnackbar", () => ({
+    default: "mock-global-snackbar",
+}));
 
-jest.mock(
-    "./Components/Pages/HomeAutomation/HomeAutomation",
-    () => "mock-home-automation"
-);
+vi.mock("./Components/Pages/HomeAutomation/HomeAutomation", () => ({
+    default: "mock-home-automation",
+}));
 
-jest.mock("./Components/Pages/DataLora/DataLora", () => "mock-data-lora");
+vi.mock("./Components/Pages/DataLora/DataLora", () => ({
+    default: "mock-data-lora",
+}));
 
-jest.mock("./Components/Pages/Dashboard/Dashboard", () => "mock-dashboard");
+vi.mock("./Components/Pages/Dashboard/Dashboard", () => ({
+    default: "mock-dashboard",
+}));
 
-jest.mock("./Components/Molecules/MusicBar/MusicBar", () => ({
+vi.mock("./Components/Molecules/MusicBar/MusicBar", () => ({
     __esModule: true,
     default: () => "mock-music-bar",
     MUSIC_BAR_HEIGHT: 180,

@@ -1,5 +1,6 @@
 import { UnauthorizedException } from "@nestjs/common";
 import { Client, Issuer, TokenSet } from "openid-client";
+import { type Mock } from "vitest";
 import { StoredUser, UsersService } from "../users/users.service";
 import { OidcConfig } from "./oidc.config";
 import { OidcStrategy, oidcStrategyProvider } from "./oidc.strategy";
@@ -32,11 +33,11 @@ const makeTokenset = (claims: Record<string, unknown>): TokenSet =>
     ({ claims: () => claims }) as unknown as TokenSet;
 
 describe("OidcStrategy", () => {
-    let usersService: { findOne: jest.Mock };
+    let usersService: { findOne: Mock };
     let strategy: OidcStrategy;
 
     beforeEach(() => {
-        usersService = { findOne: jest.fn() };
+        usersService = { findOne: vi.fn() };
         strategy = new OidcStrategy(
             usersService as unknown as UsersService,
             buildOfflineClient(),
@@ -79,7 +80,7 @@ describe("OidcStrategy", () => {
 
     it("falls back to the userinfo endpoint when the ID token lacks the claim", async () => {
         const client = buildOfflineClient();
-        jest.spyOn(client, "userinfo").mockResolvedValue({
+        vi.spyOn(client, "userinfo").mockResolvedValue({
             sub: "abc",
             preferred_username: "john",
         } as never);
@@ -112,7 +113,7 @@ describe("oidcStrategyProvider", () => {
     it("returns null when OIDC is not configured", async () => {
         // The test auth.json has no oidc block, so the factory disables OIDC.
         const result = await oidcStrategyProvider.useFactory({
-            findOne: jest.fn(),
+            findOne: vi.fn(),
         } as unknown as UsersService);
         expect(result).toBeNull();
     });

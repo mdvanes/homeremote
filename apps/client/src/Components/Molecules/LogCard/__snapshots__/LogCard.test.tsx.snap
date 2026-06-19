@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`LogCard shows error logline with icon 1`] = `
+exports[`LogCard > shows error logline with icon 1`] = `
 <p
   class="MuiTypography-root MuiTypography-body2 css-1xbdtaz-MuiTypography-root-message"
 >
@@ -20,7 +20,7 @@ exports[`LogCard shows error logline with icon 1`] = `
 </p>
 `;
 
-exports[`LogCard shows info logline with icon 1`] = `
+exports[`LogCard > shows info logline with icon 1`] = `
 <p
   class="MuiTypography-root MuiTypography-body2 css-1xbdtaz-MuiTypography-root-message"
 >

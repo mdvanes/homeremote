@@ -14,16 +14,16 @@ describe("AuthConfigController", () => {
     });
 
     afterEach(() => {
-        jest.restoreAllMocks();
+        vi.restoreAllMocks();
     });
 
     it("reports OIDC as enabled when configured", () => {
-        jest.spyOn(oidcConfig, "isOidcEnabled").mockReturnValue(true);
+        vi.spyOn(oidcConfig, "isOidcEnabled").mockReturnValue(true);
         expect(controller.getConfig()).toEqual({ oidc: { enabled: true } });
     });
 
     it("reports OIDC as disabled when not configured", () => {
-        jest.spyOn(oidcConfig, "isOidcEnabled").mockReturnValue(false);
+        vi.spyOn(oidcConfig, "isOidcEnabled").mockReturnValue(false);
         expect(controller.getConfig()).toEqual({ oidc: { enabled: false } });
     });
 });

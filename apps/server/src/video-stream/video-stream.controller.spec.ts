@@ -3,8 +3,8 @@ import { Test, TestingModule } from "@nestjs/testing";
 import got from "got";
 import { VideoStreamController } from "./video-stream.controller";
 
-jest.mock("got");
-const gotHeadSpy = jest.spyOn(got, "head");
+vi.mock("got");
+const gotHeadSpy = vi.spyOn(got, "head");
 
 describe("VideoStreamController Controller", () => {
     let controller: VideoStreamController;
@@ -13,15 +13,13 @@ describe("VideoStreamController Controller", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [VideoStreamController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: vi.fn() } }],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<VideoStreamController>(VideoStreamController);
 
-        jest.spyOn(configService, "get").mockImplementation((envName) => {
+        vi.spyOn(configService, "get").mockImplementation((envName) => {
             if (envName === "VIDEO_STREAM_HASH") {
                 return "abc";
             }
@@ -36,7 +34,7 @@ describe("VideoStreamController Controller", () => {
     });
 
     it("returns video stream hash on /GET", async () => {
-        const gotHeadSpy = jest.spyOn(got, "head");
+        const gotHeadSpy = vi.spyOn(got, "head");
         gotHeadSpy.mockResolvedValue({ statusCode: 200 });
 
         const response = await controller.getHash();

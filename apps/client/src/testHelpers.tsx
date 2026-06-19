@@ -6,10 +6,10 @@ import {
     configureStore,
 } from "@reduxjs/toolkit";
 import { RenderOptions, RenderResult, render } from "@testing-library/react";
-import { FetchMock } from "jest-fetch-mock";
 import { FC, ReactElement, ReactNode } from "react";
 import { Provider } from "react-redux";
 import { RootState } from "./Reducers";
+import { FetchMock } from "./test/mswFetchMock";
 
 interface RenderWithProvidersOptions extends RenderOptions {
     initialState: Partial<RootState>;
@@ -40,9 +40,21 @@ export const renderWithProviders: RenderWithProviders = (
     return render(ui, { wrapper: Wrapper, ...renderOptions });
 };
 
-// For jest-fetch-mock
+// For the MSW-backed fetch mock: the recorded first fetch argument is the
+// Request (or URL string) passed to `fetch`. RTK Query builds it from a
+// relative `baseUrl`, so prefer the original URL captured on `__rawUrl` (set by
+// the Request polyfill in setupTests) to reproduce the exact requested URL.
+const rawUrlOf = (call: unknown[]): string => {
+    const input = call[0];
+    if (typeof input === "string") {
+        return input;
+    }
+    const request = input as Request & { __rawUrl?: string };
+    return request.__rawUrl ?? request.url;
+};
+
 export const createGetCalledUrl = (fetchMock: FetchMock) => (callNr: number) =>
-    (fetchMock.mock.calls[callNr][0] as Request).url;
+    rawUrlOf(fetchMock.mock.calls[callNr]);
 export const createGetCalledMethod =
     (fetchMock: FetchMock) => (callNr: number) =>
         (fetchMock.mock.calls[callNr][0] as Request).method;

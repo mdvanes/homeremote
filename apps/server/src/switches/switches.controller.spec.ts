@@ -5,8 +5,8 @@ import * as Got from "got";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { DomoticzSwitch, SwitchesController } from "./switches.controller";
 
-jest.mock("got");
-const gotSpy = jest.spyOn(Got, "default");
+vi.mock("got");
+const gotSpy = vi.spyOn(Got, "default");
 
 const mockAuthenticatedRequest = {
     user: { name: "someuser", id: 1 },
@@ -19,15 +19,13 @@ describe("Switches Controller", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [SwitchesController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: vi.fn() } }],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<SwitchesController>(SwitchesController);
 
-        jest.spyOn(configService, "get").mockImplementation((envName) => {
+        vi.spyOn(configService, "get").mockImplementation((envName) => {
             if (envName === "DOMOTICZ_URI") {
                 return "some.url";
             }

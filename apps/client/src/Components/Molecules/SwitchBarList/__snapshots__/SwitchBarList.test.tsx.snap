@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SwitchBarList shows a blinds switch 1`] = `
+exports[`SwitchBarList > shows a blinds switch 1`] = `
 <div
   class="MuiCardContent-root css-w8j36o-MuiCardContent-root-buttonGroup"
   data-testid="switchbar-Blinds"
@@ -38,7 +38,7 @@ exports[`SwitchBarList shows a blinds switch 1`] = `
 </div>
 `;
 
-exports[`SwitchBarList shows a normal light switch 1`] = `
+exports[`SwitchBarList > shows a normal light switch 1`] = `
 <div
   class="MuiCardContent-root css-w8j36o-MuiCardContent-root-buttonGroup"
   data-testid="switchbar-My Normal Light Switch"
@@ -76,7 +76,7 @@ exports[`SwitchBarList shows a normal light switch 1`] = `
 </div>
 `;
 
-exports[`SwitchBarList shows a selector switch 1`] = `
+exports[`SwitchBarList > shows a selector switch 1`] = `
 <div
   class="MuiCardContent-root css-w8j36o-MuiCardContent-root-buttonGroup"
   data-testid="switchbar-My Selector Switch: armed"

@@ -20,10 +20,10 @@
             "outputs": ["{options.outputFile}"]
         },
         "test": {
-            "executor": "@nx/jest:jest",
-            "outputs": ["{workspaceRoot}/coverage/libs/types"],
+            "executor": "@nx/vitest:test",
+            "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "jestConfig": "libs/types/jest.config.ts"
+                "reportsDirectory": "../../coverage/libs/types"
             }
         }
     }

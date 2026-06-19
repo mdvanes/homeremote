@@ -1,8 +1,8 @@
 import { StyledEngineProvider, ThemeProvider } from "@mui/material";
 import { render, screen } from "@testing-library/react";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
 import { serviceLinksApi } from "../../../Services/serviceLinksApi";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { MockStoreProvider } from "../../../testHelpers";
 import createThemeWithMode from "../../../theme";
 import ServiceLinksBar from "./ServiceLinksBar";

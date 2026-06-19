@@ -2,13 +2,13 @@ import { fireEvent, render, waitFor } from "@testing-library/react";
 import * as ReactRedux from "react-redux";
 import GlobalSnackbar from "./GlobalSnackbar";
 
-jest.mock("react-redux", () => ({
-    ...jest.requireActual("react-redux"),
-    useDispatch: jest.fn(),
-    useSelector: jest.fn(),
+vi.mock("react-redux", async () => ({
+    ...(await vi.importActual<typeof import("react-redux")>("react-redux")),
+    useDispatch: vi.fn(),
+    useSelector: vi.fn(),
 }));
 
-const mockUseSelector = jest.spyOn(ReactRedux, "useSelector");
+const mockUseSelector = vi.spyOn(ReactRedux, "useSelector");
 
 describe("GlobalSnackbar", () => {
     it("adds a Snackbar to the page", () => {

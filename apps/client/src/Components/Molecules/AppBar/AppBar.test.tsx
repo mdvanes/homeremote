@@ -5,9 +5,11 @@ import { renderWithProviders } from "../../../testHelpers";
 import authenticationReducer from "../../Providers/Authentication/authenticationSlice";
 import AppBar from "./AppBar";
 
-jest.mock("../AppStatusButton/AppStatusButton", () => "mock-app-status-button");
+vi.mock("../AppStatusButton/AppStatusButton", () => ({
+    default: "mock-app-status-button",
+}));
 
-const mockToggleDrawer = jest.fn();
+const mockToggleDrawer = vi.fn();
 
 type MockRootState = Pick<RootState, "authentication">;
 

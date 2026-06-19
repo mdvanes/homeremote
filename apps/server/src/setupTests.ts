@@ -1,4 +1,7 @@
-jest.mock("./auth/constants", () => ({
+// NestJS dependency injection relies on decorator metadata emitted by swc.
+import "reflect-metadata";
+
+vi.mock("./auth/constants", () => ({
     __esModule: true,
     getAuthConfig: () => ({
         users: [

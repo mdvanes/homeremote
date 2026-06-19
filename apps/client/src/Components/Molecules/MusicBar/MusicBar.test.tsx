@@ -1,9 +1,9 @@
 import { PlaylistsResponse } from "@homeremote/types";
 import { render, screen } from "@testing-library/react";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
 import { emptyApi } from "../../../Services/emptyApi";
 import { jukeboxApi } from "../../../Services/jukeboxApi";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { MockStoreProvider } from "../../../testHelpers";
 import HotKeyProvider from "../../Providers/HotKey/HotKeyProvider";
 import MusicBar from "./MusicBar";

@@ -13,7 +13,7 @@ describe("Profile Controller", () => {
             providers: [
                 {
                     provide: UsersService,
-                    useValue: { findOne: jest.fn() },
+                    useValue: { findOne: vi.fn() },
                 },
             ],
         }).compile();
@@ -30,7 +30,7 @@ describe("Profile Controller", () => {
             hash: "secret!",
         };
 
-        jest.spyOn(usersService, "findOne").mockResolvedValue(mockUser);
+        vi.spyOn(usersService, "findOne").mockResolvedValue(mockUser);
 
         const result = await controller.getProfile({
             user: {
@@ -48,9 +48,9 @@ describe("Profile Controller", () => {
     });
 
     it("throws error when no current user found on getProfile", async () => {
-        jest.spyOn(usersService, "findOne").mockResolvedValue(undefined);
+        vi.spyOn(usersService, "findOne").mockResolvedValue(undefined);
 
-        const result = await expect(
+        await expect(
             controller.getProfile({
                 user: {
                     id: 2,
@@ -58,6 +58,5 @@ describe("Profile Controller", () => {
                 },
             } as AuthenticatedRequest)
         ).rejects.toThrow();
-        expect(result).toBeUndefined();
     });
 });

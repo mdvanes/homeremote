@@ -15,7 +15,7 @@ describe("OidcController", () => {
             providers: [
                 {
                     provide: AuthService,
-                    useValue: { getCookieWithJwtToken: jest.fn() },
+                    useValue: { getCookieWithJwtToken: vi.fn() },
                 },
             ],
         }).compile();
@@ -31,13 +31,13 @@ describe("OidcController", () => {
             "some_token",
             {},
         ];
-        jest.spyOn(authService, "getCookieWithJwtToken").mockReturnValue(
+        vi.spyOn(authService, "getCookieWithJwtToken").mockReturnValue(
             mockCookie
         );
 
         const res = {
-            cookie: jest.fn(),
-            redirect: jest.fn(),
+            cookie: vi.fn(),
+            redirect: vi.fn(),
         } as unknown as Response;
 
         await controller.callback({ user: mockUser } as LoginRequest, res);

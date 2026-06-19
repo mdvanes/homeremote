@@ -1,7 +1,6 @@
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import got, { CancelableRequest, Response } from "got";
-import { mocked } from "jest-mock";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import {
     MonitController,
@@ -9,8 +8,8 @@ import {
     scaleMonitSizeToBytes,
 } from "./monit.controller";
 
-jest.mock("got");
-const mockGot = mocked(got);
+vi.mock("got");
+const mockGot = vi.mocked(got);
 
 const mockAuthenticatedRequest = {
     user: { name: "someuser", id: 1 },
@@ -558,15 +557,13 @@ describe("MonitController", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [MonitController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: vi.fn() } }],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<MonitController>(MonitController);
 
-        jest.spyOn(configService, "get").mockReturnValue("a,b,c;d,e,f");
+        vi.spyOn(configService, "get").mockReturnValue("a,b,c;d,e,f");
     });
 
     it("returns localhostnames with servicenames", async () => {

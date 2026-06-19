@@ -13,7 +13,7 @@ describe("AuthService", () => {
             providers: [
                 AuthService,
                 { provide: UsersService, useValue: {} },
-                { provide: JwtService, useValue: { sign: jest.fn() } },
+                { provide: JwtService, useValue: { sign: vi.fn() } },
             ],
         }).compile();
 
@@ -22,7 +22,7 @@ describe("AuthService", () => {
     });
 
     it("gets a token for a user on login", async () => {
-        jest.spyOn(jwtService, "sign").mockImplementation((x) =>
+        vi.spyOn(jwtService, "sign").mockImplementation((x) =>
             JSON.stringify(x)
         );
         const mockUser: LoginRequest["user"] = {

@@ -7,7 +7,7 @@ import switchBarListReducer, {
 
 describe("switchBarListSlice", () => {
     describe("sendSwitchState", () => {
-        const fetchSpy = jest.spyOn(window, "fetch");
+        const fetchSpy = vi.spyOn(window, "fetch");
 
         beforeEach(() => {
             const mockResponse: Partial<Response> = {
@@ -90,8 +90,8 @@ describe("switchBarListSlice", () => {
                 state: "on",
                 type: "switch",
             });
-            const mockDispatch = jest.fn();
-            const mockGetState = jest.fn();
+            const mockDispatch = vi.fn();
+            const mockGetState = vi.fn();
             await sendSwitchStateThunk(mockDispatch, mockGetState, {});
             expect(mockDispatch).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -125,8 +125,8 @@ describe("switchBarListSlice", () => {
                 state: "on",
                 type: "switch",
             });
-            const mockDispatch = jest.fn();
-            const mockGetState = jest.fn();
+            const mockDispatch = vi.fn();
+            const mockGetState = vi.fn();
             await sendSwitchStateThunk(mockDispatch, mockGetState, {});
             expect(mockDispatch).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -157,7 +157,7 @@ describe("switchBarListSlice", () => {
     });
 
     describe("getSwitches", () => {
-        const fetchSpy = jest.spyOn(window, "fetch");
+        const fetchSpy = vi.spyOn(window, "fetch");
 
         it("updates fields on fulfilled", () => {
             const state = {
@@ -234,8 +234,8 @@ describe("switchBarListSlice", () => {
             };
             fetchSpy.mockResolvedValueOnce(mockResponse as Response);
             const getSwitchesThunk = GetSwitchesThunk.getSwitches();
-            const mockDispatch = jest.fn();
-            const mockGetState = jest.fn();
+            const mockDispatch = vi.fn();
+            const mockGetState = vi.fn();
             await getSwitchesThunk(mockDispatch, mockGetState, {});
             expect(mockDispatch).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -257,8 +257,8 @@ describe("switchBarListSlice", () => {
             };
             fetchSpy.mockResolvedValueOnce(mockResponse as Response);
             const getSwitchesThunk = GetSwitchesThunk.getSwitches();
-            const mockDispatch = jest.fn();
-            const mockGetState = jest.fn();
+            const mockDispatch = vi.fn();
+            const mockGetState = vi.fn();
             await getSwitchesThunk(mockDispatch, mockGetState, {});
             expect(mockDispatch).toHaveBeenCalledWith(
                 expect.objectContaining({

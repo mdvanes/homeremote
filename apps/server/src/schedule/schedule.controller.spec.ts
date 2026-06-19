@@ -2,12 +2,11 @@ import { GetScheduleResponse, ScheduleItem } from "@homeremote/types";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import got, { CancelableRequest, Response } from "got";
-import { mocked } from "jest-mock";
 import { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { ScheduleController } from "./schedule.controller";
 
-jest.mock("got");
-const mockGot = mocked(got);
+vi.mock("got");
+const mockGot = vi.mocked(got);
 
 const mockAuthenticatedRequest = {
     user: { name: "someuser", id: 1 },
@@ -49,7 +48,7 @@ describe("ScheduleController", () => {
     let controller: ScheduleController;
 
     beforeEach(async () => {
-        const mockGet = jest.fn().mockReturnValue("http://someurl/api/key");
+        const mockGet = vi.fn().mockReturnValue("http://someurl/api/key");
 
         const module: TestingModule = await Test.createTestingModule({
             controllers: [ScheduleController],

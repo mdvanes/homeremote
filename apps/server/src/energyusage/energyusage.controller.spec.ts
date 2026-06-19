@@ -2,12 +2,11 @@ import { EnergyUsageGetWaterResponse } from "@homeremote/types";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import got, { CancelableRequest } from "got";
-import { mocked } from "jest-mock";
 import { mockAuthenticatedRequest } from "../util/test-helpers/mockAuthenticatedRequest";
 import { EnergyUsageController } from "./energyusage.controller";
 
-jest.mock("got");
-const mockGot = mocked(got);
+vi.mock("got");
+const mockGot = vi.mocked(got);
 
 describe("EnergyUsage Controller", () => {
     let controller: EnergyUsageController;
@@ -16,15 +15,13 @@ describe("EnergyUsage Controller", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [EnergyUsageController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: vi.fn() } }],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<EnergyUsageController>(EnergyUsageController);
 
-        jest.spyOn(configService, "get").mockImplementation(() => "");
+        vi.spyOn(configService, "get").mockImplementation(() => "");
     });
 
     afterAll(() => {
@@ -32,7 +29,7 @@ describe("EnergyUsage Controller", () => {
     });
 
     it("returns stacks on /GET", async () => {
-        jest.useFakeTimers().setSystemTime(new Date("2024-04-25"));
+        vi.useFakeTimers().setSystemTime(new Date("2024-04-25"));
 
         const mockWaterResponse: EnergyUsageGetWaterResponse = [
             [

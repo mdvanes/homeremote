@@ -14,7 +14,7 @@ describe("OidcExceptionFilter", () => {
         }) as unknown as ArgumentsHost;
 
     it("redirects to the login page with an error flag", () => {
-        const redirect = jest.fn();
+        const redirect = vi.fn();
         const filter = new OidcExceptionFilter();
 
         filter.catch(new UnauthorizedException(), buildHost({ redirect }));
@@ -23,7 +23,7 @@ describe("OidcExceptionFilter", () => {
     });
 
     it("redirects for any error type", () => {
-        const redirect = jest.fn();
+        const redirect = vi.fn();
         const filter = new OidcExceptionFilter();
 
         filter.catch(
