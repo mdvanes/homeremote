@@ -1,12 +1,11 @@
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import got, { CancelableRequest } from "got";
-import { mocked } from "jest-mock";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { HomesecController } from "./homesec.controller";
 
-jest.mock("got");
-const mockGot = mocked(got);
+vi.mock("got");
+const mockGot = vi.mocked(got);
 
 const mockAuthenticatedRequest = {
     user: { name: "someuser", id: 1 },
@@ -20,7 +19,7 @@ const setupModule = async (onEnvGet) => {
             {
                 provide: ConfigService,
                 useValue: {
-                    get: jest.fn().mockImplementation(onEnvGet),
+                    get: vi.fn().mockImplementation(onEnvGet),
                 },
             },
         ],

@@ -2,10 +2,12 @@ import { Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import { CookieOptions } from "express";
-import { LoginRequest } from "../login/LoginRequest.types";
+import type { LoginRequest } from "../login/LoginRequest.types";
 import { User, UsersService } from "../users/users.service";
 
-export const EXPIRES_IN_S = 30 * 24 * 60 * 60; // days * hours * minutes * seconds;
+export type LoginMethod = "local" | "oidc";
+
+export const EXPIRES_IN_S = 30 * 24 * 60 * 60; // days * hours * minutes * seconds
 
 const AUTHENTICATION_COOKIE_NAME = "Authentication";
 
@@ -48,15 +50,11 @@ export class AuthService {
         return null;
     }
 
-    public getCookieWithJwtToken({
-        id,
-        name,
-    }: LoginRequest["user"]): [
-        typeof AUTHENTICATION_COOKIE_NAME,
-        string,
-        CookieOptions,
-    ] {
-        const payload = { sub: id, username: name };
+    public getCookieWithJwtToken(
+        { id, name }: LoginRequest["user"],
+        loginMethod: LoginMethod = "local"
+    ): [typeof AUTHENTICATION_COOKIE_NAME, string, CookieOptions] {
+        const payload = { sub: id, username: name, loginMethod };
         const token = this.jwtService.sign(payload);
         return [
             AUTHENTICATION_COOKIE_NAME,

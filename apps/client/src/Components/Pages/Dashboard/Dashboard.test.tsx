@@ -1,45 +1,53 @@
 import { render } from "@testing-library/react";
 import Dashboard from "./Dashboard";
 
-jest.mock(
-    "../../Molecules/SwitchBarList/SwitchBarList",
-    () => "mock-switch-bar-list"
-);
-jest.mock("../../Molecules/LogCard/LogCard", () => "mock-log-card");
-jest.mock("../../Molecules/UrlToMusic/UrlToMusic", () => "mock-url-to-music");
-jest.mock(
-    "../../Molecules/DownloadList/DownloadList",
-    () => "mock-download-list"
-);
-jest.mock("../../Pages/Docker/Docker", () => "mock-docker");
-jest.mock("../../Molecules/DataLora/DataLora", () => "mock-datalora");
-jest.mock("../../Molecules/VideoStream/VideoStream", () => "mock-video-stream");
-jest.mock(
-    "../../Molecules/ServiceLinksBar/ServiceLinksBar",
-    () => "mock-service-links-bar"
-);
-jest.mock("../../Molecules/Monit/Monit", () => "mock-monit");
-jest.mock("../../Molecules/Schedule/Schedule", () => "mock-schedule");
-jest.mock("../../Molecules/Nextup/Nextup", () => "mock-nextup");
-jest.mock("../../Molecules/GasChart/GasChart", () => "mock-gaschart");
-jest.mock("../../Molecules/CarTwin/CarTwinCard", () => "mock-cartwin-card");
-jest.mock("../../Molecules/HomeSec/HomeSec", () => "mock-homesec");
-jest.mock(
-    "../../Molecules/DockerStackList/DockerStackListCard",
-    () => "mock-dockerstacklist-card"
-);
-jest.mock(
-    "../../Molecules/SwitchesCard/SwitchesCard",
-    () => "mock-switches-card"
-);
-jest.mock(
-    "../../Molecules/ClimateSensorsCard/ClimateSensorsCard",
-    () => "mock-climatesensor-card"
-);
-jest.mock(
-    "../../Molecules/SpeedTestCard/SpeedTestCard",
-    () => "mock-speedtest-card"
-);
+vi.mock("../../Molecules/SwitchBarList/SwitchBarList", () => ({
+    default: "mock-switch-bar-list",
+}));
+vi.mock("../../Molecules/LogCard/LogCard", () => ({
+    default: "mock-log-card",
+}));
+vi.mock("../../Molecules/UrlToMusic/UrlToMusic", () => ({
+    default: "mock-url-to-music",
+}));
+vi.mock("../../Molecules/DownloadList/DownloadList", () => ({
+    default: "mock-download-list",
+}));
+vi.mock("../../Pages/Docker/Docker", () => ({ default: "mock-docker" }));
+vi.mock("../../Molecules/DataLora/DataLora", () => ({
+    default: "mock-datalora",
+}));
+vi.mock("../../Molecules/VideoStream/VideoStream", () => ({
+    default: "mock-video-stream",
+}));
+vi.mock("../../Molecules/ServiceLinksBar/ServiceLinksBar", () => ({
+    default: "mock-service-links-bar",
+}));
+vi.mock("../../Molecules/Monit/Monit", () => ({ default: "mock-monit" }));
+vi.mock("../../Molecules/Schedule/Schedule", () => ({
+    default: "mock-schedule",
+}));
+vi.mock("../../Molecules/Nextup/Nextup", () => ({ default: "mock-nextup" }));
+vi.mock("../../Molecules/GasChart/GasChart", () => ({
+    default: "mock-gaschart",
+}));
+vi.mock("../../Molecules/CarTwin/CarTwinCard", () => ({
+    default: "mock-cartwin-card",
+    CarTwinCard: "mock-cartwin-card",
+}));
+vi.mock("../../Molecules/HomeSec/HomeSec", () => ({ default: "mock-homesec" }));
+vi.mock("../../Molecules/DockerStackList/DockerStackListCard", () => ({
+    default: "mock-dockerstacklist-card",
+}));
+vi.mock("../../Molecules/SwitchesCard/SwitchesCard", () => ({
+    default: "mock-switches-card",
+}));
+vi.mock("../../Molecules/ClimateSensorsCard/ClimateSensorsCard", () => ({
+    default: "mock-climatesensor-card",
+}));
+vi.mock("../../Molecules/SpeedTestCard/SpeedTestCard", () => ({
+    default: "mock-speedtest-card",
+}));
 
 describe("Dashboard page", () => {
     it("contains all the control components", () => {

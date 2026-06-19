@@ -1,5 +1,6 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import {
+    Chip,
     IconButton,
     AppBar as MuiAppBar,
     Toolbar,
@@ -18,12 +19,15 @@ interface Props {
 
 const AppBar: FC<Props> = ({ toggleDrawer }) => {
     const { classes } = useStyles();
-    const greeting = useSelector<RootState, AuthenticationState["displayName"]>(
-        (state: RootState) =>
-            state.authentication.displayName
-                ? `Hi, ${state.authentication.displayName}!`
-                : ""
-    );
+    const { greeting, loginMethod } = useSelector<
+        RootState,
+        { greeting: string; loginMethod: AuthenticationState["loginMethod"] }
+    >((state: RootState) => ({
+        greeting: state.authentication.displayName
+            ? `Hi, ${state.authentication.displayName}!`
+            : "",
+        loginMethod: state.authentication.loginMethod,
+    }));
     return (
         <div className={classes.root}>
             <MuiAppBar position="static">
@@ -52,8 +56,24 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                     >
                         HomeRemote
                     </Typography>
-                    <Typography variant="body2" className={classes.currentUser}>
+                    <Typography
+                        variant="body2"
+                        className={classes.currentUser}
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
                         {greeting}
+                        {loginMethod === "oidc" && (
+                            <Chip
+                                label="SSO"
+                                size="small"
+                                color="secondary"
+                                variant="outlined"
+                                sx={{
+                                    color: "inherit",
+                                    borderColor: "currentcolor",
+                                }}
+                            />
+                        )}
                     </Typography>
                     <AppStatusButton />
                 </Toolbar>

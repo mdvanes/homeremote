@@ -18,7 +18,7 @@ import {
 import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { isDefined } from "../util/isDefined";
 
 @Controller("api/nextup")

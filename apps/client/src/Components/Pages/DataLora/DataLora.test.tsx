@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import DataLora from "./DataLora";
 
-jest.mock("../../Molecules/DataLora/Map", () => "mock-map");
+vi.mock("../../Molecules/DataLora/Map", () => ({ default: "mock-map" }));
 
 describe("DataLora page", () => {
     it("contains the Map component", () => {

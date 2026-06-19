@@ -20,7 +20,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 
 @Controller("api/smart-entities")
 export class SmartEntitiesController {

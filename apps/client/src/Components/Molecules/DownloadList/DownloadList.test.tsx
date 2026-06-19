@@ -5,8 +5,8 @@ import {
     waitForElementToBeRemoved,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { downloadListApi } from "../../../Services/downloadListApi";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { MockStoreProvider, createGetCalledUrl } from "../../../testHelpers";
 import DownloadList from "./DownloadList";
 
@@ -57,7 +57,7 @@ describe("DownloadList", () => {
     beforeEach(() => {
         // const mockResponse = createMockResponse(mockDownload);
         // fetchSpy.mockResolvedValue(mockResponse as Response);
-        jest.useFakeTimers();
+        vi.useFakeTimers();
         fetchMock.resetMocks();
         fetchMock.mockResponse(
             JSON.stringify({

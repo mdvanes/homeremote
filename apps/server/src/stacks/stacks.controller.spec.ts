@@ -2,12 +2,11 @@ import { PortainerStack, PortainerStacksResponse } from "@homeremote/types";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import got, { CancelableRequest } from "got";
-import { mocked } from "jest-mock";
 import { mockAuthenticatedRequest } from "../util/test-helpers/mockAuthenticatedRequest";
 import { StacksController } from "./stacks.controller";
 
-jest.mock("got");
-const mockGot = mocked(got);
+vi.mock("got");
+const mockGot = vi.mocked(got);
 
 describe("Stacks Controller", () => {
     let controller: StacksController;
@@ -16,15 +15,13 @@ describe("Stacks Controller", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [StacksController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: vi.fn() } }],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<StacksController>(StacksController);
 
-        jest.spyOn(configService, "get").mockImplementation(() => "");
+        vi.spyOn(configService, "get").mockImplementation(() => "");
     });
 
     afterAll(() => {

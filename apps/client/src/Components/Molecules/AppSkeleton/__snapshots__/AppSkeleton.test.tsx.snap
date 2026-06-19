@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AppSkeleton shows a preview of the application 1`] = `
+exports[`AppSkeleton > shows a preview of the application 1`] = `
 <DocumentFragment>
   <header
     class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionStatic css-1e3ahk6-MuiPaper-root-MuiAppBar-root"

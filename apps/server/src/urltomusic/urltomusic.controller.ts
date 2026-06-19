@@ -30,12 +30,9 @@ import youtubeDlExec, {
     type Flags as YtFlags,
     type Payload as YtPayload,
 } from "youtube-dl-exec";
+import youtubeDlConstants from "youtube-dl-exec/src/constants.js";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
-
-// This is an untyped but exported object from youtube-dl-exec
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const youtubeDlConstants = require("youtube-dl-exec/src/constants");
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 
 const NR_OF_SEARCH_RESULTS = 10;
 

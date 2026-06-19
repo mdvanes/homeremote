@@ -5,8 +5,8 @@ import * as LogSlice from "../LogCard/logSlice";
 import AppStatusButton from "./AppStatusButton";
 import appStatusReducer, { initialState } from "./appStatusSlice";
 
-const fetchSpy = jest.spyOn(window, "fetch");
-let logErrorSpy = jest.spyOn(LogSlice, "logError");
+const fetchSpy = vi.spyOn(window, "fetch");
+let logErrorSpy = vi.spyOn(LogSlice, "logError");
 
 type MockRootState = Pick<RootState, "appStatus">;
 
@@ -26,7 +26,7 @@ describe("AppStatusButton", () => {
                 }),
         };
         fetchSpy.mockResolvedValueOnce(mockResponse as Response);
-        logErrorSpy = jest.spyOn(LogSlice, "logError");
+        logErrorSpy = vi.spyOn(LogSlice, "logError");
     });
 
     afterEach(() => {

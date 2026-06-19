@@ -1,9 +1,13 @@
 name: Validate and Build
 
-on: [push]
+on:
+  push:
+    branches:
+      - '**'
 
 jobs:
   build:
+    if: "!startsWith(github.event.head_commit.message, 'chore: bump version')"
 
     runs-on: ubuntu-latest
 

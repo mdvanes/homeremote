@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { CookieOptions, Response } from "express";
 import { AuthService } from "../auth/auth.service";
 import { User } from "../users/users.service";
-import { LoginRequest } from "./LoginRequest.types";
+import type { LoginRequest } from "./LoginRequest.types";
 import { OidcController } from "./oidc.controller";
 
 describe("OidcController", () => {
@@ -15,7 +15,7 @@ describe("OidcController", () => {
             providers: [
                 {
                     provide: AuthService,
-                    useValue: { getCookieWithJwtToken: jest.fn() },
+                    useValue: { getCookieWithJwtToken: vi.fn() },
                 },
             ],
         }).compile();
@@ -31,19 +31,20 @@ describe("OidcController", () => {
             "some_token",
             {},
         ];
-        jest.spyOn(authService, "getCookieWithJwtToken").mockReturnValue(
+        vi.spyOn(authService, "getCookieWithJwtToken").mockReturnValue(
             mockCookie
         );
 
         const res = {
-            cookie: jest.fn(),
-            redirect: jest.fn(),
+            cookie: vi.fn(),
+            redirect: vi.fn(),
         } as unknown as Response;
 
         await controller.callback({ user: mockUser } as LoginRequest, res);
 
         expect(authService.getCookieWithJwtToken).toHaveBeenCalledWith(
-            mockUser
+            mockUser,
+            "oidc"
         );
         expect(res.cookie).toHaveBeenCalledWith(...mockCookie);
         expect(res.redirect).toHaveBeenCalledWith("/");

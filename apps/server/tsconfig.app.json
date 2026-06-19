@@ -2,7 +2,8 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "outDir": "../../dist/out-tsc",
-        "module": "commonjs",
+        "module": "esnext",
+        "moduleResolution": "bundler",
         "types": [
             "node",
             "@nx/react/typings/cssmodule.d.ts",
@@ -15,7 +16,7 @@
         "**/setupTests.ts",
         "**/*.spec.ts",
         "**/*.test.ts",
-        "jest.config.ts"
+        "vite.config.ts"
     ],
     "include": ["**/*.ts"]
 }

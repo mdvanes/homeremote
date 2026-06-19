@@ -1,36 +1,36 @@
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
-import fs from "fs";
+import { chmodSync, chownSync } from "fs";
 import * as got from "got";
 import { CancelableRequest } from "got";
 import nodeID3 from "node-id3";
 import * as youtubedl from "youtube-dl-exec";
 import { UrltomusicController } from "./urltomusic.controller";
 
-jest.mock("got", () => {
+vi.mock("got", () => {
     return {
         __esModule: true,
-        default: jest.fn(),
+        default: vi.fn(),
     };
 });
 
-jest.mock("youtube-dl-exec", () => {
+vi.mock("youtube-dl-exec", () => {
     return {
         __esModule: true,
-        default: jest.fn(),
+        default: vi.fn(),
     };
 });
 
-jest.mock("fs", () => {
+vi.mock("fs", () => {
     return {
-        chmodSync: jest.fn(),
-        chownSync: jest.fn(),
+        chmodSync: vi.fn(),
+        chownSync: vi.fn(),
     };
 });
 
-const youtubeDlExecSpy = jest.spyOn(youtubedl, "default");
+const youtubeDlExecSpy = vi.spyOn(youtubedl, "default");
 
-const id3WriteSpy = jest
+const id3WriteSpy = vi
     .spyOn(nodeID3, "write")
     .mockImplementation((path) => `mock file ${path}`);
 
@@ -41,15 +41,13 @@ describe("Urltomusic Controller", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [UrltomusicController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: vi.fn() } }],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<UrltomusicController>(UrltomusicController);
 
-        jest.spyOn(configService, "get").mockImplementation((name) => {
+        vi.spyOn(configService, "get").mockImplementation((name) => {
             if (name === "URL_TO_MUSIC_ROOTPATH") {
                 return "/some_path";
             }
@@ -58,7 +56,7 @@ describe("Urltomusic Controller", () => {
             }
         });
 
-        jest.spyOn(got, "default").mockReturnValue({
+        vi.spyOn(got, "default").mockReturnValue({
             json: () =>
                 Promise.resolve([
                     {
@@ -173,13 +171,13 @@ describe("Urltomusic Controller", () => {
                 },
                 "/some_path/some_artist - some_title.mp3"
             );
-            expect(fs.chmodSync).toHaveBeenCalledTimes(1);
-            expect(fs.chmodSync).toHaveBeenCalledWith(
+            expect(chmodSync).toHaveBeenCalledTimes(1);
+            expect(chmodSync).toHaveBeenCalledWith(
                 "/some_path/some_artist - some_title.mp3",
                 "664"
             );
-            expect(fs.chownSync).toHaveBeenCalledTimes(1);
-            expect(fs.chownSync).toHaveBeenCalledWith(
+            expect(chownSync).toHaveBeenCalledTimes(1);
+            expect(chownSync).toHaveBeenCalledWith(
                 "/some_path/some_artist - some_title.mp3",
                 1000,
                 1000
@@ -221,7 +219,7 @@ describe("Urltomusic Controller", () => {
                 url: "some_url",
             });
 
-            jest.spyOn(configService, "get").mockReturnValue(undefined);
+            vi.spyOn(configService, "get").mockReturnValue(undefined);
             const result = await controller.getMusic(
                 "some_url",
                 "some_artist",

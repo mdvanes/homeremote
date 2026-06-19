@@ -1,4 +1,4 @@
-import { AuthenticatedRequest } from "../../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../../login/LoginRequest.types";
 
 export const mockAuthenticatedRequest = {
     user: { name: "someuser", id: 1 },

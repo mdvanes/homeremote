@@ -6,14 +6,13 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import got from "got";
-import { mocked } from "jest-mock";
 import { NowplayingController } from "./nowplaying.controller";
 
-jest.mock("@mdworld/homeremote-stream-player-server");
-const mockGetNowPlaying = mocked(getNowPlaying, { shallow: true }); // not to have: getNowPlaying as unknown as jest.Mock<something>;
+vi.mock("@mdworld/homeremote-stream-player-server");
+const mockGetNowPlaying = vi.mocked(getNowPlaying); // not to have: getNowPlaying as unknown as vi.Mock<something>;
 
-jest.mock("got");
-const mockGot = mocked(got);
+vi.mock("got");
+const mockGot = vi.mocked(got);
 
 describe("Nowplaying Controller", () => {
     let controller: NowplayingController;
@@ -22,15 +21,13 @@ describe("Nowplaying Controller", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [NowplayingController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: vi.fn() } }],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<NowplayingController>(NowplayingController);
 
-        jest.spyOn(configService, "get").mockImplementation((envName) => {
+        vi.spyOn(configService, "get").mockImplementation((envName) => {
             if (envName === "STEREO8_TOKEN") {
                 return undefined;
             }
@@ -68,7 +65,7 @@ describe("Nowplaying Controller", () => {
     // });
 
     // it("throws Stereo 8 Radio 2 info on /GET when invalid token send", async () => {
-    //     jest.spyOn(configService, "get").mockImplementation((envName) => {
+    //     vi.spyOn(configService, "get").mockImplementation((envName) => {
     //         if (envName === "STEREO8_TOKEN") {
     //             return "abc";
     //         }
@@ -79,7 +76,7 @@ describe("Nowplaying Controller", () => {
     // });
 
     // it("returns Stereo 8 Radio 2 info on /GET", async () => {
-    //     jest.spyOn(configService, "get").mockImplementation((envName) => {
+    //     vi.spyOn(configService, "get").mockImplementation((envName) => {
     //         if (envName === "STEREO8_TOKEN") {
     //             return "abc";
     //         }

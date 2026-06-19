@@ -2,7 +2,6 @@ import { NormalizedTorrent, TorrentState } from "@ctrl/shared-torrent";
 import { Transmission } from "@ctrl/transmission";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
-import { mocked } from "jest-mock";
 import { DownloadlistController } from "./downloadlist.controller";
 
 const mockResponse: Partial<NormalizedTorrent>[] = [
@@ -28,13 +27,13 @@ const mockResponse: Partial<NormalizedTorrent>[] = [
     },
 ];
 
-const mockResumeTorrent = jest.fn().mockResolvedValue({ result: "mock-ok" });
-const mockPauseTorrent = jest.fn().mockResolvedValue({ result: "mock-ok" });
-const mockGetAllData = jest.fn().mockResolvedValue({ torrents: mockResponse });
+const mockResumeTorrent = vi.fn().mockResolvedValue({ result: "mock-ok" });
+const mockPauseTorrent = vi.fn().mockResolvedValue({ result: "mock-ok" });
+const mockGetAllData = vi.fn().mockResolvedValue({ torrents: mockResponse });
 
-jest.mock("@ctrl/transmission", () => {
+vi.mock("@ctrl/transmission", () => {
     return {
-        Transmission: jest.fn().mockImplementation(() => {
+        Transmission: vi.fn().mockImplementation(function () {
             return {
                 resumeTorrent: mockResumeTorrent,
                 pauseTorrent: mockPauseTorrent,
@@ -44,7 +43,7 @@ jest.mock("@ctrl/transmission", () => {
     };
 });
 
-const MockTransmission = mocked(Transmission, { shallow: true }); // not to have: Transmission as unknown as jest.Mock<Logger>;
+const MockTransmission = vi.mocked(Transmission); // not to have: Transmission as unknown as vi.Mock<Logger>;
 
 describe("Downloadlist Controller", () => {
     let controller: DownloadlistController;
@@ -53,17 +52,15 @@ describe("Downloadlist Controller", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [DownloadlistController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: vi.fn() } }],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
         controller = module.get<DownloadlistController>(DownloadlistController);
 
-        jest.spyOn(configService, "get").mockReturnValueOnce("http://some_url");
-        jest.spyOn(configService, "get").mockReturnValueOnce("some_username");
-        jest.spyOn(configService, "get").mockReturnValueOnce("some_password");
+        vi.spyOn(configService, "get").mockReturnValueOnce("http://some_url");
+        vi.spyOn(configService, "get").mockReturnValueOnce("some_username");
+        vi.spyOn(configService, "get").mockReturnValueOnce("some_password");
     });
 
     describe("getDownloadList GET", () => {

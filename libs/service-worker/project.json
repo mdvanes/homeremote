@@ -16,7 +16,7 @@
                 "packageJson": "libs/service-worker/package.json",
                 "main": "libs/service-worker/src/service-worker.ts",
                 "generateIndexHtml": false,
-                "webpackConfig": "libs/service-worker/webpack.config.js"
+                "webpackConfig": "libs/service-worker/webpack.config.cjs"
             },
             "configurations": {
                 "production": {
@@ -41,10 +41,10 @@
             "outputs": ["{options.outputFile}"]
         },
         "test": {
-            "executor": "@nx/jest:jest",
-            "outputs": ["{workspaceRoot}/coverage/libs/service-worker"],
+            "executor": "@nx/vitest:test",
+            "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "jestConfig": "libs/service-worker/jest.config.ts"
+                "reportsDirectory": "../../coverage/libs/service-worker"
             }
         }
     }

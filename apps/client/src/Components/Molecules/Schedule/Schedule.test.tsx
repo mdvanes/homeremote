@@ -1,8 +1,8 @@
 import { GetScheduleResponse, ScheduleItem } from "@homeremote/types";
 import { render, screen } from "@testing-library/react";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
 import { scheduleApi } from "../../../Services/scheduleApi";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { MockStoreProvider } from "../../../testHelpers";
 import Schedule from "./Schedule";
 

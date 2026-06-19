@@ -2,7 +2,7 @@ import { Controller, Logger, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthService } from "../auth/auth.service";
 import { LocalAuthGuard } from "../auth/local-auth.guard";
 import { User } from "../users/users.service";
-import { LoginRequest } from "./LoginRequest.types";
+import type { LoginRequest } from "./LoginRequest.types";
 
 @Controller("auth/login")
 export class LoginController {

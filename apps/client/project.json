@@ -26,7 +26,7 @@
                 ],
                 "styles": ["apps/client/src/styles.css"],
                 "scripts": [],
-                "webpackConfig": "apps/client/webpack.config.js"
+                "webpackConfig": "apps/client/webpack.config.cjs"
             },
             "configurations": {
                 "production": {
@@ -75,10 +75,10 @@
             "outputs": ["{options.outputFile}"]
         },
         "test": {
-            "executor": "@nx/jest:jest",
-            "outputs": ["{workspaceRoot}/coverage/apps/client"],
+            "executor": "@nx/vitest:test",
+            "outputs": ["{options.reportsDirectory}"],
             "options": {
-                "jestConfig": "apps/client/jest.config.ts"
+                "reportsDirectory": "../../coverage/apps/client"
             }
         }
     }

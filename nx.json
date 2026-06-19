@@ -29,22 +29,9 @@
             "inputs": ["production", "^production"],
             "cache": true
         },
-        "@nx/jest:jest": {
-            "inputs": [
-                "default",
-                "^production",
-                "{workspaceRoot}/jest.preset.js"
-            ],
-            "cache": true,
-            "options": {
-                "passWithNoTests": true
-            },
-            "configurations": {
-                "ci": {
-                    "ci": true,
-                    "codeCoverage": true
-                }
-            }
+        "@nx/vite:test": {
+            "inputs": ["default", "^production"],
+            "cache": true
         },
         "@nx/eslint:lint": {
             "inputs": [
@@ -63,9 +50,9 @@
             "default",
             "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
             "!{projectRoot}/tsconfig.spec.json",
-            "!{projectRoot}/jest.config.[jt]s",
+            "!{projectRoot}/vite.config.[jt]s",
             "!{projectRoot}/.eslintrc.json",
-            "!{projectRoot}/src/test-setup.[jt]s"
+            "!{projectRoot}/src/setupTests.[jt]s"
         ]
     },
     "useInferencePlugins": false,

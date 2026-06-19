@@ -18,13 +18,13 @@ const mockRootState: MockRootState = {
     },
 };
 
-const mockCloseDrawer = jest.fn();
+const mockCloseDrawer = vi.fn();
 
 const renderDrawerMenu = (initialState: MockRootState) =>
     renderWithProviders(
         <DrawerMenu
             colorMode="dark"
-            toggleColorMode={jest.fn()}
+            toggleColorMode={vi.fn()}
             closeDrawer={mockCloseDrawer}
         />,
         {
@@ -36,7 +36,7 @@ const renderDrawerMenu = (initialState: MockRootState) =>
     );
 
 // https://codeburst.io/module-mocking-in-jest-ff174397e5ff
-jest.mock("react-router", () => ({
+vi.mock("react-router", () => ({
     // Needed to overwite default in this syntax
     __esModule: true,
     default: "mock-default",
@@ -44,7 +44,7 @@ jest.mock("react-router", () => ({
     // This just returns the string mock-link instead of an <mock-link> element:  Link: () => "mock-link",
 }));
 
-const fetchSpy = jest.spyOn(window, "fetch");
+const fetchSpy = vi.spyOn(window, "fetch");
 
 describe("DrawerMenu", () => {
     beforeEach(() => {

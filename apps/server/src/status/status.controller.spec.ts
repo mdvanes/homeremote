@@ -9,9 +9,7 @@ describe("Status Controller", () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [StatusController],
-            providers: [
-                { provide: ConfigService, useValue: { get: jest.fn() } },
-            ],
+            providers: [{ provide: ConfigService, useValue: { get: vi.fn() } }],
         }).compile();
 
         configService = module.get<ConfigService>(ConfigService);
@@ -19,7 +17,7 @@ describe("Status Controller", () => {
     });
 
     it("returns the application status on /GET", async () => {
-        jest.spyOn(configService, "get").mockImplementation((envName) => {
+        vi.spyOn(configService, "get").mockImplementation((envName) => {
             if (envName === "STATUS_CMD") {
                 return 'echo { \\"field1\\": \\"field1value\\" }';
             }

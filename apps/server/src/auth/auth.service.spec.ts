@@ -1,6 +1,6 @@
 import { JwtService } from "@nestjs/jwt";
 import { Test, TestingModule } from "@nestjs/testing";
-import { LoginRequest } from "../login/LoginRequest.types";
+import type { LoginRequest } from "../login/LoginRequest.types";
 import { UsersService } from "../users/users.service";
 import { AuthService } from "./auth.service";
 
@@ -13,7 +13,7 @@ describe("AuthService", () => {
             providers: [
                 AuthService,
                 { provide: UsersService, useValue: {} },
-                { provide: JwtService, useValue: { sign: jest.fn() } },
+                { provide: JwtService, useValue: { sign: vi.fn() } },
             ],
         }).compile();
 
@@ -22,7 +22,7 @@ describe("AuthService", () => {
     });
 
     it("gets a token for a user on login", async () => {
-        jest.spyOn(jwtService, "sign").mockImplementation((x) =>
+        vi.spyOn(jwtService, "sign").mockImplementation((x) =>
             JSON.stringify(x)
         );
         const mockUser: LoginRequest["user"] = {
@@ -34,10 +34,11 @@ describe("AuthService", () => {
         expect(jwtService.sign).toHaveBeenCalledWith({
             sub: mockUser.id,
             username: mockUser.name,
+            loginMethod: "local",
         });
         expect(result).toEqual([
             "Authentication",
-            '{"sub":1,"username":"lee"}',
+            '{"sub":1,"username":"lee","loginMethod":"local"}',
             { httpOnly: true, maxAge: 2592000000, path: "/" },
         ]);
     });

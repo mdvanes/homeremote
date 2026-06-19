@@ -16,6 +16,7 @@ const injectedRtkApi = api
                 GetElectricExportsApiArg
             >({
                 query: () => ({ url: `/api/energyusage/electric/exports` }),
+                providesTags: [],
             }),
             getTemperatures: build.query<
                 GetTemperaturesApiResponse,
@@ -23,7 +24,9 @@ const injectedRtkApi = api
             >({
                 query: (queryArg) => ({
                     url: `/api/energyusage/temperature`,
-                    params: { range: queryArg.range },
+                    params: {
+                        range: queryArg.range,
+                    },
                 }),
                 providesTags: ["temperature"],
             }),
@@ -33,14 +36,18 @@ const injectedRtkApi = api
             >({
                 query: (queryArg) => ({
                     url: `/api/energyusage/gas-temperature`,
-                    params: { range: queryArg.range },
+                    params: {
+                        range: queryArg.range,
+                    },
                 }),
                 providesTags: ["gas-temperature"],
             }),
             getWater: build.query<GetWaterApiResponse, GetWaterApiArg>({
                 query: (queryArg) => ({
                     url: `/api/energyusage/water`,
-                    params: { range: queryArg.range },
+                    params: {
+                        range: queryArg.range,
+                    },
                 }),
                 providesTags: ["water"],
             }),
@@ -48,7 +55,9 @@ const injectedRtkApi = api
                 {
                     query: (queryArg) => ({
                         url: `/api/energyusage/electric`,
-                        params: { range: queryArg.range },
+                        params: {
+                            range: queryArg.range,
+                        },
                     }),
                     providesTags: ["electric"],
                 }

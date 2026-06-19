@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`UrlToMusic opens the dialog from a button 1`] = `
+exports[`UrlToMusic > opens the dialog from a button 1`] = `
 <DocumentFragment>
   <button
     aria-label="URL to Music"

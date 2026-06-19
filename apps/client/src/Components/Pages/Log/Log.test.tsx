@@ -1,7 +1,9 @@
 import { render } from "@testing-library/react";
 import Log from "./Log";
 
-jest.mock("../../Molecules/LogCard/LogCard", () => "mock-log-card");
+vi.mock("../../Molecules/LogCard/LogCard", () => ({
+    default: "mock-log-card",
+}));
 
 describe("Log page", () => {
     it("contains the LogCard", () => {

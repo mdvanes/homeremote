@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
 import { PolylineProps } from "react-leaflet";
 import { dataloraApi } from "../../../Services/dataloraApi";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { MockStoreProvider } from "../../../testHelpers";
 import DataLora from "./DataLora";
 
@@ -11,7 +11,7 @@ import DataLora from "./DataLora";
 
 enableFetchMocks();
 
-jest.mock("react-leaflet", () => {
+vi.mock("react-leaflet", () => {
     const MockPolyline: FC<PolylineProps> = ({ positions }) => (
         <div data-testid="mock-Polyline">{JSON.stringify(positions)}</div>
     );

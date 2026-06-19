@@ -3,6 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { User } from "../users/users.service";
+import type { LoginMethod } from "./auth.service";
 import { jwtConstants } from "./constants";
 
 @Injectable()
@@ -22,8 +23,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     async validate(payload: {
         sub: number;
         username: string;
-    }): Promise<Omit<User, "displayName">> {
+        loginMethod?: LoginMethod;
+    }): Promise<Omit<User, "displayName"> & { loginMethod: LoginMethod }> {
         // This is called each time @UseGuards(JwtAuthGuard) is used
-        return { id: payload.sub, name: payload.username };
+        return {
+            id: payload.sub,
+            name: payload.username,
+            loginMethod: payload.loginMethod ?? "local",
+        };
     }
 }

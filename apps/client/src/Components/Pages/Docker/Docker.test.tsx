@@ -1,8 +1,8 @@
 import { DockerListResponse } from "@homeremote/types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { dockerListApi } from "../../../Services/dockerListApi";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import {
     MockStoreProvider,
     MockStoreProviderApi,

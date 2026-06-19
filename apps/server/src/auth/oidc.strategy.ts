@@ -1,26 +1,34 @@
 import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-import { Client, Issuer, Strategy, TokenSet } from "openid-client";
+import {
+    Configuration,
+    discovery,
+    fetchUserInfo,
+    skipSubjectCheck,
+    type TokenEndpointResponse,
+    type TokenEndpointResponseHelpers,
+} from "openid-client";
+import { Strategy } from "openid-client/passport";
 import { User, UsersService } from "../users/users.service";
 import {
     DEFAULT_USERNAME_CLAIM,
     getOidcConfig,
-    OidcConfig,
+    type OidcConfig,
 } from "./oidc.config";
 
 export const OIDC_STRATEGY_NAME = "oidc";
 
-export const buildOpenIdClient = async (
+// The token endpoint response passed to the verify callback, with the helper
+// methods (claims(), expiresIn()) openid-client v6 attaches to it.
+export type OidcTokens = TokenEndpointResponse & TokenEndpointResponseHelpers;
+
+// Discovers the authorization server metadata and builds an openid-client
+// Configuration. In v6 the Issuer/Client classes are replaced by a functional
+// API where a single Configuration carries both server and client metadata.
+export const buildOpenIdConfiguration = (
     config: OidcConfig
-): Promise<Client> => {
-    const issuer = await Issuer.discover(config.issuer);
-    return new issuer.Client({
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        redirect_uris: [config.callbackUrl],
-        response_types: ["code"],
-    });
-};
+): Promise<Configuration> =>
+    discovery(new URL(config.issuer), config.clientId, config.clientSecret);
 
 @Injectable()
 export class OidcStrategy extends PassportStrategy(
@@ -31,27 +39,28 @@ export class OidcStrategy extends PassportStrategy(
 
     constructor(
         private readonly usersService: UsersService,
-        private readonly client: Client,
+        private readonly oidcConfiguration: Configuration,
         private readonly config: OidcConfig
     ) {
         super({
-            client,
-            params: { scope: config.scope },
-            usePKCE: true,
+            config: oidcConfiguration,
+            name: OIDC_STRATEGY_NAME,
+            scope: config.scope,
+            callbackURL: config.callbackUrl,
         });
     }
 
-    async validate(tokenset: TokenSet): Promise<User> {
-        const claims = tokenset.claims();
+    async validate(tokens: OidcTokens): Promise<User> {
+        const claims = tokens.claims();
         const usernameClaim =
             this.config.usernameClaim ?? DEFAULT_USERNAME_CLAIM;
-        let username = claims[usernameClaim] as string | undefined;
+        let username = claims?.[usernameClaim] as string | undefined;
         // Some providers (depending on their scope/claim configuration) do not
         // include the profile claims in the ID token. Fall back to the userinfo
         // endpoint before giving up.
         if (!username) {
             username = await this.getUsernameFromUserinfo(
-                tokenset,
+                tokens,
                 usernameClaim
             );
         }
@@ -59,7 +68,9 @@ export class OidcStrategy extends PassportStrategy(
             this.logger.error(
                 `OIDC token is missing claim "${usernameClaim}". ` +
                     `Claims available in the ID token: ${
-                        Object.keys(claims).join(", ") || "(none)"
+                        claims
+                            ? Object.keys(claims).join(", ") || "(none)"
+                            : "(none)"
                     }. ` +
                     `Check the provider's scope/claim mapping or set "usernameClaim" in auth.json.`
             );
@@ -82,14 +93,19 @@ export class OidcStrategy extends PassportStrategy(
     // claim is not present in the ID token. Returns undefined on any failure so
     // the caller can surface a single UnauthorizedException.
     private async getUsernameFromUserinfo(
-        tokenset: TokenSet,
+        tokens: OidcTokens,
         usernameClaim: string
     ): Promise<string | undefined> {
-        if (!tokenset.access_token) {
+        if (!tokens.access_token) {
             return undefined;
         }
         try {
-            const userinfo = await this.client.userinfo(tokenset);
+            const expectedSubject = tokens.claims()?.sub ?? skipSubjectCheck;
+            const userinfo = await fetchUserInfo(
+                this.oidcConfiguration,
+                tokens.access_token,
+                expectedSubject
+            );
             return userinfo[usernameClaim] as string | undefined;
         } catch (err) {
             this.logger.error(
@@ -114,8 +130,8 @@ export const oidcStrategyProvider = {
             // OIDC is optional: when not configured the strategy is not registered.
             return null;
         }
-        const client = await buildOpenIdClient(config);
-        return new OidcStrategy(usersService, client, config);
+        const oidcConfiguration = await buildOpenIdConfiguration(config);
+        return new OidcStrategy(usersService, oidcConfiguration, config);
     },
     inject: [UsersService],
 };

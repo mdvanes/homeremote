@@ -1,8 +1,8 @@
 import { PlaylistsResponse } from "@homeremote/types";
 import { fireEvent, render, screen } from "@testing-library/react";
-import fetchMock, { enableFetchMocks } from "jest-fetch-mock";
 import { FC, ReactNode } from "react";
 import { jukeboxApi } from "../../../Services/jukeboxApi";
+import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { MockStoreProvider } from "../../../testHelpers";
 import Jukebox from "./Jukebox";
 
