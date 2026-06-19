@@ -26,7 +26,6 @@ import { SmartEntitiesController } from "../smart-entities/smart-entities.contro
 import { SpeedtestController } from "../speedtest/speedtest.controller";
 import { StacksController } from "../stacks/stacks.controller";
 import { StatusController } from "../status/status.controller";
-import { SwitchesController } from "../switches/switches.controller";
 import { UrltomusicController } from "../urltomusic/urltomusic.controller";
 import { UsersModule } from "../users/users.module";
 import { VideoStreamController } from "../video-stream/video-stream.controller";
@@ -75,7 +74,6 @@ import { AppService } from "./app.service";
         SpeedtestController,
         StacksController,
         StatusController,
-        SwitchesController,
         UrltomusicController,
         VideoStreamController,
         // OIDC routes are only registered when an oidc config block is present.

@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 import appStatusReducer from "../Components/Molecules/AppStatusButton/appStatusSlice";
 import loglinesReducer from "../Components/Molecules/LogCard/logSlice";
-import switchBarListReducer from "../Components/Molecules/SwitchBarList/switchBarListSlice";
 import authenticationReducer from "../Components/Providers/Authentication/authenticationSlice";
 import { activeConnectionsApi } from "../Services/activeConnectionsApi";
 import { carTwinApi } from "../Services/carTwinApi";
@@ -22,7 +21,6 @@ const rootReducer = combineReducers({
     appStatus: appStatusReducer,
     authentication: authenticationReducer,
     loglines: loglinesReducer,
-    switchesList: switchBarListReducer,
     [activeConnectionsApi.reducerPath]: activeConnectionsApi.reducer,
     [carTwinApi.reducerPath]: carTwinApi.reducer,
     [dataloraApi.reducerPath]: dataloraApi.reducer,
