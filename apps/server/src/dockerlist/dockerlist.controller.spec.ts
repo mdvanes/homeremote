@@ -36,9 +36,9 @@ describe("DockerList Controller", () => {
                 mockAuthenticatedRequest
             );
             expect(mockGot).toHaveBeenCalledWith(
-                "http://docker/v1.41/containers/json?all=true",
+                "http://unix:/var/run/docker.sock:/v1.41/containers/json?all=true",
                 {
-                    socketPath: "/var/run/docker.sock",
+                    enableUnixSockets: true,
                 }
             );
             expect(mockGot).toHaveBeenCalledTimes(1);
@@ -57,9 +57,9 @@ describe("DockerList Controller", () => {
                 controller.getDockerList(mockAuthenticatedRequest)
             ).rejects.toThrow("failed to receive downstream data");
             expect(mockGot).toHaveBeenCalledWith(
-                "http://docker/v1.41/containers/json?all=true",
+                "http://unix:/var/run/docker.sock:/v1.41/containers/json?all=true",
                 {
-                    socketPath: "/var/run/docker.sock",
+                    enableUnixSockets: true,
                 }
             );
             expect(mockGot).toHaveBeenCalledTimes(1);
@@ -73,8 +73,8 @@ describe("DockerList Controller", () => {
             } as CancelableRequest<Response>);
             const result = await controller.startContainer("123");
             expect(mockGot).toHaveBeenCalledWith(
-                "http://docker/v1.41/containers/123/start",
-                { method: "POST", socketPath: "/var/run/docker.sock" }
+                "http://unix:/var/run/docker.sock:/v1.41/containers/123/start",
+                { method: "POST", enableUnixSockets: true }
             );
             expect(mockGot).toHaveBeenCalledTimes(1);
             expect(result).toEqual({
@@ -90,8 +90,8 @@ describe("DockerList Controller", () => {
             } as CancelableRequest<Response>);
             const result = await controller.stopContainer("123");
             expect(mockGot).toHaveBeenCalledWith(
-                "http://docker/v1.41/containers/123/stop",
-                { method: "POST", socketPath: "/var/run/docker.sock" }
+                "http://unix:/var/run/docker.sock:/v1.41/containers/123/stop",
+                { method: "POST", enableUnixSockets: true }
             );
             expect(mockGot).toHaveBeenCalledTimes(1);
             expect(result).toEqual({
