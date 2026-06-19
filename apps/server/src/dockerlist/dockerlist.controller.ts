@@ -56,9 +56,14 @@ const pickAndMapContainerProps =
     };
 
 // Using Docker Engine API: curl --unix-socket /var/run/docker.sock http://v1.24/containers/json?all=true
-// These urls also work: http://localhost/v1.24/containers/json?all=true or v1.24/containers/json?all=true
-const ROOT_URL = "http://docker/v1.41/containers";
+// got v15 talks to the Docker UNIX socket through the `http://unix:<socketPath>:<path>`
+// URL form combined with the `enableUnixSockets` option (the standalone
+// `socketPath` option was removed in got v12+).
+const API_ROOT = "/v1.41/containers";
 const DEFAULT_SOCKET_PATH = "/var/run/docker.sock";
+
+const buildDockerUrl = (socketPath: string, path: string): string =>
+    `http://unix:${socketPath}:${API_ROOT}${path}`;
 
 @Controller("api/dockerlist")
 export class DockerlistController {
@@ -92,9 +97,12 @@ export class DockerlistController {
         this.logger.verbose(`[${req.user.name}] GET to /api/dockerlist`);
 
         try {
-            const result = await got(`${ROOT_URL}/json?all=true`, {
-                socketPath: this.socketPath,
-            }).json<AllResponse>();
+            const result = await got(
+                buildDockerUrl(this.socketPath, "/json?all=true"),
+                {
+                    enableUnixSockets: true,
+                }
+            ).json<AllResponse>();
             return {
                 status: "received",
                 containers: result.map(
@@ -116,9 +124,9 @@ export class DockerlistController {
         this.logger.verbose(`GET to /api/dockerlist/start ${id}`);
 
         try {
-            await got(`${ROOT_URL}/${id}/start`, {
+            await got(buildDockerUrl(this.socketPath, `/${id}/start`), {
                 method: "POST",
-                socketPath: this.socketPath,
+                enableUnixSockets: true,
             }).json<unknown>();
             return {
                 status: "received",
@@ -138,9 +146,9 @@ export class DockerlistController {
         this.logger.verbose(`GET to /api/dockerlist/stop ${id}`);
 
         try {
-            await got(`${ROOT_URL}/${id}/stop`, {
+            await got(buildDockerUrl(this.socketPath, `/${id}/stop`), {
                 method: "POST",
-                socketPath: this.socketPath,
+                enableUnixSockets: true,
             }).json<unknown>();
             return {
                 status: "received",
