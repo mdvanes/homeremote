@@ -16,7 +16,7 @@
                 "packageJson": "libs/service-worker/package.json",
                 "main": "libs/service-worker/src/service-worker.ts",
                 "generateIndexHtml": false,
-                "webpackConfig": "libs/service-worker/webpack.config.js"
+                "webpackConfig": "libs/service-worker/webpack.config.cjs"
             },
             "configurations": {
                 "production": {

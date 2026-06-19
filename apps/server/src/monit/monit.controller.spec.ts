@@ -1,7 +1,7 @@
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import got, { CancelableRequest, Response } from "got";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 import {
     MonitController,
     formatMonitSize,

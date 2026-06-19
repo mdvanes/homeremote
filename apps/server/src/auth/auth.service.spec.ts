@@ -1,6 +1,6 @@
 import { JwtService } from "@nestjs/jwt";
 import { Test, TestingModule } from "@nestjs/testing";
-import { LoginRequest } from "../login/LoginRequest.types";
+import type { LoginRequest } from "../login/LoginRequest.types";
 import { UsersService } from "../users/users.service";
 import { AuthService } from "./auth.service";
 

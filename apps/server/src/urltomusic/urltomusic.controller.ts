@@ -31,11 +31,13 @@ import youtubeDlExec, {
     type Payload as YtPayload,
 } from "youtube-dl-exec";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 
-// This is an untyped but exported object from youtube-dl-exec
+// This is an untyped but exported object from youtube-dl-exec.
+// The explicit .js extension is required so it resolves as an ESM import in
+// the bundled output (deep CJS subpaths have no package "exports" map).
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const youtubeDlConstants = require("youtube-dl-exec/src/constants");
+const youtubeDlConstants = require("youtube-dl-exec/src/constants.js");
 
 const NR_OF_SEARCH_RESULTS = 10;
 

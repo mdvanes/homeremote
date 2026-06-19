@@ -15,7 +15,7 @@
                 "assets": ["apps/server/src/assets"],
                 "target": "node",
                 "compiler": "tsc",
-                "webpackConfig": "apps/server/webpack.config.js"
+                "webpackConfig": "apps/server/webpack.config.cjs"
             },
             "configurations": {
                 "production": {

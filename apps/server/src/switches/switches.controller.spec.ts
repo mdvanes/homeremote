@@ -2,7 +2,7 @@ import { DomoticzTypeOptions } from "@homeremote/types";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
 import * as Got from "got";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { DomoticzSwitch, SwitchesController } from "./switches.controller";
 
 vi.mock("got");

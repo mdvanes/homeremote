@@ -19,7 +19,7 @@ import got from "got";
 import prettyBytes from "pretty-bytes";
 import prettyMs from "pretty-ms";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 
 const strToConfigs = (
     monitConfig: string

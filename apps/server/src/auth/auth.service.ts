@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import { CookieOptions } from "express";
-import { LoginRequest } from "../login/LoginRequest.types";
+import type { LoginRequest } from "../login/LoginRequest.types";
 import { User, UsersService } from "../users/users.service";
 
 export const EXPIRES_IN_S = 30 * 24 * 60 * 60; // days * hours * minutes * seconds;

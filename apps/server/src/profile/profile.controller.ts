@@ -7,7 +7,7 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { User, UsersService } from "../users/users.service";
 
 @Controller("api/profile")

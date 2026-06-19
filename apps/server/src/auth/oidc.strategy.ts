@@ -5,7 +5,7 @@ import { User, UsersService } from "../users/users.service";
 import {
     DEFAULT_USERNAME_CLAIM,
     getOidcConfig,
-    OidcConfig,
+    type OidcConfig,
 } from "./oidc.config";
 
 export const OIDC_STRATEGY_NAME = "oidc";

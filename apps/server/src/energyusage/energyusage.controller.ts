@@ -28,7 +28,7 @@ import { fstatSync, openSync } from "fs";
 import { readFile, readdir } from "fs/promises";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { AuthenticatedRequest } from "../login/LoginRequest.types";
+import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { isDefined } from "../util/isDefined";
 
 interface SensorConfig {

@@ -10,7 +10,7 @@ import {
 import { Response } from "express";
 import { AuthService } from "../auth/auth.service";
 import { OidcAuthGuard } from "../auth/oidc-auth.guard";
-import { LoginRequest } from "./LoginRequest.types";
+import type { LoginRequest } from "./LoginRequest.types";
 import { OidcExceptionFilter } from "./oidc-exception.filter";
 
 @Controller("auth/oidc")

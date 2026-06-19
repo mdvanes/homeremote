@@ -1,5 +1,5 @@
 import {
-    AddSongArg,
+    type AddSongArg,
     AddSongResponse,
     IPlaylist,
     ISong,

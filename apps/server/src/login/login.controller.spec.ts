@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { CookieOptions } from "express";
 import { AuthService } from "../auth/auth.service";
 import { User } from "../users/users.service";
-import { LoginRequest } from "./LoginRequest.types";
+import type { LoginRequest } from "./LoginRequest.types";
 import { LoginController } from "./login.controller";
 
 describe("Login Controller", () => {
