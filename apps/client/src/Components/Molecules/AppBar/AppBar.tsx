@@ -68,7 +68,10 @@ const AppBar: FC<Props> = ({ toggleDrawer }) => {
                                 size="small"
                                 color="secondary"
                                 variant="outlined"
-                                sx={{ color: "inherit", borderColor: "currentcolor" }}
+                                sx={{
+                                    color: "inherit",
+                                    borderColor: "currentcolor",
+                                }}
                             />
                         )}
                     </Typography>

@@ -53,11 +53,7 @@ export class AuthService {
     public getCookieWithJwtToken(
         { id, name }: LoginRequest["user"],
         loginMethod: LoginMethod = "local"
-    ): [
-        typeof AUTHENTICATION_COOKIE_NAME,
-        string,
-        CookieOptions,
-    ] {
+    ): [typeof AUTHENTICATION_COOKIE_NAME, string, CookieOptions] {
         const payload = { sub: id, username: name, loginMethod };
         const token = this.jwtService.sign(payload);
         return [
