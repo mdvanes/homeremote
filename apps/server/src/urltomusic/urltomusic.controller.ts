@@ -30,8 +30,6 @@ import youtubeDlExec, {
     type Flags as YtFlags,
     type Payload as YtPayload,
 } from "youtube-dl-exec";
-// This subpath has no package "exports" map, so the explicit .js extension is
-// required for ESM resolution. esModuleInterop maps module.exports → default.
 import youtubeDlConstants from "youtube-dl-exec/src/constants.js";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import type { AuthenticatedRequest } from "../login/LoginRequest.types";
