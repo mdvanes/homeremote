@@ -76,6 +76,36 @@ describe("OidcStrategy", () => {
         ).rejects.toBeInstanceOf(UnauthorizedException);
         expect(usersService.findOne).not.toHaveBeenCalled();
     });
+
+    it("falls back to the userinfo endpoint when the ID token lacks the claim", async () => {
+        const client = buildOfflineClient();
+        jest.spyOn(client, "userinfo").mockResolvedValue({
+            sub: "abc",
+            preferred_username: "john",
+        } as never);
+        const strategyWithUserinfo = new OidcStrategy(
+            usersService as unknown as UsersService,
+            client,
+            config
+        );
+        usersService.findOne.mockResolvedValue({
+            id: 1,
+            name: "john",
+            displayName: "John",
+            hash: "$2b$some_hash",
+        });
+
+        const tokenset = {
+            claims: () => ({ sub: "abc" }),
+            access_token: "an-access-token",
+        } as unknown as TokenSet;
+
+        const result = await strategyWithUserinfo.validate(tokenset);
+
+        expect(client.userinfo).toHaveBeenCalledWith(tokenset);
+        expect(usersService.findOne).toHaveBeenCalledWith("john");
+        expect(result).toEqual({ id: 1, name: "john", displayName: "John" });
+    });
 });
 
 describe("oidcStrategyProvider", () => {
