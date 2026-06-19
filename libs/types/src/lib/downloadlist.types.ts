@@ -1,7 +1,7 @@
 export type SimpleDownloadState = "paused" | "downloading" | "invalid";
 
 export interface DownloadItem {
-    id: number;
+    id: number | string;
     name: string;
     percentage: number;
     state: string;

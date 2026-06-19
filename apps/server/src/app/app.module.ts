@@ -8,7 +8,7 @@ import { isOidcEnabled } from "../auth/oidc.config";
 import { CarTwinController } from "../cartwin/cartwin.controller";
 import { DataloraController } from "../datalora/datalora.controller";
 import { DockerlistController } from "../dockerlist/dockerlist.controller";
-import { DownloadlistController } from "../downloadlist/downloadlist.controller";
+import { getDownloadlistControllers } from "../downloadlist/downloadlist.config";
 import { EnergyUsageController } from "../energyusage/energyusage.controller";
 import { HomesecController } from "../homesec/homesec.controller";
 import { JukeboxController } from "../jukebox/jukebox.controller";
@@ -57,7 +57,7 @@ import { AppService } from "./app.service";
         CarTwinController,
         DataloraController,
         DockerlistController,
-        DownloadlistController,
+        ...getDownloadlistControllers(),
         EnergyUsageController,
         HomesecController,
         JukeboxController,
