@@ -30,6 +30,77 @@ Requirements:
 -   For password "test", call (e.g. in browser) `http://localhost:4200/api/pw-to-hash/?password=test`
 -   Store the hash with the username in auth.json
 
+## SSO / OIDC login with Authentik
+
+Next to the local username/password login, HomeRemote can optionally let users
+sign in through an OpenID Connect provider such as
+[Authentik](https://goauthentik.io/). When configured, a "Log in with Authentik"
+button is shown on the login page.
+
+SSO is **optional**: when no `oidc` block is present in `auth.json`, the OIDC
+routes and the login button are not enabled, and nothing changes.
+
+### How it works
+
+-   The server uses `openid-client` (Passport strategy) and discovers the
+    provider from its issuer URL.
+-   On a successful login, the same long-lived http-only `Authentication` JWT
+    cookie is issued as for local login, so the rest of the app is unchanged.
+-   **Allowlist:** SSO authentication only succeeds for users that already exist
+    in `auth.json`. The configured `usernameClaim` (default `preferred_username`)
+    from the OIDC token must match a user's `name`. If there is no match, login is
+    rejected even when the provider authenticated the user.
+
+### 1. Configure the provider (Authentik)
+
+-   Create an OAuth2/OpenID **Provider** and an **Application** for HomeRemote.
+-   Set the redirect URI to `https://<your-host>/auth/oidc/callback`.
+-   Use scopes `openid profile email`.
+-   Note the **Client ID**, **Client Secret**, and the **issuer/OpenID
+    configuration** URL (e.g. `https://authentik.example.com/application/o/homeremote/`).
+
+### 2. Configure HomeRemote (`auth.json`)
+
+Add an `oidc` block (see `apps/server/auth.json.example`):
+
+```jsonc
+"oidc": {
+  "issuer": "https://authentik.example.com/application/o/homeremote/",
+  "clientId": "my_client_id",
+  "clientSecret": "my_client_secret",
+  "callbackUrl": "https://homeremote.example.com/auth/oidc/callback",
+  "scope": "openid profile email",        // optional, this is the default
+  "usernameClaim": "preferred_username"   // optional, this is the default
+}
+```
+
+### 3. Configure users for SSO
+
+Because of the allowlist, every user that signs in via Authentik must have a
+matching entry in the `users` array of `auth.json`.
+
+-   **Existing local user → also allow SSO:** ensure the user's Authentik
+    `preferred_username` (or whatever `usernameClaim` you configured) equals their
+    `auth.json` `name`. No other change is needed — they can log in with either
+    their local password or the Authentik button.
+-   **New SSO-only user (no local password):** add a `users` entry whose `name`
+    matches the Authentik username, together with a unique `id` and a
+    `displayName`. Set `hash` to a value that can never match a bcrypt comparison
+    (e.g. `"!"`) so the account has no usable local password. The user then logs in
+    only via Authentik.
+
+```jsonc
+{
+  "id": 2,
+  "name": "sso-only-user",      // must equal the Authentik username claim
+  "displayName": "SSO Only User",
+  "hash": "!"                    // no usable local password
+}
+```
+
+-   **Deny access:** omit a user from `auth.json` (or remove their entry) to deny
+    them access, even if Authentik successfully authenticates them.
+
 ## Running
 
 Development:
