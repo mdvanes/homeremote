@@ -128,6 +128,30 @@ describe("OidcStrategy", () => {
         expect(usersService.findOne).toHaveBeenCalledWith("john");
         expect(result).toEqual({ id: 1, name: "john", displayName: "John" });
     });
+
+    it("always includes a state parameter in the authorization request", () => {
+        // Authentik supports PKCE, so openid-client v6 would otherwise omit the
+        // state; we force one so the value Authentik echoes back validates.
+        const params = strategy.authorizationRequestParams(
+            {} as never,
+            {} as never
+        );
+
+        const state = params.get("state");
+        expect(typeof state).toBe("string");
+        expect(state).toBeTruthy();
+    });
+
+    it("generates a fresh state for each authorization request", () => {
+        const first = strategy
+            .authorizationRequestParams({} as never, {} as never)
+            .get("state");
+        const second = strategy
+            .authorizationRequestParams({} as never, {} as never)
+            .get("state");
+
+        expect(first).not.toEqual(second);
+    });
 });
 
 describe("oidcStrategyProvider", () => {
