@@ -41,6 +41,7 @@ const HotKeyCoach = () => {
                 onClose={() => setAnchorEl(null)}
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
                 transformOrigin={{ vertical: "bottom", horizontal: "right" }}
+                disableScrollLock
             >
                 <Box sx={{ width: 360, maxHeight: 440, overflowY: "auto" }}>
                     <List>

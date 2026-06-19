@@ -42,6 +42,7 @@ const SourceArt: FC = () => {
                 onClose={() => setAnchorEl(null)}
                 anchorOrigin={{ vertical: "top", horizontal: "left" }}
                 transformOrigin={{ vertical: "bottom", horizontal: "left" }}
+                disableScrollLock
             >
                 <img
                     src={info.imageUrl}
