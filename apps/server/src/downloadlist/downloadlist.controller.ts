@@ -31,6 +31,7 @@ const stateToSimpleState: Record<TorrentState, SimpleDownloadState> = {
     queued: "downloading",
     checking: "downloading",
     paused: "paused",
+    warning: "invalid",
     error: "invalid",
     unknown: "invalid",
 };

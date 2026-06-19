@@ -34,7 +34,7 @@
     "author": "M.D. van Es",
     "engine": "node >= 20.0.0",
     "dependencies": {
-        "@ctrl/transmission": "^2.2.2",
+        "@ctrl/transmission": "^7.4.0",
         "@emotion/react": "11.14.0",
         "@emotion/styled": "11.14.1",
         "@hookform/resolvers": "^5.4.0",
