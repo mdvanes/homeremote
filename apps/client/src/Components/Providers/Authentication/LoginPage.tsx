@@ -1,3 +1,5 @@
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import LoginIcon from "@mui/icons-material/Login";
 import {
     Alert,
     Avatar,
@@ -14,8 +16,6 @@ import {
     Typography,
     useMediaQuery,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import LoginIcon from "@mui/icons-material/Login";
 import { FC, FormEvent, ReactNode, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
@@ -125,11 +125,7 @@ const LoginPage: FC<LoginPageProps> = ({ errorMessage }) => {
                                     Sign in to continue
                                 </Typography>
                             </Stack>
-                            <Box
-                                component="form"
-                                id="form"
-                                onSubmit={onSubmit}
-                            >
+                            <Box component="form" id="form" onSubmit={onSubmit}>
                                 <Stack spacing={2}>
                                     <TextField
                                         label="Username"
