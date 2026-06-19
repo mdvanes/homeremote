@@ -1,14 +1,16 @@
 import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
+import type { Request } from "express";
 import {
     Configuration,
     discovery,
     fetchUserInfo,
+    randomState,
     skipSubjectCheck,
     type TokenEndpointResponse,
     type TokenEndpointResponseHelpers,
 } from "openid-client";
-import { Strategy } from "openid-client/passport";
+import { type AuthenticateOptions, Strategy } from "openid-client/passport";
 import { User, UsersService } from "../users/users.service";
 import {
     DEFAULT_USERNAME_CLAIM,
@@ -48,6 +50,28 @@ export class OidcStrategy extends PassportStrategy(
             scope: config.scope,
             callbackURL: config.callbackUrl,
         });
+    }
+
+    // openid-client v6's passport Strategy only sends an OAuth `state`
+    // parameter when the authorization server lacks PKCE support (PKCE
+    // otherwise provides the CSRF protection state would). Authentik advertises
+    // PKCE, so the Strategy generates no state, yet Authentik still returns a
+    // `state` in the callback. oauth4webapi v3 then rejects the response with
+    // "unexpected \"state\" response parameter encountered" because no state was
+    // expected. Always including a state makes it round-trip and validate (and
+    // restores CSRF protection); the base Strategy stores any state present in
+    // the request params and checks it on the callback.
+    authorizationRequestParams<TOptions extends AuthenticateOptions>(
+        req: Request,
+        options: TOptions
+    ): URLSearchParams {
+        const params = new URLSearchParams(
+            super.authorizationRequestParams(req, options)
+        );
+        if (!params.has("state")) {
+            params.set("state", randomState());
+        }
+        return params;
     }
 
     async validate(tokens: OidcTokens): Promise<User> {
