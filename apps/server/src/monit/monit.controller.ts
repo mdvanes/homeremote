@@ -45,11 +45,21 @@ export const scaleMonitSizeToBytes = (size: number): number => {
     return Math.pow(x, n) * y * size;
 };
 
-export const formatMonitSize = (size: number): string =>
-    prettyBytes(scaleMonitSizeToBytes(size), {
+export const formatMonitSize = (size: number): string => {
+    const bytes = scaleMonitSizeToBytes(size);
+    // pretty-bytes v7 truncates (roundingMode "trunc") whenever fraction
+    // digits are set, whereas v5 rounded. Round to one decimal at the unit
+    // pretty-bytes will pick so the displayed value matches the previous
+    // behaviour.
+    const exponent =
+        bytes < 1 ? 0 : Math.min(Math.floor(Math.log10(bytes) / 3), 8);
+    const divisor = 1000 ** exponent;
+    const rounded = Math.round((bytes / divisor) * 10) / 10;
+    return prettyBytes(rounded * divisor, {
         minimumFractionDigits: 1,
         maximumFractionDigits: 1,
     });
+};
 
 @Controller("api/monit")
 export class MonitController {
