@@ -103,6 +103,7 @@ export class DownloadlistController {
                 downloads,
             };
         } catch (err) {
+            this.logger.error(err);
             throw new HttpException(
                 "failed to receive downstream data",
                 HttpStatus.INTERNAL_SERVER_ERROR
