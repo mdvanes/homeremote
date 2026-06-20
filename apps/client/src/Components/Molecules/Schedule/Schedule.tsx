@@ -1,7 +1,9 @@
 import { ScheduleItem } from "@homeremote/types";
-import { List, ListItem, ListItemText, Paper } from "@mui/material";
+import { Box, List, ListItem, ListItemText, Paper } from "@mui/material";
 import { FC, ReactNode } from "react";
 import { useGetScheduleQuery } from "../../../Services/scheduleApi";
+import { usePolledQuery } from "../../../Utils/usePolledQuery";
+import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
 // This barely updates once a day, so check once per hour
@@ -48,7 +50,16 @@ const scheduleItemToListItem =
     );
 
 const Schedule: FC = () => {
-    const { data, isLoading, isFetching } = useGetScheduleQuery(undefined, {
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetScheduleQuery, undefined, {
+        name: "Schedule",
         pollingInterval: UPDATE_INTERVAL_MS,
     });
 
@@ -68,11 +79,20 @@ const Schedule: FC = () => {
     return (
         <List component={Paper} sx={{ gap: "10px" }}>
             <LoadingDot isLoading={isLoading || isFetching} />
-            {missed.map(scheduleItemToListItem("missed"))}
-            {snatched.map(scheduleItemToListItem("snatched"))}
-            {today.map(scheduleItemToListItem("today"))}
-            {soon.map(scheduleItemToListItem("soon"))}
-            {later.map(scheduleItemToListItem("later"))}
+            <CardStatus
+                name="Schedule"
+                isError={isError}
+                isStale={isStale}
+                retry={retry}
+                lastUpdated={lastUpdated}
+            />
+            <Box sx={staleContentSx(isStale)}>
+                {missed.map(scheduleItemToListItem("missed"))}
+                {snatched.map(scheduleItemToListItem("snatched"))}
+                {today.map(scheduleItemToListItem("today"))}
+                {soon.map(scheduleItemToListItem("soon"))}
+                {later.map(scheduleItemToListItem("later"))}
+            </Box>
         </List>
     );
 };

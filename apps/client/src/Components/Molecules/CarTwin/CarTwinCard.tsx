@@ -1,6 +1,8 @@
-import { Card, CardContent } from "@mui/material";
+import { Box, Card, CardContent } from "@mui/material";
 import { FC } from "react";
 import { useGetCarTwinQuery } from "../../../Services/carTwinApi";
+import { usePolledQuery } from "../../../Utils/usePolledQuery";
+import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
 import { CarTwinCardItems } from "./CarTwinCardItems";
 // import { logError } from "../LogCard/logSlice";
 // import { CarTwinCardItems } from "./CarTwinCardItems";
@@ -24,9 +26,14 @@ export const CarTwinCard: FC = () => {
         data: result,
         isLoading: isCarTwinLoading,
         isFetching,
-    } = useGetCarTwinQuery(undefined, {
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetCarTwinQuery, undefined, {
+        name: "Car",
         pollingInterval: 60 * 1000,
-        refetchOnMountOrArgChange: true,
+        queryOptions: { refetchOnMountOrArgChange: true },
     });
     const isLoading = isCarTwinLoading || isFetching;
     // const [result, setResult] = useState<CarTwinResponse | undefined>();
@@ -94,6 +101,14 @@ export const CarTwinCard: FC = () => {
     return (
         <Card sx={{ marginBottom: 2 }}>
             <CardContent style={isLoading ? { filter: "blur(4px)" } : {}}>
+                <CardStatus
+                    name="Car"
+                    isError={isError}
+                    isStale={isStale}
+                    retry={retry}
+                    lastUpdated={lastUpdated}
+                    noMargin
+                />
                 {/* {showTokenForm && (
                     <TokenForm
                         connectedTokenVal={connectedTokenVal}
@@ -104,11 +119,13 @@ export const CarTwinCard: FC = () => {
                     />
                 )} */}
                 {result && (
-                    <CarTwinCardItems
-                        isLoading={isLoading}
-                        data={result}
-                        // handleAuthConnected={authConnected}
-                    />
+                    <Box sx={staleContentSx(isStale)}>
+                        <CarTwinCardItems
+                            isLoading={isLoading}
+                            data={result}
+                            // handleAuthConnected={authConnected}
+                        />
+                    </Box>
                 )}
             </CardContent>
         </Card>

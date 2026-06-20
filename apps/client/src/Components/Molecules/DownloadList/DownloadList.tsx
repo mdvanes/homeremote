@@ -1,10 +1,10 @@
-import { List, Paper } from "@mui/material";
+import { Box, List, Paper } from "@mui/material";
 import { FC, JSX, useEffect, useState } from "react";
 import { useGetDownloadListQuery } from "../../../Services/downloadListApi";
-import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import { useAppDispatch } from "../../../store";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import ErrorRetry from "../ErrorRetry/ErrorRetry";
+import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import { logError } from "../LogCard/logSlice";
 import DownloadListItem from "./DownloadListItem";
@@ -13,25 +13,21 @@ const UPDATE_INTERVAL_MS = 30000;
 
 const DownloadList: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const dispatch = useAppDispatch();
 
-    const { data, error, isLoading, isFetching, refetch } =
-        useGetDownloadListQuery(undefined, {
-            pollingInterval: isSkippingBecauseError
-                ? undefined
-                : UPDATE_INTERVAL_MS,
-        });
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetDownloadListQuery, undefined, {
+        name: "Downloads",
+        pollingInterval: UPDATE_INTERVAL_MS,
+    });
     const [listItems, setListItems] = useState<JSX.Element[]>([]);
-
-    useEffect(() => {
-        if (error) {
-            setIsSkippingBecauseError(true);
-            dispatch(
-                logError(`GetDownloadList failed: ${getErrorMessage(error)}`)
-            );
-        }
-    }, [dispatch, error]);
 
     useEffect(() => {
         if (data && data.status === "received" && data.downloads) {
@@ -51,21 +47,25 @@ const DownloadList: FC = () => {
     return (
         <List component={Paper}>
             <LoadingDot isLoading={isLoading || isFetching} />
-            {error && (
-                <ErrorRetry retry={() => refetch()}>
-                    DL could not load
-                </ErrorRetry>
-            )}
-            {listItems}
-            <CardExpandBar
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-                hint={`and ${
-                    data && data.status === "received" && data.downloads
-                        ? data.downloads.length - listItems.length
-                        : 0
-                } paused`}
+            <CardStatus
+                name="Downloads"
+                isError={isError}
+                isStale={isStale}
+                retry={retry}
+                lastUpdated={lastUpdated}
             />
+            <Box sx={staleContentSx(isStale)}>
+                {listItems}
+                <CardExpandBar
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    hint={`and ${
+                        data && data.status === "received" && data.downloads
+                            ? data.downloads.length - listItems.length
+                            : 0
+                    } paused`}
+                />
+            </Box>
         </List>
     );
 };

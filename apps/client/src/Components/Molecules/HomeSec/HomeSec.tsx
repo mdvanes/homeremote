@@ -1,5 +1,6 @@
 import { HomesecStatusResponse, TypeF } from "@homeremote/types";
 import {
+    Box,
     Icon,
     List,
     ListItem,
@@ -13,10 +14,10 @@ import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import { FC, useEffect, useState } from "react";
 import { useGetHomesecStatusQuery } from "../../../Services/homesecApi";
-import { getErrorMessage } from "../../../Utils/getErrorMessage";
+import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import { useAppDispatch } from "../../../store";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import ErrorRetry from "../ErrorRetry/ErrorRetry";
+import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import { logError, logInfo } from "../LogCard/logSlice";
 import { RssiIcon } from "./RssiIcon";
@@ -47,25 +48,27 @@ const isApiUnimplemented = (error?: FetchBaseQueryError | SerializedError) =>
 export const HomeSec: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isFeatureDisabled, setIsFeatureDisabled] = useState(false);
-    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
     const dispatch = useAppDispatch();
-    const { data, isLoading, isFetching, isError, error, refetch } =
-        useGetHomesecStatusQuery(undefined, {
-            pollingInterval: isSkippingBecauseError
-                ? undefined
-                : UPDATE_INTERVAL_MS,
-        });
-
-    useEffect(() => {
-        if (isError && error) {
-            setIsSkippingBecauseError(true);
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetHomesecStatusQuery, undefined, {
+        name: "HomeSec",
+        pollingInterval: UPDATE_INTERVAL_MS,
+        queryOptions: { skip: isFeatureDisabled },
+        onError: (message, error) => {
             if (isApiUnimplemented(error)) {
                 setIsFeatureDisabled(true);
                 return;
             }
-            dispatch(logError(`HomeSec failed: ${getErrorMessage(error)}`));
-        }
-    }, [dispatch, error, isError]);
+            dispatch(logError(`HomeSec failed: ${message}`));
+        },
+    });
 
     // TODO logInfo when data.status changes. Does this work?
     useEffect(() => {
@@ -92,10 +95,8 @@ export const HomeSec: FC = () => {
     return (
         <Tooltip title={`HomeSec status: ${data?.status ?? "Error"}`}>
             <List
-                onClick={() => {
-                    refetch();
-                }}
                 component={Paper}
+                onClick={() => retry()}
                 style={{
                     borderWidth: 1,
                     borderStyle: "solid",
@@ -106,89 +107,90 @@ export const HomeSec: FC = () => {
                     isLoading={isLoading || isFetching}
                     slowUpdateMs={6000}
                 />
-                {isError && (
-                    <ErrorRetry
-                        retry={() => {
-                            setIsSkippingBecauseError(false);
-                            refetch();
-                        }}
-                    >
-                        HomeSec could not load
-                    </ErrorRetry>
-                )}
+                <CardStatus
+                    name="HomeSec"
+                    isError={isError}
+                    isStale={isStale}
+                    retry={retry}
+                    lastUpdated={lastUpdated}
+                />
                 {hasNoDevices && (
                     <SimpleHomeSecListItem
                         title="No HomeSec devices found"
-                        onClick={() => refetch()}
+                        onClick={() => retry()}
                     />
                 )}
-                {shownDevices.map((sensor) => (
-                    <ListItem
-                        key={sensor.id}
-                        disableGutters
-                        disablePadding
-                        dense
-                    >
-                        <ListItemButton>
-                            <ListItemAvatar>
-                                <Tooltip title={sensor.type_f}>
-                                    <Icon>{typeIcon[sensor.type_f]}</Icon>
-                                </Tooltip>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: "space-between",
-                                        }}
-                                    >
-                                        <div>
-                                            {sensor.name === "" &&
-                                            sensor.type_f === "Siren"
-                                                ? "Sirene"
-                                                : sensor.name}
-                                        </div>
+                <Box sx={staleContentSx(isStale)}>
+                    {shownDevices.map((sensor) => (
+                        <ListItem
+                            key={sensor.id}
+                            disableGutters
+                            disablePadding
+                            dense
+                        >
+                            <ListItemButton>
+                                <ListItemAvatar>
+                                    <Tooltip title={sensor.type_f}>
+                                        <Icon>{typeIcon[sensor.type_f]}</Icon>
+                                    </Tooltip>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={
                                         <div
                                             style={{
                                                 display: "flex",
-                                                gap: "8px",
+                                                justifyContent: "space-between",
                                             }}
                                         >
-                                            <div>{sensor.status}</div>
                                             <div>
-                                                {sensor.cond_ok === "1" ? (
-                                                    <Icon
-                                                        color="success"
-                                                        sx={{
-                                                            marginTop:
-                                                                "-0.1rem",
-                                                        }}
-                                                    >
-                                                        check_circle_outline
-                                                    </Icon>
-                                                ) : (
-                                                    <Icon
-                                                        color="error"
-                                                        sx={{
-                                                            marginTop:
-                                                                "-0.1rem",
-                                                        }}
-                                                    >
-                                                        error_outline
-                                                    </Icon>
-                                                )}
+                                                {sensor.name === "" &&
+                                                sensor.type_f === "Siren"
+                                                    ? "Sirene"
+                                                    : sensor.name}
                                             </div>
-                                            <div>
-                                                <RssiIcon rssi={sensor.rssi} />
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    gap: "8px",
+                                                }}
+                                            >
+                                                <div>{sensor.status}</div>
+                                                <div>
+                                                    {sensor.cond_ok === "1" ? (
+                                                        <Icon
+                                                            color="success"
+                                                            sx={{
+                                                                marginTop:
+                                                                    "-0.1rem",
+                                                            }}
+                                                        >
+                                                            check_circle_outline
+                                                        </Icon>
+                                                    ) : (
+                                                        <Icon
+                                                            color="error"
+                                                            sx={{
+                                                                marginTop:
+                                                                    "-0.1rem",
+                                                            }}
+                                                        >
+                                                            error_outline
+                                                        </Icon>
+                                                    )}
+                                                </div>
+                                                <div>
+                                                    <RssiIcon
+                                                        rssi={sensor.rssi}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                }
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                                    }
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </Box>
                 {devices.length > 0 && (
                     <CardExpandBar
                         isOpen={isOpen}
