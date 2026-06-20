@@ -228,7 +228,6 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         playRadio();
     }, [clearSkipRadio, pauseJukebox, playRadio]);
 
-
     // Unified play/pause: pauses whichever source is playing, otherwise resumes
     // the source that was last active (the one shown in the bar).
     const isPlaying = isRadioPlaying || isJukeboxPlaying;
