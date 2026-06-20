@@ -1,37 +1,22 @@
-import { List, Paper } from "@mui/material";
-import { FC, useEffect, useState } from "react";
-import { useGetSmartEntitiesQuery } from "../../../Services/generated/smartEntitiesApi";
-import { getErrorMessage } from "../../../Utils/getErrorMessage";
-import { useAppDispatch } from "../../../store";
-import ErrorRetry from "../ErrorRetry/ErrorRetry";
+import { Box, List, Paper } from "@mui/material";
+import { FC } from "react";
+import { useGetSmartEntitiesQuery } from "../../../Services/generated/smartEntitiesApiWithRetry";
+import { usePolledQuery } from "../../../Utils/usePolledQuery";
+import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
 import LoadingDot from "../LoadingDot/LoadingDot";
-import { logError } from "../LogCard/logSlice";
 import { SwitchesListItem } from "./SwitchesListItem";
 import { isSwitch } from "./utils";
 
 const UPDATE_INTERVAL_MS = 1_000 * 60; // 1000 ms / 60 seconds = 1x per minute
 
 export const SwitchesCard: FC = () => {
-    const dispatch = useAppDispatch();
-    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
-
-    const { data, error, isError, isFetching, isLoading, refetch } =
-        useGetSmartEntitiesQuery(undefined, {
-            pollingInterval: isSkippingBecauseError
-                ? undefined
-                : UPDATE_INTERVAL_MS,
+    const { data, isError, isFetching, isLoading, isStale, retry } =
+        usePolledQuery(useGetSmartEntitiesQuery, undefined, {
+            name: "Switches",
+            pollingInterval: UPDATE_INTERVAL_MS,
         });
 
     const switches = (data?.entities ?? []).filter(isSwitch);
-
-    useEffect(() => {
-        if (isError && error) {
-            setIsSkippingBecauseError(true);
-            dispatch(
-                logError(`SwitchesCard failed: ${getErrorMessage(error)}`)
-            );
-        }
-    }, [dispatch, error, isError]);
 
     return (
         <List component={Paper}>
@@ -39,14 +24,17 @@ export const SwitchesCard: FC = () => {
                 isLoading={isLoading || isFetching}
                 slowUpdateMs={4_000}
             />
-            {isError && (
-                <ErrorRetry retry={() => refetch()}>
-                    SwitchesCard could not load
-                </ErrorRetry>
-            )}
-            {switches.map((item) => (
-                <SwitchesListItem key={item.entity_id} item={item} />
-            ))}
+            <CardStatus
+                name="Switches"
+                isError={isError}
+                isStale={isStale}
+                retry={retry}
+            />
+            <Box sx={staleContentSx(isStale)}>
+                {switches.map((item) => (
+                    <SwitchesListItem key={item.entity_id} item={item} />
+                ))}
+            </Box>
         </List>
     );
 };

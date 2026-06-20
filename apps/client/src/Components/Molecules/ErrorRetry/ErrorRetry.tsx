@@ -5,17 +5,19 @@ import { FC, PropsWithChildren } from "react";
 interface Props extends PropsWithChildren {
     noMargin?: boolean;
     retry: () => void;
+    severity?: "error" | "warning";
 }
 
 export const ErrorRetry: FC<Props> = ({
     noMargin = false,
     children,
     retry,
+    severity = "error",
 }) => {
     return (
         <Box
             component={Alert}
-            severity="error"
+            severity={severity}
             square
             sx={{
                 mx: noMargin ? -2 : undefined,

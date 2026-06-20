@@ -1,52 +1,40 @@
-import { List, Paper } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { Box, List, Paper } from "@mui/material";
+import { FC } from "react";
 import { useGetSmartEntitiesQuery } from "../../../Services/generated/smartEntitiesApiWithRetry";
-import { getErrorMessage } from "../../../Utils/getErrorMessage";
-import { useAppDispatch } from "../../../store";
-import ErrorRetry from "../ErrorRetry/ErrorRetry";
+import { usePolledQuery } from "../../../Utils/usePolledQuery";
+import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
 import LoadingDot from "../LoadingDot/LoadingDot";
-import { logError } from "../LogCard/logSlice";
 import { isClimateSensor, sortClimateSensors } from "../SwitchesCard/utils";
 import { ClimateSensorsListItem } from "./ClimateSensorsListItem";
 
 const UPDATE_INTERVAL_MS = 1_000 * 60 * 1.5; // 1000 ms / 60 seconds = 1x per 1.5 minutes (to prevent synching with SwitchesCard)
 
 export const ClimateSensorsCard: FC = () => {
-    const dispatch = useAppDispatch();
-    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
-
-    const { data, error, isError, isFetching, isLoading, refetch } =
-        useGetSmartEntitiesQuery(undefined, {
-            pollingInterval: isSkippingBecauseError
-                ? undefined
-                : UPDATE_INTERVAL_MS,
+    const { data, isError, isFetching, isLoading, isStale, retry } =
+        usePolledQuery(useGetSmartEntitiesQuery, undefined, {
+            name: "Climate sensors",
+            pollingInterval: UPDATE_INTERVAL_MS,
         });
 
     const climateSensors = (data?.entities ?? [])
         .filter(isClimateSensor)
         .toSorted(sortClimateSensors);
 
-    useEffect(() => {
-        if (isError && error) {
-            setIsSkippingBecauseError(true);
-            dispatch(
-                logError(`ClimateSensorsCard failed: ${getErrorMessage(error)}`)
-            );
-        }
-    }, [dispatch, error, isError]);
-
     return (
-        <List component={Paper} onClick={() => refetch()}>
+        <List component={Paper} onClick={() => retry()}>
             <LoadingDot
                 isLoading={isLoading || isFetching}
                 slowUpdateMs={4_000}
             />
-            {isError && (
-                <ErrorRetry retry={() => refetch()}>
-                    ClimateSensorsCard could not load
-                </ErrorRetry>
-            )}
-            <ClimateSensorsListItem sensors={climateSensors} />
+            <CardStatus
+                name="Climate sensors"
+                isError={isError}
+                isStale={isStale}
+                retry={retry}
+            />
+            <Box sx={staleContentSx(isStale)}>
+                <ClimateSensorsListItem sensors={climateSensors} />
+            </Box>
         </List>
     );
 };

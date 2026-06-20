@@ -1,15 +1,14 @@
-import { FC, useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import { FC, useState } from "react";
 import { BarProps } from "recharts";
 import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApiWithRetry";
-import { getErrorMessage } from "../../../Utils/getErrorMessage";
-import { useAppDispatch } from "../../../store";
+import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
+import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
 import EnergyChart, {
     SensorItem,
     axisDateTimeFormatDay,
 } from "../EnergyChart/EnergyChart";
-import ErrorRetry from "../ErrorRetry/ErrorRetry";
-import { logError } from "../LogCard/logSlice";
 import { RangeButtons } from "./RangeButtons";
 
 const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
@@ -18,47 +17,32 @@ const UPDATE_INTERVAL_MS = 60 * 60 * 1000; // 1 x per hour
 
 // TODO values have descrepencies with Home Assistant
 const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
-    const dispatch = useAppDispatch();
     const [range, setRange] = useState<"day" | "week" | "month">("week");
-    const [isSkippingBecauseError, setIsSkippingBecauseError] = useState(false);
 
     const {
         data: gasTemperatureResponse,
-        error,
         isLoading,
         isFetching,
-        refetch,
         isError,
-    } = useGetGasTemperaturesQuery(
+        isStale,
+        retry,
+    } = usePolledQuery(
+        useGetGasTemperaturesQuery,
         { range },
         {
-            pollingInterval: isSkippingBecauseError
-                ? undefined
-                : UPDATE_INTERVAL_MS,
+            name: "Gas & temperatures",
+            pollingInterval: UPDATE_INTERVAL_MS,
         }
     );
 
-    useEffect(() => {
-        if (isError && error) {
-            setIsSkippingBecauseError(true);
-            dispatch(
-                logError(
-                    `GasTemperaturesChart failed: ${getErrorMessage(error)}`
-                )
-            );
-        }
-    }, [dispatch, error, isError]);
-
-    if (error || !gasTemperatureResponse) {
+    if (!gasTemperatureResponse) {
         return (
-            <ErrorRetry
-                retry={() => {
-                    setIsSkippingBecauseError(false);
-                    refetch();
-                }}
-            >
-                GasTemperaturesChart could not load
-            </ErrorRetry>
+            <CardStatus
+                name="Gas & temperatures"
+                isError={isError}
+                isStale={false}
+                retry={retry}
+            />
         );
     }
 
@@ -105,31 +89,40 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         <>
             {isBig && <RangeButtons range={range} setRange={setRange} />}
 
-            <EnergyChart
-                data={entries}
-                config={{
-                    lines,
-                    bars,
-                    leftYAxis: {
-                        // unit: "m3",
-                        domain: [0, "auto"],
-                    },
-                    rightYAxis: {
-                        unit: "°",
-                        domain: [0, "auto"],
-                    },
-                    xAxis: {
-                        type: "category",
-                    },
-                    axisDateTimeFormat:
-                        range === "day" ? undefined : axisDateTimeFormatDay,
-                    hideBrush: !isBig,
-                    hideToggleDots: !isBig,
-                    aspect: isBig ? undefined : 2,
-                    moreLink: isBig ? undefined : "/energy?tab=2",
-                }}
-                isLoading={isLoading || isFetching}
+            <CardStatus
+                name="Gas & temperatures"
+                isError={isError}
+                isStale={isStale}
+                retry={retry}
             />
+
+            <Box sx={staleContentSx(isStale)}>
+                <EnergyChart
+                    data={entries}
+                    config={{
+                        lines,
+                        bars,
+                        leftYAxis: {
+                            // unit: "m3",
+                            domain: [0, "auto"],
+                        },
+                        rightYAxis: {
+                            unit: "°",
+                            domain: [0, "auto"],
+                        },
+                        xAxis: {
+                            type: "category",
+                        },
+                        axisDateTimeFormat:
+                            range === "day" ? undefined : axisDateTimeFormatDay,
+                        hideBrush: !isBig,
+                        hideToggleDots: !isBig,
+                        aspect: isBig ? undefined : 2,
+                        moreLink: isBig ? undefined : "/energy?tab=2",
+                    }}
+                    isLoading={isLoading || isFetching}
+                />
+            </Box>
         </>
     );
 };
