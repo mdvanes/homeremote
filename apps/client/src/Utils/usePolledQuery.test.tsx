@@ -73,6 +73,7 @@ describe("usePolledQuery", () => {
         );
         expect(result.current.isError).toBe(false);
         expect(result.current.isStale).toBe(false);
+        expect(result.current.lastUpdated).toEqual(expect.any(Number));
         expect(linesOf(store, Severity.ERROR)).toHaveLength(0);
     });
 
@@ -166,6 +167,9 @@ describe("usePolledQuery", () => {
         expect(result.current.isStale).toBe(true);
         // The last known value is retained instead of being hidden.
         expect(result.current.data).toEqual({ value: "first" });
+        // lastUpdated still points at the successful load so the UI can show
+        // how old the visible data is.
+        expect(result.current.lastUpdated).toEqual(expect.any(Number));
     });
 
     it("retry() refetches immediately", async () => {

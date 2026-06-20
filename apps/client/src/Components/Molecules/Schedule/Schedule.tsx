@@ -50,11 +50,18 @@ const scheduleItemToListItem =
     );
 
 const Schedule: FC = () => {
-    const { data, isLoading, isFetching, isError, isStale, retry } =
-        usePolledQuery(useGetScheduleQuery, undefined, {
-            name: "Schedule",
-            pollingInterval: UPDATE_INTERVAL_MS,
-        });
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetScheduleQuery, undefined, {
+        name: "Schedule",
+        pollingInterval: UPDATE_INTERVAL_MS,
+    });
 
     if (!data) {
         return null;
@@ -77,6 +84,7 @@ const Schedule: FC = () => {
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
+                lastUpdated={lastUpdated}
             />
             <Box sx={staleContentSx(isStale)}>
                 {missed.map(scheduleItemToListItem("missed"))}

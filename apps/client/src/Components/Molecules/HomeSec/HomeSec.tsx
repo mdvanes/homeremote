@@ -49,19 +49,26 @@ export const HomeSec: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isFeatureDisabled, setIsFeatureDisabled] = useState(false);
     const dispatch = useAppDispatch();
-    const { data, isLoading, isFetching, isError, isStale, retry } =
-        usePolledQuery(useGetHomesecStatusQuery, undefined, {
-            name: "HomeSec",
-            pollingInterval: UPDATE_INTERVAL_MS,
-            queryOptions: { skip: isFeatureDisabled },
-            onError: (message, error) => {
-                if (isApiUnimplemented(error)) {
-                    setIsFeatureDisabled(true);
-                    return;
-                }
-                dispatch(logError(`HomeSec failed: ${message}`));
-            },
-        });
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetHomesecStatusQuery, undefined, {
+        name: "HomeSec",
+        pollingInterval: UPDATE_INTERVAL_MS,
+        queryOptions: { skip: isFeatureDisabled },
+        onError: (message, error) => {
+            if (isApiUnimplemented(error)) {
+                setIsFeatureDisabled(true);
+                return;
+            }
+            dispatch(logError(`HomeSec failed: ${message}`));
+        },
+    });
 
     // TODO logInfo when data.status changes. Does this work?
     useEffect(() => {
@@ -105,6 +112,7 @@ export const HomeSec: FC = () => {
                     isError={isError}
                     isStale={isStale}
                     retry={retry}
+                    lastUpdated={lastUpdated}
                 />
                 {hasNoDevices && (
                     <SimpleHomeSecListItem

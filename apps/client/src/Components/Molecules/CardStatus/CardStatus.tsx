@@ -11,8 +11,23 @@ interface CardStatusProps {
     isStale: boolean;
     /** Reset backoff and refetch immediately. */
     retry: () => void;
+    /** Epoch ms of the last successful load, shown in the stale tooltip. */
+    lastUpdated?: number;
     noMargin?: boolean;
 }
+
+/**
+ * Formats an epoch timestamp as a partial ISO 8601 string in **local** time,
+ * e.g. `2026-06-20T22:51`. Local (not UTC) so it matches the user's clock.
+ */
+export const formatPartialIso8601 = (timestamp: number): string => {
+    const date = new Date(timestamp);
+    const pad = (value: number): string => String(value).padStart(2, "0");
+    return (
+        `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+        `T${pad(date.getHours())}:${pad(date.getMinutes())}`
+    );
+};
 
 /**
  * Consistent status banner for polled cards.
@@ -28,17 +43,24 @@ export const CardStatus: FC<CardStatusProps> = ({
     isError,
     isStale,
     retry,
+    lastUpdated,
     noMargin = false,
 }) => {
     if (!isError) {
         return null;
     }
 
+    const staleTooltip =
+        isStale && lastUpdated !== undefined
+            ? `Showing stale data from ${formatPartialIso8601(lastUpdated)}`
+            : undefined;
+
     return (
         <ErrorRetry
             noMargin={noMargin}
             retry={retry}
             severity={isStale ? "warning" : "error"}
+            tooltip={staleTooltip}
         >
             {isStale
                 ? `${name} is offline, reconnecting…`

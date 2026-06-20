@@ -42,12 +42,19 @@ interface DockerListProps {
 
 const DockerList: FC<DockerListProps> = ({ onError }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const { data, isLoading, isFetching, isError, isStale, retry } =
-        usePolledQuery(useGetDockerListQuery, undefined, {
-            name: "Docker",
-            pollingInterval: UPDATE_INTERVAL_MS,
-            onError,
-        });
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetDockerListQuery, undefined, {
+        name: "Docker",
+        pollingInterval: UPDATE_INTERVAL_MS,
+        onError,
+    });
 
     const allContainers =
         data?.status === "received"
@@ -75,6 +82,7 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
+                lastUpdated={lastUpdated}
                 noMargin
             />
             {data?.status === "received" && (

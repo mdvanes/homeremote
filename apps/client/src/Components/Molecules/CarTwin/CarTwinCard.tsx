@@ -28,6 +28,7 @@ export const CarTwinCard: FC = () => {
         isFetching,
         isError,
         isStale,
+        lastUpdated,
         retry,
     } = usePolledQuery(useGetCarTwinQuery, undefined, {
         name: "Car",
@@ -105,6 +106,7 @@ export const CarTwinCard: FC = () => {
                     isError={isError}
                     isStale={isStale}
                     retry={retry}
+                    lastUpdated={lastUpdated}
                     noMargin
                 />
                 {/* {showTokenForm && (

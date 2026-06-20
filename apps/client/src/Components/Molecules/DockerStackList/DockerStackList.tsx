@@ -7,11 +7,18 @@ import LoadingDot from "../LoadingDot/LoadingDot";
 import DockerStackItem from "./DockerStackItem";
 
 export const DockerStackList: FC = () => {
-    const { data, isLoading, isFetching, isError, isStale, retry } =
-        usePolledQuery(useGetStacksQuery, undefined, {
-            name: "Docker stacks",
-            pollingInterval: BACKOFF_DELAY,
-        });
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetStacksQuery, undefined, {
+        name: "Docker stacks",
+        pollingInterval: BACKOFF_DELAY,
+    });
 
     const stacks = data ?? [];
     const stacks1 = stacks.slice(0, Math.ceil(stacks.length / 2));
@@ -25,6 +32,7 @@ export const DockerStackList: FC = () => {
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
+                lastUpdated={lastUpdated}
                 noMargin
             />
             <Grid

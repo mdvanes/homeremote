@@ -26,6 +26,11 @@ export interface PollableQueryResult<Data> {
     isFetching: boolean;
     isLoading: boolean;
     isSuccess: boolean;
+    /**
+     * Epoch ms of the last successful response. Retained by RTK Query across a
+     * failed refetch, so while stale it reflects the age of the visible data.
+     */
+    fulfilledTimeStamp?: number;
     refetch: () => void;
 }
 
@@ -67,6 +72,8 @@ export interface UsePolledQueryOptions {
 export type UsePolledQueryResult<Data> = PollableQueryResult<Data> & {
     /** True when there is previously loaded data but the latest poll failed. */
     isStale: boolean;
+    /** Epoch ms of the last successful response, or undefined if never loaded. */
+    lastUpdated: number | undefined;
     /** Reset the backoff and refetch immediately. */
     retry: () => void;
 };
@@ -178,6 +185,7 @@ export function usePolledQuery<Arg, Data>(
     return {
         ...result,
         isStale: isError && result.data !== undefined,
+        lastUpdated: result.fulfilledTimeStamp,
         retry,
     };
 }

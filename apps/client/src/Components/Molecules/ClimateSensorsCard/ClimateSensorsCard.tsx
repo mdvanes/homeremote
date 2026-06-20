@@ -10,11 +10,18 @@ import { ClimateSensorsListItem } from "./ClimateSensorsListItem";
 const UPDATE_INTERVAL_MS = 1_000 * 60 * 1.5; // 1000 ms / 60 seconds = 1x per 1.5 minutes (to prevent synching with SwitchesCard)
 
 export const ClimateSensorsCard: FC = () => {
-    const { data, isError, isFetching, isLoading, isStale, retry } =
-        usePolledQuery(useGetSmartEntitiesQuery, undefined, {
-            name: "Climate sensors",
-            pollingInterval: UPDATE_INTERVAL_MS,
-        });
+    const {
+        data,
+        isError,
+        isFetching,
+        isLoading,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetSmartEntitiesQuery, undefined, {
+        name: "Climate sensors",
+        pollingInterval: UPDATE_INTERVAL_MS,
+    });
 
     const climateSensors = (data?.entities ?? [])
         .filter(isClimateSensor)
@@ -31,6 +38,7 @@ export const ClimateSensorsCard: FC = () => {
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
+                lastUpdated={lastUpdated}
             />
             <Box sx={staleContentSx(isStale)}>
                 <ClimateSensorsListItem sensors={climateSensors} />

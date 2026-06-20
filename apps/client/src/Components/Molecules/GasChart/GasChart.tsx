@@ -25,6 +25,7 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         isFetching,
         isError,
         isStale,
+        lastUpdated,
         retry,
     } = usePolledQuery(
         useGetGasTemperaturesQuery,
@@ -94,6 +95,7 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
+                lastUpdated={lastUpdated}
             />
 
             <Box sx={staleContentSx(isStale)}>

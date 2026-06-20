@@ -17,11 +17,18 @@ const UPDATE_INTERVAL_MS = 60 * 60 * 1000;
 const Nextup: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<ShowNextUpItem>();
-    const { data, isLoading, isFetching, isError, isStale, retry } =
-        usePolledQuery(useGetNextupQuery, undefined, {
-            name: "Next up",
-            pollingInterval: UPDATE_INTERVAL_MS,
-        });
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetNextupQuery, undefined, {
+        name: "Next up",
+        pollingInterval: UPDATE_INTERVAL_MS,
+    });
     if (!data) {
         return null;
     }
@@ -35,6 +42,7 @@ const Nextup: FC = () => {
                     isError={isError}
                     isStale={isStale}
                     retry={retry}
+                    lastUpdated={lastUpdated}
                 />
                 <Box sx={staleContentSx(isStale)}>
                     {items.map((item) => (

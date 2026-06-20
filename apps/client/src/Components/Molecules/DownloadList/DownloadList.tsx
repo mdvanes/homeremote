@@ -15,11 +15,18 @@ const DownloadList: FC = () => {
     const [isOpen, setIsOpen] = useState(false);
     const dispatch = useAppDispatch();
 
-    const { data, isLoading, isFetching, isError, isStale, retry } =
-        usePolledQuery(useGetDownloadListQuery, undefined, {
-            name: "Downloads",
-            pollingInterval: UPDATE_INTERVAL_MS,
-        });
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetDownloadListQuery, undefined, {
+        name: "Downloads",
+        pollingInterval: UPDATE_INTERVAL_MS,
+    });
     const [listItems, setListItems] = useState<JSX.Element[]>([]);
 
     useEffect(() => {
@@ -45,6 +52,7 @@ const DownloadList: FC = () => {
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
+                lastUpdated={lastUpdated}
             />
             <Box sx={staleContentSx(isStale)}>
                 {listItems}

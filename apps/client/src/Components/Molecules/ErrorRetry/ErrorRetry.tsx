@@ -6,6 +6,8 @@ interface Props extends PropsWithChildren {
     noMargin?: boolean;
     retry: () => void;
     severity?: "error" | "warning";
+    /** Optional tooltip shown on the message (e.g. when the data was loaded). */
+    tooltip?: string;
 }
 
 export const ErrorRetry: FC<Props> = ({
@@ -13,7 +15,9 @@ export const ErrorRetry: FC<Props> = ({
     children,
     retry,
     severity = "error",
+    tooltip,
 }) => {
+    const message = <div>{children}</div>;
     return (
         <Box
             component={Alert}
@@ -35,7 +39,11 @@ export const ErrorRetry: FC<Props> = ({
                     justifyContent: "space-between",
                 }}
             >
-                <div>{children}</div>
+                {tooltip ? (
+                    <Tooltip title={tooltip}>{message}</Tooltip>
+                ) : (
+                    message
+                )}
                 <Tooltip title="Retry">
                     <IconButton
                         size="small"

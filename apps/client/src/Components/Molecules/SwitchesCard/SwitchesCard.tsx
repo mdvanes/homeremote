@@ -10,11 +10,18 @@ import { isSwitch } from "./utils";
 const UPDATE_INTERVAL_MS = 1_000 * 60; // 1000 ms / 60 seconds = 1x per minute
 
 export const SwitchesCard: FC = () => {
-    const { data, isError, isFetching, isLoading, isStale, retry } =
-        usePolledQuery(useGetSmartEntitiesQuery, undefined, {
-            name: "Switches",
-            pollingInterval: UPDATE_INTERVAL_MS,
-        });
+    const {
+        data,
+        isError,
+        isFetching,
+        isLoading,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetSmartEntitiesQuery, undefined, {
+        name: "Switches",
+        pollingInterval: UPDATE_INTERVAL_MS,
+    });
 
     const switches = (data?.entities ?? []).filter(isSwitch);
 
@@ -29,6 +36,7 @@ export const SwitchesCard: FC = () => {
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
+                lastUpdated={lastUpdated}
             />
             <Box sx={staleContentSx(isStale)}>
                 {switches.map((item) => (

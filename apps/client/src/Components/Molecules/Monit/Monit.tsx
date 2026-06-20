@@ -10,11 +10,18 @@ import MonitInstance from "./MonitInstance";
 const UPDATE_INTERVAL_MS = 60 * 1000;
 
 const Monit: FC = () => {
-    const { data, isLoading, isFetching, isError, isStale, retry } =
-        usePolledQuery(useGetMonitStatusQuery, undefined, {
-            name: "Monit",
-            pollingInterval: UPDATE_INTERVAL_MS,
-        });
+    const {
+        data,
+        isLoading,
+        isFetching,
+        isError,
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetMonitStatusQuery, undefined, {
+        name: "Monit",
+        pollingInterval: UPDATE_INTERVAL_MS,
+    });
 
     return (
         <Card>
@@ -25,6 +32,7 @@ const Monit: FC = () => {
                     isError={isError}
                     isStale={isStale}
                     retry={retry}
+                    lastUpdated={lastUpdated}
                     noMargin
                 />
                 <Box sx={staleContentSx(isStale)}>
