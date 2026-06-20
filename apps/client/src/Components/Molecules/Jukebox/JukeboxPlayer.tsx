@@ -104,6 +104,7 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
             artist: song.artist,
             album: playlistName ?? "",
             imageUrl,
+            duration: song.duration,
         });
     }, [song, playlistName, currentPlaylist, setJukeboxInfo]);
 

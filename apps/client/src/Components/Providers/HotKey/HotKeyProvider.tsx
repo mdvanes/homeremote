@@ -30,6 +30,8 @@ export interface NowPlayingInfo {
     artist: string;
     album: string;
     imageUrl: string;
+    /** Track duration in seconds, from the API. */
+    duration: number;
 }
 
 const emptyNowPlayingInfo: NowPlayingInfo = {
@@ -37,6 +39,7 @@ const emptyNowPlayingInfo: NowPlayingInfo = {
     artist: "",
     album: "",
     imageUrl: "",
+    duration: 0,
 };
 
 const getFallbackMinutes = (): number => {
@@ -225,15 +228,6 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         playRadio();
     }, [clearSkipRadio, pauseJukebox, playRadio]);
 
-    const toggleRadio = useCallback(() => {
-        clearSkipRadio();
-        if (isRadioPlaying) {
-            pauseRadio();
-        } else {
-            playRadio();
-        }
-    }, [clearSkipRadio, isRadioPlaying, pauseRadio, playRadio]);
-
     // Unified play/pause: pauses whichever source is playing, otherwise resumes
     // the source that was last active (the one shown in the bar).
     const isPlaying = isRadioPlaying || isJukeboxPlaying;
@@ -259,18 +253,6 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         playJukebox,
         playRadio,
     ]);
-
-    const toggleJukebox = useCallback(() => {
-        clearSkipRadio();
-        const elem = jukeboxElem?.current;
-        if (elem) {
-            if (elem.paused) {
-                elem.play();
-            } else {
-                elem.pause();
-            }
-        }
-    }, [jukeboxElem, clearSkipRadio]);
 
     const toggleBetween = useCallback(() => {
         clearSkipRadio();
@@ -340,9 +322,9 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const hotKeyMap: HotKeyMap = useMemo(
         () => ({
-            q: {
-                description: "play/pause radio",
-                fn: toggleRadio,
+            s: {
+                description: "play/pause current source (radio or jukebox)",
+                fn: togglePlayPause,
             },
             w: {
                 description: "toggle between radio and jukebox",
@@ -351,10 +333,6 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
             a: {
                 description: "play previous on jukebox",
                 fn: handlePlayPrev,
-            },
-            s: {
-                description: "play/pause jukebox",
-                fn: toggleJukebox,
             },
             d: {
                 description: "play next on jukebox",
@@ -369,8 +347,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
             handlePlayNext,
             handlePlayPrev,
             toggleBetween,
-            toggleJukebox,
-            toggleRadio,
+            togglePlayPause,
             handleSkipRadio,
         ]
     );
