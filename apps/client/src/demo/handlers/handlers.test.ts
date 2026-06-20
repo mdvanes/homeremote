@@ -74,7 +74,7 @@ describe("demo handlers", () => {
         expect(downloads.status).toBe("received");
 
         const status = await get("/api/status");
-        expect(status.status).toBe("DEMO");
+        expect(status.status).toBe("service online");
 
         const datalora = await get("/api/datalora?type=24h");
         expect(Array.isArray(datalora.data)).toBe(true);
