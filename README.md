@@ -1,21 +1,14 @@
 # HomeRemote
 
-Web GUI in ES6 React for a Node backend that calls scripts spread out over several debian/ubuntu servers. The scripts
-are Upstart scripts to start/stop a radio playing service and direct shell calls to toggle a remote control for lightswitches.
-
-Material Design:
-
-- Material UI
-- Keep.google.com
-- https://codelabs.developers.google.com/codelabs/polymer-2-carousel/
+React/NestJS home automation dashboard. A Node backend aggregates data from
+various home-automation services and exposes a unified REST API; the React
+frontend presents everything in a single Material UI interface.
 
 ## Screenshot
 
 ![Screenshot](screenshot.png)
 
-## Installation
-
-Requirements:
+## Requirements
 
 - Caddy reverse proxy with SSL
 - Node backend (server) and React frontend (client), run via Docker Compose
@@ -33,39 +26,35 @@ Optional systems that can be connected (configured in `apps/server/.env`):
 - [InfluxDB](https://www.influxdata.com/) (deprecated)
 - [DataLora](https://github.com/mdvanes/datalora) (deprecated)
 
-## Adding a user
+## Installation
+
+1. create a config dir: `mkdir -p ~/homeremote/settings`
+2. set up environment variables: `cp apps/server/.env.example ~/homeremote/settings/.env` and update with your values
+3. set up auth file: `cp apps/server/auth.json.example ~/homeremote/settings/auth.json` and add at least one user (see [User Management](#user-management))
+4. copy `docker-compose.yml` to `~/homeremote/` and update the `volumes` "auth" and "songsfrom" paths
+5. start with `docker compose up -d`
+
+The app will be available at the host configured in your Caddy reverse proxy.
+To follow the logs: `docker compose logs --follow`
+
+### Updating
+
+To update to a new release, change the image tag in `docker-compose.yml` and re-run:
+
+```sh
+docker compose pull && docker compose up -d
+```
+
+## User Management
+
+### Adding a user
 
 - This endpoint is only enabled in development mode
 - Start dev server: `npm start`
 - For password "test", call (e.g. in browser) `http://localhost:4200/api/pw-to-hash/?password=test`
 - Store the hash with the username in auth.json
 
-## Demo mode
-
-HomeRemote can run as a self-contained **demo** where every backend call is answered with fake data.
-
-How it works:
-
-- All demo code lives in `apps/client/src/demo/` and is only loaded when the
-  demo flag is set.
-- A [Mock Service Worker](https://mswjs.io/) registered in the browser
-  intercepts the HTTP calls and returns generated data (schemas/types drive the
-  shapes; chart/time-series endpoints use small trending generators).
-- The auth flow is stubbed so the app auto-"signs in" as a "Demo User".
-
-Enable it with any of:
-
-- build env `NX_PUBLIC_DEMO=true` (for a static demo deployment), or
-- visiting the app with `?demo` (e.g. `http://localhost:4202/?demo`) — the flag
-  is persisted for the session; clear it again with `?demo=false`, or
-- `localStorage.demo = "true"`.
-
-Convenience scripts:
-
-- `npm run demo:serve` — run the dev server with demo mode always on.
-- `npm run demo:build` — produce a static demo build (`dist/apps/client`).
-
-## SSO / OIDC login with Authentik
+### SSO / OIDC login with Authentik
 
 Next to the local username/password login, HomeRemote can optionally let users
 sign in through an OpenID Connect provider such as
@@ -75,7 +64,7 @@ button is shown on the login page.
 SSO is **optional**: when no `oidc` block is present in `auth.json`, the OIDC
 routes and the login button are not enabled, and nothing changes.
 
-### How it works
+#### How it works
 
 - The server uses `openid-client` (Passport strategy) and discovers the
   provider from its issuer URL.
@@ -86,7 +75,7 @@ routes and the login button are not enabled, and nothing changes.
   from the OIDC token must match a user's `name`. If there is no match, login is
   rejected even when the provider authenticated the user.
 
-### 1. Configure the provider (Authentik)
+#### 1. Configure the provider (Authentik)
 
 - Create an OAuth2/OpenID **Provider** and an **Application** for HomeRemote.
 - Set the redirect URI to `https://<your-host>/auth/oidc/callback`.
@@ -94,7 +83,7 @@ routes and the login button are not enabled, and nothing changes.
 - Note the **Client ID**, **Client Secret**, and the **issuer/OpenID
   configuration** URL (e.g. `https://authentik.example.com/application/o/homeremote/`).
 
-### 2. Configure HomeRemote (`auth.json`)
+#### 2. Configure HomeRemote (`auth.json`)
 
 Add an `oidc` block (see `apps/server/auth.json.example`):
 
@@ -109,7 +98,7 @@ Add an `oidc` block (see `apps/server/auth.json.example`):
 }
 ```
 
-### 3. Configure users for SSO
+#### 3. Configure users for SSO
 
 Because of the allowlist, every user that signs in via Authentik must have a
 matching entry in the `users` array of `auth.json`.
@@ -136,13 +125,38 @@ matching entry in the `users` array of `auth.json`.
 - **Deny access:** omit a user from `auth.json` (or remove their entry) to deny
   them access, even if Authentik successfully authenticates them.
 
-## Running
+## Demo mode
 
-Development:
+HomeRemote can run as a self-contained **demo** where every backend call is answered with fake data.
+
+How it works:
+
+- All demo code lives in `apps/client/src/demo/` and is only loaded when the
+  demo flag is set.
+- A [Mock Service Worker](https://mswjs.io/) registered in the browser
+  intercepts the HTTP calls and returns generated data (schemas/types drive the
+  shapes; chart/time-series endpoints use small trending generators).
+- The auth flow is stubbed so the app auto-"signs in" as a "Demo User".
+
+Enable it with any of:
+
+- build env `NX_PUBLIC_DEMO=true` (for a static demo deployment), or
+- visiting the app with `?demo` (e.g. `http://localhost:4202/?demo`) — the flag
+  is persisted for the session; clear it again with `?demo=false`, or
+- `localStorage.demo = "true"`.
+
+Convenience scripts:
+
+- `npm run demo:serve` — run the dev server with demo mode always on.
+- `npm run demo:build` — produce a static demo build (`dist/apps/client`).
+
+## Development
+
+### Development server
 
 - serve all: `npm start` or `npx nx run-many --target=serve --projects=server,client --parallel`
 
-Other utils:
+### Utility scripts
 
 - serve client: `npx nx serve:all` or `npx nx serve client` or `npx nx run client:serve`
 - Add an app (without e2e): `npx nx g @nx/react:application --name=client --e2eTestRunner=none --dry-run` or `npx nx g @nx/nest:application --name=server --frontendProject=client --dry-run`
@@ -166,7 +180,7 @@ Api proxying: server is running on 3333 and client on 4200, but a proxy.conf.jso
 
 env files: https://nx.dev/guides/environment-variables
 
-Building / Run in production:
+### Building / Run in production
 
 - Install on Mac: python is on path, but can't be found by npm, even with `npm config python`. This makes the youtube-dl dependency installation fail when running `npm i` or `npm i -f` or even `npm i --python=python3`. For now, just remove `youtube-dl` on Mac from package.json, `npm i`, `npm i youtube-dl@^3.5.0 --ignore-scripts`
 - Python also failing Mac M1 and Ubuntu now. `which python` gives nothing, `which python3` gives `/usr/bin/python3`. Symlink: `ln -s /usr/bin/python3 /usr/bin/python`
@@ -198,7 +212,7 @@ Publishing is fully automated via GitHub Actions. Make sure the following secret
 - `secrets.DOCKER_USERNAME` and `secrets.DOCKER_PASSWORD` (Docker Hub)
 - Actions → General → Workflow permissions set to **Read and write** (required for GHCR and GitHub Releases)
 
-**Normal flow:**
+#### Automated publishing
 
 1. Merge changes to the main branch — the release workflow triggers automatically
 2. The workflow will:
@@ -209,7 +223,9 @@ Publishing is fully automated via GitHub Actions. Make sure the following secret
     - Create a GitHub Release titled `Release vX.Y.Z` with the commit messages since the previous tag as release notes
 3. On the target server, update the version in `docker-compose.yml` and run `docker-compose up -d`
 
-**Manual fallback** (if CI is unavailable):
+#### Manual publishing
+
+Fallback, e.g. if CI is unavailable.
 
 - Build image: `docker build -t mdworld/homeremote:X.Y.Z .` (on Mac: `docker build --build-arg INSTALL_TIMEOUT="--network-timeout 1000000" -t mdworld/homeremote:X.Y.Z .`)
 - Push to registry (note: also works with nerdctl on Mac, see https://github.com/containerd/nerdctl/blob/master/docs/registry.md#docker-hub):
@@ -217,13 +233,7 @@ Publishing is fully automated via GitHub Actions. Make sure the following secret
     - `docker push mdworld/homeremote:X.Y.Z`
     - `docker logout`
 
-**First-time target server setup:**
-
-- ~/homeremote/settings/auth (use apps/server/auth.json.example as base)
-- ~/homeremote/settings/.env (use apps/server/.env.example as base)
-- ~/homeremote/docker-compose.yml (copy docker-compose.yml from this project)
-
-## Generate types
+### Generate types
 
 - Intercept a JSON to the intended endpoint, e.g. with cURL
 - Save the JSON in `./libs/types/examples`. The `internal` subdir is for endpoints in this repo, the `external` subdir is for endpoints outside this repo, e.g. from third parties if they don't provide their own OpenApi descriptions.
@@ -232,14 +242,6 @@ Publishing is fully automated via GitHub Actions. Make sure the following secret
 - If there is no schema yet, this can be helpful to build one: https://editor.swagger.io/
 - Run `npm run codegen`
 - Types should be generated for the server and hooks for the client.
-
-## Notes
-
-- "noPropertyAccessFromIndexSignature": was turned to false when migrating, also see https://www.typescriptlang.org/tsconfig#noPropertyAccessFromIndexSignature
-
-- For Apple Silicon / ARM / Mac M1 there is an issue that the build will because it uses a platform specific version of @swc/core. Adding the ARM specific version @swc/core-darwin-arm64 breaks CI. Workaround to test the build locally is: `docker build . -t mdworld/homeremote:latest --platform=linux/amd64`
-
-- For Apple Silicon / ARM / Mac M1 with Colima, when Docker build fails with 'killed', try increasing available memory to 8GB with `colima stop && colima start --cpu 2 --memory 8`
 
 ### Subsonic API_TOKEN
 
@@ -253,3 +255,11 @@ echo -n FOO | md5
 # Linux:
 echo -n FOO | md5sum
 ```
+
+### Notes
+
+- "noPropertyAccessFromIndexSignature": was turned to false when migrating, also see https://www.typescriptlang.org/tsconfig#noPropertyAccessFromIndexSignature
+
+- For Apple Silicon / ARM / Mac M1 there is an issue that the build will because it uses a platform specific version of @swc/core. Adding the ARM specific version @swc/core-darwin-arm64 breaks CI. Workaround to test the build locally is: `docker build . -t mdworld/homeremote:latest --platform=linux/amd64`
+
+- For Apple Silicon / ARM / Mac M1 with Colima, when Docker build fails with 'killed', try increasing available memory to 8GB with `colima stop && colima start --cpu 2 --memory 8`
