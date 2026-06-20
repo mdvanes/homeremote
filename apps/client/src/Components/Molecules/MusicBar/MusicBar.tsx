@@ -4,6 +4,7 @@ import Jukebox from "../Jukebox/Jukebox";
 import RadioChannelMenu from "../RadioPlayer/RadioChannelMenu";
 import RadioEngine from "../RadioPlayer/RadioEngine";
 import UrlToMusic from "../UrlToMusic/UrlToMusic";
+import JukeboxProgressBar from "./JukeboxProgressBar";
 import PlayerControls from "./PlayerControls";
 import RadioHistoryButton from "./RadioHistoryButton";
 import SourceArt from "./SourceArt";
@@ -32,8 +33,11 @@ const MusicBar: FC = () => {
                 zIndex: (theme) => theme.zIndex.appBar,
                 px: 2,
                 py: 1,
+                // Needed so JukeboxProgressBar can anchor to the top edge.
+                overflow: "hidden",
             }}
         >
+            <JukeboxProgressBar />
             <Stack
                 direction="row"
                 spacing={1.5}
