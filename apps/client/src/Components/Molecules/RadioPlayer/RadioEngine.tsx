@@ -54,6 +54,7 @@ const RadioEngine: FC = () => {
             artist: nowPlaying?.artist ?? "",
             album: nowPlaying?.name || channel.name,
             imageUrl: nowPlaying?.songImageUrl || nowPlaying?.imageUrl || "",
+            duration: 0,
         });
     }, [nowPlaying, channel.name, setRadioInfo]);
 

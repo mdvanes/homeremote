@@ -17,7 +17,7 @@ const TrackInfo: FC = () => {
     const { currentTime, duration } = useJukeboxPlaybackTime();
 
     const hasInfo = info.title || info.artist || info.album;
-    const showTime = currentSource === "jukebox" && duration > 0;
+    const showTime = currentSource === "jukebox" && currentTime > 0;
 
     return (
         <Box sx={{ minWidth: 0, flexGrow: 1 }}>

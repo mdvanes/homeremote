@@ -9,7 +9,8 @@ export interface JukeboxPlaybackTime {
 }
 
 export const formatPlaybackTime = (seconds: number): string => {
-    if (!isFinite(seconds) || isNaN(seconds) || seconds < 0) return "0:00";
+    if (isNaN(seconds) || seconds < 0) return "0:00";
+    if (!isFinite(seconds)) return "—";
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
     return `${m}:${s.toString().padStart(2, "0")}`;
@@ -20,9 +21,9 @@ export const formatPlaybackTime = (seconds: number): string => {
  * current playback position, total duration, and progress percentage.
  */
 export const useJukeboxPlaybackTime = (): JukeboxPlaybackTime => {
-    const { jukeboxElem, isJukeboxPlaying } = useHotKeyContext();
+    const { jukeboxElem, isJukeboxPlaying, jukeboxInfo } = useHotKeyContext();
     const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState(0);
+    const [elemDuration, setElemDuration] = useState(0);
 
     useEffect(() => {
         const elem = jukeboxElem?.current;
@@ -30,7 +31,7 @@ export const useJukeboxPlaybackTime = (): JukeboxPlaybackTime => {
 
         const read = () => {
             setCurrentTime(elem.currentTime);
-            setDuration(isNaN(elem.duration) ? 0 : elem.duration);
+            setElemDuration(isNaN(elem.duration) ? 0 : elem.duration);
         };
 
         // Always do an immediate read (e.g. when pausing, capture final position).
@@ -41,6 +42,15 @@ export const useJukeboxPlaybackTime = (): JukeboxPlaybackTime => {
         const id = setInterval(read, 500);
         return () => clearInterval(id);
     }, [isJukeboxPlaying, jukeboxElem]);
+
+    // Prefer the API-provided duration; fall back to the audio element value
+    // only when the API duration is unavailable (e.g. live streams).
+    const duration =
+        jukeboxInfo.duration > 0
+            ? jukeboxInfo.duration
+            : isFinite(elemDuration)
+              ? elemDuration
+              : 0;
 
     const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 

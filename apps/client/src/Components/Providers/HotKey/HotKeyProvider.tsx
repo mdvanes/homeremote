@@ -30,6 +30,8 @@ export interface NowPlayingInfo {
     artist: string;
     album: string;
     imageUrl: string;
+    /** Track duration in seconds, from the API. */
+    duration: number;
 }
 
 const emptyNowPlayingInfo: NowPlayingInfo = {
@@ -37,6 +39,7 @@ const emptyNowPlayingInfo: NowPlayingInfo = {
     artist: "",
     album: "",
     imageUrl: "",
+    duration: 0,
 };
 
 const getFallbackMinutes = (): number => {
