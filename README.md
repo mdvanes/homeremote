@@ -243,19 +243,6 @@ Fallback, e.g. if CI is unavailable.
 - Run `npm run codegen`
 - Types should be generated for the server and hooks for the client.
 
-### Subsonic API_TOKEN
-
-JUKEBOX_API_TOKEN is md5 of "subsonic password" + "some random salt"
-
-```
-FOO="$password$salt"
-
-# Mac:
-echo -n FOO | md5
-# Linux:
-echo -n FOO | md5sum
-```
-
 ### Notes
 
 - "noPropertyAccessFromIndexSignature": was turned to false when migrating, also see https://www.typescriptlang.org/tsconfig#noPropertyAccessFromIndexSignature

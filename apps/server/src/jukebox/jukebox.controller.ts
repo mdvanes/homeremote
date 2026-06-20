@@ -27,6 +27,7 @@ import {
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { createHash, randomBytes } from "crypto";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
@@ -42,27 +43,39 @@ const isSubsonicSong = (
 export class JukeboxController {
     private readonly logger: Logger;
     private readonly baseUrl: string;
-    private readonly apiConfig: string;
+    private readonly username: string;
+    private readonly password: string;
     private readonly songDirId: string;
 
     constructor(private configService: ConfigService) {
         this.logger = new Logger(JukeboxController.name);
         this.baseUrl = this.configService.get<string>("JUKEBOX_BASE_URL") || "";
-        const JUKEBOX_USERNAME =
+        this.username =
             this.configService.get<string>("JUKEBOX_USERNAME") || "";
-        const JUKEBOX_SALT =
-            this.configService.get<string>("JUKEBOX_SALT") || "";
-        const JUKEBOX_API_TOKEN =
-            this.configService.get<string>("JUKEBOX_API_TOKEN") || "";
-        this.apiConfig = `?u=${JUKEBOX_USERNAME}&t=${JUKEBOX_API_TOKEN}&s=${JUKEBOX_SALT}&v=1.16.0&c=${PLAYER_NAME}&f=json`;
+        this.password =
+            this.configService.get<string>("JUKEBOX_PASSWORD") || "";
 
         const JUKEBOX_SONGDIR_ID =
             this.configService.get<string>("JUKEBOX_SONGDIR_ID") || "";
         this.songDirId = JUKEBOX_SONGDIR_ID;
     }
 
+    /**
+     * Build the Subsonic authentication parameters using the recommended
+     * salted token scheme: for each request a random salt is generated and
+     * the token is calculated as token = md5(password + salt).
+     * See https://subsonic.org/pages/api.jsp
+     */
+    private getApiConfig(): string {
+        const salt = randomBytes(6).toString("hex");
+        const token = createHash("md5")
+            .update(`${this.password}${salt}`, "utf8")
+            .digest("hex");
+        return `?u=${this.username}&t=${token}&s=${salt}&v=1.16.0&c=${PLAYER_NAME}&f=json`;
+    }
+
     getAPI(method: string, option = "") {
-        return this.baseUrl + method + this.apiConfig + option;
+        return this.baseUrl + method + this.getApiConfig() + option;
     }
 
     @UseGuards(JwtAuthGuard)
