@@ -17,8 +17,8 @@ import { useGetHomesecStatusQuery } from "../../../Services/homesecApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import { useAppDispatch } from "../../../store";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
-import LoadingDot from "../LoadingDot/LoadingDot";
+import { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import { logError, logInfo } from "../LogCard/logSlice";
 import { RssiIcon } from "./RssiIcon";
 import SimpleHomeSecListItem from "./SimpleHomeSecListItem";
@@ -101,18 +101,17 @@ export const HomeSec: FC = () => {
                     borderWidth: 1,
                     borderStyle: "solid",
                     borderColor: statusClass[data?.status ?? "Error"],
+                    position: "relative",
                 }}
             >
-                <LoadingDot
+                <CardStatusBar
                     isLoading={(isLoading || isFetching) && !isError}
-                    slowUpdateMs={6000}
-                />
-                <CardStatus
                     name="HomeSec"
                     isError={isError}
                     isStale={isStale}
                     retry={retry}
                     lastUpdated={lastUpdated}
+                    slowUpdateMs={6000}
                 />
                 {hasNoDevices && (
                     <SimpleHomeSecListItem

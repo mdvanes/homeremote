@@ -2,8 +2,8 @@ import { Box, List, Paper } from "@mui/material";
 import { FC } from "react";
 import { useGetSmartEntitiesQuery } from "../../../Services/generated/smartEntitiesApiWithRetry";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
-import LoadingDot from "../LoadingDot/LoadingDot";
+import { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import { isClimateSensor, sortClimateSensors } from "../SwitchesCard/utils";
 import { ClimateSensorsListItem } from "./ClimateSensorsListItem";
 
@@ -28,17 +28,19 @@ export const ClimateSensorsCard: FC = () => {
         .toSorted(sortClimateSensors);
 
     return (
-        <List component={Paper} onClick={() => retry()}>
-            <LoadingDot
+        <List
+            component={Paper}
+            onClick={() => retry()}
+            sx={{ position: "relative" }}
+        >
+            <CardStatusBar
                 isLoading={(isLoading || isFetching) && !isError}
-                slowUpdateMs={4_000}
-            />
-            <CardStatus
                 name="Climate sensors"
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
                 lastUpdated={lastUpdated}
+                slowUpdateMs={4_000}
             />
             <Box sx={staleContentSx(isStale)}>
                 <ClimateSensorsListItem sensors={climateSensors} />

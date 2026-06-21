@@ -1,5 +1,5 @@
-import { Box, IconButton, SxProps, Theme, Tooltip } from "@mui/material";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { Box, IconButton, SxProps, Theme, Tooltip } from "@mui/material";
 import { FC } from "react";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 

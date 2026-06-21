@@ -4,8 +4,8 @@ import { useGetDownloadListQuery } from "../../../Services/downloadListApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import { useAppDispatch } from "../../../store";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
-import LoadingDot from "../LoadingDot/LoadingDot";
+import { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import { logError } from "../LogCard/logSlice";
 import DownloadListItem from "./DownloadListItem";
 
@@ -45,9 +45,9 @@ const DownloadList: FC = () => {
     }, [dispatch, data, isOpen]);
 
     return (
-        <List component={Paper}>
-            <LoadingDot isLoading={(isLoading || isFetching) && !isError} />
-            <CardStatus
+        <List component={Paper} sx={{ position: "relative" }}>
+            <CardStatusBar
+                isLoading={(isLoading || isFetching) && !isError}
                 name="Downloads"
                 isError={isError}
                 isStale={isStale}

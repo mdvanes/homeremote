@@ -2,8 +2,8 @@ import { Box, Card, CardContent } from "@mui/material";
 import { FC } from "react";
 import { useGetMonitStatusQuery } from "../../../Services/monitApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
-import LoadingDot from "../LoadingDot/LoadingDot";
+import { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import MonitInstance from "./MonitInstance";
 
 // Monit only updates once per minute on the backend
@@ -24,19 +24,15 @@ const Monit: FC = () => {
     });
 
     return (
-        <Card>
+        <Card sx={{ position: "relative" }}>
             <CardContent>
-                <LoadingDot
+                <CardStatusBar
                     isLoading={(isLoading || isFetching) && !isError}
-                    noMargin
-                />
-                <CardStatus
                     name="Monit"
                     isError={isError}
                     isStale={isStale}
                     retry={retry}
                     lastUpdated={lastUpdated}
-                    noMargin
                 />
                 <Box sx={staleContentSx(isStale)}>
                     {data?.monitlist.map((monit) => (

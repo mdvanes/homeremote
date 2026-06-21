@@ -4,7 +4,7 @@ import DockerStackList from "./DockerStackList";
 
 export const DockerStackListCard: FC = () => {
     return (
-        <Card>
+        <Card sx={{ position: "relative" }}>
             <CardContent>
                 <DockerStackList />
             </CardContent>

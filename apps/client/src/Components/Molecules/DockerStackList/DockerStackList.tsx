@@ -2,8 +2,8 @@ import { Grid, Stack } from "@mui/material";
 import { FC } from "react";
 import { useGetStacksQuery } from "../../../Services/stacksApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
-import LoadingDot from "../LoadingDot/LoadingDot";
+import { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import DockerStackItem from "./DockerStackItem";
 
 const UPDATE_INTERVAL_MS = 30000;
@@ -28,17 +28,13 @@ export const DockerStackList: FC = () => {
 
     return (
         <>
-            <LoadingDot
+            <CardStatusBar
                 isLoading={(isLoading || isFetching) && !isError}
-                noMargin
-            />
-            <CardStatus
                 name="Docker stacks"
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
                 lastUpdated={lastUpdated}
-                noMargin
             />
             <Grid
                 container

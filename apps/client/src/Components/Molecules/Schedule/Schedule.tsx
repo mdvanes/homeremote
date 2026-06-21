@@ -3,8 +3,8 @@ import { Box, List, ListItem, ListItemText, Paper } from "@mui/material";
 import { FC, ReactNode } from "react";
 import { useGetScheduleQuery } from "../../../Services/scheduleApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
-import LoadingDot from "../LoadingDot/LoadingDot";
+import { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 
 // This barely updates once a day, so check once per hour
 const UPDATE_INTERVAL_MS = 60 * 60 * 1000;
@@ -77,9 +77,9 @@ const Schedule: FC = () => {
     }
 
     return (
-        <List component={Paper} sx={{ gap: "10px" }}>
-            <LoadingDot isLoading={isLoading || isFetching} />
-            <CardStatus
+        <List component={Paper} sx={{ gap: "10px", position: "relative" }}>
+            <CardStatusBar
+                isLoading={isLoading || isFetching}
                 name="Schedule"
                 isError={isError}
                 isStale={isStale}

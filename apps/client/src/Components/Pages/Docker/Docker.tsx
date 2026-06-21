@@ -12,7 +12,7 @@ const Docker: FC = () => {
     const dispatch = useDispatch();
 
     return (
-        <Card>
+        <Card sx={{ position: "relative" }}>
             <CardContent>
                 <DockerList
                     onError={(err: string) =>

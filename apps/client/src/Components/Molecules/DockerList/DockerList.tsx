@@ -5,9 +5,9 @@ import { FC, useState } from "react";
 import { useGetDockerListQuery } from "../../../Services/dockerListApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
+import { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import DockerInfo from "../DockerInfo/DockerInfo";
-import LoadingDot from "../LoadingDot/LoadingDot";
 import ContainerDot from "./ContainerDot";
 
 const UPDATE_INTERVAL_MS = 30000;
@@ -76,17 +76,13 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
 
     return (
         <>
-            <LoadingDot
+            <CardStatusBar
                 isLoading={(isLoading || isFetching) && !isError}
-                noMargin
-            />
-            <CardStatus
                 name="Docker"
                 isError={isError}
                 isStale={isStale}
                 retry={retry}
                 lastUpdated={lastUpdated}
-                noMargin
             />
             {data?.status === "received" && (
                 <Box sx={staleContentSx(isStale)}>
