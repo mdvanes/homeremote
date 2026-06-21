@@ -30,7 +30,7 @@ describe("CardStatus", () => {
         expect(container).toBeEmptyDOMElement();
     });
 
-    it("shows a friendly reconnecting banner while data is stale", () => {
+    it("shows a compact stale bar that reveals the reconnecting message on hover", async () => {
         render(
             <CardStatus
                 name="Switches"
@@ -40,12 +40,21 @@ describe("CardStatus", () => {
             />
         );
 
-        expect(
-            screen.getByText("Switches is offline, reconnecting…")
-        ).toBeVisible();
+        const bar = screen.getByRole("status", {
+            name: "Switches is offline, reconnecting…",
+        });
+        expect(bar).toBeVisible();
+
+        await userEvent.hover(bar);
+
+        await waitFor(() =>
+            expect(
+                screen.getByText("Switches is offline, reconnecting…")
+            ).toBeVisible()
+        );
     });
 
-    it("shows a stale tooltip with the last updated timestamp", async () => {
+    it("shows the last updated timestamp in the stale popover", async () => {
         const date = new Date(2026, 5, 20, 22, 51);
         render(
             <CardStatus
@@ -57,9 +66,7 @@ describe("CardStatus", () => {
             />
         );
 
-        await userEvent.hover(
-            screen.getByText("Switches is offline, reconnecting…")
-        );
+        await userEvent.hover(screen.getByRole("status"));
 
         await waitFor(() =>
             expect(
@@ -68,7 +75,7 @@ describe("CardStatus", () => {
         );
     });
 
-    it("does not show a stale tooltip when there is no last updated time", async () => {
+    it("does not show a timestamp when there is no last updated time", async () => {
         render(
             <CardStatus
                 name="Switches"
@@ -78,12 +85,24 @@ describe("CardStatus", () => {
             />
         );
 
-        await userEvent.hover(
-            screen.getByText("Switches is offline, reconnecting…")
-        );
+        await userEvent.hover(screen.getByRole("status"));
 
         await new Promise((resolve) => setTimeout(resolve, 50));
         expect(screen.queryByText(/Showing stale data/)).toBeNull();
+    });
+
+    it("calls retry from the stale popover", async () => {
+        const retry = vi.fn();
+        render(<CardStatus name="Switches" isError isStale retry={retry} />);
+
+        await userEvent.hover(screen.getByRole("status"));
+
+        const retryButton = await screen.findByRole("button", {
+            name: "Retry",
+        });
+        await userEvent.click(retryButton);
+
+        expect(retry).toHaveBeenCalledTimes(1);
     });
 
     it("shows a could-not-load banner on a cold failure", () => {

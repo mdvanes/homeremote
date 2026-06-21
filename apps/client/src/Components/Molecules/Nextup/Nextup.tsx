@@ -4,8 +4,8 @@ import { FC, useState } from "react";
 import { useGetNextupQuery } from "../../../Services/nextupApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
-import LoadingDot from "../LoadingDot/LoadingDot";
+import { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import { NextupListItem } from "./NextupListItem";
 import { SelectedItemDialogContent } from "./SelectedItemDialogContent";
 
@@ -35,9 +35,9 @@ const Nextup: FC = () => {
     const items = isOpen ? data.items : data.items.slice(0, CUTOFF);
     return (
         <>
-            <List component={Paper}>
-                <LoadingDot isLoading={isLoading || isFetching} />
-                <CardStatus
+            <List component={Paper} sx={{ position: "relative" }}>
+                <CardStatusBar
+                    isLoading={isLoading || isFetching}
                     name="Next up"
                     isError={isError}
                     isStale={isStale}
