@@ -1,10 +1,12 @@
 import { Grid, Stack } from "@mui/material";
 import { FC } from "react";
-import { BACKOFF_DELAY, useGetStacksQuery } from "../../../Services/stacksApi";
+import { useGetStacksQuery } from "../../../Services/stacksApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
 import LoadingDot from "../LoadingDot/LoadingDot";
 import DockerStackItem from "./DockerStackItem";
+
+const UPDATE_INTERVAL_MS = 30000;
 
 export const DockerStackList: FC = () => {
     const {
@@ -17,7 +19,7 @@ export const DockerStackList: FC = () => {
         retry,
     } = usePolledQuery(useGetStacksQuery, undefined, {
         name: "Docker stacks",
-        pollingInterval: BACKOFF_DELAY,
+        pollingInterval: UPDATE_INTERVAL_MS,
     });
 
     const stacks = data ?? [];
