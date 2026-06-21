@@ -93,9 +93,14 @@ export const CardStatus: FC<CardStatusProps> = ({
                     aria-label={reconnecting}
                     sx={{
                         height: 4,
-                        mx: noMargin ? -2 : 0,
                         bgcolor: "warning.main",
                         cursor: "help",
+                        // Overlay the reserved LoadingDot slot (which sits just
+                        // above) so the stale bar appears in the exact same
+                        // place as the blue progress bar instead of below it.
+                        ...(noMargin
+                            ? { mt: "-16px", mb: "12px", mx: "-16px" }
+                            : { mt: "-4px" }),
                     }}
                 />
             </Tooltip>

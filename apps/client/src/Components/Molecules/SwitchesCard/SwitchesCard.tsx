@@ -28,7 +28,7 @@ export const SwitchesCard: FC = () => {
     return (
         <List component={Paper}>
             <LoadingDot
-                isLoading={isLoading || isFetching}
+                isLoading={(isLoading || isFetching) && !isError}
                 slowUpdateMs={4_000}
             />
             <CardStatus

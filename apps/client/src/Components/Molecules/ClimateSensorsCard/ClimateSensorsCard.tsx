@@ -30,7 +30,7 @@ export const ClimateSensorsCard: FC = () => {
     return (
         <List component={Paper} onClick={() => retry()}>
             <LoadingDot
-                isLoading={isLoading || isFetching}
+                isLoading={(isLoading || isFetching) && !isError}
                 slowUpdateMs={4_000}
             />
             <CardStatus

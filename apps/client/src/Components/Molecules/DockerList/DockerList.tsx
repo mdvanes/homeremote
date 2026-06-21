@@ -76,7 +76,10 @@ const DockerList: FC<DockerListProps> = ({ onError }) => {
 
     return (
         <>
-            <LoadingDot isLoading={isLoading || isFetching} noMargin />
+            <LoadingDot
+                isLoading={(isLoading || isFetching) && !isError}
+                noMargin
+            />
             <CardStatus
                 name="Docker"
                 isError={isError}

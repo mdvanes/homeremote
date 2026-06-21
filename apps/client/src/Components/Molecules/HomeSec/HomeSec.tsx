@@ -104,7 +104,7 @@ export const HomeSec: FC = () => {
                 }}
             >
                 <LoadingDot
-                    isLoading={isLoading || isFetching}
+                    isLoading={(isLoading || isFetching) && !isError}
                     slowUpdateMs={6000}
                 />
                 <CardStatus

@@ -26,7 +26,10 @@ const Monit: FC = () => {
     return (
         <Card>
             <CardContent>
-                <LoadingDot isLoading={isLoading || isFetching} noMargin />
+                <LoadingDot
+                    isLoading={(isLoading || isFetching) && !isError}
+                    noMargin
+                />
                 <CardStatus
                     name="Monit"
                     isError={isError}
