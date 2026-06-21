@@ -46,7 +46,7 @@ const DownloadList: FC = () => {
 
     return (
         <List component={Paper}>
-            <LoadingDot isLoading={isLoading || isFetching} />
+            <LoadingDot isLoading={(isLoading || isFetching) && !isError} />
             <CardStatus
                 name="Downloads"
                 isError={isError}

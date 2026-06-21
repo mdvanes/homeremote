@@ -28,7 +28,10 @@ export const DockerStackList: FC = () => {
 
     return (
         <>
-            <LoadingDot isLoading={isLoading || isFetching} noMargin />
+            <LoadingDot
+                isLoading={(isLoading || isFetching) && !isError}
+                noMargin
+            />
             <CardStatus
                 name="Docker stacks"
                 isError={isError}

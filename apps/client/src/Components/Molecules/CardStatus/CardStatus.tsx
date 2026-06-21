@@ -1,4 +1,5 @@
-import { SxProps, Theme } from "@mui/material";
+import { Box, IconButton, SxProps, Theme, Tooltip } from "@mui/material";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { FC } from "react";
 import ErrorRetry from "../ErrorRetry/ErrorRetry";
 
@@ -30,12 +31,13 @@ export const formatPartialIso8601 = (timestamp: number): string => {
 };
 
 /**
- * Consistent status banner for polled cards.
+ * Consistent status indicator for polled cards.
  *
  * - Healthy: renders nothing.
- * - Stale (data still shown but the latest poll failed): a friendly amber
- *   "reconnecting" banner, so the user knows the data may be out of date while
- *   the card keeps retrying in the background.
+ * - Stale (data still shown but the latest poll failed): a compact amber line,
+ *   as thin as the loading bar so the card does not resize. Hovering reveals a
+ *   popover with the "reconnecting" message, the timestamp of the last
+ *   successful load, and a retry button.
  * - Cold failure (no data to show): a red "could not load" banner.
  */
 export const CardStatus: FC<CardStatusProps> = ({
@@ -50,21 +52,59 @@ export const CardStatus: FC<CardStatusProps> = ({
         return null;
     }
 
-    const staleTooltip =
-        isStale && lastUpdated !== undefined
-            ? `Showing stale data from ${formatPartialIso8601(lastUpdated)}`
-            : undefined;
+    if (isStale) {
+        const reconnecting = `${name} is offline, reconnecting…`;
+        const staleSince =
+            lastUpdated !== undefined
+                ? `Showing stale data from ${formatPartialIso8601(lastUpdated)}`
+                : undefined;
+
+        return (
+            <Tooltip
+                title={
+                    <Box
+                        sx={{
+                            alignItems: "center",
+                            display: "flex",
+                            gap: 1,
+                        }}
+                    >
+                        <Box>
+                            <Box>{reconnecting}</Box>
+                            {staleSince && (
+                                <Box sx={{ opacity: 0.8 }}>{staleSince}</Box>
+                            )}
+                        </Box>
+                        <Tooltip title="Retry">
+                            <IconButton
+                                size="small"
+                                onClick={retry}
+                                aria-label="Retry"
+                                sx={{ color: "inherit" }}
+                            >
+                                <RestartAltIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                }
+            >
+                <Box
+                    role="status"
+                    aria-label={reconnecting}
+                    sx={{
+                        height: 4,
+                        mx: noMargin ? -2 : 0,
+                        bgcolor: "warning.main",
+                        cursor: "help",
+                    }}
+                />
+            </Tooltip>
+        );
+    }
 
     return (
-        <ErrorRetry
-            noMargin={noMargin}
-            retry={retry}
-            severity={isStale ? "warning" : "error"}
-            tooltip={staleTooltip}
-        >
-            {isStale
-                ? `${name} is offline, reconnecting…`
-                : `${name} could not load`}
+        <ErrorRetry noMargin={noMargin} retry={retry} severity="error">
+            {`${name} could not load`}
         </ErrorRetry>
     );
 };
