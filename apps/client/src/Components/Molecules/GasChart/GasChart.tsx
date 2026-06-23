@@ -3,7 +3,6 @@ import { FC, useState } from "react";
 import { BarProps } from "recharts";
 import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApiWithRetry";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
-import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
 import EnergyChart, {
     SensorItem,
@@ -15,7 +14,7 @@ const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
 
 const UPDATE_INTERVAL_MS = 60 * 60 * 1000; // 1 x per hour
 
-// TODO values have descrepencies with Home Assistant
+// TODO values have discrepancies with Home Assistant
 const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     const [range, setRange] = useState<"day" | "week" | "month">("week");
 
@@ -98,7 +97,7 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
                 lastUpdated={lastUpdated}
             />
 
-            <Box sx={staleContentSx(isStale)}>
+            <Box sx={{ ...staleContentSx(isStale), marginBottom: 2 }}>
                 <EnergyChart
                     data={entries}
                     config={{
@@ -129,23 +128,8 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
     );
 };
 
-// TODO replace old GasChart by new EnergyChart. Need to fix displaying of gas usage in new EnergyChart.
 const GasChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    return (
-        <>
-            <GasTemperaturesChart isBig={isBig} />
-
-            {isBig && (
-                <CardExpandBar
-                    isOpen={isOpen}
-                    setIsOpen={setIsOpen}
-                    hint={`more`}
-                />
-            )}
-        </>
-    );
+    return <GasTemperaturesChart isBig={isBig} />;
 };
 
 export default GasChart;

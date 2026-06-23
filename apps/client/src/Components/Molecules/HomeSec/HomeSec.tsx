@@ -1,15 +1,4 @@
-import { HomesecStatusResponse, TypeF } from "@homeremote/types";
-import {
-    Box,
-    Icon,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemText,
-    Paper,
-    Tooltip,
-} from "@mui/material";
+import { Box, List, Paper, Tooltip } from "@mui/material";
 import { SerializedError } from "@reduxjs/toolkit";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import { FC, useEffect, useState } from "react";
@@ -20,25 +9,9 @@ import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import { staleContentSx } from "../CardStatus/CardStatus";
 import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import { logError, logInfo } from "../LogCard/logSlice";
-import { RssiIcon } from "./RssiIcon";
+import { HomeSecListItem } from "./HomeSecListItem";
+import { statusClass } from "./HomeSecMaps";
 import SimpleHomeSecListItem from "./SimpleHomeSecListItem";
-
-const statusClass: Record<HomesecStatusResponse["status"] | "Error", string> = {
-    Error: "black",
-    Disarm: "green",
-    "Home Arm 1": "yellow",
-    "Full Arm": "red",
-};
-
-const typeIcon: Record<TypeF, string> = {
-    "Door Contact": "sensor_door",
-    "Smoke Detector": "smoking_rooms",
-    Keypad: "keyboard",
-    IR: "animation",
-    "Remote Controller": "settings_remote",
-    Siren: "notifications",
-    CO: "smoking_rooms",
-};
 
 const UPDATE_INTERVAL_MS = 2 * 60 * 1000;
 
@@ -97,7 +70,7 @@ export const HomeSec: FC = () => {
             <List
                 component={Paper}
                 onClick={() => retry()}
-                style={{
+                sx={{
                     borderWidth: 1,
                     borderStyle: "solid",
                     borderColor: statusClass[data?.status ?? "Error"],
@@ -121,82 +94,14 @@ export const HomeSec: FC = () => {
                 )}
                 <Box sx={staleContentSx(isStale)}>
                     {shownDevices.map((sensor) => (
-                        <ListItem
-                            key={sensor.id}
-                            disableGutters
-                            disablePadding
-                            dense
-                        >
-                            <ListItemButton>
-                                <ListItemAvatar>
-                                    <Tooltip title={sensor.type_f}>
-                                        <Icon>{typeIcon[sensor.type_f]}</Icon>
-                                    </Tooltip>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    primary={
-                                        <div
-                                            style={{
-                                                display: "flex",
-                                                justifyContent: "space-between",
-                                            }}
-                                        >
-                                            <div>
-                                                {sensor.name === "" &&
-                                                sensor.type_f === "Siren"
-                                                    ? "Sirene"
-                                                    : sensor.name}
-                                            </div>
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    gap: "8px",
-                                                }}
-                                            >
-                                                <div>{sensor.status}</div>
-                                                <div>
-                                                    {sensor.cond_ok === "1" ? (
-                                                        <Icon
-                                                            color="success"
-                                                            sx={{
-                                                                marginTop:
-                                                                    "-0.1rem",
-                                                            }}
-                                                        >
-                                                            check_circle_outline
-                                                        </Icon>
-                                                    ) : (
-                                                        <Icon
-                                                            color="error"
-                                                            sx={{
-                                                                marginTop:
-                                                                    "-0.1rem",
-                                                            }}
-                                                        >
-                                                            error_outline
-                                                        </Icon>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <RssiIcon
-                                                        rssi={sensor.rssi}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                />
-                            </ListItemButton>
-                        </ListItem>
+                        <HomeSecListItem key={sensor.id} sensor={sensor} />
                     ))}
                 </Box>
                 {devices.length > 0 && (
                     <CardExpandBar
                         isOpen={isOpen}
                         setIsOpen={setIsOpen}
-                        hint={`and ${
-                            devices.length - shownDevices.length
-                        } more`}
+                        hint={`and ${devices.length - shownDevices.length} more`}
                     />
                 )}
             </List>
