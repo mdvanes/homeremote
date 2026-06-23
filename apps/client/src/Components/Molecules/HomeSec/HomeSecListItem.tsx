@@ -10,7 +10,7 @@ import {
 import { FC } from "react";
 import { typeIcon } from "./HomeSecMaps";
 import { RssiIcon } from "./RssiIcon";
-import { ConditionIcon } from "./StatusIcon";
+import { ConditionIcon } from "./ConditionIcon";
 
 export const HomeSecListItem: FC<{
     sensor: HomesecStatusResponse["devices"][number];
