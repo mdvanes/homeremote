@@ -69,7 +69,6 @@ const Dashboard: FC = () => {
                 <DelayComponent delayMs={500}>
                     <ClimateSensorsCard />
                 </DelayComponent>
-
                 <DelayComponent delayMs={1000}>
                     <GasChart />
                 </DelayComponent>

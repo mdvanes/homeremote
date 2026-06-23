@@ -33,6 +33,7 @@ const Nextup: FC = () => {
         return null;
     }
     const items = isOpen ? data.items : data.items.slice(0, CUTOFF);
+
     return (
         <>
             <List component={Paper} sx={{ position: "relative" }}>

@@ -8,9 +8,9 @@ import {
     Tooltip,
 } from "@mui/material";
 import { FC } from "react";
+import { ConditionIcon } from "./ConditionIcon";
 import { typeIcon } from "./HomeSecMaps";
 import { RssiIcon } from "./RssiIcon";
-import { ConditionIcon } from "./StatusIcon";
 
 export const HomeSecListItem: FC<{
     sensor: HomesecStatusResponse["devices"][number];
