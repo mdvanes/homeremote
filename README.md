@@ -3,7 +3,7 @@
 Home automation dashboard
 
 ![GitHub Release](https://img.shields.io/github/v/release/mdvanes/homeremote)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/mdvanes/homeremote/validateAndBuild.yml)
+[![Validate and Build](https://github.com/mdvanes/homeremote/actions/workflows/validateAndBuild.yml/badge.svg?branch=main)](https://github.com/mdvanes/homeremote/actions/workflows/validateAndBuild.yml)
 ![GitHub License](https://img.shields.io/github/license/mdvanes/homeremote)
 
 <details open="open">
