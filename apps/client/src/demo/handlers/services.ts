@@ -118,4 +118,10 @@ const response: ServicesResponse = {
 
 export const servicesHandlers = [
     http.get("*/api/services", () => HttpResponse.json(response)),
+    http.get("*/api/services/container/:action/:id", () =>
+        HttpResponse.json({ status: "received" })
+    ),
+    http.get("*/api/services/stack/:action/:id", () =>
+        HttpResponse.json({ status: "received" })
+    ),
 ];

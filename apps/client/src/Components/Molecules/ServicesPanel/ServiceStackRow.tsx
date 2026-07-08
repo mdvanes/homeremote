@@ -4,6 +4,7 @@ import { Box, IconButton } from "@mui/material";
 import { FC } from "react";
 import { ContainerDots } from "./ContainerDots";
 import { HealthDot } from "./HealthDot";
+import { ServiceStackActions } from "./ServiceStackActions";
 
 interface ServiceStackRowProps {
     stack: ServiceStack;
@@ -24,6 +25,7 @@ export const ServiceStackRow: FC<ServiceStackRowProps> = ({ stack }) => {
                 minHeight: 30,
                 borderRadius: 1,
                 "&:hover": { backgroundColor: "action.hover" },
+                "&:hover .service-stack-actions": { opacity: 1 },
             }}
         >
             <HealthDot
@@ -67,6 +69,10 @@ export const ServiceStackRow: FC<ServiceStackRowProps> = ({ stack }) => {
                     <OpenInNewIcon fontSize="small" />
                 </IconButton>
             )}
+            <ServiceStackActions
+                stack={stack}
+                className="service-stack-actions"
+            />
         </Box>
     );
 };

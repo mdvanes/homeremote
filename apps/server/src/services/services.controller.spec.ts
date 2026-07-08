@@ -271,4 +271,98 @@ describe("Services Controller", () => {
             controller.getServices(mockAuthenticatedRequest)
         ).rejects.toThrow("failed to receive downstream data");
     });
+
+    describe("container actions", () => {
+        beforeEach(() => {
+            mockGot.mockReturnValue({
+                json: () => Promise.resolve({}),
+            } as CancelableRequest<Response>);
+        });
+
+        it.each(["start", "stop", "restart"])(
+            "posts %s to the docker socket",
+            async (action) => {
+                const result = await controller.controlContainer(
+                    mockAuthenticatedRequest,
+                    action,
+                    "abc123"
+                );
+
+                expect(result).toEqual({ status: "received" });
+                expect(mockGot).toHaveBeenCalledWith(
+                    `http://unix:/var/run/docker.sock:/v1.41/containers/abc123/${action}`,
+                    { method: "POST", enableUnixSockets: true }
+                );
+            }
+        );
+
+        it("rejects an unknown action", async () => {
+            await expect(
+                controller.controlContainer(
+                    mockAuthenticatedRequest,
+                    "delete",
+                    "abc123"
+                )
+            ).rejects.toThrow("unknown action");
+            expect(mockGot).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("stack actions", () => {
+        beforeEach(() => {
+            mockGot.post = vi.fn().mockReturnValue({
+                json: () => Promise.resolve({}),
+            }) as unknown as typeof got.post;
+        });
+
+        it.each(["start", "stop"])(
+            "posts %s to Portainer with the endpoint id",
+            async (action) => {
+                const result = await controller.controlStack(
+                    mockAuthenticatedRequest,
+                    action,
+                    "5",
+                    "2"
+                );
+
+                expect(result).toEqual({ status: "received" });
+                expect(mockGot.post).toHaveBeenCalledWith(
+                    `https://portainer.test/api/stacks/5/${action}?endpointId=2`,
+                    { headers: { "X-API-KEY": "secret" } }
+                );
+            }
+        );
+
+        it("restarts a stack by stopping then starting it", async () => {
+            const result = await controller.controlStack(
+                mockAuthenticatedRequest,
+                "restart",
+                "5",
+                "2"
+            );
+
+            expect(result).toEqual({ status: "received" });
+            expect(mockGot.post).toHaveBeenNthCalledWith(
+                1,
+                "https://portainer.test/api/stacks/5/stop?endpointId=2",
+                { headers: { "X-API-KEY": "secret" } }
+            );
+            expect(mockGot.post).toHaveBeenNthCalledWith(
+                2,
+                "https://portainer.test/api/stacks/5/start?endpointId=2",
+                { headers: { "X-API-KEY": "secret" } }
+            );
+        });
+
+        it("rejects an unknown action", async () => {
+            await expect(
+                controller.controlStack(
+                    mockAuthenticatedRequest,
+                    "remove",
+                    "5",
+                    "2"
+                )
+            ).rejects.toThrow("unknown action");
+        });
+    });
 });

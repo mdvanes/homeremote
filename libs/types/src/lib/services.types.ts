@@ -57,6 +57,10 @@ export interface ServicesSummary {
     stopped: number;
 }
 
+export interface ServiceActionResponse {
+    status: "received" | "error";
+}
+
 export type ServicesResponse =
     | {
           status: "received";

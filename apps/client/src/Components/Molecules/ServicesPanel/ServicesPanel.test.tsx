@@ -1,11 +1,11 @@
 import { ServicesResponse } from "@homeremote/types";
 import { StyledEngineProvider, ThemeProvider } from "@mui/material";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FC, ReactNode } from "react";
 import { servicesApi } from "../../../Services/servicesApi";
 import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
-import { MockStoreProvider } from "../../../testHelpers";
+import { createGetCalledUrl, MockStoreProvider } from "../../../testHelpers";
 import createThemeWithMode from "../../../theme";
 import ServicesPanel from "./ServicesPanel";
 
@@ -100,5 +100,25 @@ describe("ServicesPanel", () => {
         expect(link).toHaveAttribute("href", "http://homeserver:3000");
         expect(screen.getByText(/1 healthy/)).toBeVisible();
         expect(screen.getByText(/1 stopped/)).toBeVisible();
+    });
+
+    it("confirms and dispatches a stack action", async () => {
+        const getCalledUrl = createGetCalledUrl(fetchMock);
+        render(<ServicesPanel />, { wrapper: Wrapper });
+        await screen.findByText("media");
+
+        await userEvent.click(screen.getByLabelText("Start media"));
+        await userEvent.click(screen.getByRole("button", { name: "OK" }));
+
+        await waitFor(() => {
+            const urls = fetchMock.mock.calls.map((_, index) =>
+                getCalledUrl(index)
+            );
+            expect(
+                urls.some((url) =>
+                    url.includes("/api/services/stack/start/3?endpointId=1")
+                )
+            ).toBe(true);
+        });
     });
 });

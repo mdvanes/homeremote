@@ -1,6 +1,7 @@
 import {
     DockerEngineContainerSummary,
     PortainerApiStack,
+    ServiceActionResponse,
     ServiceContainer,
     ServiceHealth,
     ServiceLink,
@@ -16,6 +17,8 @@ import {
     HttpException,
     HttpStatus,
     Logger,
+    Param,
+    Query,
     Request,
     UseGuards,
 } from "@nestjs/common";
@@ -381,6 +384,85 @@ export class ServicesController {
                 serviceLinks,
                 summary: this.buildSummary(aggregatedStacks),
             };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    private async postToDockerSocket(path: string): Promise<void> {
+        await got(buildDockerUrl(this.socketPath, path), {
+            method: "POST",
+            enableUnixSockets: true,
+        }).json<unknown>();
+    }
+
+    private async postToPortainer(path: string): Promise<void> {
+        await got
+            .post(`${this.portainerBaseUrl}${path}`, {
+                headers: { "X-API-KEY": this.portainerApiKey },
+            })
+            .json<unknown>();
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("container/:action/:id")
+    async controlContainer(
+        @Request() req: AuthenticatedRequest,
+        @Param("action") action: string,
+        @Param("id") id: string
+    ): Promise<ServiceActionResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/services/container/${action}/${id}`
+        );
+
+        if (!["start", "stop", "restart"].includes(action)) {
+            throw new HttpException("unknown action", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            await this.postToDockerSocket(`/${id}/${action}`);
+            return { status: "received" };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("stack/:action/:id")
+    async controlStack(
+        @Request() req: AuthenticatedRequest,
+        @Param("action") action: string,
+        @Param("id") id: string,
+        @Query("endpointId") endpointId: string
+    ): Promise<ServiceActionResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/services/stack/${action}/${id}`
+        );
+
+        if (!["start", "stop", "restart"].includes(action)) {
+            throw new HttpException("unknown action", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            const query = `?endpointId=${endpointId}`;
+            if (action === "restart") {
+                // Portainer has no restart endpoint; stop then start the stack.
+                await this.postToPortainer(`/api/stacks/${id}/stop${query}`);
+                await this.postToPortainer(`/api/stacks/${id}/start${query}`);
+            } else {
+                await this.postToPortainer(
+                    `/api/stacks/${id}/${action}${query}`
+                );
+            }
+            return { status: "received" };
         } catch (err) {
             this.logger.error(err);
             throw new HttpException(
