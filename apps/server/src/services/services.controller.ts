@@ -626,7 +626,10 @@ export class ServicesController {
         );
 
         if (!["none", "port", "fqdn"].includes(body?.type)) {
-            throw new HttpException("unknown link type", HttpStatus.BAD_REQUEST);
+            throw new HttpException(
+                "unknown link type",
+                HttpStatus.BAD_REQUEST
+            );
         }
 
         if (!this.configPath) {
@@ -644,9 +647,13 @@ export class ServicesController {
                 fqdn: body.fqdn,
             };
             await this.writeLinkStore(store);
-            const config = this.applyOverride(stack, store[stack.toLowerCase()], {
-                type: "none",
-            });
+            const config = this.applyOverride(
+                stack,
+                store[stack.toLowerCase()],
+                {
+                    type: "none",
+                }
+            );
             return { status: "received", config };
         } catch (err) {
             this.logger.error(err);
