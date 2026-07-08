@@ -4,7 +4,8 @@ import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { makeStyles } from "tss-react/mui";
 import { CarTabs } from "../../Molecules/CarTabs/CarTabs";
 import ClimateSensorsCard from "../../Molecules/ClimateSensorsCard/ClimateSensorsCard";
-import DockerStackListCard from "../../Molecules/DockerStackList/DockerStackListCard";
+// Replaced by the unified ServicesPanel (see below):
+// import DockerStackListCard from "../../Molecules/DockerStackList/DockerStackListCard";
 import DownloadList from "../../Molecules/DownloadList/DownloadList";
 import GasChart from "../../Molecules/GasChart/GasChart";
 import HomeSec from "../../Molecules/HomeSec/HomeSec";
@@ -12,11 +13,14 @@ import LogCard from "../../Molecules/LogCard/LogCard";
 import Monit from "../../Molecules/Monit/Monit";
 import Nextup from "../../Molecules/Nextup/Nextup";
 import Schedule from "../../Molecules/Schedule/Schedule";
-import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
+// Replaced by the unified ServicesPanel (see below):
+// import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
+import ServicesPanelCard from "../../Molecules/ServicesPanel/ServicesPanelCard";
 import SpeedTestCard from "../../Molecules/SpeedTestCard/SpeedTestCard";
 import SwitchesCard from "../../Molecules/SwitchesCard/SwitchesCard";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
-import Docker from "../Docker/Docker";
+// Replaced by the unified ServicesPanel (see below):
+// import Docker from "../Docker/Docker";
 
 const useStyles = makeStyles()((theme) => ({
     container: {
@@ -85,7 +89,8 @@ const Dashboard: FC = () => {
                     <VideoStream />
                 ) : undefined}
                 <CarTabs />
-                <DockerStackListCard />
+                {/* Replaced by the unified ServicesPanel in the right column: */}
+                {/* <DockerStackListCard /> */}
                 <SpeedTestCard />
                 <IconButton
                     color="primary"
@@ -103,8 +108,10 @@ const Dashboard: FC = () => {
                     md: 5,
                 }}
             >
-                <ServiceLinksBar />
-                <Docker />
+                <ServicesPanelCard />
+                {/* Unified ServicesPanel replaces ServiceLinksBar + Docker: */}
+                {/* <ServiceLinksBar /> */}
+                {/* <Docker /> */}
                 {!isLiteMode && <Schedule />}
                 {!isLiteMode && <DownloadList />}
                 <Nextup />

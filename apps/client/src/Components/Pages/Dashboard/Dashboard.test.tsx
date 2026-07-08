@@ -39,6 +39,9 @@ vi.mock("../../Molecules/HomeSec/HomeSec", () => ({ default: "mock-homesec" }));
 vi.mock("../../Molecules/DockerStackList/DockerStackListCard", () => ({
     default: "mock-dockerstacklist-card",
 }));
+vi.mock("../../Molecules/ServicesPanel/ServicesPanelCard", () => ({
+    default: "mock-services-panel-card",
+}));
 vi.mock("../../Molecules/SwitchesCard/SwitchesCard", () => ({
     default: "mock-switches-card",
 }));
