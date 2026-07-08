@@ -96,6 +96,9 @@ describe("Services page", () => {
         expect(await screen.findByText("grafana")).toBeVisible();
         expect(screen.getByText("grafana/grafana:latest")).toBeVisible();
         expect(screen.getByText(":3000→3000")).toBeVisible();
+        expect(
+            screen.getByRole("link", { name: "Logs for grafana" })
+        ).toHaveAttribute("href", "/services/logs/c1");
     });
 
     it("switches to another stack when its tab is selected", async () => {

@@ -2,6 +2,7 @@ import {
     ServiceActionResponse,
     ServiceLinkConfigResponse,
     ServiceLinkConfigUpdate,
+    ServiceLogsResponse,
     ServicesResponse,
 } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -63,6 +64,9 @@ export const servicesApi = createApi({
             }),
             invalidatesTags: ["Service"],
         }),
+        getContainerLogs: builder.query<ServiceLogsResponse, string>({
+            query: (id) => `logs/${id}`,
+        }),
     }),
 });
 
@@ -71,4 +75,5 @@ export const {
     useControlContainerMutation,
     useControlStackMutation,
     useSetLinkConfigMutation,
+    useGetContainerLogsQuery,
 } = servicesApi;

@@ -145,4 +145,10 @@ export const servicesHandlers = [
     http.put("*/api/services/link/:stack", () =>
         HttpResponse.json({ status: "received", config: { type: "none" } })
     ),
+    http.get("*/api/services/logs/:id", ({ params }) =>
+        HttpResponse.json({
+            status: "received",
+            logs: `2024-01-01T00:00:00Z Starting container ${params.id}\n2024-01-01T00:00:01Z Ready to accept connections\n`,
+        })
+    ),
 ];

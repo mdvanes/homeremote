@@ -8,6 +8,7 @@ import {
     ServiceLinkConfig,
     ServiceLinkConfigResponse,
     ServiceLinkConfigUpdate,
+    ServiceLogsResponse,
     ServicePort,
     ServicesResponse,
     ServicesSummary,
@@ -127,6 +128,31 @@ const firstPublicPort = (
         }
     }
     return undefined;
+};
+
+// Docker multiplexes non-TTY log streams as frames: an 8-byte header
+// (stream type + 4-byte big-endian payload size) followed by the payload.
+// Strip the headers so the client receives plain text; fall back to the raw
+// string when the buffer is not framed (TTY containers).
+const demuxDockerLogs = (buffer: Buffer): string => {
+    const parts: string[] = [];
+    let offset = 0;
+    while (offset + 8 <= buffer.length) {
+        const streamType = buffer[offset];
+        if (streamType > 2) {
+            // Not a valid frame header -> treat the whole buffer as raw text.
+            return buffer.toString("utf-8");
+        }
+        const size = buffer.readUInt32BE(offset + 4);
+        const start = offset + 8;
+        const end = start + size;
+        if (end > buffer.length) {
+            return buffer.toString("utf-8");
+        }
+        parts.push(buffer.toString("utf-8", start, end));
+        offset = end;
+    }
+    return parts.length > 0 ? parts.join("") : buffer.toString("utf-8");
 };
 
 @Controller("api/services")
@@ -626,6 +652,37 @@ export class ServicesController {
             this.logger.error(err);
             throw new HttpException(
                 "failed to persist link config",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("logs/:id")
+    async getContainerLogs(
+        @Request() req: AuthenticatedRequest,
+        @Param("id") id: string
+    ): Promise<ServiceLogsResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/services/logs/${id}`
+        );
+
+        try {
+            const buffer = await got(
+                buildDockerUrl(
+                    this.socketPath,
+                    `/${id}/logs?stdout=true&stderr=true&tail=500`
+                ),
+                { enableUnixSockets: true }
+            ).buffer();
+            return {
+                status: "received",
+                logs: demuxDockerLogs(Buffer.from(buffer)),
+            };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to read container logs",
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }

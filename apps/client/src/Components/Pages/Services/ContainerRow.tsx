@@ -1,8 +1,10 @@
 import { ServiceContainer } from "@homeremote/types";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import DescriptionIcon from "@mui/icons-material/Description";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { Box, Chip, CircularProgress, IconButton } from "@mui/material";
 import { FC } from "react";
+import { Link as RouterLink } from "react-router";
 import { useControlContainerMutation } from "../../../Services/servicesApi";
 import { HealthDot } from "../../Molecules/ServicesPanel/HealthDot";
 import { formatUptime } from "./uptime";
@@ -96,6 +98,15 @@ export const ContainerRow: FC<ContainerRowProps> = ({ container }) => {
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
                 {isLoading && <CircularProgress size={14} />}
+                <IconButton
+                    component={RouterLink}
+                    to={`/services/logs/${container.Id}`}
+                    size="small"
+                    title="Logs"
+                    aria-label={`Logs for ${container.Name}`}
+                >
+                    <DescriptionIcon fontSize="small" />
+                </IconButton>
                 <IconButton
                     size="small"
                     title="Restart"

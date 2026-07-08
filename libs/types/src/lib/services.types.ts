@@ -72,6 +72,10 @@ export type ServiceLinkConfigResponse =
     | { status: "received"; config: ServiceLinkConfig }
     | { status: "error" };
 
+export type ServiceLogsResponse =
+    | { status: "received"; logs: string }
+    | { status: "error" };
+
 export type ServicesResponse =
     | {
           status: "received";

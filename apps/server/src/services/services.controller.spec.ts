@@ -492,4 +492,64 @@ describe("Services Controller", () => {
             );
         });
     });
+
+    describe("container logs", () => {
+        const frame = (streamType: number, text: string): Buffer => {
+            const payload = Buffer.from(text, "utf-8");
+            const header = Buffer.alloc(8);
+            header[0] = streamType;
+            header.writeUInt32BE(payload.length, 4);
+            return Buffer.concat([header, payload]);
+        };
+
+        it("demultiplexes framed docker logs into plain text", async () => {
+            const buffer = Buffer.concat([
+                frame(1, "hello\n"),
+                frame(2, "an error\n"),
+            ]);
+            mockGot.mockReturnValue({
+                buffer: () => Promise.resolve(buffer),
+            } as unknown as CancelableRequest<Response>);
+
+            const result = await controller.getContainerLogs(
+                mockAuthenticatedRequest,
+                "abc123"
+            );
+
+            expect(mockGot).toHaveBeenCalledWith(
+                "http://unix:/var/run/docker.sock:/v1.41/containers/abc123/logs?stdout=true&stderr=true&tail=500",
+                { enableUnixSockets: true }
+            );
+            expect(result).toEqual({
+                status: "received",
+                logs: "hello\nan error\n",
+            });
+        });
+
+        it("returns raw text when the stream is not framed", async () => {
+            mockGot.mockReturnValue({
+                buffer: () => Promise.resolve(Buffer.from("plain tty output")),
+            } as unknown as CancelableRequest<Response>);
+
+            const result = await controller.getContainerLogs(
+                mockAuthenticatedRequest,
+                "abc123"
+            );
+
+            expect(result).toEqual({
+                status: "received",
+                logs: "plain tty output",
+            });
+        });
+
+        it("throws when the docker socket fails", async () => {
+            mockGot.mockReturnValue({
+                buffer: () => Promise.reject(new Error("socket down")),
+            } as unknown as CancelableRequest<Response>);
+
+            await expect(
+                controller.getContainerLogs(mockAuthenticatedRequest, "abc123")
+            ).rejects.toThrow("failed to read container logs");
+        });
+    });
 });
