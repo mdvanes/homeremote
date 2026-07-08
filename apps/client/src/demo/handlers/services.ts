@@ -8,9 +8,11 @@ const stack = (
     containers: {
         name: string;
         health: ServiceStack["containers"][number]["health"];
+        ports?: ServiceStack["containers"][number]["ports"];
     }[],
     link?: ServiceStack["link"]
 ): ServiceStack => {
+    const createdAt = Math.floor(Date.now() / 1000) - 3 * 86400;
     const mapped = containers.map((c, index) => ({
         Id: `${id}-${index}`,
         Name: c.name,
@@ -23,7 +25,8 @@ const stack = (
                   ? "Up 3 hours (unhealthy)"
                   : "Up 3 hours",
         health: c.health,
-        ports: [],
+        createdAt,
+        ports: c.ports ?? [],
     }));
     const stopped = mapped.filter((c) => c.health === "stopped").length;
     const degraded = mapped.filter((c) => c.health === "degraded").length;
@@ -51,8 +54,23 @@ const stacks: ServiceStack[] = [
         "monitoring",
         "portainer",
         [
-            { name: "grafana", health: "running" },
-            { name: "influxdb", health: "running" },
+            {
+                name: "grafana",
+                health: "running",
+                ports: [
+                    {
+                        publicPort: 3000,
+                        privatePort: 3000,
+                        type: "tcp",
+                        internal: false,
+                    },
+                ],
+            },
+            {
+                name: "influxdb",
+                health: "running",
+                ports: [{ privatePort: 8086, type: "tcp", internal: true }],
+            },
         ],
         {
             type: "port",
@@ -123,5 +141,8 @@ export const servicesHandlers = [
     ),
     http.get("*/api/services/stack/:action/:id", () =>
         HttpResponse.json({ status: "received" })
+    ),
+    http.put("*/api/services/link/:stack", () =>
+        HttpResponse.json({ status: "received", config: { type: "none" } })
     ),
 ];

@@ -6,23 +6,28 @@ import {
     ServiceHealth,
     ServiceLink,
     ServiceLinkConfig,
+    ServiceLinkConfigResponse,
+    ServiceLinkConfigUpdate,
     ServicePort,
     ServicesResponse,
     ServicesSummary,
     ServiceStack,
 } from "@homeremote/types";
 import {
+    Body,
     Controller,
     Get,
     HttpException,
     HttpStatus,
     Logger,
     Param,
+    Put,
     Query,
     Request,
     UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { promises as fs } from "fs";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import type { AuthenticatedRequest } from "../login/LoginRequest.types";
@@ -32,6 +37,8 @@ interface EnvServiceLink {
     icon: string;
     url: string;
 }
+
+type LinkStore = Record<string, ServiceLinkConfigUpdate>;
 
 const API_ROOT = "/v1.41/containers";
 const DEFAULT_SOCKET_PATH = "/var/run/docker.sock";
@@ -131,6 +138,7 @@ export class ServicesController {
     private readonly portainerApiKey: string;
     private readonly icons: Record<string, string>;
     private readonly envServiceLinks: EnvServiceLink[];
+    private readonly configPath: string;
 
     constructor(private configService: ConfigService) {
         this.logger = new Logger(ServicesController.name);
@@ -149,6 +157,8 @@ export class ServicesController {
         this.envServiceLinks = this.parseServiceLinks(
             this.configService.get<string>("SERVICE_LINKS") ?? ""
         );
+        this.configPath =
+            this.configService.get<string>("SERVICES_CONFIG_PATH") || "";
     }
 
     private parseIcons(iconsConfig: string): Record<string, string> {
@@ -173,6 +183,63 @@ export class ServicesController {
                 return { label, icon, url };
             })
             .filter((link) => link.label);
+    }
+
+    private async readLinkStore(): Promise<LinkStore> {
+        if (!this.configPath) {
+            return {};
+        }
+        try {
+            const raw = await fs.readFile(this.configPath, "utf-8");
+            return JSON.parse(raw) as LinkStore;
+        } catch (err) {
+            // Missing file simply means no overrides have been saved yet.
+            if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+                this.logger.error(`Failed to read link config: ${err}`);
+            }
+            return {};
+        }
+    }
+
+    private async writeLinkStore(store: LinkStore): Promise<void> {
+        if (!this.configPath) {
+            throw new Error("SERVICES_CONFIG_PATH is not configured");
+        }
+        await fs.writeFile(
+            this.configPath,
+            JSON.stringify(store, null, 2),
+            "utf-8"
+        );
+    }
+
+    private applyOverride(
+        name: string,
+        override: ServiceLinkConfigUpdate,
+        discovered: ServiceLinkConfig
+    ): ServiceLinkConfig {
+        const label = discovered.label ?? name;
+        const icon = discovered.icon ?? this.icons[name];
+        if (override.type === "none") {
+            return { type: "none", label, icon };
+        }
+        if (override.type === "port" && override.port) {
+            return {
+                type: "port",
+                port: override.port,
+                label,
+                icon,
+                url: this.dockerBaseUrl
+                    ? `${this.dockerBaseUrl}:${override.port}`
+                    : undefined,
+            };
+        }
+        if (override.type === "fqdn" && override.fqdn) {
+            const url = /^https?:\/\//.test(override.fqdn)
+                ? override.fqdn
+                : `https://${override.fqdn}`;
+            return { type: "fqdn", fqdn: override.fqdn, label, icon, url };
+        }
+        return discovered;
     }
 
     private async fetchContainers(): Promise<DockerEngineContainerSummary[]> {
@@ -202,6 +269,19 @@ export class ServicesController {
     }
 
     private resolveLink(
+        stackName: string,
+        containers: ServiceContainer[],
+        linkStore: LinkStore = {}
+    ): ServiceLinkConfig {
+        const discovered = this.discoverLink(stackName, containers);
+        const override = linkStore[stackName.toLowerCase()];
+        if (override) {
+            return this.applyOverride(stackName, override, discovered);
+        }
+        return discovered;
+    }
+
+    private discoverLink(
         stackName: string,
         containers: ServiceContainer[]
     ): ServiceLinkConfig {
@@ -234,7 +314,11 @@ export class ServicesController {
         name: string,
         source: ServiceStack["source"],
         containers: ServiceContainer[],
-        options: { endpointId?: number; portainerStatus?: number } = {}
+        options: {
+            endpointId?: number;
+            portainerStatus?: number;
+            linkStore?: LinkStore;
+        } = {}
     ): ServiceStack {
         return {
             Id: id,
@@ -244,13 +328,14 @@ export class ServicesController {
             portainerStatus: options.portainerStatus,
             health: deriveStackHealth(containers, options.portainerStatus),
             containers,
-            link: this.resolveLink(name, containers),
+            link: this.resolveLink(name, containers, options.linkStore),
         };
     }
 
     private aggregate(
         rawContainers: DockerEngineContainerSummary[],
-        stacks: PortainerApiStack[]
+        stacks: PortainerApiStack[],
+        linkStore: LinkStore = {}
     ): { stacks: ServiceStack[]; serviceLinks: ServiceLink[] } {
         const containers = rawContainers.map(mapContainer);
 
@@ -282,6 +367,7 @@ export class ServicesController {
                     {
                         endpointId: stack.EndpointId,
                         portainerStatus: stack.Status,
+                        linkStore,
                     }
                 )
             );
@@ -296,7 +382,8 @@ export class ServicesController {
                     `standalone:${name}`,
                     name,
                     "standalone",
-                    stackContainers
+                    stackContainers,
+                    { linkStore }
                 )
             );
         }
@@ -308,7 +395,8 @@ export class ServicesController {
                     `standalone:${container.Name}`,
                     container.Name,
                     "standalone",
-                    [container]
+                    [container],
+                    { linkStore }
                 )
         );
 
@@ -364,9 +452,10 @@ export class ServicesController {
         this.logger.verbose(`[${req.user.name}] GET to /api/services`);
 
         try {
-            const [rawContainers, stacks] = await Promise.all([
+            const [rawContainers, stacks, linkStore] = await Promise.all([
                 this.fetchContainers(),
                 this.fetchStacks(),
+                this.readLinkStore(),
             ]);
 
             if (rawContainers.length === 0 && stacks.length === 0) {
@@ -375,7 +464,8 @@ export class ServicesController {
 
             const { stacks: aggregatedStacks, serviceLinks } = this.aggregate(
                 rawContainers,
-                stacks
+                stacks,
+                linkStore
             );
 
             return {
@@ -467,6 +557,75 @@ export class ServicesController {
             this.logger.error(err);
             throw new HttpException(
                 "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("link/:stack")
+    async getLinkConfig(
+        @Request() req: AuthenticatedRequest,
+        @Param("stack") stack: string
+    ): Promise<ServiceLinkConfigResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] GET to /api/services/link/${stack}`
+        );
+
+        try {
+            const store = await this.readLinkStore();
+            const override = store[stack.toLowerCase()];
+            const config: ServiceLinkConfig = override
+                ? this.applyOverride(stack, override, { type: "none" })
+                : { type: "none" };
+            return { status: "received", config };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to read link config",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Put("link/:stack")
+    async setLinkConfig(
+        @Request() req: AuthenticatedRequest,
+        @Param("stack") stack: string,
+        @Body() body: ServiceLinkConfigUpdate
+    ): Promise<ServiceLinkConfigResponse> {
+        this.logger.verbose(
+            `[${req.user.name}] PUT to /api/services/link/${stack}`
+        );
+
+        if (!["none", "port", "fqdn"].includes(body?.type)) {
+            throw new HttpException("unknown link type", HttpStatus.BAD_REQUEST);
+        }
+
+        if (!this.configPath) {
+            throw new HttpException(
+                "link config persistence is not configured",
+                HttpStatus.NOT_IMPLEMENTED
+            );
+        }
+
+        try {
+            const store = await this.readLinkStore();
+            store[stack.toLowerCase()] = {
+                type: body.type,
+                port: body.port,
+                fqdn: body.fqdn,
+            };
+            await this.writeLinkStore(store);
+            const config = this.applyOverride(stack, store[stack.toLowerCase()], {
+                type: "none",
+            });
+            return { status: "received", config };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to persist link config",
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }

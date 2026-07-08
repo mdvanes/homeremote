@@ -26,6 +26,7 @@ import Docker from "./Components/Pages/Docker/Docker";
 import Energy from "./Components/Pages/Energy/Energy";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
 import Log from "./Components/Pages/Log/Log";
+import Services from "./Components/Pages/Services/Services";
 import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
 import HotKeyProvider from "./Components/Providers/HotKey/HotKeyProvider";
 import createThemeWithMode from "./theme";
@@ -108,6 +109,10 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                     <Route
                                         path="/docker"
                                         element={<Docker />}
+                                    />
+                                    <Route
+                                        path="/services"
+                                        element={<Services />}
                                     />
                                     <Route
                                         path="/datalora"

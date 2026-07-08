@@ -1,4 +1,9 @@
-import { ServiceActionResponse, ServicesResponse } from "@homeremote/types";
+import {
+    ServiceActionResponse,
+    ServiceLinkConfigResponse,
+    ServiceLinkConfigUpdate,
+    ServicesResponse,
+} from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { willAddCredentials } from "../devUtils";
 
@@ -13,6 +18,11 @@ interface StackActionArgs {
     id: string;
     endpointId: number;
     action: ServiceAction;
+}
+
+interface LinkConfigArgs {
+    stack: string;
+    config: ServiceLinkConfigUpdate;
 }
 
 export const servicesApi = createApi({
@@ -42,6 +52,17 @@ export const servicesApi = createApi({
             }),
             invalidatesTags: ["Service"],
         }),
+        setLinkConfig: builder.mutation<
+            ServiceLinkConfigResponse,
+            LinkConfigArgs
+        >({
+            query: ({ stack, config }) => ({
+                url: `link/${encodeURIComponent(stack)}`,
+                method: "PUT",
+                body: config,
+            }),
+            invalidatesTags: ["Service"],
+        }),
     }),
 });
 
@@ -49,4 +70,5 @@ export const {
     useGetServicesQuery,
     useControlContainerMutation,
     useControlStackMutation,
+    useSetLinkConfigMutation,
 } = servicesApi;

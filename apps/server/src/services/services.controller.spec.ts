@@ -5,7 +5,10 @@ import {
 } from "@homeremote/types";
 import { ConfigService } from "@nestjs/config";
 import { Test, TestingModule } from "@nestjs/testing";
+import { promises as fs } from "fs";
 import got, { CancelableRequest, Response } from "got";
+import os from "os";
+import path from "path";
 import { mockAuthenticatedRequest } from "../util/test-helpers/mockAuthenticatedRequest";
 import { ServicesController } from "./services.controller";
 
@@ -16,6 +19,11 @@ const DOCKER_URL =
     "http://unix:/var/run/docker.sock:/v1.41/containers/json?all=true";
 const PORTAINER_URL = "https://portainer.test/api/stacks";
 
+const CONFIG_PATH = path.join(
+    os.tmpdir(),
+    `services-config-test-${process.pid}.json`
+);
+
 const config: Record<string, string> = {
     DOCKER_SOCKET_PATH: "/var/run/docker.sock",
     DOCKER_BASE_URL: "http://homeserver",
@@ -23,6 +31,7 @@ const config: Record<string, string> = {
     PORTAINER_API_KEY: "secret",
     SERVICE_LINKS: "",
     DOCKER_ICONS: "",
+    SERVICES_CONFIG_PATH: CONFIG_PATH,
 };
 
 const container = (
@@ -90,6 +99,7 @@ describe("Services Controller", () => {
 
         controller = module.get<ServicesController>(ServicesController);
         mockGot.mockReset();
+        await fs.rm(CONFIG_PATH, { force: true });
     });
 
     afterAll(() => {
@@ -363,6 +373,123 @@ describe("Services Controller", () => {
                     "2"
                 )
             ).rejects.toThrow("unknown action");
+        });
+    });
+
+    describe("link config", () => {
+        afterAll(async () => {
+            await fs.rm(CONFIG_PATH, { force: true });
+        });
+
+        it("persists an FQDN override and resolves its url", async () => {
+            const result = await controller.setLinkConfig(
+                mockAuthenticatedRequest,
+                "authentik",
+                { type: "fqdn", fqdn: "auth.home.arpa" }
+            );
+
+            expect(result).toEqual({
+                status: "received",
+                config: {
+                    type: "fqdn",
+                    fqdn: "auth.home.arpa",
+                    url: "https://auth.home.arpa",
+                    label: "authentik",
+                    icon: undefined,
+                },
+            });
+        });
+
+        it("persists a port override and resolves its url", async () => {
+            const result = await controller.setLinkConfig(
+                mockAuthenticatedRequest,
+                "monitoring",
+                { type: "port", port: 9443 }
+            );
+
+            expect(result.status).toBe("received");
+            expect(
+                (result as { status: "received"; config: { url: string } })
+                    .config.url
+            ).toBe("http://homeserver:9443");
+        });
+
+        it("reads back a stored override", async () => {
+            await controller.setLinkConfig(mockAuthenticatedRequest, "media", {
+                type: "fqdn",
+                fqdn: "media.home.arpa",
+            });
+
+            const result = await controller.getLinkConfig(
+                mockAuthenticatedRequest,
+                "media"
+            );
+
+            expect(result).toMatchObject({
+                status: "received",
+                config: { type: "fqdn", url: "https://media.home.arpa" },
+            });
+        });
+
+        it("defaults to type none when nothing is stored", async () => {
+            const result = await controller.getLinkConfig(
+                mockAuthenticatedRequest,
+                "unknown-stack"
+            );
+
+            expect(result).toEqual({
+                status: "received",
+                config: { type: "none" },
+            });
+        });
+
+        it("rejects an unknown link type", async () => {
+            await expect(
+                controller.setLinkConfig(mockAuthenticatedRequest, "media", {
+                    type: "bogus" as never,
+                })
+            ).rejects.toThrow("unknown link type");
+        });
+
+        it("applies a stored override to the aggregated services", async () => {
+            await controller.setLinkConfig(
+                mockAuthenticatedRequest,
+                "monitoring",
+                { type: "fqdn", fqdn: "grafana.home.arpa" }
+            );
+
+            mockUpstreams(
+                [
+                    container({
+                        Id: "c1",
+                        Names: ["/grafana"],
+                        Labels: {
+                            "com.docker.compose.project": "monitoring",
+                        },
+                        Ports: [
+                            {
+                                IP: "0.0.0.0",
+                                PrivatePort: 3000,
+                                PublicPort: 3000,
+                                Type: "tcp",
+                            },
+                        ],
+                    }),
+                ],
+                [stack({ Id: 1, Name: "monitoring", Status: 1 })]
+            );
+
+            const result = (await controller.getServices(
+                mockAuthenticatedRequest
+            )) as Extract<ServicesResponse, { status: "received" }>;
+
+            expect(result.stacks[0].link).toMatchObject({
+                type: "fqdn",
+                url: "https://grafana.home.arpa",
+            });
+            expect(result.serviceLinks[0].url).toBe(
+                "https://grafana.home.arpa"
+            );
         });
     });
 });

@@ -24,11 +24,14 @@ interface ServiceStackActionsProps {
     stack: ServiceStack;
     /** Extra sx for the actions container, e.g. hover reveal. */
     className?: string;
+    /** When true, actions are always shown (used on the detail page). */
+    alwaysVisible?: boolean;
 }
 
 export const ServiceStackActions: FC<ServiceStackActionsProps> = ({
     stack,
     className,
+    alwaysVisible = false,
 }) => {
     const [controlStack] = useControlStackMutation();
     const [controlContainer] = useControlContainerMutation();
@@ -74,7 +77,7 @@ export const ServiceStackActions: FC<ServiceStackActionsProps> = ({
                     display: "flex",
                     gap: 0.25,
                     alignItems: "center",
-                    opacity: 0,
+                    opacity: alwaysVisible ? 1 : 0,
                     transition: "opacity 0.12s",
                     "&:focus-within": { opacity: 1 },
                 }}

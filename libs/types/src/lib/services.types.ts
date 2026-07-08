@@ -61,6 +61,17 @@ export interface ServiceActionResponse {
     status: "received" | "error";
 }
 
+// Persisted per-stack link override (type + chosen port / FQDN).
+export interface ServiceLinkConfigUpdate {
+    type: ServiceLinkType;
+    port?: number;
+    fqdn?: string;
+}
+
+export type ServiceLinkConfigResponse =
+    | { status: "received"; config: ServiceLinkConfig }
+    | { status: "error" };
+
 export type ServicesResponse =
     | {
           status: "received";
