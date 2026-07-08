@@ -3,6 +3,14 @@ apis:
         root: ./libs/types/definitions/external/domoticz.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/external/generated/domoticz.ts
+    dockerEngine@v1:
+        root: ./libs/types/definitions/external/dockerEngine.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/dockerEngine.ts
+    portainer@v1:
+        root: ./libs/types/definitions/external/portainer.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/portainer.ts
     homeAssistant@v1:
         root: ./libs/types/definitions/external/homeAssistant.yml
         x-openapi-ts:

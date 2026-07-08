@@ -1,0 +1,411 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+.nav { display: flex; gap: 5px; padding: 0 0 14px; flex-wrap: wrap; }
+.nav-btn { padding: 5px 13px; border-radius: var(--radius); border: 0.5px solid var(--border-strong); background: none; font-size: 12px; cursor: pointer; color: var(--text-secondary); }
+.nav-btn.active { background: var(--surface-2); color: var(--text-primary); border-color: var(--border-stronger); font-weight: 500; }
+.view { display: none; }
+.view.active { display: block; }
+.panel { background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; }
+.phdr { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; border-bottom: 0.5px solid var(--border); }
+.phdr-l { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 500; }
+.phdr-r { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); }
+.icon-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 2px 3px; font-size: 15px; line-height: 1; border-radius: 4px; }
+.icon-btn:hover { color: var(--text-primary); background: var(--surface-1); }
+.svc-bar { display: flex; gap: 5px; padding: 6px 10px; border-bottom: 0.5px solid var(--border); flex-wrap: wrap; align-items: center; background: var(--surface-1); }
+.svc-chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 9px 2px 7px; border-radius: var(--radius); border: 0.5px solid var(--border); background: var(--surface-2); font-size: 11px; cursor: pointer; color: var(--text-secondary); white-space: nowrap; }
+.svc-chip:hover { border-color: var(--border-accent); color: var(--text-accent); }
+.svc-chip i { font-size: 11px; }
+.svc-more { font-size: 11px; color: var(--text-muted); padding: 2px 4px; }
+.sec-lbl { padding: 3px 12px; font-size: 10px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.4px; text-transform: uppercase; border-bottom: 0.5px solid var(--border); background: var(--surface-1); display: flex; justify-content: space-between; align-items: center; }
+.sec-lbl span:last-child { text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 10px; }
+.srow { display: flex; align-items: center; gap: 7px; padding: 5px 12px; border-bottom: 0.5px solid var(--border); font-size: 12px; min-height: 30px; }
+.srow:hover { background: var(--surface-1); }
+.srow:hover .racts { opacity: 1; }
+.sdot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.ok { background: #639922; }
+.wn { background: #BA7517; }
+.er { background: #E24B4A; }
+.gy { background: #888780; }
+.sname { font-size: 12px; font-weight: 500; min-width: 84px; cursor: pointer; }
+.sname:hover { color: var(--text-accent); }
+.sname.dim { color: var(--text-muted); font-weight: 400; }
+.cdots { display: flex; gap: 3px; flex: 1; align-items: center; }
+.cdot { width: 7px; height: 7px; border-radius: 50%; cursor: default; }
+.lbtn { width: 20px; height: 20px; border-radius: 4px; border: 0.5px solid var(--border-accent); background: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-accent); font-size: 12px; flex-shrink: 0; padding: 0; }
+.lbtn:hover { background: var(--bg-accent); }
+.lbtn.off { border-color: var(--border); color: var(--text-muted); }
+.lbtn.off:hover { background: var(--surface-0); }
+.racts { display: flex; gap: 2px; opacity: 0; transition: opacity 0.12s; }
+.abtn { width: 22px; height: 22px; border-radius: 4px; border: 0.5px solid var(--border); background: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-secondary); font-size: 13px; padding: 0; }
+.abtn:hover { background: var(--surface-0); border-color: var(--border-strong); color: var(--text-primary); }
+.pfoot { padding: 4px 12px; display: flex; align-items: center; justify-content: space-between; border-top: 0.5px solid var(--border); background: var(--surface-1); }
+.pfoot-txt { font-size: 11px; color: var(--text-muted); }
+.showall { font-size: 11px; background: none; border: none; color: var(--text-accent); cursor: pointer; padding: 0; display: flex; align-items: center; gap: 3px; }
+.showall:hover { text-decoration: underline; }
+.back-btn { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-accent); cursor: pointer; background: none; border: none; padding: 0; }
+.dtabs { display: flex; border-bottom: 0.5px solid var(--border); overflow-x: auto; background: var(--surface-1); }
+.dtab { padding: 6px 13px; font-size: 12px; color: var(--text-secondary); cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
+.dtab.sel { color: var(--text-accent); border-bottom-color: #378ADD; font-weight: 500; }
+.dtab.wn { color: var(--text-warning); }
+.dtab.er { color: var(--text-danger); }
+.sbar { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; border-bottom: 0.5px solid var(--border); }
+.sbar-l { display: flex; align-items: center; gap: 8px; }
+.badge { font-size: 10px; padding: 1px 7px; border-radius: 4px; }
+.b-ok { background: var(--bg-success); color: var(--text-success); }
+.cfg-row { border-bottom: 0.5px solid var(--border); }
+.cfg-hdr { display: flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; cursor: pointer; color: var(--text-secondary); background: var(--surface-1); user-select: none; }
+.cfg-hdr:hover { background: var(--surface-0); color: var(--text-primary); }
+.cfg-hdr .arr { font-size: 12px; margin-left: auto; transition: transform 0.15s; }
+.cfg-hdr.open .arr { transform: rotate(180deg); }
+.cfg-body { padding: 10px 12px 12px; border-top: 0.5px solid var(--border); }
+.rrow { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px; flex-wrap: wrap; }
+.rrow input[type=radio] { accent-color: #378ADD; flex-shrink: 0; }
+.rlabel { min-width: 80px; color: var(--text-primary); }
+.cfg-sel { font-size: 12px; padding: 3px 7px; border-radius: var(--radius); border: 0.5px solid var(--border-strong); background: var(--surface-1); color: var(--text-primary); }
+.cfg-inp { font-size: 12px; padding: 3px 8px; border-radius: var(--radius); border: 0.5px solid var(--border-strong); background: var(--surface-1); color: var(--text-primary); width: 164px; font-family: var(--font-mono); }
+.cfg-prev { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+.crow { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; border-bottom: 0.5px solid var(--border); }
+.crow:last-child { border-bottom: none; }
+.crow:hover { background: var(--surface-1); }
+.crow:hover .cacts { opacity: 1; }
+.cname { font-size: 12px; font-weight: 500; }
+.cimg { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 1px; }
+.cmeta { display: flex; gap: 5px; margin-top: 3px; flex-wrap: wrap; align-items: center; }
+.cup { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 3px; }
+.ptag { font-size: 10px; background: var(--surface-0); border: 0.5px solid var(--border); border-radius: 4px; padding: 0 5px; font-family: var(--font-mono); color: var(--text-secondary); line-height: 17px; }
+.ptag.int { color: var(--text-muted); border-style: dashed; }
+.cacts { opacity: 0; transition: opacity 0.12s; display: flex; gap: 3px; align-items: flex-start; margin-left: auto; flex-shrink: 0; }
+.logs-btn { font-size: 11px; padding: 2px 8px; border-radius: var(--radius); border: 0.5px solid var(--border); background: none; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; gap: 3px; white-space: nowrap; }
+.logs-btn:hover { background: var(--surface-0); color: var(--text-primary); }
+.legend { display: flex; gap: 14px; padding: 9px 2px 0; font-size: 11px; color: var(--text-muted); flex-wrap: wrap; }
+</style>
+
+<h2 class="sr-only">Homeremote services redesign v2 — compact problems-only dashboard with service link bar, expandable healthy stacks, and per-stack link configuration in detail view</h2>
+
+<div style="padding:1rem 0;">
+<div class="nav">
+  <button class="nav-btn active" onclick="sw(0)">Dashboard (default)</button>
+  <button class="nav-btn" onclick="sw(1)">Dashboard (expanded)</button>
+  <button class="nav-btn" onclick="sw(2)">Detail + link config</button>
+</div>
+
+<div id="v0" class="view active">
+  <div class="panel">
+    <div class="phdr">
+      <div class="phdr-l"><i class="ti ti-brand-docker" style="font-size:16px;color:var(--text-accent);" aria-hidden="true"></i> Services</div>
+      <div class="phdr-r"><span>28s ago</span>
+        <button class="icon-btn" title="Refresh"><i class="ti ti-refresh" aria-label="Refresh"></i></button>
+        <button class="icon-btn" title="All details" onclick="sw(2)"><i class="ti ti-arrows-maximize" aria-label="All details"></i></button>
+      </div>
+    </div>
+    <div class="svc-bar">
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Authentik</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Jellyfin</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Navidrome</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Linkwarden</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Portainer</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> AdGuard</button>
+      <span class="svc-more">+3 more</span>
+    </div>
+    <div class="sec-lbl"><span>Problems</span><span>2 of 35 stacks</span></div>
+    <div class="srow">
+      <div class="sdot wn"></div>
+      <div class="sname" onclick="sw(2)">linkwarden</div>
+      <div class="cdots">
+        <div class="cdot ok" title="linkwarden · running"></div>
+        <div class="cdot wn" title="linkwarden-browser · degraded"></div>
+        <div class="cdot ok" title="postgres · running"></div>
+      </div>
+      <button class="lbtn" title="Open Linkwarden"><i class="ti ti-external-link" aria-hidden="true"></i></button>
+      <div class="racts">
+        <button class="abtn" title="Start"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+        <button class="abtn" title="Stop"><i class="ti ti-player-stop" aria-hidden="true"></i></button>
+        <button class="abtn" title="Restart"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="srow" style="border-bottom:none;">
+      <div class="sdot er"></div>
+      <div class="sname" onclick="sw(2)">lobe-hub</div>
+      <div class="cdots">
+        <div class="cdot er" title="lobe-hub · stopped"></div>
+        <div class="cdot er" title="postgres · stopped"></div>
+      </div>
+      <button class="lbtn off" title="No link configured"><i class="ti ti-external-link" aria-hidden="true"></i></button>
+      <div class="racts">
+        <button class="abtn" title="Start"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+        <button class="abtn" title="Stop"><i class="ti ti-player-stop" aria-hidden="true"></i></button>
+        <button class="abtn" title="Restart"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="pfoot">
+      <span class="pfoot-txt">33 healthy &nbsp;·&nbsp; <span style="color:var(--text-warning);">1 degraded</span> &nbsp;·&nbsp; <span style="color:var(--text-danger);">1 stopped</span></span>
+      <button class="showall" onclick="sw(1)">Show all 35 <i class="ti ti-chevron-down" style="font-size:11px;" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div class="legend">
+    <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:#639922;display:inline-block;"></span>running</span>
+    <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:#BA7517;display:inline-block;"></span>degraded</span>
+    <span style="display:flex;align-items:center;gap:4px;"><span style="width:8px;height:8px;border-radius:50%;background:#E24B4A;display:inline-block;"></span>stopped</span>
+    <span style="margin-left:auto;font-style:italic;">hover rows for actions · hover dots for name · dim link = not configured</span>
+  </div>
+</div>
+
+<div id="v1" class="view">
+  <div class="panel">
+    <div class="phdr">
+      <div class="phdr-l"><i class="ti ti-brand-docker" style="font-size:16px;color:var(--text-accent);" aria-hidden="true"></i> Services</div>
+      <div class="phdr-r"><span>28s ago</span>
+        <button class="icon-btn" title="Refresh"><i class="ti ti-refresh" aria-label="Refresh"></i></button>
+        <button class="icon-btn" title="All details" onclick="sw(2)"><i class="ti ti-arrows-maximize" aria-label="All details"></i></button>
+      </div>
+    </div>
+    <div class="svc-bar">
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Authentik</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Jellyfin</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Navidrome</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Linkwarden</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> Portainer</button>
+      <button class="svc-chip"><i class="ti ti-external-link" aria-hidden="true"></i> AdGuard</button>
+      <span class="svc-more">+3 more</span>
+    </div>
+    <div class="sec-lbl"><span>Problems</span><span>2 of 35 stacks</span></div>
+    <div class="srow">
+      <div class="sdot wn"></div>
+      <div class="sname" onclick="sw(2)">linkwarden</div>
+      <div class="cdots">
+        <div class="cdot ok" title="linkwarden · running"></div>
+        <div class="cdot wn" title="linkwarden-browser · degraded"></div>
+        <div class="cdot ok" title="postgres · running"></div>
+      </div>
+      <button class="lbtn" title="Open Linkwarden"><i class="ti ti-external-link" aria-hidden="true"></i></button>
+      <div class="racts">
+        <button class="abtn"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-player-stop" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="sdot er"></div>
+      <div class="sname" onclick="sw(2)">lobe-hub</div>
+      <div class="cdots">
+        <div class="cdot er" title="lobe-hub · stopped"></div>
+        <div class="cdot er" title="postgres · stopped"></div>
+      </div>
+      <button class="lbtn off" title="No link configured"><i class="ti ti-external-link" aria-hidden="true"></i></button>
+      <div class="racts">
+        <button class="abtn"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-player-stop" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="sec-lbl"><span>Healthy stacks</span><span>33 of 35</span></div>
+    <div class="srow">
+      <div class="sdot ok"></div>
+      <div class="sname dim">authentik</div>
+      <div class="cdots">
+        <div class="cdot ok" title="authentik-server · running"></div>
+        <div class="cdot ok" title="authentik-worker · running"></div>
+        <div class="cdot ok" title="postgres · running"></div>
+        <div class="cdot ok" title="redis · running"></div>
+      </div>
+      <button class="lbtn" title="Open Authentik"><i class="ti ti-external-link" aria-hidden="true"></i></button>
+      <div class="racts">
+        <button class="abtn"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-player-stop" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="sdot ok"></div>
+      <div class="sname dim">jellyfin</div>
+      <div class="cdots">
+        <div class="cdot ok" title="jellyfin · running"></div>
+        <div class="cdot ok" title="jellyfin-ffmpeg · running"></div>
+      </div>
+      <button class="lbtn" title="Open Jellyfin"><i class="ti ti-external-link" aria-hidden="true"></i></button>
+      <div class="racts">
+        <button class="abtn"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-player-stop" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="sdot ok"></div>
+      <div class="sname dim">navidrome</div>
+      <div class="cdots">
+        <div class="cdot ok" title="navidrome · running"></div>
+      </div>
+      <button class="lbtn" title="Open Navidrome"><i class="ti ti-external-link" aria-hidden="true"></i></button>
+      <div class="racts">
+        <button class="abtn"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-player-stop" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="sdot ok"></div>
+      <div class="sname dim">caddy</div>
+      <div class="cdots">
+        <div class="cdot ok" title="caddy · running"></div>
+      </div>
+      <button class="lbtn off" title="No link configured — internal only"><i class="ti ti-external-link" aria-hidden="true"></i></button>
+      <div class="racts">
+        <button class="abtn"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-player-stop" aria-hidden="true"></i></button>
+        <button class="abtn"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div style="padding:4px 12px;font-size:11px;color:var(--text-muted);border-bottom:0.5px solid var(--border);text-align:center;font-style:italic;background:var(--surface-1);">… 29 more healthy stacks</div>
+    <div class="pfoot">
+      <span class="pfoot-txt">33 healthy &nbsp;·&nbsp; <span style="color:var(--text-warning);">1 degraded</span> &nbsp;·&nbsp; <span style="color:var(--text-danger);">1 stopped</span></span>
+      <button class="showall" onclick="sw(0)">Show less <i class="ti ti-chevron-up" style="font-size:11px;" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>
+
+<div id="v2" class="view">
+  <div class="panel">
+    <div class="phdr">
+      <button class="back-btn" onclick="sw(0)"><i class="ti ti-arrow-left" style="font-size:14px;" aria-hidden="true"></i> Dashboard</button>
+      <span style="font-size:13px;font-weight:500;margin-left:6px;">Services</span>
+      <div class="phdr-r" style="margin-left:auto;"><span>28s ago</span><button class="icon-btn"><i class="ti ti-refresh" aria-label="Refresh"></i></button></div>
+    </div>
+    <div class="dtabs">
+      <div class="dtab sel">authentik</div>
+      <div class="dtab">jellyfin</div>
+      <div class="dtab">navidrome</div>
+      <div class="dtab wn">linkwarden ⚠</div>
+      <div class="dtab er">lobe-hub ●</div>
+      <div class="dtab" style="color:var(--text-muted);margin-left:auto;border-left:0.5px solid var(--border);font-size:11px;">standalone (2)</div>
+    </div>
+    <div class="sbar">
+      <div class="sbar-l">
+        <div class="sdot ok" style="width:10px;height:10px;"></div>
+        <span style="font-size:13px;font-weight:500;">authentik</span>
+        <span class="badge b-ok">4 / 4 running</span>
+      </div>
+      <div style="display:flex;gap:4px;">
+        <button class="abtn" style="width:26px;height:26px;font-size:14px;" title="Start stack"><i class="ti ti-player-play" aria-hidden="true"></i></button>
+        <button class="abtn" style="width:26px;height:26px;font-size:14px;" title="Stop stack"><i class="ti ti-player-stop" aria-hidden="true"></i></button>
+        <button class="abtn" style="width:26px;height:26px;font-size:14px;" title="Restart stack"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="cfg-row">
+      <div class="cfg-hdr open" id="cfghdr" onclick="toggleCfg()">
+        <i class="ti ti-link" style="font-size:13px;" aria-hidden="true"></i>
+        <span>Service link</span>
+        <span id="cfg-live" style="font-size:11px;color:var(--text-accent);margin-left:4px;font-family:var(--font-mono);">https://auth.home.arpa</span>
+        <i class="ti ti-chevron-down arr" aria-hidden="true"></i>
+      </div>
+      <div class="cfg-body" id="cfgbody">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:9px;">Controls the link icon on the dashboard row and the button in the service bar.</div>
+        <div class="rrow">
+          <input type="radio" name="lt" id="r0" value="none">
+          <label for="r0" class="rlabel">No link</label>
+        </div>
+        <div class="rrow">
+          <input type="radio" name="lt" id="r1" value="port">
+          <label for="r1" class="rlabel">Direct port</label>
+          <select class="cfg-sel" id="psel" onchange="upd()">
+            <option value="9000">:9000  (http)</option>
+            <option value="9443" selected>:9443  (https)</option>
+          </select>
+          <span class="cfg-prev" id="pp">→ https://homeserver:9443</span>
+        </div>
+        <div class="rrow">
+          <input type="radio" name="lt" id="r2" value="fqdn" checked>
+          <label for="r2" class="rlabel">FQDN (Caddy)</label>
+          <input class="cfg-inp" id="finp" value="auth.home.arpa" oninput="upd()">
+          <span class="cfg-prev" id="fp">→ https://auth.home.arpa</span>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:6px;">
+          <button style="font-size:12px;padding:4px 14px;border-radius:var(--radius);border:0.5px solid var(--border-stronger);background:none;cursor:pointer;color:var(--text-primary);">Save</button>
+          <button style="font-size:12px;padding:4px 14px;border-radius:var(--radius);border:0.5px solid var(--border);background:none;cursor:pointer;color:var(--text-secondary);">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div class="crow">
+      <div class="sdot ok" style="margin-top:3px;flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="cname">authentik-server</div>
+        <div class="cimg">ghcr.io/goauthentik/server:2024.6</div>
+        <div class="cmeta">
+          <span class="cup"><i class="ti ti-clock" style="font-size:10px;" aria-hidden="true"></i> 3d 14h</span>
+          <span class="ptag">:9000→9000</span>
+          <span class="ptag">:9443→9443</span>
+        </div>
+      </div>
+      <div class="cacts">
+        <button class="logs-btn"><i class="ti ti-file-description" style="font-size:11px;" aria-hidden="true"></i> logs</button>
+        <button class="abtn" title="Restart"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="crow">
+      <div class="sdot ok" style="margin-top:3px;flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="cname">authentik-worker</div>
+        <div class="cimg">ghcr.io/goauthentik/server:2024.6</div>
+        <div class="cmeta"><span class="cup"><i class="ti ti-clock" style="font-size:10px;" aria-hidden="true"></i> 3d 14h</span></div>
+      </div>
+      <div class="cacts">
+        <button class="logs-btn"><i class="ti ti-file-description" style="font-size:11px;" aria-hidden="true"></i> logs</button>
+        <button class="abtn" title="Restart"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="crow">
+      <div class="sdot ok" style="margin-top:3px;flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="cname">authentik-postgresql</div>
+        <div class="cimg">postgres:16-alpine</div>
+        <div class="cmeta">
+          <span class="cup"><i class="ti ti-clock" style="font-size:10px;" aria-hidden="true"></i> 3d 14h</span>
+          <span class="ptag int">5432/tcp</span>
+        </div>
+      </div>
+      <div class="cacts">
+        <button class="logs-btn"><i class="ti ti-file-description" style="font-size:11px;" aria-hidden="true"></i> logs</button>
+        <button class="abtn" title="Restart"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="crow">
+      <div class="sdot ok" style="margin-top:3px;flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="cname">authentik-redis</div>
+        <div class="cimg">redis:alpine</div>
+        <div class="cmeta"><span class="cup"><i class="ti ti-clock" style="font-size:10px;" aria-hidden="true"></i> 3d 14h</span></div>
+      </div>
+      <div class="cacts">
+        <button class="logs-btn"><i class="ti ti-file-description" style="font-size:11px;" aria-hidden="true"></i> logs</button>
+        <button class="abtn" title="Restart"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function sw(n) {
+  document.querySelectorAll('.view').forEach((e,i) => e.classList.toggle('active', i===n));
+  document.querySelectorAll('.nav-btn').forEach((e,i) => e.classList.toggle('active', i===n));
+}
+function toggleCfg() {
+  const hdr = document.getElementById('cfghdr');
+  const body = document.getElementById('cfgbody');
+  const open = hdr.classList.toggle('open');
+  body.style.display = open ? '' : 'none';
+}
+function upd() {
+  const port = document.getElementById('psel').value;
+  document.getElementById('pp').textContent = '→ https://homeserver:' + port;
+  const fqdn = document.getElementById('finp').value || 'hostname';
+  document.getElementById('fp').textContent = '→ https://' + fqdn;
+  const checked = document.querySelector('input[name="lt"]:checked').value;
+  const live = document.getElementById('cfg-live');
+  if (checked === 'fqdn') live.textContent = 'https://' + fqdn;
+  else if (checked === 'port') live.textContent = 'https://homeserver:' + port;
+  else live.textContent = '—';
+}
+document.querySelectorAll('input[name="lt"]').forEach(r => r.addEventListener('change', upd));
+</script>

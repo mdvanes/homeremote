@@ -1,0 +1,244 @@
+openapi: 3.0.1
+info:
+    title: Docker Engine API
+    description: >-
+        Subset of the Docker Engine API (v1.41) consumed by HomeRemote to list and
+        control containers over the local UNIX socket. See
+        https://docs.docker.com/engine/api/v1.41/
+    version: 1.41.0
+servers:
+    - url: http://localhost/v1.41
+      description: Docker Engine (UNIX socket)
+paths:
+    /containers/json:
+        get:
+            tags:
+                - dockerEngine
+            summary: List containers
+            description: Returns a list of containers.
+            operationId: listContainers
+            parameters:
+                - name: all
+                  in: query
+                  description: Return all containers, not only running ones.
+                  required: false
+                  schema:
+                      type: boolean
+            responses:
+                "200":
+                    description: List of containers
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/ContainerSummary"
+                "500":
+                    description: Server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /containers/{id}/start:
+        post:
+            tags:
+                - dockerEngine
+            summary: Start a container
+            operationId: startContainer
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: ID or name of the container
+                  schema:
+                      type: string
+            responses:
+                "204":
+                    description: No error
+                "304":
+                    description: Container already started
+                "500":
+                    description: Server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /containers/{id}/stop:
+        post:
+            tags:
+                - dockerEngine
+            summary: Stop a container
+            operationId: stopContainer
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: ID or name of the container
+                  schema:
+                      type: string
+            responses:
+                "204":
+                    description: No error
+                "304":
+                    description: Container already stopped
+                "500":
+                    description: Server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /containers/{id}/restart:
+        post:
+            tags:
+                - dockerEngine
+            summary: Restart a container
+            operationId: restartContainer
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: ID or name of the container
+                  schema:
+                      type: string
+            responses:
+                "204":
+                    description: No error
+                "500":
+                    description: Server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /containers/{id}/logs:
+        get:
+            tags:
+                - dockerEngine
+            summary: Get container logs
+            description: >-
+                Get stdout and stderr logs from a container. The raw stream is
+                returned as text.
+            operationId: getContainerLogs
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: ID or name of the container
+                  schema:
+                      type: string
+                - name: stdout
+                  in: query
+                  required: false
+                  schema:
+                      type: boolean
+                - name: stderr
+                  in: query
+                  required: false
+                  schema:
+                      type: boolean
+                - name: tail
+                  in: query
+                  required: false
+                  description: Only return this number of log lines from the end of the logs.
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Logs returned as a stream in text form
+                    content:
+                        text/plain:
+                            schema:
+                                type: string
+                "500":
+                    description: Server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+components:
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+                    description: The error message
+            required:
+                - message
+        Port:
+            type: object
+            description: An open port on a container
+            properties:
+                IP:
+                    type: string
+                    description: Host IP address that the container's port is mapped to
+                    example: 0.0.0.0
+                PrivatePort:
+                    type: integer
+                    format: int32
+                    description: Port on the container
+                    example: 8080
+                PublicPort:
+                    type: integer
+                    format: int32
+                    description: Port exposed on the host
+                    example: 8080
+                Type:
+                    type: string
+                    enum:
+                        - tcp
+                        - udp
+                        - sctp
+                    example: tcp
+            required:
+                - PrivatePort
+                - Type
+        ContainerSummary:
+            type: object
+            properties:
+                Id:
+                    type: string
+                    description: The ID of this container
+                Names:
+                    type: array
+                    description: The names that this container has been given
+                    items:
+                        type: string
+                    example:
+                        - /grafana
+                Image:
+                    type: string
+                    description: The name of the image used when creating this container
+                    example: grafana/grafana:latest
+                ImageID:
+                    type: string
+                    description: The ID of the image used when creating this container
+                Created:
+                    type: integer
+                    format: int64
+                    description: When the container was created (unix seconds)
+                    example: 1712000000
+                State:
+                    type: string
+                    description: The state of this container
+                    example: running
+                Status:
+                    type: string
+                    description: Additional human-readable status of this container
+                    example: Up 3 hours
+                Labels:
+                    type: object
+                    description: User-defined key/value metadata
+                    additionalProperties:
+                        type: string
+                    example:
+                        com.docker.compose.project: monitoring
+                Ports:
+                    type: array
+                    description: The ports exposed by this container
+                    items:
+                        $ref: "#/components/schemas/Port"
+            required:
+                - Id
+                - Names
+                - State
+                - Status
