@@ -110,6 +110,25 @@ describe("Services page", () => {
         expect(await screen.findByText("jellyfin")).toBeVisible();
     });
 
+    it("opens directly on the stack given in the ?stack= query param", async () => {
+        const DeepLinkWrapper: FC<{ children: ReactNode }> = ({ children }) => (
+            <StyledEngineProvider injectFirst>
+                <ThemeProvider theme={createThemeWithMode("dark")}>
+                    <MemoryRouter initialEntries={["/services?stack=3"]}>
+                        <MockStoreProvider apis={[servicesApi]}>
+                            {children}
+                        </MockStoreProvider>
+                    </MemoryRouter>
+                </ThemeProvider>
+            </StyledEngineProvider>
+        );
+
+        render(<Services />, { wrapper: DeepLinkWrapper });
+
+        expect(await screen.findByText("jellyfin")).toBeVisible();
+        expect(screen.queryByText("grafana")).not.toBeInTheDocument();
+    });
+
     it("persists an FQDN link config via PUT", async () => {
         const getUrl = createGetCalledUrl(fetchMock);
         const getMethod = createGetCalledMethod(fetchMock);

@@ -3,6 +3,7 @@ import { StyledEngineProvider, ThemeProvider } from "@mui/material";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FC, ReactNode } from "react";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router";
 import { servicesApi } from "../../../Services/servicesApi";
 import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { createGetCalledUrl, MockStoreProvider } from "../../../testHelpers";
@@ -14,9 +15,34 @@ enableFetchMocks();
 const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
     <StyledEngineProvider injectFirst>
         <ThemeProvider theme={createThemeWithMode("dark")}>
-            <MockStoreProvider apis={[servicesApi]}>
-                {children}
-            </MockStoreProvider>
+            <MemoryRouter initialEntries={["/dashboard"]}>
+                <MockStoreProvider apis={[servicesApi]}>
+                    {children}
+                </MockStoreProvider>
+            </MemoryRouter>
+        </ThemeProvider>
+    </StyledEngineProvider>
+);
+
+// Exposes the current router location as text so navigation can be asserted.
+const LocationDisplay: FC = () => {
+    const location = useLocation();
+    return (
+        <div data-testid="location">{`${location.pathname}${location.search}`}</div>
+    );
+};
+
+const WrapperWithLocation: FC<{ children: ReactNode }> = ({ children }) => (
+    <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={createThemeWithMode("dark")}>
+            <MemoryRouter initialEntries={["/dashboard"]}>
+                <MockStoreProvider apis={[servicesApi]}>
+                    <Routes>
+                        <Route path="*" element={children} />
+                    </Routes>
+                    <LocationDisplay />
+                </MockStoreProvider>
+            </MemoryRouter>
         </ThemeProvider>
     </StyledEngineProvider>
 );
@@ -120,5 +146,26 @@ describe("ServicesPanel", () => {
                 )
             ).toBe(true);
         });
+    });
+
+    it("navigates to the stack's detail view when its name is clicked", async () => {
+        render(<ServicesPanel />, { wrapper: WrapperWithLocation });
+        await screen.findByText("media");
+
+        await userEvent.click(screen.getByText("media"));
+
+        expect(await screen.findByTestId("location")).toHaveTextContent(
+            "/services?stack=3"
+        );
+    });
+
+    it("does not navigate when a stack action button is clicked", async () => {
+        render(<ServicesPanel />, { wrapper: WrapperWithLocation });
+        await screen.findByText("media");
+
+        await userEvent.click(screen.getByLabelText("Start media"));
+
+        expect(screen.getByTestId("location")).toHaveTextContent("/dashboard");
+        expect(screen.getByTestId("location")).not.toHaveTextContent("?stack=");
     });
 });

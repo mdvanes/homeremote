@@ -73,6 +73,7 @@ export const ServiceStackActions: FC<ServiceStackActionsProps> = ({
         <>
             <Box
                 className={className}
+                onClick={(event) => event.stopPropagation()}
                 sx={{
                     display: "flex",
                     gap: 0.25,

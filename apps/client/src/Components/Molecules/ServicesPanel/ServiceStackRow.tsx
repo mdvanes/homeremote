@@ -1,7 +1,8 @@
 import { ServiceStack } from "@homeremote/types";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Box, IconButton } from "@mui/material";
-import { FC } from "react";
+import { FC, KeyboardEventHandler } from "react";
+import { useNavigate } from "react-router";
 import { ContainerDots } from "./ContainerDots";
 import { HealthDot } from "./HealthDot";
 import { ServiceStackActions } from "./ServiceStackActions";
@@ -11,8 +12,20 @@ interface ServiceStackRowProps {
 }
 
 export const ServiceStackRow: FC<ServiceStackRowProps> = ({ stack }) => {
+    const navigate = useNavigate();
     const linkUrl = stack.link?.url;
     const isHealthy = stack.health === "running";
+
+    const openDetail = () => {
+        navigate(`/services?stack=${encodeURIComponent(stack.Id)}`);
+    };
+
+    const openDetailOnKeyDown: KeyboardEventHandler = (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            openDetail();
+        }
+    };
 
     return (
         <Box
@@ -33,17 +46,27 @@ export const ServiceStackRow: FC<ServiceStackRowProps> = ({ stack }) => {
                 title={`${stack.Name} · ${stack.health}`}
             />
             <Box
+                onClick={openDetail}
+                onKeyDown={openDetailOnKeyDown}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open ${stack.Name} details`}
                 sx={{
                     fontSize: 12,
                     fontWeight: 500,
                     minWidth: 84,
                     color: isHealthy ? "text.secondary" : "text.primary",
                     whiteSpace: "nowrap",
+                    cursor: "pointer",
+                    "&:hover": { textDecoration: "underline" },
                 }}
             >
                 {stack.Name}
             </Box>
-            <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box
+                onClick={openDetail}
+                sx={{ flex: 1, minWidth: 0, cursor: "pointer" }}
+            >
                 <ContainerDots containers={stack.containers} />
             </Box>
             {linkUrl ? (

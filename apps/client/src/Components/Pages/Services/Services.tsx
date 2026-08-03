@@ -3,7 +3,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Box, Card, CardContent, IconButton, Tab, Tabs } from "@mui/material";
 import { FC, useState } from "react";
-import { Link as RouterLink } from "react-router";
+import { Link as RouterLink, useSearchParams } from "react-router";
 import { useGetServicesQuery } from "../../../Services/servicesApi";
 import { healthColor } from "../../Molecules/ServicesPanel/HealthDot";
 import { StackDetail } from "./StackDetail";
@@ -14,7 +14,12 @@ export const Services: FC = () => {
     const { data, isFetching, refetch } = useGetServicesQuery(undefined, {
         pollingInterval: UPDATE_INTERVAL_MS,
     });
-    const [selected, setSelected] = useState<string | false>(false);
+    const [searchParams, setSearchParams] = useSearchParams();
+    // Deep-link support: /services?stack=<id> opens directly on that stack
+    // (e.g. clicked from a dashboard row). Falls back to the first stack.
+    const [selected, setSelected] = useState<string | false>(
+        searchParams.get("stack") ?? false
+    );
 
     const received = data?.status === "received" ? data : undefined;
     const stacks: ServiceStack[] = received?.stacks ?? [];
@@ -24,6 +29,18 @@ export const Services: FC = () => {
             ? selected
             : stacks[0]?.Id;
     const active = stacks.find((stack) => stack.Id === activeId);
+
+    const selectStack = (id: string) => {
+        setSelected(id);
+        setSearchParams(
+            (prev) => {
+                const next = new URLSearchParams(prev);
+                next.set("stack", id);
+                return next;
+            },
+            { replace: true }
+        );
+    };
 
     return (
         <Card sx={{ position: "relative" }}>
@@ -60,7 +77,7 @@ export const Services: FC = () => {
                     <>
                         <Tabs
                             value={activeId ?? false}
-                            onChange={(_event, value) => setSelected(value)}
+                            onChange={(_event, value) => selectStack(value)}
                             variant="scrollable"
                             scrollButtons="auto"
                             sx={{
