@@ -1,5 +1,5 @@
 import { ScheduleItem } from "@homeremote/types";
-import { Box, List, ListSubheader, Paper } from "@mui/material";
+import { Box, List, Paper } from "@mui/material";
 import { FC, Fragment, useState } from "react";
 import { useGetScheduleQuery } from "../../../Services/scheduleApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";

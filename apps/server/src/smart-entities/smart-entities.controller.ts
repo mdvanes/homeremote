@@ -133,6 +133,9 @@ export class SmartEntitiesController {
             if (entityType === "cover") {
                 servicePath = "cover/set_cover_position";
                 body = { entity_id: entityId, position: args.position };
+            } else if (entityType === "button") {
+                servicePath = "button/press";
+                body = { entity_id: entityId };
             } else {
                 const pathType = entityType === "light" ? "light" : "switch";
                 servicePath = `${pathType}/turn_${args.state.toLowerCase()}`;

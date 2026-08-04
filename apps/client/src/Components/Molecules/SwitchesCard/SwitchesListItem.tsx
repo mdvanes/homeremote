@@ -58,6 +58,32 @@ export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
         value: number | number[]
     ) => updateEntity({ position: Array.isArray(value) ? value[0] : value })();
 
+    // Bluetooth covers (e.g. Motionblind) report state 0 until woken up. Home
+    // Assistant exposes a "connect" button entity per cover to work around
+    // this, e.g. cover.motionblind_1caf -> button.motionblind_1caf_connect.
+    const connectEntityId = item.entity_id?.startsWith("cover.")
+        ? `button.${item.entity_id.slice("cover.".length)}_connect`
+        : undefined;
+
+    const connect = async () => {
+        if (connectEntityId) {
+            try {
+                await updateSwitch({
+                    entityId: connectEntityId,
+                    updateSmartEntityBody: {},
+                }).unwrap();
+            } catch (error) {
+                dispatch(
+                    logError(
+                        `SwitchesListItem connect failed: ${getErrorMessage(
+                            error as SerializedError
+                        )}`
+                    )
+                );
+            }
+        }
+    };
+
     const label =
         (item.attributes?.friendly_name ?? "").length > 0
             ? item.attributes?.friendly_name
@@ -67,8 +93,9 @@ export const SwitchesListItem: FC<SwitchesListItemProps> = ({ item }) => {
         return (
             <ListItem disableGutters disablePadding sx={{ paddingX: 2 }}>
                 <ListItemText
-                    sx={{ flex: "0 0 auto", minWidth: 120 }}
+                    sx={{ flex: "0 0 auto", minWidth: 120, cursor: "pointer" }}
                     primary={label}
+                    onClick={connect}
                 />
                 <Slider
                     sx={{ flex: 1, marginX: 2 }}
