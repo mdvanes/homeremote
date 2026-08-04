@@ -140,3 +140,33 @@ export type AddSongArg = {
 export type AddSongResponse = {
     status: "received" | "error";
 };
+
+export interface BrowseItem {
+    id: string;
+    title: string;
+    isDir: boolean;
+    artist?: string;
+    album?: string;
+    track?: number;
+    duration?: number;
+    coverArt?: string;
+}
+
+export type BrowseResponse =
+    | {
+          status: "received";
+          parentId: string | null;
+          items: BrowseItem[];
+      }
+    | {
+          status: "error";
+      };
+
+export type RecentAlbumsResponse =
+    | {
+          status: "received";
+          albums: IPlaylist[];
+      }
+    | {
+          status: "error";
+      };

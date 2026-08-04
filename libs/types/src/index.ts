@@ -9,6 +9,7 @@ export * as HomeAssistantTypes from "./lib/external/generated/homeAssistant";
 export * from "./lib/external/homeassistant.types";
 export * from "./lib/external/movie.types";
 export * from "./lib/external/portainer.types";
+export * from "./lib/external/subsonic.types";
 export * from "./lib/external/tvshow.types";
 export * as VolvoTypes from "./lib/external/volvo/volvo.types";
 export * from "./lib/homesec.types";

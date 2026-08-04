@@ -1,0 +1,407 @@
+openapi: 3.0.1
+info:
+    title: Subsonic API
+    description: >-
+        Subset of the Subsonic API (https://subsonic.org/pages/api.jsp) consumed
+        by HomeRemote's Jukebox feature to browse artists/albums/songs by file
+        system, list recently added albums, list/play playlists, and manage
+        starred (favorite) albums.
+    version: 1.0.0
+servers:
+    - url: https://localhost
+      description: Subsonic-compatible server
+paths:
+    /rest/getIndexes:
+        get:
+            tags:
+                - subsonic
+            summary: Get the top-level artist/folder index
+            operationId: getIndexes
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetIndexesResponse"
+    /rest/getMusicDirectory:
+        get:
+            tags:
+                - subsonic
+            summary: Get the contents of a music directory (artist, album, or folder)
+            operationId: getMusicDirectory
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Directory identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetMusicDirectoryResponse"
+    /rest/getAlbumList:
+        get:
+            tags:
+                - subsonic
+            summary: Get a list of albums, e.g. the most recently added ones
+            operationId: getAlbumList
+            parameters:
+                - name: type
+                  in: query
+                  required: true
+                  description: The list type, e.g. "newest"
+                  schema:
+                      type: string
+                      enum: [newest]
+                - name: size
+                  in: query
+                  required: false
+                  description: Number of albums to return
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetAlbumListResponse"
+    /rest/getPlaylists:
+        get:
+            tags:
+                - subsonic
+            summary: Get all playlists
+            operationId: getPlaylists
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetPlaylistsResponse"
+    /rest/getPlaylist:
+        get:
+            tags:
+                - subsonic
+            summary: Get the songs of a playlist
+            operationId: getPlaylist
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Playlist identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetPlaylistResponse"
+    /rest/getStarred:
+        get:
+            tags:
+                - subsonic
+            summary: Get starred (favorite) artists, albums and songs
+            operationId: getStarred
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetStarredResponse"
+    /rest/getCoverArt:
+        get:
+            tags:
+                - subsonic
+            summary: Get a cover art image
+            operationId: getCoverArt
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Cover art identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        image/*:
+                            schema:
+                                type: string
+                                format: binary
+    /rest/stream:
+        get:
+            tags:
+                - subsonic
+            summary: Stream a song
+            operationId: stream
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Song identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        audio/*:
+                            schema:
+                                type: string
+                                format: binary
+    /rest/updatePlaylist:
+        get:
+            tags:
+                - subsonic
+            summary: Update a playlist, e.g. add a song to it
+            operationId: updatePlaylist
+            parameters:
+                - name: playlistId
+                  in: query
+                  required: true
+                  schema:
+                      type: string
+                - name: songIdToAdd
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SubsonicResponseEnvelope"
+components:
+    schemas:
+        SubsonicResponseEnvelope:
+            type: object
+            properties:
+                subsonic-response:
+                    type: object
+                    properties:
+                        status:
+                            type: string
+                            enum: [ok, failed]
+                        version:
+                            type: string
+        Artist:
+            type: object
+            description: An artist entry within an index
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+        Index:
+            type: object
+            description: A single letter/group of artists within getIndexes
+            properties:
+                name:
+                    type: string
+                artist:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Artist"
+        Child:
+            type: object
+            description: >-
+                A single entry within a music directory: either a sub-directory
+                (isDir true, e.g. an artist or album folder) or a song (isDir
+                false).
+            properties:
+                id:
+                    type: string
+                parent:
+                    type: string
+                isDir:
+                    type: boolean
+                title:
+                    type: string
+                album:
+                    type: string
+                artist:
+                    type: string
+                track:
+                    type: integer
+                genre:
+                    type: string
+                coverArt:
+                    type: string
+                size:
+                    type: integer
+                contentType:
+                    type: string
+                suffix:
+                    type: string
+                duration:
+                    type: integer
+                bitRate:
+                    type: integer
+                path:
+                    type: string
+                playCount:
+                    type: integer
+                created:
+                    type: string
+                albumId:
+                    type: string
+                artistId:
+                    type: string
+                type:
+                    type: string
+                starred:
+                    type: string
+            required:
+                - id
+                - isDir
+        Directory:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                parent:
+                    type: string
+                starred:
+                    type: string
+                playCount:
+                    type: integer
+                child:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Child"
+        Playlist:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                comment:
+                    type: string
+                owner:
+                    type: string
+                public:
+                    type: boolean
+                songCount:
+                    type: integer
+                duration:
+                    type: integer
+                created:
+                    type: string
+                changed:
+                    type: string
+                coverArt:
+                    type: string
+                entry:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Child"
+            required:
+                - id
+                - name
+        GetIndexesResponse:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              indexes:
+                                  type: object
+                                  properties:
+                                      lastModified:
+                                          type: string
+                                      ignoredArticles:
+                                          type: string
+                                      index:
+                                          type: array
+                                          items:
+                                              $ref: "#/components/schemas/Index"
+        GetMusicDirectoryResponse:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              directory:
+                                  $ref: "#/components/schemas/Directory"
+        GetAlbumListResponse:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              albumList:
+                                  type: object
+                                  properties:
+                                      album:
+                                          type: array
+                                          items:
+                                              $ref: "#/components/schemas/Child"
+        GetPlaylistsResponse:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              playlists:
+                                  type: object
+                                  properties:
+                                      playlist:
+                                          type: array
+                                          items:
+                                              $ref: "#/components/schemas/Playlist"
+        GetPlaylistResponse:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              playlist:
+                                  $ref: "#/components/schemas/Playlist"
+        GetStarredResponse:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              starred:
+                                  type: object
+                                  properties:
+                                      artist:
+                                          type: array
+                                          items:
+                                              $ref: "#/components/schemas/Artist"
+                                      album:
+                                          type: array
+                                          items:
+                                              $ref: "#/components/schemas/Child"
+                                      song:
+                                          type: array
+                                          items:
+                                              $ref: "#/components/schemas/Child"
