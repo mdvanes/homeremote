@@ -1,8 +1,5 @@
 import { ISong } from "@homeremote/types";
-import {
-    QueueMusic as QueueMusicIcon,
-    Star as StarIcon,
-} from "@mui/icons-material";
+import { QueueMusic as QueueMusicIcon } from "@mui/icons-material";
 import {
     Avatar,
     Box,
@@ -91,49 +88,49 @@ const JukeboxBrowse: FC<JukeboxBrowseProps> = ({ audioElemRef }) => {
                         <>
                             {!currentPlaylist && (
                                 <List>
-                                    {data.playlists.map((playlist) => {
-                                        const { id, name, type } = playlist;
-                                        return (
-                                            <ListItem
-                                                key={id}
-                                                disableGutters
-                                                disablePadding
-                                            >
-                                                <ListItemButton
-                                                    onClick={() => {
-                                                        setCurrentPlaylist(
-                                                            playlist
-                                                        );
-                                                        localStorage.setItem(
-                                                            LAST_PLAYLIST,
-                                                            JSON.stringify(
-                                                                playlist
-                                                            )
-                                                        );
-                                                    }}
+                                    {data.playlists
+                                        .filter(
+                                            (playlist) =>
+                                                playlist.type !== "album"
+                                        )
+                                        .map((playlist) => {
+                                            const { id, name, type } = playlist;
+                                            return (
+                                                <ListItem
+                                                    key={id}
+                                                    disableGutters
+                                                    disablePadding
                                                 >
-                                                    <ListItemAvatar>
-                                                        <Avatar
-                                                            src={`${
-                                                                process.env
-                                                                    .NX_PUBLIC_BASE_URL
-                                                            }/api/jukebox/coverart/${id}?type=${type}&hash=${encodeURIComponent(
-                                                                name
-                                                            )}`}
+                                                    <ListItemButton
+                                                        onClick={() => {
+                                                            setCurrentPlaylist(
+                                                                playlist
+                                                            );
+                                                            localStorage.setItem(
+                                                                LAST_PLAYLIST,
+                                                                JSON.stringify(
+                                                                    playlist
+                                                                )
+                                                            );
+                                                        }}
+                                                    >
+                                                        <ListItemAvatar>
+                                                            <Avatar
+                                                                src={`${
+                                                                    process.env
+                                                                        .NX_PUBLIC_BASE_URL
+                                                                }/api/jukebox/coverart/${id}?type=${type}&hash=${encodeURIComponent(
+                                                                    name
+                                                                )}`}
+                                                            />
+                                                        </ListItemAvatar>
+                                                        <ListItemText
+                                                            primary={name}
                                                         />
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={name}
-                                                    />
-                                                    <div>
-                                                        {type === "album" && (
-                                                            <StarIcon fontSize="small" />
-                                                        )}
-                                                    </div>
-                                                </ListItemButton>
-                                            </ListItem>
-                                        );
-                                    })}
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            );
+                                        })}
                                 </List>
                             )}
 
