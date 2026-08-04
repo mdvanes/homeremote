@@ -52,9 +52,7 @@ export const ServiceStackRow: FC<ServiceStackRowProps> = ({ stack }) => {
                 tabIndex={0}
                 aria-label={`Open ${stack.Name} details`}
                 sx={{
-                    fontSize: 12,
-                    fontWeight: 500,
-                    minWidth: 84,
+                    flex: 1,
                     color: isHealthy ? "text.secondary" : "text.primary",
                     whiteSpace: "nowrap",
                     cursor: "pointer",
@@ -63,10 +61,7 @@ export const ServiceStackRow: FC<ServiceStackRowProps> = ({ stack }) => {
             >
                 {stack.Name}
             </Box>
-            <Box
-                onClick={openDetail}
-                sx={{ flex: 1, minWidth: 0, cursor: "pointer" }}
-            >
+            <Box onClick={openDetail} sx={{ minWidth: 0, cursor: "pointer" }}>
                 <ContainerDots containers={stack.containers} />
             </Box>
             {linkUrl ? (
