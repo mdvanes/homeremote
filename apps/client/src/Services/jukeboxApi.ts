@@ -1,9 +1,11 @@
 import {
     AddSongArg,
     AddSongResponse,
+    BrowseResponse,
     PlaylistArgs,
     PlaylistResponse,
     PlaylistsResponse,
+    RecentAlbumsResponse,
     SongDirResponse,
 } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -15,7 +17,7 @@ export const jukeboxApi = createApi({
         baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/jukebox`,
         credentials: willAddCredentials(),
     }),
-    tagTypes: ["Playlists", "Songs", "Songdir", "Starred"],
+    tagTypes: ["Playlists", "Songs", "Songdir", "Starred", "Browse", "Recent"],
     endpoints: (builder) => ({
         getPlaylists: builder.query<PlaylistsResponse, undefined>({
             query: () => "/playlists",
@@ -39,6 +41,14 @@ export const jukeboxApi = createApi({
             },
             invalidatesTags: ["Songs"],
         }),
+        getBrowse: builder.query<BrowseResponse, string | undefined>({
+            query: (id) => (id ? `/browse/${id}` : "/browse"),
+            providesTags: ["Browse"],
+        }),
+        getRecentAlbums: builder.query<RecentAlbumsResponse, void>({
+            query: () => "/recent",
+            providesTags: ["Recent"],
+        }),
     }),
 });
 
@@ -47,4 +57,6 @@ export const {
     useGetPlaylistQuery,
     useGetSongDirQuery,
     useAddSongToPlaylistMutation,
+    useGetBrowseQuery,
+    useGetRecentAlbumsQuery,
 } = jukeboxApi;

@@ -6,6 +6,7 @@ import {
     useGetPlaylistsQuery,
 } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
+import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
 import { getNextSong } from "./getNextSong";
 import { getPrevSong } from "./getPrevSong";
 
@@ -13,7 +14,6 @@ interface IJukeboxPlayerProps {
     audioElemRef: RefObject<HTMLAudioElement | null>;
     song: ISong;
     currentPlaylist: IPlaylist | undefined;
-    setCurrentSong: (song: ISong) => void;
 }
 
 export const LAST_PLAYLIST = "LAST_PLAYLIST";
@@ -28,8 +28,8 @@ const JukeboxPlayer: FC<IJukeboxPlayerProps> = ({
     audioElemRef,
     song,
     currentPlaylist,
-    setCurrentSong,
 }) => {
+    const { setCurrentSong } = useJukeboxPlaybackContext();
     const {
         setHandlePlayPrev,
         setHandlePlayNext,
