@@ -67,8 +67,9 @@ exports[`Dashboard page > contains all the control components 1`] = `
           role="tabpanel"
           style="margin-bottom: 20px;"
         />
-        <mock-dockerstacklist-card />
         <mock-speedtest-card />
+        <mock-download-list />
+        <mock-nextup />
         <button
           class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium css-23key4-MuiButtonBase-root-MuiIconButton-root"
           tabindex="0"
@@ -91,11 +92,8 @@ exports[`Dashboard page > contains all the control components 1`] = `
       <div
         class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-md-5 css-16ebuf1-MuiGrid-root"
       >
-        <mock-service-links-bar />
-        <mock-docker />
+        <mock-services-panel-card />
         <mock-schedule />
-        <mock-download-list />
-        <mock-nextup />
         <mock-monit />
       </div>
     </div>

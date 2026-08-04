@@ -1,0 +1,168 @@
+openapi: 3.0.1
+info:
+    title: Portainer API
+    description: >-
+        Subset of the Portainer API consumed by HomeRemote to list and control
+        Docker Compose stacks. See https://app.swaggerhub.com/apis/portainer/portainer-ce
+    version: 1.0.0
+servers:
+    - url: https://localhost:9443
+      description: Portainer
+paths:
+    /api/stacks:
+        get:
+            tags:
+                - portainer
+            summary: List stacks
+            description: List all stacks based on the current user authorizations.
+            operationId: listStacks
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Stack"
+                "500":
+                    description: Server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/stacks/{id}/start:
+        post:
+            tags:
+                - portainer
+            summary: Start a stopped stack
+            operationId: stackStart
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: Stack identifier
+                  schema:
+                      type: integer
+                - name: endpointId
+                  in: query
+                  required: true
+                  description: Environment (endpoint) identifier
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Stack"
+                "500":
+                    description: Server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+    /api/stacks/{id}/stop:
+        post:
+            tags:
+                - portainer
+            summary: Stop a running stack
+            operationId: stackStop
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: Stack identifier
+                  schema:
+                      type: integer
+                - name: endpointId
+                  in: query
+                  required: true
+                  description: Environment (endpoint) identifier
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Stack"
+                "500":
+                    description: Server error
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+components:
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+                    description: Human-readable error message
+                details:
+                    type: string
+                    description: Additional error details
+        Stack:
+            type: object
+            description: A Portainer managed stack
+            properties:
+                Id:
+                    type: integer
+                    description: Stack identifier
+                    example: 1
+                Name:
+                    type: string
+                    description: Stack name
+                    example: monitoring
+                Type:
+                    type: integer
+                    description: "Stack type (1: swarm, 2: compose)"
+                    example: 2
+                EndpointId:
+                    type: integer
+                    description: Environment (endpoint) identifier
+                    example: 1
+                SwarmId:
+                    type: string
+                    description: Swarm cluster identifier (only for swarm stacks)
+                EntryPoint:
+                    type: string
+                    description: Path to the Stack file
+                    example: docker-compose.yml
+                Status:
+                    type: integer
+                    description: "Stack status (1: active, 2: inactive)"
+                    example: 1
+                ProjectPath:
+                    type: string
+                    description: Path on disk to the repository hosting the Stack file
+                CreationDate:
+                    type: integer
+                    format: int64
+                    description: Creation timestamp (unix seconds)
+                CreatedBy:
+                    type: string
+                    description: The username which created this stack
+                UpdateDate:
+                    type: integer
+                    format: int64
+                    description: Update timestamp (unix seconds)
+                UpdatedBy:
+                    type: string
+                    description: The username which last updated this stack
+                Namespace:
+                    type: string
+                    description: Kubernetes namespace (only for Kubernetes stacks)
+                IsComposeFormat:
+                    type: boolean
+                    description: Whether the stack uses the compose file format
+            required:
+                - Id
+                - Name
+                - Type
+                - EndpointId
+                - Status
