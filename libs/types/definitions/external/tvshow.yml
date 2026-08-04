@@ -1,0 +1,96 @@
+openapi: 3.0.1
+info:
+    title: TvShow Calendar API
+    description: >-
+        Subset of the Sonarr API consumed by HomeRemote for the schedule
+        (calendar) feature. See https://sonarr.tv/docs/api/
+    version: 1.0.0
+servers:
+    - url: http://localhost:8989
+      description: TvShow service
+paths:
+    /api/v3/calendar:
+        get:
+            tags:
+                - tvshow
+            summary: Get episodes airing in a date range
+            operationId: getTvShowCalendar
+            parameters:
+                - name: start
+                  in: query
+                  description: Start date (yyyy-mm-dd)
+                  schema:
+                      type: string
+                      format: date
+                - name: end
+                  in: query
+                  description: End date (yyyy-mm-dd)
+                  schema:
+                      type: string
+                      format: date
+                - name: includeSeries
+                  in: query
+                  description: Include series data in the response
+                  schema:
+                      type: boolean
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/TvShowEpisode"
+components:
+    schemas:
+        TvShowSeriesImage:
+            type: object
+            properties:
+                coverType:
+                    type: string
+                    description: "Image type, e.g. poster"
+                remoteUrl:
+                    type: string
+        TvShowSeries:
+            type: object
+            properties:
+                title:
+                    type: string
+                images:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/TvShowSeriesImage"
+        TvShowEpisode:
+            type: object
+            description: A Sonarr episode calendar entry
+            properties:
+                id:
+                    type: integer
+                seriesId:
+                    type: integer
+                seasonNumber:
+                    type: integer
+                episodeNumber:
+                    type: integer
+                title:
+                    type: string
+                    description: Episode title
+                airDate:
+                    type: string
+                    format: date
+                airDateUtc:
+                    type: string
+                    format: date-time
+                hasFile:
+                    type: boolean
+                monitored:
+                    type: boolean
+                series:
+                    $ref: "#/components/schemas/TvShowSeries"
+            required:
+                - id
+                - seriesId
+                - seasonNumber
+                - episodeNumber
+                - title

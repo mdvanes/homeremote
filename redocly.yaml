@@ -19,6 +19,14 @@ apis:
         root: ./libs/types/definitions/external/speedTestTracker.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/external/generated/speedTestTracker.ts
+    tvshow@v1:
+        root: ./libs/types/definitions/external/tvshow.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/tvshow.ts
+    movie@v1:
+        root: ./libs/types/definitions/external/movie.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/movie.ts
     energyUsage@v1:
         root: ./libs/types/definitions/internal/energyUsage.yml
         x-openapi-ts:
