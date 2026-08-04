@@ -41,6 +41,7 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
     const [type, setType] = useState<ServiceLinkType>(link?.type ?? "none");
     const [port, setPort] = useState<number>(link?.port ?? ports[0] ?? 0);
     const [fqdn, setFqdn] = useState<string>(link?.fqdn ?? "");
+    const [icon, setIcon] = useState<string>(link?.icon ?? "");
 
     const preview =
         type === "none"
@@ -56,6 +57,7 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
                 type,
                 port: type === "port" ? port : undefined,
                 fqdn: type === "fqdn" ? fqdn : undefined,
+                icon: icon || undefined,
             },
         });
     };
@@ -185,6 +187,28 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
                             </Box>
                         </RadioGroup>
                     </FormControl>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1,
+                            marginTop: 1,
+                        }}
+                    >
+                        <span>Icon</span>
+                        <TextField
+                            size="small"
+                            placeholder="jellyfin"
+                            value={icon}
+                            onChange={(event) => setIcon(event.target.value)}
+                            slotProps={{
+                                htmlInput: {
+                                    "aria-label": "Icon",
+                                    style: { fontSize: 12 },
+                                },
+                            }}
+                        />
+                    </Box>
                     <Box
                         sx={{
                             fontSize: 11,

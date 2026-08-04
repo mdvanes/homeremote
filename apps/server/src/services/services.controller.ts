@@ -244,7 +244,7 @@ export class ServicesController {
         discovered: ServiceLinkConfig
     ): ServiceLinkConfig {
         const label = discovered.label ?? name;
-        const icon = discovered.icon ?? this.icons[name];
+        const icon = override.icon || discovered.icon || this.icons[name];
         if (override.type === "none") {
             return { type: "none", label, icon };
         }
@@ -645,6 +645,7 @@ export class ServicesController {
                 type: body.type,
                 port: body.port,
                 fqdn: body.fqdn,
+                icon: body.icon,
             };
             await this.writeLinkStore(store);
             const config = this.applyOverride(

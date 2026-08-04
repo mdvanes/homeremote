@@ -66,6 +66,7 @@ export interface ServiceLinkConfigUpdate {
     type: ServiceLinkType;
     port?: number;
     fqdn?: string;
+    icon?: string;
 }
 
 export type ServiceLinkConfigResponse =
