@@ -61,7 +61,17 @@ const recordingFetch = (async (
     input: RequestInfo | URL,
     init?: RequestInit
 ) => {
-    fetchSpy(input, init);
+    // Record a clone so the request body remains readable after MSW consumes
+    // the original stream while intercepting/dispatching the request. Request
+    // cloning doesn't run the TestRequest subclass logic, so __rawUrl (used by
+    // createGetCalledUrl) is copied over explicitly.
+    const recordedInput =
+        input instanceof Request
+            ? Object.assign(input.clone(), {
+                  __rawUrl: (input as Request & { __rawUrl?: string }).__rawUrl,
+              })
+            : input;
+    fetchSpy(recordedInput, init);
     if (rejection != null) {
         const request = new Request(input as RequestInfo, init);
         throw typeof rejection === "function"

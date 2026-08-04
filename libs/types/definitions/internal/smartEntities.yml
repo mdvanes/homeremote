@@ -115,5 +115,8 @@ components:
                     type: string
                     description: Target state, on or off
                     enum: [on, off]
+                position:
+                    type: integer
+                    description: Target position for a cover entity, 0 (closed) to 100 (open)
         UpdateSmartEntityResponse:
             type: object

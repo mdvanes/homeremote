@@ -53,6 +53,8 @@ export type State = {
         device_class?: string;
         state_class?: string;
         unit_of_measurement?: string;
+        /** Position of a cover entity, 0 (closed) to 100 (open). */
+        current_position?: number;
     };
     last_changed?: string;
     last_reported?: string;
@@ -82,6 +84,8 @@ export type UpdateSmartEntityResponse = object;
 export type UpdateSmartEntityBody = {
     /** Target state, on or off */
     state?: "on" | "off";
+    /** Target position for a cover entity, 0 (closed) to 100 (open) */
+    position?: number;
 };
 export const { useGetSmartEntitiesQuery, useUpdateSmartEntityMutation } =
     injectedRtkApi;
