@@ -39,7 +39,10 @@ export const getScheduleDateRange = (
     return { start: toDateString(start), end: toDateString(end) };
 };
 
-const mapTvShowEpisode = (episode: TvShowApiEpisode): TvShowScheduleItem => {
+const mapTvShowEpisode = (
+    episode: TvShowApiEpisode,
+    tvShowBaseUrl: string
+): TvShowScheduleItem => {
     const poster = episode.series?.images?.find(
         (image) => image.coverType === "poster"
     );
@@ -51,6 +54,9 @@ const mapTvShowEpisode = (episode: TvShowApiEpisode): TvShowScheduleItem => {
         posterUrl: poster
             ? `/api/schedule/thumbnail/tvshow/${episode.seriesId}`
             : null,
+        detailUrl: episode.series?.titleSlug
+            ? `${tvShowBaseUrl}/series/${episode.series.titleSlug}`
+            : null,
         monitored: episode.monitored ?? false,
         hasFile: episode.hasFile ?? false,
         seasonNumber: episode.seasonNumber,
@@ -59,7 +65,10 @@ const mapTvShowEpisode = (episode: TvShowApiEpisode): TvShowScheduleItem => {
     };
 };
 
-const mapMovieItem = (movie: MovieApiCalendarItem): MovieScheduleItem => {
+const mapMovieItem = (
+    movie: MovieApiCalendarItem,
+    movieBaseUrl: string
+): MovieScheduleItem => {
     const poster = movie.images?.find((image) => image.coverType === "poster");
     return {
         id: `movie-${movie.id}`,
@@ -71,6 +80,9 @@ const mapMovieItem = (movie: MovieApiCalendarItem): MovieScheduleItem => {
             "",
         title: movie.title,
         posterUrl: poster ? `/api/schedule/thumbnail/movie/${movie.id}` : null,
+        detailUrl: movie.titleSlug
+            ? `${movieBaseUrl}/movie/${movie.titleSlug}`
+            : null,
         monitored: movie.monitored ?? false,
         hasFile: movie.hasFile ?? false,
     };
@@ -117,8 +129,12 @@ export class ScheduleController {
             ]);
 
             const items: ScheduleItem[] = [
-                ...tvShowEpisodes.map(mapTvShowEpisode),
-                ...movieItems.map(mapMovieItem),
+                ...tvShowEpisodes.map((episode) =>
+                    mapTvShowEpisode(episode, this.tvShowBaseUrl)
+                ),
+                ...movieItems.map((movie) =>
+                    mapMovieItem(movie, this.movieBaseUrl)
+                ),
             ].sort((a, b) => a.date.localeCompare(b.date));
 
             return { items };
@@ -142,10 +158,11 @@ export class ScheduleController {
             `[${req.user.name}] GET to /api/schedule/thumbnail/${kind}/${id}`
         );
         try {
-            const streamUrl =
-                kind === "tvshow"
-                    ? `${this.tvShowBaseUrl}/api/v3/mediacover/series/${id}/poster.jpg`
-                    : `${this.movieBaseUrl}/api/v3/mediacover/${id}/poster.jpg`;
+            // Both apps serve local poster art at /MediaCover/{id}/poster.jpg,
+            // not under /api/v3.
+            const baseUrl =
+                kind === "tvshow" ? this.tvShowBaseUrl : this.movieBaseUrl;
+            const streamUrl = `${baseUrl}/MediaCover/${id}/poster.jpg`;
             const apiKey =
                 kind === "tvshow" ? this.tvShowApiKey : this.movieApiKey;
             const str = got.stream(streamUrl, {

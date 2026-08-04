@@ -13,20 +13,6 @@ const UPDATE_INTERVAL_MS = 60 * 60 * 1000;
 
 const CUTOFF = 5;
 
-const formatDayLabel = (date: string): string => {
-    const toDateString = (d: Date): string => d.toISOString().slice(0, 10);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-
-    if (date === toDateString(today)) return "Today";
-    if (date === toDateString(yesterday)) return "Yesterday";
-    if (date === toDateString(tomorrow)) return "Tomorrow";
-    return date;
-};
-
 const groupByDate = (items: ScheduleItem[]): [string, ScheduleItem[]][] => {
     const groups: [string, ScheduleItem[]][] = [];
     items.forEach((item) => {
@@ -75,9 +61,6 @@ const Schedule: FC = () => {
             <Box sx={staleContentSx(isStale)}>
                 {groups.map(([date, dateItems]) => (
                     <Fragment key={date}>
-                        <ListSubheader component="div">
-                            {formatDayLabel(date)}
-                        </ListSubheader>
                         {dateItems.map((item) => (
                             <ScheduleListItem key={item.id} item={item} />
                         ))}

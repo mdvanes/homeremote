@@ -69,11 +69,12 @@ exports[`Dashboard page > contains all the control components 1`] = `
         />
         <mock-speedtest-card />
         <mock-download-list />
+        <mock-schedule />
         <mock-nextup />
         <button
           class="MuiButtonBase-root MuiIconButton-root MuiIconButton-colorPrimary MuiIconButton-sizeMedium css-23key4-MuiButtonBase-root-MuiIconButton-root"
           tabindex="0"
-          title="Toggle light mode"
+          title="Toggle lite mode"
           type="button"
         >
           <svg
@@ -94,7 +95,6 @@ exports[`Dashboard page > contains all the control components 1`] = `
       >
         <mock-service-link-bar-section />
         <mock-services-panel-card />
-        <mock-schedule />
         <mock-monit />
       </div>
     </div>

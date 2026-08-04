@@ -55,6 +55,9 @@ components:
                     type: integer
                 title:
                     type: string
+                titleSlug:
+                    type: string
+                    description: Slug used in the web UI movie detail page URL
                 inCinemas:
                     type: string
                     format: date-time

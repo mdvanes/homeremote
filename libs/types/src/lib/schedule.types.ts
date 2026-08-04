@@ -6,6 +6,7 @@ interface ScheduleItemBase {
     date: string; // yyyy-mm-dd
     title: string;
     posterUrl: string | null; // server-relative proxy path
+    detailUrl: string | null; // tvshow/movie web UI detail page
     monitored: boolean;
     hasFile: boolean;
 }

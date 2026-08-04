@@ -32,6 +32,8 @@ export interface components {
         };
         TvShowSeries: {
             title?: string;
+            /** @description Slug used in the web UI series detail page URL */
+            titleSlug?: string;
             images?: components["schemas"]["TvShowSeriesImage"][];
         };
         /** @description A Sonarr episode calendar entry */

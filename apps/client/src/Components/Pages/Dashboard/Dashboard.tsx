@@ -94,13 +94,14 @@ const Dashboard: FC = () => {
                 {/* <DockerStackListCard /> */}
                 <SpeedTestCard />
                 {!isLiteMode && <DownloadList />}
-                <Nextup />
+                {!isLiteMode && <Schedule />}
+                {!isLiteMode && <Nextup />}
                 <IconButton
                     color="primary"
                     onClick={() => {
                         setIsLiteMode((prev) => !prev);
                     }}
-                    title="Toggle light mode"
+                    title="Toggle lite mode"
                 >
                     <AppsIcon />
                 </IconButton>
@@ -113,10 +114,8 @@ const Dashboard: FC = () => {
             >
                 <ServiceLinkBarSection />
                 <ServicesPanelCard />
-                {/* Unified ServicesPanel replaces ServiceLinksBar + Docker: */}
                 {/* <ServiceLinksBar /> */}
                 {/* <Docker /> */}
-                {!isLiteMode && <Schedule />}
                 <Monit />
             </Grid>
         </Grid>

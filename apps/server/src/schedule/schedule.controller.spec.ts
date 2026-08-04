@@ -30,6 +30,7 @@ const mockTvShowResponse: TvShowApiCalendarResponse = [
         monitored: true,
         series: {
             title: "Missed",
+            titleSlug: "missed",
             images: [
                 { coverType: "poster", remoteUrl: "http://poster/tv.jpg" },
             ],
@@ -41,6 +42,7 @@ const mockMovieResponse: MovieApiCalendarResponse = [
     {
         id: 20,
         title: "Some Movie",
+        titleSlug: "some-movie",
         digitalRelease: "2022-11-07",
         hasFile: true,
         monitored: true,
@@ -102,6 +104,7 @@ describe("ScheduleController", () => {
                     date: "2022-10-01",
                     title: "Missed",
                     posterUrl: "/api/schedule/thumbnail/tvshow/10",
+                    detailUrl: "http://tvshow-url/series/missed",
                     monitored: true,
                     hasFile: false,
                     seasonNumber: 3,
@@ -114,6 +117,7 @@ describe("ScheduleController", () => {
                     date: "2022-11-07",
                     title: "Some Movie",
                     posterUrl: "/api/schedule/thumbnail/movie/20",
+                    detailUrl: "http://movie-url/movie/some-movie",
                     monitored: true,
                     hasFile: true,
                 },

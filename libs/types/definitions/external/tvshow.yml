@@ -57,6 +57,9 @@ components:
             properties:
                 title:
                     type: string
+                titleSlug:
+                    type: string
+                    description: Slug used in the web UI series detail page URL
                 images:
                     type: array
                     items:

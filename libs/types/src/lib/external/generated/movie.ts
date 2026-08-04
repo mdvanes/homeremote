@@ -34,6 +34,8 @@ export interface components {
         MovieCalendarItem: {
             id: number;
             title: string;
+            /** @description Slug used in the web UI movie detail page URL */
+            titleSlug?: string;
             /** Format: date-time */
             inCinemas?: string;
             /** Format: date-time */

@@ -22,6 +22,7 @@ const mockScheduleResponse: GetScheduleResponse = {
             date: "2022-10-01",
             title: "Missed",
             posterUrl: null,
+            detailUrl: "http://tvshow-url/series/missed",
             monitored: true,
             hasFile: false,
             seasonNumber: 3,
@@ -34,6 +35,7 @@ const mockScheduleResponse: GetScheduleResponse = {
             date: "2022-11-07",
             title: "Some Movie",
             posterUrl: null,
+            detailUrl: "http://movie-url/movie/some-movie",
             monitored: true,
             hasFile: true,
         },
@@ -58,6 +60,17 @@ describe("Schedule", () => {
             'Missed — 3x1 "some missed name"'
         );
         expect(listItemElems[1]).toHaveTextContent("Some Movie");
+
+        const links = screen.getAllByRole("link");
+        expect(links[0]).toHaveAttribute(
+            "href",
+            "http://tvshow-url/series/missed"
+        );
+        expect(links[0]).toHaveAttribute("target", "_blank");
+        expect(links[1]).toHaveAttribute(
+            "href",
+            "http://movie-url/movie/some-movie"
+        );
     });
 
     it("renders nothing when there are no items", async () => {
