@@ -1,55 +1,47 @@
 import { ScheduleItem } from "@homeremote/types";
-import { Box, List, ListItem, ListItemText, Paper } from "@mui/material";
-import { FC, ReactNode } from "react";
+import { Box, List, ListSubheader, Paper } from "@mui/material";
+import { FC, Fragment, useState } from "react";
 import { useGetScheduleQuery } from "../../../Services/scheduleApi";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
+import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import { staleContentSx } from "../CardStatus/CardStatus";
 import CardStatusBar from "../CardStatusBar/CardStatusBar";
+import { ScheduleListItem } from "./ScheduleListItem";
 
 // This barely updates once a day, so check once per hour
 const UPDATE_INTERVAL_MS = 60 * 60 * 1000;
 
-type ScheduleItemType = "missed" | "snatched" | "today" | "soon" | "later";
+const CUTOFF = 5;
 
-const typeToColor: Record<ScheduleItemType, string> = {
-    missed: "error.light",
-    snatched: "success.light",
-    today: "info.light",
-    soon: "text.primary",
-    later: "text.secondary",
+const formatDayLabel = (date: string): string => {
+    const toDateString = (d: Date): string => d.toISOString().slice(0, 10);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    if (date === toDateString(today)) return "Today";
+    if (date === toDateString(yesterday)) return "Yesterday";
+    if (date === toDateString(tomorrow)) return "Tomorrow";
+    return date;
 };
 
-const scheduleItemToListItem =
-    (type: ScheduleItemType) =>
-    ({
-        airdate,
-        show_name,
-        show_status,
-        episode,
-        season,
-        ep_name,
-        indexerid,
-    }: ScheduleItem): ReactNode => (
-        <ListItem
-            key={`${show_name}-${season}x${episode}`}
-            title={`${show_name} = ${show_status} | ${type}`}
-        >
-            <ListItemText
-                sx={{
-                    color: typeToColor[type],
-                    backgroundImage: `url(${process.env.NX_PUBLIC_BASE_URL}/api/schedule/thumbnail/${indexerid})`,
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPositionX: "right",
-                }}
-            >
-                {airdate}&nbsp; <strong>{show_name}</strong>&nbsp; {season}x
-                {episode} "{ep_name}"
-            </ListItemText>
-        </ListItem>
-    );
+const groupByDate = (items: ScheduleItem[]): [string, ScheduleItem[]][] => {
+    const groups: [string, ScheduleItem[]][] = [];
+    items.forEach((item) => {
+        const lastGroup = groups[groups.length - 1];
+        if (lastGroup && lastGroup[0] === item.date) {
+            lastGroup[1].push(item);
+        } else {
+            groups.push([item.date, [item]]);
+        }
+    });
+    return groups;
+};
 
 const Schedule: FC = () => {
+    const [isOpen, setIsOpen] = useState(false);
     const {
         data,
         isLoading,
@@ -63,21 +55,15 @@ const Schedule: FC = () => {
         pollingInterval: UPDATE_INTERVAL_MS,
     });
 
-    if (!data) {
+    if (!data || data.items.length <= 0) {
         return null;
     }
 
-    const {
-        data: { soon, today, later, missed, snatched },
-    } = data;
-
-    const combined = [...soon, ...today, ...later, ...missed, ...snatched];
-    if (combined.length <= 0) {
-        return null;
-    }
+    const items = isOpen ? data.items : data.items.slice(0, CUTOFF);
+    const groups = groupByDate(items);
 
     return (
-        <List component={Paper} sx={{ gap: "10px", position: "relative" }}>
+        <List component={Paper} sx={{ position: "relative" }}>
             <CardStatusBar
                 isLoading={isLoading || isFetching}
                 name="Schedule"
@@ -87,11 +73,23 @@ const Schedule: FC = () => {
                 lastUpdated={lastUpdated}
             />
             <Box sx={staleContentSx(isStale)}>
-                {missed.map(scheduleItemToListItem("missed"))}
-                {snatched.map(scheduleItemToListItem("snatched"))}
-                {today.map(scheduleItemToListItem("today"))}
-                {soon.map(scheduleItemToListItem("soon"))}
-                {later.map(scheduleItemToListItem("later"))}
+                {groups.map(([date, dateItems]) => (
+                    <Fragment key={date}>
+                        <ListSubheader component="div">
+                            {formatDayLabel(date)}
+                        </ListSubheader>
+                        {dateItems.map((item) => (
+                            <ScheduleListItem key={item.id} item={item} />
+                        ))}
+                    </Fragment>
+                ))}
+                {data.items.length > CUTOFF && (
+                    <CardExpandBar
+                        isOpen={isOpen}
+                        setIsOpen={setIsOpen}
+                        hint={`and ${data.items.length - CUTOFF} more`}
+                    />
+                )}
             </Box>
         </List>
     );
