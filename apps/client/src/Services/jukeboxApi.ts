@@ -7,6 +7,7 @@ import {
     PlaylistsResponse,
     RecentAlbumsResponse,
     SongDirResponse,
+    SubsonicAlbum,
 } from "@homeremote/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { willAddCredentials } from "../devUtils";
@@ -49,6 +50,28 @@ export const jukeboxApi = createApi({
             query: () => "/recent",
             providesTags: ["Recent"],
         }),
+        getFavorites: builder.query<RecentAlbumsResponse, void>({
+            query: () => "/starred",
+            transformResponse: (
+                response:
+                    | { status: "received"; albums: SubsonicAlbum[] }
+                    | { status: "error" }
+            ): RecentAlbumsResponse => {
+                if (response.status !== "received") {
+                    return { status: "error" };
+                }
+                return {
+                    status: "received",
+                    albums: response.albums.map(({ id, title, coverArt }) => ({
+                        id,
+                        name: title || "",
+                        coverArt,
+                        type: "album",
+                    })),
+                };
+            },
+            providesTags: ["Starred"],
+        }),
     }),
 });
 
@@ -59,4 +82,5 @@ export const {
     useAddSongToPlaylistMutation,
     useGetBrowseQuery,
     useGetRecentAlbumsQuery,
+    useGetFavoritesQuery,
 } = jukeboxApi;

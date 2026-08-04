@@ -15,30 +15,30 @@ import {
     ListItemText,
     Typography,
 } from "@mui/material";
-import { FC, useState } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import { useGetBrowseQuery } from "../../../Services/jukeboxApi";
 import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
 import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
 
-interface PathEntry {
+export interface PathEntry {
     id: string;
     title: string;
 }
 
 interface JukeboxFileBrowserProps {
-    initialPath?: PathEntry[];
+    path: PathEntry[];
+    setPath: Dispatch<SetStateAction<PathEntry[]>>;
 }
 
 /**
  * Tab 1 of the /jukebox page: navigates the Subsonic library by file system
  * (artists -> albums -> songs, arbitrary depth). Clicking a song starts
  * playback via the shared JukeboxPlaybackProvider, which the persistent
- * MusicBar reads from, so it keeps playing across navigation.
+ * MusicBar reads from, so it keeps playing across navigation. The current
+ * path is controlled by JukeboxPage so the Recently added/Favorites tabs can
+ * also navigate here (open an album's songs).
  */
-const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({
-    initialPath = [],
-}) => {
-    const [path, setPath] = useState<PathEntry[]>(initialPath);
+const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
     const { setCurrentPlaylist, setCurrentSong } = useJukeboxPlaybackContext();
     const currentDir = path[path.length - 1];
     const { data, isLoading } = useGetBrowseQuery(currentDir?.id);
