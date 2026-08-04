@@ -92,6 +92,8 @@ const Dashboard: FC = () => {
                 {/* Replaced by the unified ServicesPanel in the right column: */}
                 {/* <DockerStackListCard /> */}
                 <SpeedTestCard />
+                {!isLiteMode && <DownloadList />}
+                <Nextup />
                 <IconButton
                     color="primary"
                     onClick={() => {
@@ -113,8 +115,6 @@ const Dashboard: FC = () => {
                 {/* <ServiceLinksBar /> */}
                 {/* <Docker /> */}
                 {!isLiteMode && <Schedule />}
-                {!isLiteMode && <DownloadList />}
-                <Nextup />
                 <Monit />
             </Grid>
         </Grid>
