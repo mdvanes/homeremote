@@ -1,13 +1,18 @@
 import {
     type AddSongArg,
     AddSongResponse,
+    BrowseItem,
+    BrowseResponse,
     IPlaylist,
     ISong,
     PlaylistResponse,
     PlaylistsResponse,
+    RecentAlbumsResponse,
     SongDirItem,
     SongDirResponse,
     SubsonicAlbum,
+    SubsonicApiGetAlbumListResponse,
+    SubsonicApiGetIndexesResponse,
     SubsonicGetMusicDirectoryResponse,
     SubsonicGetStarredResponse,
     SubsonicSong,
@@ -224,6 +229,101 @@ export class JukeboxController {
                 });
 
             return { status: "received", songs };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("browse")
+    async getBrowseRoot(): Promise<BrowseResponse> {
+        this.logger.verbose("GET to /api/jukebox/browse");
+
+        try {
+            const url = this.getAPI("getIndexes");
+            const response: SubsonicApiGetIndexesResponse =
+                await got(url).json();
+            const artists = (response["subsonic-response"]?.indexes?.index ||
+                []) as { artist?: { id?: string; name?: string }[] }[];
+            const items: BrowseItem[] = artists
+                .flatMap((index) => index.artist || [])
+                .map(({ id, name }) => ({
+                    id: id || "",
+                    title: name || "",
+                    isDir: true,
+                }));
+
+            return { status: "received", parentId: null, items };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("browse/:id")
+    async getBrowseDir(@Param("id") id: string): Promise<BrowseResponse> {
+        this.logger.verbose(`GET to /api/jukebox/browse/:id ${id}`);
+
+        try {
+            const url = this.getAPI("getMusicDirectory", `&id=${id}`);
+            const response: SubsonicGetMusicDirectoryResponse =
+                await got(url).json();
+            const children = response["subsonic-response"]?.directory
+                ?.child as Array<SubsonicAlbum | SubsonicSong>;
+            const items: BrowseItem[] = (children || []).map((child) => ({
+                id: child.id,
+                title: child.title || child.album || "",
+                isDir: child.isDir,
+                artist: child.artist,
+                album: child.album,
+                track: child.track,
+                duration: isSubsonicSong(child) ? child.duration : undefined,
+                coverArt: child.coverArt,
+            }));
+
+            return { status: "received", parentId: id, items };
+        } catch (err) {
+            this.logger.error(err);
+            throw new HttpException(
+                "failed to receive downstream data",
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("recent")
+    async getRecentAlbums(
+        @Query("size") size?: string
+    ): Promise<RecentAlbumsResponse> {
+        this.logger.verbose("GET to /api/jukebox/recent");
+
+        try {
+            const albumListSize = parseInt(size || "20", 10) || 20;
+            const url = this.getAPI(
+                "getAlbumList",
+                `&type=newest&size=${albumListSize}`
+            );
+            const response: SubsonicApiGetAlbumListResponse =
+                await got(url).json();
+            const albums: IPlaylist[] = (
+                response["subsonic-response"]?.albumList?.album || []
+            ).map(({ id, title, coverArt }) => ({
+                id: id || "",
+                name: title || "",
+                coverArt,
+                type: "album",
+            }));
+
+            return { status: "received", albums };
         } catch (err) {
             this.logger.error(err);
             throw new HttpException(
