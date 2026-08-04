@@ -15,6 +15,7 @@ import Nextup from "../../Molecules/Nextup/Nextup";
 import Schedule from "../../Molecules/Schedule/Schedule";
 // Replaced by the unified ServicesPanel (see below):
 // import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
+import ServiceLinkBarSection from "../../Molecules/ServicesPanel/ServiceLinkBarSection";
 import ServicesPanelCard from "../../Molecules/ServicesPanel/ServicesPanelCard";
 import SpeedTestCard from "../../Molecules/SpeedTestCard/SpeedTestCard";
 import SwitchesCard from "../../Molecules/SwitchesCard/SwitchesCard";
@@ -93,13 +94,14 @@ const Dashboard: FC = () => {
                 {/* <DockerStackListCard /> */}
                 <SpeedTestCard />
                 {!isLiteMode && <DownloadList />}
-                <Nextup />
+                {!isLiteMode && <Schedule />}
+                {!isLiteMode && <Nextup />}
                 <IconButton
                     color="primary"
                     onClick={() => {
                         setIsLiteMode((prev) => !prev);
                     }}
-                    title="Toggle light mode"
+                    title="Toggle lite mode"
                 >
                     <AppsIcon />
                 </IconButton>
@@ -110,11 +112,10 @@ const Dashboard: FC = () => {
                     md: 5,
                 }}
             >
+                <ServiceLinkBarSection />
                 <ServicesPanelCard />
-                {/* Unified ServicesPanel replaces ServiceLinksBar + Docker: */}
                 {/* <ServiceLinksBar /> */}
                 {/* <Docker /> */}
-                {!isLiteMode && <Schedule />}
                 <Monit />
             </Grid>
         </Grid>

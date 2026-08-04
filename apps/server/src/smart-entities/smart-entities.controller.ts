@@ -122,17 +122,28 @@ export class SmartEntitiesController {
         @Request() req: AuthenticatedRequest
     ): Promise<SmartEntitiesTypes.UpdateSmartEntityResponse> {
         this.logger.verbose(
-            `[${req.user.name}] POST to /smart-entities/${entityId} with state: ${args.state}`
+            `[${req.user.name}] POST to /smart-entities/${entityId} with state: ${args.state}, position: ${args.position}`
         );
 
         try {
             const [entityType] = entityId.split(".");
-            const pathType = entityType === "light" ? "light" : "switch";
-            const body: PostServicesDomainServiceBody = { entity_id: entityId };
+
+            let servicePath: string;
+            let body: PostServicesDomainServiceBody;
+            if (entityType === "cover") {
+                servicePath = "cover/set_cover_position";
+                body = { entity_id: entityId, position: args.position };
+            } else if (entityType === "button") {
+                servicePath = "button/press";
+                body = { entity_id: entityId };
+            } else {
+                const pathType = entityType === "light" ? "light" : "switch";
+                servicePath = `${pathType}/turn_${args.state.toLowerCase()}`;
+                body = { entity_id: entityId };
+            }
+
             const response = await fetch(
-                `${
-                    this.haApiConfig.baseUrl
-                }/api/services/${pathType}/turn_${args.state.toLowerCase()}`,
+                `${this.haApiConfig.baseUrl}/api/services/${servicePath}`,
                 {
                     method: "POST",
                     headers: {

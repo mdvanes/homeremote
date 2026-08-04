@@ -119,11 +119,10 @@ describe("ServicesPanel", () => {
         expect(await screen.findByText("webapp")).toBeVisible();
     });
 
-    it("renders the discovered service link bar and health footer", async () => {
+    it("renders the health footer", async () => {
         render(<ServicesPanel />, { wrapper: Wrapper });
 
-        const link = await screen.findByRole("link", { name: "openportal" });
-        expect(link).toHaveAttribute("href", "http://homeserver:3000");
+        await screen.findByText("media");
         expect(screen.getByText(/1 healthy/)).toBeVisible();
         expect(screen.getByText(/1 stopped/)).toBeVisible();
     });

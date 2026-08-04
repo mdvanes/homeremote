@@ -35,6 +35,8 @@ export type State = {
         device_class?: string;
         state_class?: string;
         unit_of_measurement?: string;
+        /** Position of a cover entity, 0 (closed) to 100 (open). */
+        current_position?: number;
     };
     last_changed?: string;
     last_reported?: string;

@@ -247,6 +247,11 @@ components:
                             type: string
                             format: nullable
                             example: "°C"
+                        current_position:
+                            description: "Position of a cover entity, 0 (closed) to 100 (open)."
+                            type: integer
+                            format: nullable
+                            example: 50
                 last_changed:
                     type: string
                     format: date-time
@@ -282,5 +287,9 @@ components:
                 entity_id:
                     type: string
                     example: light.favorites
+                position:
+                    description: "Target position for a cover entity, 0 (closed) to 100 (open)."
+                    type: integer
+                    example: 50
         ServiceResponse:
             type: array

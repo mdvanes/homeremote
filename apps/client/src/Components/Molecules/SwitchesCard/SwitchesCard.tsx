@@ -5,7 +5,7 @@ import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import { staleContentSx } from "../CardStatus/CardStatus";
 import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import { SwitchesListItem } from "./SwitchesListItem";
-import { isSwitch } from "./utils";
+import { isCover, isSwitch } from "./utils";
 
 const UPDATE_INTERVAL_MS = 1_000 * 60; // 1000 ms / 60 seconds = 1x per minute
 
@@ -23,7 +23,9 @@ export const SwitchesCard: FC = () => {
         pollingInterval: UPDATE_INTERVAL_MS,
     });
 
-    const switches = (data?.entities ?? []).filter(isSwitch);
+    const switches = (data?.entities ?? []).filter(
+        (item) => isSwitch(item) || isCover(item)
+    );
 
     return (
         <List component={Paper} sx={{ position: "relative" }}>

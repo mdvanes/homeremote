@@ -61,6 +61,10 @@ export const ServiceStackRow: FC<ServiceStackRowProps> = ({ stack }) => {
             >
                 {stack.Name}
             </Box>
+            <ServiceStackActions
+                stack={stack}
+                className="service-stack-actions"
+            />
             <Box onClick={openDetail} sx={{ minWidth: 0, cursor: "pointer" }}>
                 <ContainerDots containers={stack.containers} />
             </Box>
@@ -87,10 +91,6 @@ export const ServiceStackRow: FC<ServiceStackRowProps> = ({ stack }) => {
                     <OpenInNewIcon fontSize="small" />
                 </IconButton>
             )}
-            <ServiceStackActions
-                stack={stack}
-                className="service-stack-actions"
-            />
         </Box>
     );
 };

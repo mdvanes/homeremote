@@ -4,6 +4,8 @@ import { State } from "../../../Services/generated/smartEntitiesApiWithRetry";
 export const isSwitch = (s: State) =>
     typeof s?.attributes?.device_class === "undefined";
 
+export const isCover = (s: State) => (s?.entity_id ?? "").startsWith("cover.");
+
 export const isClimateSensor = (s: State) =>
     ["temperature", "humidity"].includes(s?.attributes?.device_class ?? "");
 

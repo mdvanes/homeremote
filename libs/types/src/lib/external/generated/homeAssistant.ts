@@ -194,6 +194,12 @@ export interface components {
                  * @example °C
                  */
                 unit_of_measurement?: string;
+                /**
+                 * Format: nullable
+                 * @description Position of a cover entity, 0 (closed) to 100 (open).
+                 * @example 50
+                 */
+                current_position?: number;
             };
             /**
              * Format: date-time
@@ -224,6 +230,11 @@ export interface components {
         PostServicesDomainServiceBody: {
             /** @example light.favorites */
             entity_id?: string;
+            /**
+             * @description Target position for a cover entity, 0 (closed) to 100 (open).
+             * @example 50
+             */
+            position?: number;
         };
         ServiceResponse: unknown[];
     };

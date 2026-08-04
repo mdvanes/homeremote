@@ -1,0 +1,80 @@
+openapi: 3.0.1
+info:
+    title: Movie Calendar API
+    description: >-
+        Subset of the Radarr API consumed by HomeRemote for the schedule
+        (calendar) feature. See https://radarr.video/docs/api/
+    version: 1.0.0
+servers:
+    - url: http://localhost:7878
+      description: Movie service
+paths:
+    /api/v3/calendar:
+        get:
+            tags:
+                - movie
+            summary: Get movies releasing in a date range
+            operationId: getMovieCalendar
+            parameters:
+                - name: start
+                  in: query
+                  description: Start date (yyyy-mm-dd)
+                  schema:
+                      type: string
+                      format: date
+                - name: end
+                  in: query
+                  description: End date (yyyy-mm-dd)
+                  schema:
+                      type: string
+                      format: date
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/MovieCalendarItem"
+components:
+    schemas:
+        MovieImage:
+            type: object
+            properties:
+                coverType:
+                    type: string
+                    description: "Image type, e.g. poster"
+                remoteUrl:
+                    type: string
+        MovieCalendarItem:
+            type: object
+            description: A Radarr movie calendar entry
+            properties:
+                id:
+                    type: integer
+                title:
+                    type: string
+                titleSlug:
+                    type: string
+                    description: Slug used in the web UI movie detail page URL
+                inCinemas:
+                    type: string
+                    format: date-time
+                digitalRelease:
+                    type: string
+                    format: date-time
+                physicalRelease:
+                    type: string
+                    format: date-time
+                hasFile:
+                    type: boolean
+                monitored:
+                    type: boolean
+                images:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/MovieImage"
+            required:
+                - id
+                - title
