@@ -6,7 +6,6 @@ import { usePolledQuery } from "../../../Utils/usePolledQuery";
 import CardExpandBar from "../CardExpandBar/CardExpandBar";
 import { staleContentSx } from "../CardStatus/CardStatus";
 import CardStatusBar from "../CardStatusBar/CardStatusBar";
-import { ServiceLinkBar } from "./ServiceLinkBar";
 import { ServiceStackRow } from "./ServiceStackRow";
 
 const UPDATE_INTERVAL_MS = 30000;
@@ -86,8 +85,6 @@ export const ServicesPanel: FC = () => {
             />
             {received && (
                 <Box sx={staleContentSx(isStale)}>
-                    <ServiceLinkBar links={received.serviceLinks} />
-
                     <SectionLabel
                         left="Problems"
                         right={`${problems.length} of ${stacks.length} stacks`}

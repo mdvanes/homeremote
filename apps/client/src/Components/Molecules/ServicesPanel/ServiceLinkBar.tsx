@@ -1,5 +1,4 @@
 import { ServiceLink } from "@homeremote/types";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Box, Chip, Icon, IconButton, Tooltip } from "@mui/material";
 import { FC } from "react";
 import { customIconMap } from "../ServiceLinksBar/customIcons";
@@ -13,6 +12,11 @@ export const ServiceLinkBar: FC<ServiceLinkBarProps> = ({ links }) => {
         return null;
     }
 
+    // Icon links before plain links, stable within each group.
+    const sortedLinks = [...links].sort(
+        (a, b) => Number(!a.icon) - Number(!b.icon)
+    );
+
     return (
         <Box
             sx={{
@@ -23,7 +27,7 @@ export const ServiceLinkBar: FC<ServiceLinkBarProps> = ({ links }) => {
                 paddingY: 0.5,
             }}
         >
-            {links.map((link) =>
+            {sortedLinks.map((link) =>
                 link.icon ? (
                     <Tooltip key={link.label} title={link.label}>
                         <IconButton
@@ -33,6 +37,7 @@ export const ServiceLinkBar: FC<ServiceLinkBarProps> = ({ links }) => {
                             rel="noopener noreferrer"
                             size="small"
                             aria-label={link.label}
+                            sx={{ color: "primary.main" }}
                         >
                             {customIconMap[link.icon] ?? (
                                 <Icon fontSize="small">{link.icon}</Icon>
@@ -48,7 +53,6 @@ export const ServiceLinkBar: FC<ServiceLinkBarProps> = ({ links }) => {
                         rel="noopener noreferrer"
                         clickable
                         size="small"
-                        icon={<OpenInNewIcon />}
                         label={link.label}
                     />
                 )

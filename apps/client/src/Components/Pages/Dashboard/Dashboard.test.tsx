@@ -42,6 +42,9 @@ vi.mock("../../Molecules/DockerStackList/DockerStackListCard", () => ({
 vi.mock("../../Molecules/ServicesPanel/ServicesPanelCard", () => ({
     default: "mock-services-panel-card",
 }));
+vi.mock("../../Molecules/ServicesPanel/ServiceLinkBarSection", () => ({
+    default: "mock-service-link-bar-section",
+}));
 vi.mock("../../Molecules/SwitchesCard/SwitchesCard", () => ({
     default: "mock-switches-card",
 }));

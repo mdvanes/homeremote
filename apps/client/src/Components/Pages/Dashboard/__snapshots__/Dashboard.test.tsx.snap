@@ -92,6 +92,7 @@ exports[`Dashboard page > contains all the control components 1`] = `
       <div
         class="MuiGrid-root MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-md-5 css-16ebuf1-MuiGrid-root"
       >
+        <mock-service-link-bar-section />
         <mock-services-panel-card />
         <mock-schedule />
         <mock-monit />
