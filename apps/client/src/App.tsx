@@ -25,6 +25,7 @@ import DataLora from "./Components/Pages/DataLora/DataLora";
 import Docker from "./Components/Pages/Docker/Docker";
 import Energy from "./Components/Pages/Energy/Energy";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
+import JukeboxPage from "./Components/Pages/Jukebox/JukeboxPage";
 import Log from "./Components/Pages/Log/Log";
 import ServiceLogs from "./Components/Pages/Services/ServiceLogs";
 import Services from "./Components/Pages/Services/Services";
@@ -135,6 +136,10 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                         <Route
                                             path="/energy"
                                             element={<Energy />}
+                                        />
+                                        <Route
+                                            path="/jukebox"
+                                            element={<JukeboxPage />}
                                         />
                                         <Route
                                             path="/about"
