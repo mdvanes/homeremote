@@ -25,11 +25,13 @@ import DataLora from "./Components/Pages/DataLora/DataLora";
 import Docker from "./Components/Pages/Docker/Docker";
 import Energy from "./Components/Pages/Energy/Energy";
 import HomeAutomation from "./Components/Pages/HomeAutomation/HomeAutomation";
+import JukeboxPage from "./Components/Pages/Jukebox/JukeboxPage";
 import Log from "./Components/Pages/Log/Log";
 import ServiceLogs from "./Components/Pages/Services/ServiceLogs";
 import Services from "./Components/Pages/Services/Services";
 import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
 import HotKeyProvider from "./Components/Providers/HotKey/HotKeyProvider";
+import JukeboxPlaybackProvider from "./Components/Providers/Jukebox/JukeboxPlaybackProvider";
 import createThemeWithMode from "./theme";
 
 export interface AppProps {
@@ -61,84 +63,96 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
     return (
         <AuthenticationProvider>
             <HotKeyProvider>
-                <StyledEngineProvider injectFirst>
-                    <ThemeProvider theme={theme}>
-                        <CssBaseline />
-                        <AppBar toggleDrawer={toggleDrawer} />
-                        <BrowserRouter>
-                            <Drawer open={isDrawerOpen} onClose={closeDrawer}>
-                                <DrawerMenu
-                                    closeDrawer={closeDrawer}
-                                    colorMode={colorMode}
-                                    toggleColorMode={toggleColorMode}
-                                />
-                            </Drawer>
-                            {/* TODO this was for checking online/offline status for AppCache <StatusBar/>*/}
-                            <Box
-                                sx={
-                                    isFullHd
-                                        ? {
-                                              maxWidth: 1880,
-                                              marginLeft: "auto",
-                                              marginRight: "auto",
-                                              paddingBottom: `${MUSIC_BAR_HEIGHT}px`,
-                                          }
-                                        : {
-                                              marginLeft: "16px",
-                                              marginRight: "16px",
-                                              paddingBottom: `${MUSIC_BAR_HEIGHT}px`,
-                                          }
-                                }
-                            >
-                                <Routes>
-                                    <Route
-                                        path="/"
-                                        element={<HomeAutomation />}
+                <JukeboxPlaybackProvider>
+                    <StyledEngineProvider injectFirst>
+                        <ThemeProvider theme={theme}>
+                            <CssBaseline />
+                            <AppBar toggleDrawer={toggleDrawer} />
+                            <BrowserRouter>
+                                <Drawer
+                                    open={isDrawerOpen}
+                                    onClose={closeDrawer}
+                                >
+                                    <DrawerMenu
+                                        closeDrawer={closeDrawer}
+                                        colorMode={colorMode}
+                                        toggleColorMode={toggleColorMode}
                                     />
-                                    <Route
-                                        path="/music"
-                                        element={<UrlToMusic />}
-                                    />
-                                    <Route
-                                        path="/gears"
-                                        element={<DownloadList />}
-                                    />
-                                    <Route
-                                        path="/dashboard"
-                                        element={<Dashboard />}
-                                    />
-                                    <Route
-                                        path="/docker"
-                                        element={<Docker />}
-                                    />
-                                    <Route
-                                        path="/services"
-                                        element={<Services />}
-                                    />
-                                    <Route
-                                        path="/services/logs/:id"
-                                        element={<ServiceLogs />}
-                                    />
-                                    <Route
-                                        path="/datalora"
-                                        element={<DataLora />}
-                                    />
-                                    <Route
-                                        path="/cartwin"
-                                        element={<CarTwinPage />}
-                                    />
-                                    <Route
-                                        path="/energy"
-                                        element={<Energy />}
-                                    />
-                                    <Route path="/about" element={<Log />} />
-                                </Routes>
-                            </Box>
-                        </BrowserRouter>
-                        <MusicBar />
-                        <GlobalSnackbar />
-                    </ThemeProvider>
-                </StyledEngineProvider>
+                                </Drawer>
+                                {/* TODO this was for checking online/offline status for AppCache <StatusBar/>*/}
+                                <Box
+                                    sx={
+                                        isFullHd
+                                            ? {
+                                                  maxWidth: 1880,
+                                                  marginLeft: "auto",
+                                                  marginRight: "auto",
+                                                  paddingBottom: `${MUSIC_BAR_HEIGHT}px`,
+                                              }
+                                            : {
+                                                  marginLeft: "16px",
+                                                  marginRight: "16px",
+                                                  paddingBottom: `${MUSIC_BAR_HEIGHT}px`,
+                                              }
+                                    }
+                                >
+                                    <Routes>
+                                        <Route
+                                            path="/"
+                                            element={<HomeAutomation />}
+                                        />
+                                        <Route
+                                            path="/music"
+                                            element={<UrlToMusic />}
+                                        />
+                                        <Route
+                                            path="/gears"
+                                            element={<DownloadList />}
+                                        />
+                                        <Route
+                                            path="/dashboard"
+                                            element={<Dashboard />}
+                                        />
+                                        <Route
+                                            path="/docker"
+                                            element={<Docker />}
+                                        />
+                                        <Route
+                                            path="/services"
+                                            element={<Services />}
+                                        />
+                                        <Route
+                                            path="/services/logs/:id"
+                                            element={<ServiceLogs />}
+                                        />
+                                        <Route
+                                            path="/datalora"
+                                            element={<DataLora />}
+                                        />
+                                        <Route
+                                            path="/cartwin"
+                                            element={<CarTwinPage />}
+                                        />
+                                        <Route
+                                            path="/energy"
+                                            element={<Energy />}
+                                        />
+                                        <Route
+                                            path="/jukebox"
+                                            element={<JukeboxPage />}
+                                        />
+                                        <Route
+                                            path="/about"
+                                            element={<Log />}
+                                        />
+                                    </Routes>
+                                </Box>
+                            </BrowserRouter>
+                            <MusicBar />
+                            <GlobalSnackbar />
+                        </ThemeProvider>
+                    </StyledEngineProvider>
+                </JukeboxPlaybackProvider>
             </HotKeyProvider>
         </AuthenticationProvider>
     );

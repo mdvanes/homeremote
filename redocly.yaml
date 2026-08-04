@@ -11,6 +11,10 @@ apis:
         root: ./libs/types/definitions/external/portainer.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/external/generated/portainer.ts
+    subsonic@v1:
+        root: ./libs/types/definitions/external/subsonic.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/subsonic.ts
     homeAssistant@v1:
         root: ./libs/types/definitions/external/homeAssistant.yml
         x-openapi-ts:

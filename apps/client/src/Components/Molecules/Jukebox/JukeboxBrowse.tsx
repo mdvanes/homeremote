@@ -1,8 +1,5 @@
-import { IPlaylist, ISong } from "@homeremote/types";
-import {
-    QueueMusic as QueueMusicIcon,
-    Star as StarIcon,
-} from "@mui/icons-material";
+import { ISong } from "@homeremote/types";
+import { QueueMusic as QueueMusicIcon } from "@mui/icons-material";
 import {
     Avatar,
     Box,
@@ -18,28 +15,24 @@ import {
 } from "@mui/material";
 import { FC, RefObject, useState } from "react";
 import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
+import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
 import { AddSongToPlaylistButton } from "./AddSongToPlaylistButton";
 import { LAST_PLAYLIST } from "./JukeboxPlayer";
 import JukeboxSongList from "./JukeboxSongList";
 
 interface JukeboxBrowseProps {
     audioElemRef: RefObject<HTMLAudioElement | null>;
-    currentPlaylist: IPlaylist | undefined;
-    setCurrentPlaylist: (playlist: IPlaylist | undefined) => void;
-    setCurrentSong: (song: ISong) => void;
 }
 
 /**
  * Compact "browse" entry point for the jukebox: a single icon button that opens
  * a popover with the playlist browser and song list, so it no longer occupies
- * space in the bottom bar.
+ * space in the bottom bar. Favorite/starred albums are not shown here anymore
+ * (they moved to the /jukebox page's Favorites tab) - only real playlists.
  */
-const JukeboxBrowse: FC<JukeboxBrowseProps> = ({
-    audioElemRef,
-    currentPlaylist,
-    setCurrentPlaylist,
-    setCurrentSong,
-}) => {
+const JukeboxBrowse: FC<JukeboxBrowseProps> = ({ audioElemRef }) => {
+    const { currentPlaylist, setCurrentPlaylist, setCurrentSong } =
+        useJukeboxPlaybackContext();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const { data } = useGetPlaylistsQuery(undefined);
@@ -95,49 +88,49 @@ const JukeboxBrowse: FC<JukeboxBrowseProps> = ({
                         <>
                             {!currentPlaylist && (
                                 <List>
-                                    {data.playlists.map((playlist) => {
-                                        const { id, name, type } = playlist;
-                                        return (
-                                            <ListItem
-                                                key={id}
-                                                disableGutters
-                                                disablePadding
-                                            >
-                                                <ListItemButton
-                                                    onClick={() => {
-                                                        setCurrentPlaylist(
-                                                            playlist
-                                                        );
-                                                        localStorage.setItem(
-                                                            LAST_PLAYLIST,
-                                                            JSON.stringify(
-                                                                playlist
-                                                            )
-                                                        );
-                                                    }}
+                                    {data.playlists
+                                        .filter(
+                                            (playlist) =>
+                                                playlist.type !== "album"
+                                        )
+                                        .map((playlist) => {
+                                            const { id, name, type } = playlist;
+                                            return (
+                                                <ListItem
+                                                    key={id}
+                                                    disableGutters
+                                                    disablePadding
                                                 >
-                                                    <ListItemAvatar>
-                                                        <Avatar
-                                                            src={`${
-                                                                process.env
-                                                                    .NX_PUBLIC_BASE_URL
-                                                            }/api/jukebox/coverart/${id}?type=${type}&hash=${encodeURIComponent(
-                                                                name
-                                                            )}`}
+                                                    <ListItemButton
+                                                        onClick={() => {
+                                                            setCurrentPlaylist(
+                                                                playlist
+                                                            );
+                                                            localStorage.setItem(
+                                                                LAST_PLAYLIST,
+                                                                JSON.stringify(
+                                                                    playlist
+                                                                )
+                                                            );
+                                                        }}
+                                                    >
+                                                        <ListItemAvatar>
+                                                            <Avatar
+                                                                src={`${
+                                                                    process.env
+                                                                        .NX_PUBLIC_BASE_URL
+                                                                }/api/jukebox/coverart/${id}?type=${type}&hash=${encodeURIComponent(
+                                                                    name
+                                                                )}`}
+                                                            />
+                                                        </ListItemAvatar>
+                                                        <ListItemText
+                                                            primary={name}
                                                         />
-                                                    </ListItemAvatar>
-                                                    <ListItemText
-                                                        primary={name}
-                                                    />
-                                                    <div>
-                                                        {type === "album" && (
-                                                            <StarIcon fontSize="small" />
-                                                        )}
-                                                    </div>
-                                                </ListItemButton>
-                                            </ListItem>
-                                        );
-                                    })}
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            );
+                                        })}
                                 </List>
                             )}
 
