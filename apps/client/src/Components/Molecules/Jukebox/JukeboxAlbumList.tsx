@@ -47,9 +47,19 @@ const JukeboxAlbumList: FC<JukeboxAlbumListProps> = ({
     }
 
     return (
-        <List>
+        <List
+            sx={{
+                columns: { xs: 1, sm: 2, md: 3 },
+                columnGap: 2,
+            }}
+        >
             {albums.map(({ id, name, type, artist, artistId }) => (
-                <ListItem key={id} disableGutters disablePadding>
+                <ListItem
+                    key={id}
+                    disableGutters
+                    disablePadding
+                    sx={{ display: "block", breakInside: "avoid" }}
+                >
                     <ListItemButton
                         onClick={() =>
                             onSelectAlbum(id, name, artist, artistId)
