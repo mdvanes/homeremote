@@ -18,6 +18,7 @@ import { Dispatch, FC, SetStateAction } from "react";
 import { useGetBrowseQuery } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
+import JukeboxArtistList from "./JukeboxArtistList";
 import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
 
 export interface PathEntry {
@@ -108,7 +109,14 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
                 </Typography>
             )}
 
-            {data?.status === "received" && (
+            {data?.status === "received" && path.length === 0 && (
+                <JukeboxArtistList
+                    items={data.items}
+                    onSelectArtist={handleOpenDir}
+                />
+            )}
+
+            {data?.status === "received" && path.length > 0 && (
                 <List>
                     {data.items.map((item) => (
                         <ListItem key={item.id} disableGutters disablePadding>
