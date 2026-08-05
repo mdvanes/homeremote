@@ -379,15 +379,16 @@ export class JukeboxController {
         try {
             const { retrievedHash, coverArtId } = await (async () => {
                 if (type === "album") {
-                    const url = this.getAPI("getStarred");
-                    const response: SubsonicGetStarredResponse =
+                    const url = this.getAPI("getMusicDirectory", `&id=${id}`);
+                    const response: SubsonicGetMusicDirectoryResponse =
                         await got(url).json();
-                    const { title, coverArt } = response[
-                        "subsonic-response"
-                    ].starred.album.find((album) => album.id === id);
+                    const directory = response["subsonic-response"]?.directory;
+                    if (!directory) {
+                        throw new NotFoundException(HttpStatus.NOT_FOUND);
+                    }
                     return {
-                        retrievedHash: title,
-                        coverArtId: coverArt,
+                        retrievedHash: directory.name,
+                        coverArtId: directory.child?.[0]?.coverArt,
                     };
                 }
                 const url = this.getAPI("getPlaylist", `&id=${id}`);
