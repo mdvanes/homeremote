@@ -3,7 +3,12 @@ import { useGetFavoritesQuery } from "../../../Services/jukeboxApi";
 import JukeboxAlbumList from "./JukeboxAlbumList";
 
 interface JukeboxFavoritesProps {
-    onSelectAlbum: (id: string, name: string) => void;
+    onSelectAlbum: (
+        id: string,
+        name: string,
+        artist?: string,
+        artistId?: string
+    ) => void;
 }
 
 /** Tab 3 of the /jukebox page: starred/favorite albums. */

@@ -1,6 +1,5 @@
 import { BrowseItem, IPlaylist, ISong } from "@homeremote/types";
 import {
-    ArrowBack as ArrowBackIcon,
     Folder as FolderIcon,
     MusicNote as MusicNoteIcon,
 } from "@mui/icons-material";
@@ -17,7 +16,9 @@ import {
 } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 import { useGetBrowseQuery } from "../../../Services/jukeboxApi";
+import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
+import JukeboxArtistList from "./JukeboxArtistList";
 import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
 
 export interface PathEntry {
@@ -40,6 +41,7 @@ interface JukeboxFileBrowserProps {
  */
 const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
     const { setCurrentPlaylist, setCurrentSong } = useJukeboxPlaybackContext();
+    const { pauseRadio, playJukebox } = useHotKeyContext();
     const currentDir = path[path.length - 1];
     const { data, isLoading } = useGetBrowseQuery(currentDir?.id);
 
@@ -72,6 +74,11 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
         setCurrentSong(song);
         localStorage.setItem(LAST_PLAYLIST, JSON.stringify(playlist));
         localStorage.setItem(LAST_SONG, JSON.stringify(song));
+        pauseRadio();
+        // Wait for the jukebox audio elem to (re)mount/load
+        setTimeout(() => {
+            playJukebox();
+        }, 100);
     };
 
     return (
@@ -102,18 +109,15 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
                 </Typography>
             )}
 
-            {data?.status === "received" && (
+            {data?.status === "received" && path.length === 0 && (
+                <JukeboxArtistList
+                    items={data.items}
+                    onSelectArtist={handleOpenDir}
+                />
+            )}
+
+            {data?.status === "received" && path.length > 0 && (
                 <List>
-                    {path.length > 0 && (
-                        <ListItemButton
-                            onClick={() => setPath((prev) => prev.slice(0, -1))}
-                        >
-                            <ListItemIcon>
-                                <ArrowBackIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="back" />
-                        </ListItemButton>
-                    )}
                     {data.items.map((item) => (
                         <ListItem key={item.id} disableGutters disablePadding>
                             <ListItemButton
@@ -131,7 +135,11 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
                                     )}
                                 </ListItemIcon>
                                 <ListItemText
-                                    primary={item.title}
+                                    primary={
+                                        !item.isDir && item.track
+                                            ? `${item.track}. ${item.title}`
+                                            : item.title
+                                    }
                                     secondary={
                                         item.isDir ? undefined : item.artist
                                     }

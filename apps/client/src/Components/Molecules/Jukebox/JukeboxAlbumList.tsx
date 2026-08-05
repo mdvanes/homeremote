@@ -13,7 +13,12 @@ import { FC } from "react";
 interface JukeboxAlbumListProps {
     albums: IPlaylist[] | undefined;
     isLoading: boolean;
-    onSelectAlbum: (id: string, name: string) => void;
+    onSelectAlbum: (
+        id: string,
+        name: string,
+        artist?: string,
+        artistId?: string
+    ) => void;
 }
 
 /**
@@ -42,10 +47,24 @@ const JukeboxAlbumList: FC<JukeboxAlbumListProps> = ({
     }
 
     return (
-        <List>
-            {albums.map(({ id, name, type }) => (
-                <ListItem key={id} disableGutters disablePadding>
-                    <ListItemButton onClick={() => onSelectAlbum(id, name)}>
+        <List
+            sx={{
+                columns: { xs: 1, sm: 2, md: 3 },
+                columnGap: 2,
+            }}
+        >
+            {albums.map(({ id, name, type, artist, artistId }) => (
+                <ListItem
+                    key={id}
+                    disableGutters
+                    disablePadding
+                    sx={{ display: "block", breakInside: "avoid" }}
+                >
+                    <ListItemButton
+                        onClick={() =>
+                            onSelectAlbum(id, name, artist, artistId)
+                        }
+                    >
                         <ListItemAvatar>
                             <Avatar
                                 src={`${

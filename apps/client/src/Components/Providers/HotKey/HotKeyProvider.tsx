@@ -93,6 +93,8 @@ export interface HotKeyState {
     // Unified playback
     isPlaying: boolean;
     togglePlayPause: () => void;
+    pauseRadio: () => void;
+    playJukebox: () => void;
 
     // Skip radio
     handleSkipRadio: () => void;
@@ -130,6 +132,8 @@ const initialState: HotKeyState = {
     setHandlePlayNext: noop,
     isPlaying: false,
     togglePlayPause: noop,
+    pauseRadio: noop,
+    playJukebox: noop,
     handleSkipRadio: noop,
     isSkipRadioActive: false,
     currentSource: "radio",
@@ -376,6 +380,8 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setHandlePlayNext,
         isPlaying,
         togglePlayPause,
+        pauseRadio,
+        playJukebox,
         handleSkipRadio,
         isSkipRadioActive,
         currentSource,
