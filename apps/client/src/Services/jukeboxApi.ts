@@ -62,12 +62,16 @@ export const jukeboxApi = createApi({
                 }
                 return {
                     status: "received",
-                    albums: response.albums.map(({ id, title, coverArt }) => ({
-                        id,
-                        name: title || "",
-                        coverArt,
-                        type: "album",
-                    })),
+                    albums: response.albums.map(
+                        ({ id, title, coverArt, artist, parent }) => ({
+                            id,
+                            name: title || "",
+                            coverArt,
+                            type: "album",
+                            artist,
+                            artistId: parent,
+                        })
+                    ),
                 };
             },
             providesTags: ["Starred"],

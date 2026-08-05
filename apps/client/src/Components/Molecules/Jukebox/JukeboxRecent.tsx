@@ -3,7 +3,12 @@ import { useGetRecentAlbumsQuery } from "../../../Services/jukeboxApi";
 import JukeboxAlbumList from "./JukeboxAlbumList";
 
 interface JukeboxRecentProps {
-    onSelectAlbum: (id: string, name: string) => void;
+    onSelectAlbum: (
+        id: string,
+        name: string,
+        artist?: string,
+        artistId?: string
+    ) => void;
 }
 
 /** Tab 2 of the /jukebox page: the most recently added albums. */

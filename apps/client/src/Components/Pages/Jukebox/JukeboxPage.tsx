@@ -14,8 +14,16 @@ const JukeboxPage: FC = () => {
         setTab(value);
     };
 
-    const navigateToAlbum = (id: string, name: string) => {
-        setPath([{ id, title: name }]);
+    const navigateToAlbum = (
+        id: string,
+        name: string,
+        artist?: string,
+        artistId?: string
+    ) => {
+        const newPath: PathEntry[] =
+            artist && artistId ? [{ id: artistId, title: artist }] : [];
+        newPath.push({ id, title: name });
+        setPath(newPath);
         setTab(0);
     };
 

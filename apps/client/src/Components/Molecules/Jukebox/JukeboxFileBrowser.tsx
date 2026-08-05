@@ -1,6 +1,5 @@
 import { BrowseItem, IPlaylist, ISong } from "@homeremote/types";
 import {
-    ArrowBack as ArrowBackIcon,
     Folder as FolderIcon,
     MusicNote as MusicNoteIcon,
 } from "@mui/icons-material";
@@ -111,16 +110,6 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
 
             {data?.status === "received" && (
                 <List>
-                    {path.length > 0 && (
-                        <ListItemButton
-                            onClick={() => setPath((prev) => prev.slice(0, -1))}
-                        >
-                            <ListItemIcon>
-                                <ArrowBackIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="back" />
-                        </ListItemButton>
-                    )}
                     {data.items.map((item) => (
                         <ListItem key={item.id} disableGutters disablePadding>
                             <ListItemButton

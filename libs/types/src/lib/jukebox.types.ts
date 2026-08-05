@@ -11,6 +11,7 @@ export interface SubsonicDirectory {
     coverArt?: string;
     playCount?: number;
     created?: IsoDateString;
+    parent?: string;
 }
 
 export interface SubsonicAlbum extends SubsonicDirectory {
@@ -22,7 +23,6 @@ export interface SubsonicSong extends SubsonicDirectory {
     isDir: false;
     duration: number;
     img?: string;
-    parent?: string;
     size?: number;
     contentType?: "audio/flac" | "audio/mp3";
     suffix?: string;
@@ -62,6 +62,8 @@ export interface IPlaylist {
     name: string;
     type?: "playlist" | "album";
     coverArt?: string;
+    artist?: string;
+    artistId?: string;
 }
 
 export interface ISong {

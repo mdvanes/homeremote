@@ -316,11 +316,13 @@ export class JukeboxController {
                 await got(url).json();
             const albums: IPlaylist[] = (
                 response["subsonic-response"]?.albumList?.album || []
-            ).map(({ id, title, coverArt }) => ({
+            ).map(({ id, title, coverArt, artist, parent }) => ({
                 id: id || "",
                 name: title || "",
                 coverArt,
                 type: "album",
+                artist,
+                artistId: parent,
             }));
 
             return { status: "received", albums };
