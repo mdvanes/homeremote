@@ -3,75 +3,86 @@ import {
     Get,
     HttpException,
     HttpStatus,
-    InternalServerErrorException,
     Logger,
-    NotFoundException,
     Query,
     StreamableFile,
     UseGuards,
 } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import {
+    isAllowedUpstreamHost,
+    looksLikePlaylist,
+    resolveManifestUrl,
+    rewriteManifest,
+} from "./video-stream.npo";
+
+const MANIFEST_CONTENT_TYPE = "application/vnd.apple.mpegurl";
+const PROXY_PATH = "/api/video-stream/proxy";
 
 @Controller("api/video-stream")
 export class VideoStreamController {
     private readonly logger: Logger;
 
-    constructor(private configService: ConfigService) {
+    constructor() {
         this.logger = new Logger(VideoStreamController.name);
     }
 
-    getEnv(): { hash: string; streamUrl: string } {
-        const hash = this.configService.get<string>("VIDEO_STREAM_HASH") || "";
-        const streamUrl =
-            this.configService.get<string>("VIDEO_STREAM_URL") || "";
-        return { hash, streamUrl };
-    }
-
     @UseGuards(JwtAuthGuard)
-    @Get("/hash")
-    async getHash(): Promise<{ hash: string }> {
-        this.logger.verbose("HEAD to api/video-stream");
-
-        const { hash, streamUrl } = this.getEnv();
+    @Get("manifest.m3u8")
+    async getManifest(): Promise<StreamableFile> {
+        this.logger.verbose("GET to api/video-stream/manifest.m3u8");
 
         try {
-            if (hash === "") {
-                this.logger.error("VIDEO_STREAM_HASH is unset");
-                throw new NotFoundException(HttpStatus.NOT_FOUND);
-            }
-
-            const headResponse = await got.head(streamUrl);
-            if (headResponse.statusCode !== 200) {
-                throw new InternalServerErrorException(
-                    HttpStatus.INTERNAL_SERVER_ERROR
-                );
-            }
-            return { hash: hash };
+            const manifestUrl = await resolveManifestUrl();
+            const manifestText = await got(manifestUrl).text();
+            const rewritten = rewriteManifest(
+                manifestText,
+                manifestUrl,
+                PROXY_PATH
+            );
+            return new StreamableFile(Buffer.from(rewritten), {
+                type: MANIFEST_CONTENT_TYPE,
+            });
         } catch (error) {
             this.logger.error(error);
             throw new HttpException(
-                error as Error,
+                "failed to resolve video stream manifest",
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
         }
     }
 
-    @Get()
-    async getVideoStream(@Query("hash") hash: string): Promise<StreamableFile> {
-        this.logger.verbose("GET to api/video-stream");
+    @UseGuards(JwtAuthGuard)
+    @Get("proxy")
+    async getProxiedResource(
+        @Query("url") url: string
+    ): Promise<StreamableFile> {
+        this.logger.verbose(`GET to api/video-stream/proxy ${url}`);
 
-        const env = this.getEnv();
+        if (!url || !isAllowedUpstreamHost(url)) {
+            this.logger.error(`Disallowed upstream host for url: ${url}`);
+            throw new HttpException(
+                "upstream host not allowed",
+                HttpStatus.FORBIDDEN
+            );
+        }
 
         try {
-            if (hash !== env.hash) {
-                this.logger.error("VIDEO_STREAM_HASH does not match");
-                throw new NotFoundException(HttpStatus.NOT_FOUND);
+            if (looksLikePlaylist(url)) {
+                const manifestText = await got(url).text();
+                const rewritten = rewriteManifest(
+                    manifestText,
+                    url,
+                    PROXY_PATH
+                );
+                return new StreamableFile(Buffer.from(rewritten), {
+                    type: MANIFEST_CONTENT_TYPE,
+                });
             }
 
-            const stream$ = got.stream(env.streamUrl);
-            return new StreamableFile(stream$);
+            const upstream = got.stream(url);
+            return new StreamableFile(upstream);
         } catch (error) {
             this.logger.error(error);
             throw new HttpException(
