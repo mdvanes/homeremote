@@ -27,11 +27,11 @@ export const mediaHandlers = [
         () => new HttpResponse(null, { status: 204 })
     ),
     http.get("*/api/schedule/thumbnail/:id", () => svgResponse("TV")),
-    http.get("*/api/video-stream/hash", () =>
-        HttpResponse.json({ hash: "demo" })
-    ),
     http.get(
-        "*/api/video-stream",
-        () => new HttpResponse(null, { status: 204 })
+        "*/api/video-stream/manifest.m3u8",
+        () =>
+            new HttpResponse("#EXTM3U\n#EXT-X-ENDLIST\n", {
+                headers: { "Content-Type": "application/vnd.apple.mpegurl" },
+            })
     ),
 ];
