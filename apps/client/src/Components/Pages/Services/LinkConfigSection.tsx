@@ -14,6 +14,10 @@ import {
     TextField,
 } from "@mui/material";
 import { FC, useMemo, useState } from "react";
+import {
+    GetCaddyInfoApiResponse,
+    useGetCaddyInfoQuery,
+} from "../../../Services/generated/caddyInfoApiWithRetry";
 import { useSetLinkConfigMutation } from "../../../Services/servicesApi";
 
 interface LinkConfigSectionProps {
@@ -32,6 +36,28 @@ const publishedPorts = (stack: ServiceStack): number[] => {
     return [...ports].sort((a, b) => a - b);
 };
 
+const findCaddyDomains = (
+    caddyInfo: GetCaddyInfoApiResponse | undefined,
+    stack: ServiceStack
+): string[] => {
+    if (!caddyInfo?.reachable) {
+        return [];
+    }
+    const urlWithoutScheme = stack.link?.url?.replace(/^https?:\/\//, "");
+    const domains = new Set<string>();
+    for (const server of caddyInfo.servers ?? []) {
+        for (const route of server.routes) {
+            const matchesUpstream = route.upstreams.some((upstream) => {
+                return upstream === urlWithoutScheme;
+            });
+            if (matchesUpstream) {
+                route.domains.forEach((domain) => domains.add(domain));
+            }
+        }
+    }
+    return [...domains].sort();
+};
+
 export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [setLinkConfig, { isLoading }] = useSetLinkConfigMutation();
@@ -42,6 +68,12 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
     const [port, setPort] = useState<number>(link?.port ?? ports[0] ?? 0);
     const [fqdn, setFqdn] = useState<string>(link?.fqdn ?? "");
     const [icon, setIcon] = useState<string>(link?.icon ?? "");
+
+    const { data: caddyInfo } = useGetCaddyInfoQuery();
+    const caddyDomains = useMemo(
+        () => findCaddyDomains(caddyInfo, stack),
+        [caddyInfo, stack]
+    );
 
     const preview =
         type === "none"
@@ -185,6 +217,18 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
                                     }}
                                 />
                             </Box>
+                            {caddyDomains.length > 0 && (
+                                <Box
+                                    sx={{
+                                        fontSize: 11,
+                                        color: "text.secondary",
+                                        fontFamily: "monospace",
+                                        marginLeft: 4,
+                                    }}
+                                >
+                                    Caddy domain: {caddyDomains.join(", ")}
+                                </Box>
+                            )}
                         </RadioGroup>
                     </FormControl>
                     <Box

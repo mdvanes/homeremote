@@ -54,7 +54,6 @@ vi.mock("../../Molecules/ClimateSensorsCard/ClimateSensorsCard", () => ({
 vi.mock("../../Molecules/SpeedTestCard/SpeedTestCard", () => ({
     default: "mock-speedtest-card",
 }));
-vi.mock("../Caddy/Caddy", () => ({ default: "mock-caddy" }));
 
 describe("Dashboard page", () => {
     it("contains all the control components", () => {
