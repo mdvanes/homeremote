@@ -50,6 +50,7 @@ Optional systems that can be connected (configured in `apps/server/.env`):
 - [Subsonic](http://www.subsonic.org/)-compatible server (jukebox / music streaming)
 - [Portainer](https://www.portainer.io/) (Docker container management)
 - [Monit](https://mmonit.com/monit/) (service monitoring)
+- [Caddy](https://caddyserver.com/) (reverse proxy, SSL)
 - [Authentik](https://goauthentik.io/) or another OpenID Connect provider (SSO login)
 - HomeSec (home security alarm)
 - Download client
@@ -67,6 +68,36 @@ Optional systems that can be connected (configured in `apps/server/.env`):
 
 The app will be available at the host configured in your Caddy reverse proxy.
 To follow the logs: `docker compose logs --follow`
+
+## Service links
+
+The Services panel can show a quick-link icon/button per Docker stack (in the
+top service link bar and each stack's row). Each stack's link is edited from
+the "Service link" section of its row and is persisted server-side to a
+writable YAML file at `SERVICES_CONFIG_PATH=/config/services-links.yaml` (set in `.env`), so it survives
+container restarts. Mount that path as a bind mount or Docker config. Leave
+`SERVICES_CONFIG_PATH` empty to disable persistence — stacks then only get an
+auto-discovered link from their first published port.
+
+The file is a map keyed by lowercase stack name:
+
+```yaml
+pi-hole:
+  type: fqdn
+  fqdn: pihole.home.arpa
+  icon: pihole
+monitoring:
+  type: port
+  port: 3000
+  icon: insights
+```
+
+- `type`: `none`, `port`, or `fqdn`
+- `port`: required when `type: port` — the published port to link to
+- `fqdn`: required when `type: fqdn` — a bare host or a full `http(s)://` URL
+- `icon`: optional — a [Material UI Icons](https://mui.com/material-ui/material-icons/)
+  ligature name (e.g. `insights`), or a custom icon key from
+  `apps/client/src/Components/Molecules/ServiceLinksBar/customIcons.tsx`
 
 ## Updating
 
@@ -155,36 +186,6 @@ matching entry in the `users` array of `auth.json`.
 
 - **Deny access:** omit a user from `auth.json` (or remove their entry) to deny
   them access, even if Authentik successfully authenticates them.
-
-# Service links
-
-The Services panel can show a quick-link icon/button per Docker stack (in the
-top service link bar and each stack's row). Each stack's link is edited from
-the "Service link" section of its row and is persisted server-side to a
-writable YAML file at `SERVICES_CONFIG_PATH` (set in `.env`), so it survives
-container restarts. Mount that path as a bind mount or Docker config. Leave
-`SERVICES_CONFIG_PATH` empty to disable persistence — stacks then only get an
-auto-discovered link from their first published port.
-
-The file is a map keyed by lowercase stack name:
-
-```yaml
-pi-hole:
-  type: fqdn
-  fqdn: pihole.home.arpa
-  icon: pihole
-monitoring:
-  type: port
-  port: 3000
-  icon: insights
-```
-
-- `type`: `none`, `port`, or `fqdn`
-- `port`: required when `type: port` — the published port to link to
-- `fqdn`: required when `type: fqdn` — a bare host or a full `http(s)://` URL
-- `icon`: optional — a [Material Icons](https://fonts.google.com/icons?icon.set=Material+Icons)
-  ligature name (e.g. `insights`), or a custom icon key from
-  `apps/client/src/Components/Molecules/ServiceLinksBar/customIcons.tsx`
 
 # Demo mode
 

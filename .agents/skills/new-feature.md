@@ -17,12 +17,12 @@ generate types from it — don't hand-write request/response types.
    for the response/request shapes). Keep it a lean subset of the real API —
    only what HomeRemote consumes.
 2. Register it in `redocly.yaml` under `apis`:
-   ```yaml
-   <name>@v1:
-       root: ./libs/types/definitions/external/<name>.yml
-       x-openapi-ts:
-           output: ./libs/types/src/lib/external/generated/<name>.ts
-   ```
+    ```yaml
+    <name>@v1:
+        root: ./libs/types/definitions/external/<name>.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/<name>.ts
+    ```
 3. Generate the types: `npm run codegen:server`.
 
 ### Internal API (client <-> HomeRemote server)
@@ -51,7 +51,7 @@ then server implementation, then client UI, then wiring/tests).
 
 When a feature is being done in stages:
 
-Before working in stages starts, ask whether you can commit after each stage. Do not 
+Before working in stages starts, ask whether you can commit after each stage. Do not
 change git branches, but warn if still on the main branch that the developer
 should create a feature branch.
 
@@ -60,5 +60,11 @@ should create a feature branch.
   narrower `npm run typecheck` / `npm run lint` / `npm run test:ci` if a
   faster loop is preferred for that stage. Don't start the next stage on a
   broken one.
-- After each stage completes and validates cleanly, commit if the developer 
+- After each stage completes and validates cleanly, commit if the developer
   has given permission when you asked before.
+
+## 4. Updating documentation
+
+Do not read or change apps/server/.env. Instead make changes in apps/server/.env.example
+and update the README.md to reflect any new environment variables. Also mention to the
+developer how .env needs to be updated.
