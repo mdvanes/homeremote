@@ -30,15 +30,13 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { promises as fs } from "fs";
 import got from "got";
+import * as YAML from "yaml";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 
-interface EnvServiceLink {
-    label: string;
-    icon: string;
-    url: string;
-}
-
+// Keyed by lowercase stack name. Each entry is the full, authoritative link
+// config for that stack -- persisted as YAML at SERVICES_CONFIG_PATH so it
+// survives restarts and can be mounted as a Docker config/bind-mount.
 type LinkStore = Record<string, ServiceLinkConfigUpdate>;
 
 const API_ROOT = "/v1.41/containers";
@@ -162,8 +160,6 @@ export class ServicesController {
     private readonly dockerBaseUrl: string;
     private readonly portainerBaseUrl: string;
     private readonly portainerApiKey: string;
-    private readonly icons: Record<string, string>;
-    private readonly envServiceLinks: EnvServiceLink[];
     private readonly configPath: string;
 
     constructor(private configService: ConfigService) {
@@ -177,38 +173,8 @@ export class ServicesController {
             this.configService.get<string>("PORTAINER_BASE_URL") || "";
         this.portainerApiKey =
             this.configService.get<string>("PORTAINER_API_KEY") || "";
-        this.icons = this.parseIcons(
-            this.configService.get<string>("DOCKER_ICONS") ?? ""
-        );
-        this.envServiceLinks = this.parseServiceLinks(
-            this.configService.get<string>("SERVICE_LINKS") ?? ""
-        );
         this.configPath =
             this.configService.get<string>("SERVICES_CONFIG_PATH") || "";
-    }
-
-    private parseIcons(iconsConfig: string): Record<string, string> {
-        if (!iconsConfig) {
-            return {};
-        }
-        const entries = iconsConfig.split(";").map((str) => {
-            const [label, icon] = str.split(",");
-            return [label, icon] as const;
-        });
-        return Object.fromEntries(entries);
-    }
-
-    private parseServiceLinks(config: string): EnvServiceLink[] {
-        if (!config) {
-            return [];
-        }
-        return config
-            .split(";")
-            .map((str) => {
-                const [label, icon, url] = str.split(",");
-                return { label, icon, url };
-            })
-            .filter((link) => link.label);
     }
 
     private async readLinkStore(): Promise<LinkStore> {
@@ -217,9 +183,9 @@ export class ServicesController {
         }
         try {
             const raw = await fs.readFile(this.configPath, "utf-8");
-            return JSON.parse(raw) as LinkStore;
+            return (YAML.parse(raw) as LinkStore | null) ?? {};
         } catch (err) {
-            // Missing file simply means no overrides have been saved yet.
+            // Missing file simply means no links have been saved yet.
             if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
                 this.logger.error(`Failed to read link config: ${err}`);
             }
@@ -231,41 +197,36 @@ export class ServicesController {
         if (!this.configPath) {
             throw new Error("SERVICES_CONFIG_PATH is not configured");
         }
-        await fs.writeFile(
-            this.configPath,
-            JSON.stringify(store, null, 2),
-            "utf-8"
-        );
+        await fs.writeFile(this.configPath, YAML.stringify(store), "utf-8");
     }
 
-    private applyOverride(
-        name: string,
-        override: ServiceLinkConfigUpdate,
-        discovered: ServiceLinkConfig
+    // A stored entry is the complete, authoritative link config for a stack
+    // -- no merging with auto-discovered values, so an icon-only edit can
+    // never silently drop the rest of a previously saved link.
+    private buildLink(
+        stackName: string,
+        entry: ServiceLinkConfigUpdate
     ): ServiceLinkConfig {
-        const label = discovered.label ?? name;
-        const icon = override.icon || discovered.icon || this.icons[name];
-        if (override.type === "none") {
-            return { type: "none", label, icon };
-        }
-        if (override.type === "port" && override.port) {
+        const label = stackName;
+        const icon = entry.icon;
+        if (entry.type === "port" && entry.port) {
             return {
                 type: "port",
-                port: override.port,
+                port: entry.port,
                 label,
                 icon,
                 url: this.dockerBaseUrl
-                    ? `${this.dockerBaseUrl}:${override.port}`
+                    ? `${this.dockerBaseUrl}:${entry.port}`
                     : undefined,
             };
         }
-        if (override.type === "fqdn" && override.fqdn) {
-            const url = /^https?:\/\//.test(override.fqdn)
-                ? override.fqdn
-                : `https://${override.fqdn}`;
-            return { type: "fqdn", fqdn: override.fqdn, label, icon, url };
+        if (entry.type === "fqdn" && entry.fqdn) {
+            const url = /^https?:\/\//.test(entry.fqdn)
+                ? entry.fqdn
+                : `https://${entry.fqdn}`;
+            return { type: "fqdn", fqdn: entry.fqdn, label, icon, url };
         }
-        return discovered;
+        return { type: "none", label, icon };
     }
 
     private async fetchContainers(): Promise<DockerEngineContainerSummary[]> {
@@ -299,29 +260,19 @@ export class ServicesController {
         containers: ServiceContainer[],
         linkStore: LinkStore = {}
     ): ServiceLinkConfig {
-        const discovered = this.discoverLink(stackName, containers);
-        const override = linkStore[stackName.toLowerCase()];
-        if (override) {
-            return this.applyOverride(stackName, override, discovered);
+        const entry = linkStore[stackName.toLowerCase()];
+        if (entry) {
+            return this.buildLink(stackName, entry);
         }
-        return discovered;
+        return this.discoverLink(stackName, containers);
     }
 
+    // Zero-config fallback for stacks with no stored entry: expose a
+    // published Docker port directly.
     private discoverLink(
         stackName: string,
         containers: ServiceContainer[]
     ): ServiceLinkConfig {
-        const envLink = this.envServiceLinks.find(
-            (link) => link.label.toLowerCase() === stackName.toLowerCase()
-        );
-        if (envLink) {
-            return {
-                type: "fqdn",
-                url: envLink.url,
-                label: envLink.label,
-                icon: envLink.icon || this.icons[stackName],
-            };
-        }
         const port = firstPublicPort(containers);
         if (port && this.dockerBaseUrl) {
             return {
@@ -329,7 +280,6 @@ export class ServicesController {
                 port,
                 url: `${this.dockerBaseUrl}:${port}`,
                 label: stackName,
-                icon: this.icons[stackName],
             };
         }
         return { type: "none", label: stackName };
@@ -600,9 +550,9 @@ export class ServicesController {
 
         try {
             const store = await this.readLinkStore();
-            const override = store[stack.toLowerCase()];
-            const config: ServiceLinkConfig = override
-                ? this.applyOverride(stack, override, { type: "none" })
+            const entry = store[stack.toLowerCase()];
+            const config: ServiceLinkConfig = entry
+                ? this.buildLink(stack, entry)
                 : { type: "none" };
             return { status: "received", config };
         } catch (err) {
@@ -631,6 +581,18 @@ export class ServicesController {
                 HttpStatus.BAD_REQUEST
             );
         }
+        if (body.type === "port" && !body.port) {
+            throw new HttpException(
+                'port is required for type "port"',
+                HttpStatus.BAD_REQUEST
+            );
+        }
+        if (body.type === "fqdn" && !body.fqdn) {
+            throw new HttpException(
+                'fqdn is required for type "fqdn"',
+                HttpStatus.BAD_REQUEST
+            );
+        }
 
         if (!this.configPath) {
             throw new HttpException(
@@ -641,20 +603,15 @@ export class ServicesController {
 
         try {
             const store = await this.readLinkStore();
-            store[stack.toLowerCase()] = {
+            const entry: ServiceLinkConfigUpdate = {
                 type: body.type,
-                port: body.port,
-                fqdn: body.fqdn,
+                port: body.type === "port" ? body.port : undefined,
+                fqdn: body.type === "fqdn" ? body.fqdn : undefined,
                 icon: body.icon,
             };
+            store[stack.toLowerCase()] = entry;
             await this.writeLinkStore(store);
-            const config = this.applyOverride(
-                stack,
-                store[stack.toLowerCase()],
-                {
-                    type: "none",
-                }
-            );
+            const config = this.buildLink(stack, entry);
             return { status: "received", config };
         } catch (err) {
             this.logger.error(err);

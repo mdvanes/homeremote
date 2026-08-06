@@ -14,7 +14,6 @@ import { jukeboxApi } from "../Services/jukeboxApi";
 import { monitApi } from "../Services/monitApi";
 import { nextupApi } from "../Services/nextupApi";
 import { scheduleApi } from "../Services/scheduleApi";
-import { serviceLinksApi } from "../Services/serviceLinksApi";
 import { servicesApi } from "../Services/servicesApi";
 import { stacksApi } from "../Services/stacksApi";
 
@@ -32,7 +31,6 @@ const rootReducer = combineReducers({
     [monitApi.reducerPath]: monitApi.reducer,
     [nextupApi.reducerPath]: nextupApi.reducer,
     [scheduleApi.reducerPath]: scheduleApi.reducer,
-    [serviceLinksApi.reducerPath]: serviceLinksApi.reducer,
     [servicesApi.reducerPath]: servicesApi.reducer,
     [stacksApi.reducerPath]: stacksApi.reducer,
     [emptyApi.reducerPath]: emptyApi.reducer,

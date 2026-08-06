@@ -3,7 +3,3 @@ export interface ServiceLink {
     label: string;
     icon: string;
 }
-
-export type ServiceLinksResponse =
-    | { status: "received"; servicelinks: ServiceLink[] }
-    | { status: "error" };
