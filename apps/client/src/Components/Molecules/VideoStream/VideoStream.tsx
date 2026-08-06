@@ -1,43 +1,39 @@
-import { LinearProgress, Paper, Typography } from "@mui/material";
-import { FC, useEffect, useState } from "react";
+import { Paper, Typography } from "@mui/material";
+import Hls from "hls.js";
+import { FC, useEffect, useRef, useState } from "react";
 
-const URL = `${process.env.NX_PUBLIC_BASE_URL}/api/video-stream`;
+const MANIFEST_URL = `${process.env.NX_PUBLIC_BASE_URL}/api/video-stream/manifest.m3u8`;
 
 const VideoStream: FC = () => {
-    const [isLoading, setIsLoading] = useState(true);
+    const videoRef = useRef<HTMLVideoElement>(null);
     const [hasError, setHasError] = useState(false);
-    const [hash, setHash] = useState("");
 
     useEffect(() => {
-        (async () => {
-            setIsLoading(true);
-            try {
-                const response = await fetch(`${URL}/hash`);
-                if (response.status !== 200) {
+        const video = videoRef.current;
+        if (!video) {
+            return undefined;
+        }
+
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.on(Hls.Events.ERROR, (_event, data) => {
+                if (data.fatal) {
                     setHasError(true);
                 }
-                const data = await response.json();
-                setHash(data["hash"]);
-            } catch (err) {
-                setHasError(true);
-            }
-            setIsLoading(false);
-        })();
-    }, []);
+            });
+            hls.loadSource(MANIFEST_URL);
+            hls.attachMedia(video);
+            return () => hls.destroy();
+        }
 
-    if (isLoading) {
-        return (
-            <Typography
-                variant="body1"
-                sx={{
-                    textAlign: "center",
-                }}
-            >
-                VideoStream is loading
-                <LinearProgress color="primary" variant="indeterminate" />
-            </Typography>
-        );
-    }
+        if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            video.src = MANIFEST_URL;
+            return undefined;
+        }
+
+        setHasError(true);
+        return undefined;
+    }, []);
 
     if (hasError) {
         return (
@@ -54,7 +50,14 @@ const VideoStream: FC = () => {
 
     return (
         <Paper style={{ aspectRatio: "16/9", overflow: "clip" }}>
-            <video width="100%" controls src={`${URL}?hash=${hash}`} />
+            <video
+                ref={videoRef}
+                data-testid="video-stream-player"
+                width="100%"
+                controls
+                muted
+                playsInline
+            />
         </Paper>
     );
 };
