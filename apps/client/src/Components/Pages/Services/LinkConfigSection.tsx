@@ -7,6 +7,7 @@ import {
     Collapse,
     FormControl,
     FormControlLabel,
+    Icon,
     MenuItem,
     Radio,
     RadioGroup,
@@ -19,6 +20,7 @@ import {
     useGetCaddyInfoQuery,
 } from "../../../Services/generated/caddyInfoApiWithRetry";
 import { useSetLinkConfigMutation } from "../../../Services/servicesApi";
+import { customIconMap } from "../../Molecules/ServiceLinksBar/customIcons";
 
 interface LinkConfigSectionProps {
     stack: ServiceStack;
@@ -242,7 +244,7 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
                         <span>Icon</span>
                         <TextField
                             size="small"
-                            placeholder="jellyfin"
+                            placeholder="some-mui-icon"
                             value={icon}
                             onChange={(event) => setIcon(event.target.value)}
                             slotProps={{
@@ -252,6 +254,20 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
                                 },
                             }}
                         />
+                        {icon && (
+                            <Box
+                                aria-label="Icon preview"
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    color: "primary.main",
+                                }}
+                            >
+                                {customIconMap[icon] ?? (
+                                    <Icon fontSize="small">{icon}</Icon>
+                                )}
+                            </Box>
+                        )}
                     </Box>
                     <Box
                         sx={{
