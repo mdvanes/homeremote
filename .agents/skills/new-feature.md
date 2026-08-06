@@ -51,10 +51,14 @@ then server implementation, then client UI, then wiring/tests).
 
 When a feature is being done in stages:
 
+Before working in stages starts, ask whether you can commit after each stage. Do not 
+change git branches, but warn if still on the main branch that the developer
+should create a feature branch.
+
 - After each stage, run validation before moving to the next stage:
   `npm run validate` (runs `typecheck`, `lint`, and `test:ci`), or the
   narrower `npm run typecheck` / `npm run lint` / `npm run test:ci` if a
   faster loop is preferred for that stage. Don't start the next stage on a
   broken one.
-- After each stage completes and validates cleanly, ask the user whether to
-  commit that stage before continuing — don't commit automatically.
+- After each stage completes and validates cleanly, commit if the developer 
+  has given permission when you asked before.
