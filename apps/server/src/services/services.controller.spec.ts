@@ -21,7 +21,7 @@ const PORTAINER_URL = "https://portainer.test/api/stacks";
 
 const CONFIG_PATH = path.join(
     os.tmpdir(),
-    `services-config-test-${process.pid}.json`
+    `services-config-test-${process.pid}.yaml`
 );
 
 const config: Record<string, string> = {
@@ -29,8 +29,6 @@ const config: Record<string, string> = {
     DOCKER_BASE_URL: "http://homeserver",
     PORTAINER_BASE_URL: "https://portainer.test",
     PORTAINER_API_KEY: "secret",
-    SERVICE_LINKS: "",
-    DOCKER_ICONS: "",
     SERVICES_CONFIG_PATH: CONFIG_PATH,
 };
 
@@ -449,6 +447,49 @@ describe("Services Controller", () => {
                     type: "bogus" as never,
                 })
             ).rejects.toThrow("unknown link type");
+        });
+
+        it("rejects a port type with no port", async () => {
+            await expect(
+                controller.setLinkConfig(mockAuthenticatedRequest, "media", {
+                    type: "port",
+                })
+            ).rejects.toThrow('port is required for type "port"');
+        });
+
+        it("rejects an fqdn type with no fqdn", async () => {
+            await expect(
+                controller.setLinkConfig(mockAuthenticatedRequest, "media", {
+                    type: "fqdn",
+                })
+            ).rejects.toThrow('fqdn is required for type "fqdn"');
+        });
+
+        it("keeps the stored fqdn when only the icon is changed", async () => {
+            await controller.setLinkConfig(mockAuthenticatedRequest, "media", {
+                type: "fqdn",
+                fqdn: "media.home.arpa",
+            });
+
+            // Mirrors LinkConfigSection.tsx: the client always resends the
+            // full form state, so an icon-only edit still carries the fqdn
+            // it was prefilled with.
+            const result = await controller.setLinkConfig(
+                mockAuthenticatedRequest,
+                "media",
+                { type: "fqdn", fqdn: "media.home.arpa", icon: "jellyfin" }
+            );
+
+            expect(result).toEqual({
+                status: "received",
+                config: {
+                    type: "fqdn",
+                    fqdn: "media.home.arpa",
+                    url: "https://media.home.arpa",
+                    label: "media",
+                    icon: "jellyfin",
+                },
+            });
         });
 
         it("applies a stored override to the aggregated services", async () => {
