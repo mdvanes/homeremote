@@ -1,0 +1,108 @@
+openapi: 3.0.1
+info:
+    title: NPO Player API
+    description: >-
+        Subset of NPO's undocumented player-resolution API consumed by
+        HomeRemote to resolve the NPO Radio 2 live video stream. See
+        https://docs.npoplayer.nl/ for the (partial) official player docs;
+        these two endpoints were reverse-engineered from network traffic and
+        are not officially documented.
+    version: 1.0.0
+servers:
+    - url: https://prod.npoplayer.nl
+      description: NPO Player backend
+paths:
+    /play/{token}:
+        servers:
+            - url: https://play-api.nporadio.nl
+              description: NPO Radio play-api (exchanges a page-embedded token for a player token)
+        get:
+            tags:
+                - npo
+            summary: Exchange a page-embedded play token for a player token
+            description: >-
+                The token path segment is scraped from a script embedded in
+                the nporadio2.nl live page HTML (not part of this API).
+            operationId: getPlayToken
+            parameters:
+                - name: token
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PlayToken"
+    /stream-link:
+        post:
+            tags:
+                - npo
+            summary: Resolve a playable stream URL for the player token's stream
+            operationId: getStreamLink
+            parameters:
+                - name: authorization
+                  in: header
+                  required: true
+                  description: The playerToken returned by getPlayToken
+                  schema:
+                      type: string
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/StreamLinkRequest"
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/StreamLinkResponse"
+components:
+    schemas:
+        PlayToken:
+            type: object
+            properties:
+                environmentDomain:
+                    type: string
+                    description: "Host to call for stream-link, e.g. prod.npoplayer.nl"
+                mid:
+                    type: string
+                    description: "The media id, e.g. LI_RADIO2_300879"
+                playerToken:
+                    type: string
+                    description: Short-lived JWT to send as the stream-link authorization header
+        StreamLinkRequest:
+            type: object
+            properties:
+                profileName:
+                    type: string
+                    description: "Requested manifest format, e.g. hls, dash, smooth"
+                drmType:
+                    type: string
+                    description: "Use none to request an unencrypted profile"
+                referrerUrl:
+                    type: string
+        StreamLinkResponse:
+            type: object
+            properties:
+                stream:
+                    $ref: "#/components/schemas/Stream"
+        Stream:
+            type: object
+            properties:
+                streamURL:
+                    type: string
+                    description: Signed, short-lived URL to the HLS/DASH manifest
+                streamProfile:
+                    type: string
+                drm:
+                    type: string
+                    nullable: true
+                isLiveStream:
+                    type: boolean

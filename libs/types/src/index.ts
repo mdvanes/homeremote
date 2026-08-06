@@ -10,6 +10,7 @@ export * from "./lib/external/domoticz.types";
 export * as HomeAssistantTypes from "./lib/external/generated/homeAssistant";
 export * from "./lib/external/homeassistant.types";
 export * from "./lib/external/movie.types";
+export * from "./lib/external/npo.types";
 export * from "./lib/external/portainer.types";
 export * from "./lib/external/subsonic.types";
 export * from "./lib/external/tvshow.types";

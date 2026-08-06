@@ -35,6 +35,10 @@ apis:
         root: ./libs/types/definitions/external/movie.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/external/generated/movie.ts
+    npo@v1:
+        root: ./libs/types/definitions/external/npo.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/npo.ts
     energyUsage@v1:
         root: ./libs/types/definitions/internal/energyUsage.yml
         x-openapi-ts:
