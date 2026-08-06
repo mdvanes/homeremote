@@ -11,6 +11,10 @@ apis:
         root: ./libs/types/definitions/external/portainer.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/external/generated/portainer.ts
+    caddy@v1:
+        root: ./libs/types/definitions/external/caddy.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/external/generated/caddy.ts
     subsonic@v1:
         root: ./libs/types/definitions/external/subsonic.yml
         x-openapi-ts:
@@ -51,3 +55,7 @@ apis:
         root: ./libs/types/definitions/internal/urlToMusic.yml
         x-openapi-ts:
             output: ./libs/types/src/lib/generated/urlToMusic.ts
+    caddyInfo@v1:
+        root: ./libs/types/definitions/internal/caddyInfo.yml
+        x-openapi-ts:
+            output: ./libs/types/src/lib/generated/caddyInfo.ts

@@ -1,0 +1,103 @@
+openapi: 3.0.1
+info:
+    title: Caddy Admin API
+    description: >-
+        Subset of the Caddy admin API consumed by HomeRemote to read basic
+        info about the running Caddy config. See https://caddyserver.com/docs/api
+    version: 1.0.0
+servers:
+    - url: http://localhost:2019
+      description: Caddy admin API
+paths:
+    /config/:
+        get:
+            tags:
+                - caddy
+            summary: Get the active config
+            description: Returns the currently active Caddy configuration as JSON.
+            operationId: getConfig
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Config"
+components:
+    schemas:
+        Config:
+            type: object
+            description: Caddy's active configuration (subset)
+            properties:
+                apps:
+                    type: object
+                    properties:
+                        http:
+                            type: object
+                            properties:
+                                servers:
+                                    type: object
+                                    additionalProperties:
+                                        $ref: "#/components/schemas/Server"
+                        tls:
+                            type: object
+                            description: Present when TLS automation is configured
+                            additionalProperties: true
+        Server:
+            type: object
+            properties:
+                listen:
+                    type: array
+                    items:
+                        type: string
+                    description: Addresses this server listens on
+                routes:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Route"
+        Route:
+            type: object
+            properties:
+                match:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/RouteMatch"
+                handle:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Handler"
+        RouteMatch:
+            type: object
+            properties:
+                host:
+                    type: array
+                    items:
+                        type: string
+                    description: Domains this route matches
+        Handler:
+            type: object
+            description: >-
+                A Caddy route handler. Only the fields HomeRemote reads are
+                modeled; the real handler shape varies by "handler" type
+                (e.g. reverse_proxy, subroute, static_response).
+            properties:
+                handler:
+                    type: string
+                    description: Handler type, e.g. "reverse_proxy" or "subroute"
+                routes:
+                    type: array
+                    description: Present when handler is "subroute"
+                    items:
+                        $ref: "#/components/schemas/Route"
+                upstreams:
+                    type: array
+                    description: Present when handler is "reverse_proxy"
+                    items:
+                        $ref: "#/components/schemas/Upstream"
+            additionalProperties: true
+        Upstream:
+            type: object
+            properties:
+                dial:
+                    type: string
+                    description: "Upstream address, e.g. 192.168.0.8:8096"

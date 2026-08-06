@@ -4,6 +4,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FC, ReactNode } from "react";
 import { MemoryRouter } from "react-router";
+import { caddyInfoApiWithRetry } from "../../../Services/generated/caddyInfoApiWithRetry";
 import { servicesApi } from "../../../Services/servicesApi";
 import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import {
@@ -20,7 +21,7 @@ const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
     <StyledEngineProvider injectFirst>
         <ThemeProvider theme={createThemeWithMode("dark")}>
             <MemoryRouter initialEntries={["/services"]}>
-                <MockStoreProvider apis={[servicesApi]}>
+                <MockStoreProvider apis={[servicesApi, caddyInfoApiWithRetry]}>
                     {children}
                 </MockStoreProvider>
             </MemoryRouter>
@@ -115,7 +116,9 @@ describe("Services page", () => {
             <StyledEngineProvider injectFirst>
                 <ThemeProvider theme={createThemeWithMode("dark")}>
                     <MemoryRouter initialEntries={["/services?stack=3"]}>
-                        <MockStoreProvider apis={[servicesApi]}>
+                        <MockStoreProvider
+                            apis={[servicesApi, caddyInfoApiWithRetry]}
+                        >
                             {children}
                         </MockStoreProvider>
                     </MemoryRouter>

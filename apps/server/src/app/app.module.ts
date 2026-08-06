@@ -5,6 +5,7 @@ import { join } from "path";
 import { AuthConfigController } from "../auth/auth-config.controller";
 import { AuthModule } from "../auth/auth.module";
 import { isOidcEnabled } from "../auth/oidc.config";
+import { CaddyController } from "../caddy/caddy.controller";
 import { CarTwinController } from "../cartwin/cartwin.controller";
 import { DataloraController } from "../datalora/datalora.controller";
 import { DockerlistController } from "../dockerlist/dockerlist.controller";
@@ -55,6 +56,7 @@ import { AppService } from "./app.service";
     controllers: [
         AppController,
         AuthConfigController,
+        CaddyController,
         CarTwinController,
         DataloraController,
         DockerlistController,

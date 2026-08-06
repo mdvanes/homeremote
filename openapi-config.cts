@@ -46,6 +46,12 @@ const config: ConfigFile = {
             apiImport: "emptyApi",
             tag: true,
         },
+        "./apps/client/src/Services/generated/caddyInfoApiWithRetry.ts": {
+            apiFile: "./apps/client/src/Services/emptyApiWithRetry.ts",
+            schemaFile: "./libs/types/definitions/internal/caddyInfo.yml",
+            exportName: "caddyInfoApiWithRetry",
+            tag: true,
+        },
     },
     hooks: true,
 };

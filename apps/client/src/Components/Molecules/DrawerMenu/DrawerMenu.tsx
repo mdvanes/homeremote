@@ -44,6 +44,9 @@ const DrawerMenu: FC<Props> = ({ closeDrawer, colorMode, toggleColorMode }) => {
                 <ListItemButton component={RouterLink} to="/docker">
                     <ListItemText primary="Docker" />
                 </ListItemButton>
+                <ListItemButton component={RouterLink} to="/caddy">
+                    <ListItemText primary="Caddy" />
+                </ListItemButton>
                 <ListItemButton component={RouterLink} to="/datalora">
                     <ListItemText primary="Tracker" />
                 </ListItemButton>
