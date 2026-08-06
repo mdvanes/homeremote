@@ -12,7 +12,6 @@ import { monitHandlers } from "./monit";
 import { nextupHandlers } from "./nextup";
 import { nowPlayingHandlers } from "./nowplaying";
 import { scheduleHandlers } from "./schedule";
-import { serviceLinksHandlers } from "./serviceLinks";
 import { servicesHandlers } from "./services";
 import { smartEntitiesHandlers } from "./smartEntities";
 import { speedTestHandlers } from "./speedTest";
@@ -34,7 +33,6 @@ export const handlers: RequestHandler[] = [
     ...homesecHandlers,
     ...nextupHandlers,
     ...scheduleHandlers,
-    ...serviceLinksHandlers,
     ...servicesHandlers,
     ...dataloraHandlers,
     ...jukeboxHandlers,

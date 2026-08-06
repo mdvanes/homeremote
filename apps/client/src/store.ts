@@ -14,7 +14,6 @@ import { jukeboxApi } from "./Services/jukeboxApi";
 import { monitApi } from "./Services/monitApi";
 import { nextupApi } from "./Services/nextupApi";
 import { scheduleApi } from "./Services/scheduleApi";
-import { serviceLinksApi } from "./Services/serviceLinksApi";
 import { servicesApi } from "./Services/servicesApi";
 import { sessionExpiryMiddleware } from "./Services/sessionExpiryMiddleware";
 import { stacksApi } from "./Services/stacksApi";
@@ -35,7 +34,6 @@ export const store = configureStore({
             monitApi.middleware,
             nextupApi.middleware,
             scheduleApi.middleware,
-            serviceLinksApi.middleware,
             servicesApi.middleware,
             stacksApi.middleware,
             sessionExpiryMiddleware

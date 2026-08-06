@@ -20,9 +20,6 @@ vi.mock("../../Molecules/DataLora/DataLora", () => ({
 vi.mock("../../Molecules/VideoStream/VideoStream", () => ({
     default: "mock-video-stream",
 }));
-vi.mock("../../Molecules/ServiceLinksBar/ServiceLinksBar", () => ({
-    default: "mock-service-links-bar",
-}));
 vi.mock("../../Molecules/Monit/Monit", () => ({ default: "mock-monit" }));
 vi.mock("../../Molecules/Schedule/Schedule", () => ({
     default: "mock-schedule",

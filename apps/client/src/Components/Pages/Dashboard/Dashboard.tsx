@@ -13,8 +13,6 @@ import LogCard from "../../Molecules/LogCard/LogCard";
 import Monit from "../../Molecules/Monit/Monit";
 import Nextup from "../../Molecules/Nextup/Nextup";
 import Schedule from "../../Molecules/Schedule/Schedule";
-// Replaced by the unified ServicesPanel (see below):
-// import ServiceLinksBar from "../../Molecules/ServiceLinksBar/ServiceLinksBar";
 import ServiceLinkBarSection from "../../Molecules/ServicesPanel/ServiceLinkBarSection";
 import ServicesPanelCard from "../../Molecules/ServicesPanel/ServicesPanelCard";
 import SpeedTestCard from "../../Molecules/SpeedTestCard/SpeedTestCard";
@@ -114,7 +112,6 @@ const Dashboard: FC = () => {
             >
                 <ServiceLinkBarSection />
                 <ServicesPanelCard />
-                {/* <ServiceLinksBar /> */}
                 {/* <Docker /> */}
                 <Monit />
             </Grid>
