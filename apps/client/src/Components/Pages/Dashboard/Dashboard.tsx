@@ -20,6 +20,7 @@ import ServicesPanelCard from "../../Molecules/ServicesPanel/ServicesPanelCard";
 import SpeedTestCard from "../../Molecules/SpeedTestCard/SpeedTestCard";
 import SwitchesCard from "../../Molecules/SwitchesCard/SwitchesCard";
 import VideoStream from "../../Molecules/VideoStream/VideoStream";
+import Caddy from "../Caddy/Caddy";
 // Replaced by the unified ServicesPanel (see below):
 // import Docker from "../Docker/Docker";
 

@@ -1,0 +1,98 @@
+# npx mock-to-openapi ./libs/types/examples
+# https://editor.swagger.io/
+
+openapi: 3.0.1
+info:
+    title: Caddy Info Controller API
+    description: Get basic Caddy admin API info
+    version: 1.0.0
+servers:
+    - url: http://localhost:4200
+      description: Homeremote local server
+tags:
+    - name: caddy
+      description: Caddy reverse proxy info
+paths:
+    /api/caddy:
+        get:
+            operationId: getCaddyInfo
+            tags:
+                - caddy
+            responses:
+                "200":
+                    description: getCaddyInfo
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetCaddyInfoResponse"
+                "401":
+                    description: Unauthorized.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ErrorResponse"
+components:
+    schemas:
+        ErrorResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+                    description: Human-readable error message
+            description: Error information details
+        CaddyRouteInfo:
+            type: object
+            properties:
+                domains:
+                    type: array
+                    items:
+                        type: string
+                    description: Domains this route matches, deduplicated and sorted
+                upstreams:
+                    type: array
+                    items:
+                        type: string
+                    description: >-
+                        Reverse proxy upstream addresses (IP:port) this
+                        route forwards to, deduplicated and sorted
+            required:
+                - domains
+                - upstreams
+        CaddyServerInfo:
+            type: object
+            properties:
+                name:
+                    type: string
+                    description: Server name as defined in the Caddy config
+                listen:
+                    type: array
+                    items:
+                        type: string
+                    description: Addresses this server listens on
+                routes:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/CaddyRouteInfo"
+                    description: Domain-to-upstream routing for this server
+            required:
+                - name
+                - listen
+                - routes
+        GetCaddyInfoResponse:
+            type: object
+            properties:
+                reachable:
+                    type: boolean
+                    description: Whether the Caddy admin API responded
+                serverCount:
+                    type: integer
+                    description: Number of configured HTTP servers
+                servers:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/CaddyServerInfo"
+                tlsAutomationEnabled:
+                    type: boolean
+                    description: Whether TLS automation is configured
+            required:
+                - reachable
