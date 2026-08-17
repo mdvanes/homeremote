@@ -84,9 +84,7 @@ const Dashboard: FC = () => {
                     md: "grow",
                 }}
             >
-                {(localStorage.getItem("showVideoStream") ?? "") === "true" ? (
-                    <VideoStream />
-                ) : undefined}
+                <VideoStream />
                 <CarTabs />
                 {/* Replaced by the unified ServicesPanel in the right column: */}
                 {/* <DockerStackListCard /> */}

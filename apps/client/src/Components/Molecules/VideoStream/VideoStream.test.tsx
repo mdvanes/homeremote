@@ -28,6 +28,13 @@ const mockedHls = vi.mocked(Hls);
 describe("VideoStream", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+
+        vi.spyOn(Storage.prototype, "getItem").mockImplementation((key) => {
+            if (key === "showVideoStream") {
+                return "true";
+            }
+            return null;
+        });
     });
 
     it("renders the video player when hls.js is supported", async () => {

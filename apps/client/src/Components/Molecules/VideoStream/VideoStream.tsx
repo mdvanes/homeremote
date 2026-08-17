@@ -1,4 +1,9 @@
-import { Paper, Typography } from "@mui/material";
+import {
+    Close as CloseIcon,
+    PlayArrow as PlayArrowIcon,
+    Refresh as RefreshIcon,
+} from "@mui/icons-material";
+import { IconButton, Paper, Typography } from "@mui/material";
 import Hls from "hls.js";
 import { FC, useEffect, useRef, useState } from "react";
 
@@ -7,6 +12,15 @@ const MANIFEST_URL = `${process.env.NX_PUBLIC_BASE_URL}/api/video-stream/manifes
 const VideoStream: FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [hasError, setHasError] = useState(false);
+    const [isOpen, setIsOpen] = useState(
+        localStorage.getItem("showVideoStream") === "true"
+    );
+    const [isHover, setIsHover] = useState(false);
+
+    const toggleOpen = (newOpen: boolean) => {
+        setIsOpen(newOpen);
+        localStorage.setItem("showVideoStream", newOpen.toString());
+    };
 
     useEffect(() => {
         const video = videoRef.current;
@@ -33,7 +47,7 @@ const VideoStream: FC = () => {
 
         setHasError(true);
         return undefined;
-    }, []);
+    }, [isOpen]);
 
     if (hasError) {
         return (
@@ -44,12 +58,61 @@ const VideoStream: FC = () => {
                 }}
             >
                 VideoStream failed to load
+                <IconButton
+                    onClick={() => {
+                        toggleOpen(false);
+                        setTimeout(() => {
+                            toggleOpen(true);
+                        }, 1_000);
+                    }}
+                >
+                    <RefreshIcon />
+                </IconButton>
+            </Typography>
+        );
+    }
+
+    if (!isOpen) {
+        return (
+            <Typography
+                variant="body1"
+                sx={{
+                    textAlign: "center",
+                }}
+            >
+                Video Stream
+                <IconButton onClick={() => toggleOpen(true)}>
+                    <PlayArrowIcon />
+                </IconButton>
             </Typography>
         );
     }
 
     return (
-        <Paper style={{ aspectRatio: "16/9", overflow: "clip" }}>
+        <Paper
+            style={{
+                aspectRatio: "16/9",
+                overflow: "clip",
+                position: "relative",
+            }}
+            onMouseOver={() => setIsHover(true)}
+            onMouseOut={() => setIsHover(false)}
+        >
+            <div
+                style={{
+                    visibility: isHover ? "visible" : "hidden",
+                    position: "absolute",
+                    height: "50px",
+                    width: "100%",
+                    textAlign: "center",
+                    background:
+                        "linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 30%, rgba(0, 0, 0, 0) 100%)",
+                }}
+            >
+                <IconButton onClick={() => toggleOpen(false)}>
+                    <CloseIcon />
+                </IconButton>
+            </div>
             <video
                 ref={videoRef}
                 data-testid="video-stream-player"
