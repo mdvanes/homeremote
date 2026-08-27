@@ -1,6 +1,7 @@
 import {
     AddSongResponse,
     AlbumInfoResponse,
+    ArtistInfoResponse,
     IPlaylist,
     ISong,
     PlaylistResponse,
@@ -92,6 +93,13 @@ export const jukeboxHandlers = [
             status: "received",
             description:
                 "A demo album description, as it would come from Subsonic's getAlbumInfo2.",
+        })
+    ),
+    http.get("*/api/jukebox/artistinfo/:id", () =>
+        HttpResponse.json<ArtistInfoResponse>({
+            status: "received",
+            description:
+                "A demo artist biography, as it would come from Subsonic's getArtistInfo2.",
         })
     ),
 ];

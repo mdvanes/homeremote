@@ -2,6 +2,7 @@ import {
     AddSongArg,
     AddSongResponse,
     AlbumInfoResponse,
+    ArtistInfoResponse,
     BrowseResponse,
     PlaylistArgs,
     PlaylistResponse,
@@ -27,6 +28,7 @@ export const jukeboxApi = createApi({
         "Browse",
         "Recent",
         "AlbumInfo",
+        "ArtistInfo",
     ],
     endpoints: (builder) => ({
         getPlaylists: builder.query<PlaylistsResponse, undefined>({
@@ -89,6 +91,10 @@ export const jukeboxApi = createApi({
             query: (id) => `/albuminfo/${id}`,
             providesTags: ["AlbumInfo"],
         }),
+        getArtistInfo: builder.query<ArtistInfoResponse, string>({
+            query: (id) => `/artistinfo/${id}`,
+            providesTags: ["ArtistInfo"],
+        }),
     }),
 });
 
@@ -101,4 +107,5 @@ export const {
     useGetRecentAlbumsQuery,
     useGetFavoritesQuery,
     useGetAlbumInfoQuery,
+    useGetArtistInfoQuery,
 } = jukeboxApi;
