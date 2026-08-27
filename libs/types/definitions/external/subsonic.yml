@@ -159,11 +159,36 @@ paths:
                             schema:
                                 type: string
                                 format: binary
+    /rest/getAlbumInfo:
+        get:
+            tags:
+                - subsonic
+            summary: >-
+                Get extra info about an album (e.g. description notes), by
+                the id-based (music directory/folder) id used when browsing
+                the file system rather than the ID3 tag based id
+            operationId: getAlbumInfo
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Album (directory) identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetAlbumInfo2Response"
     /rest/getAlbumInfo2:
         get:
             tags:
                 - subsonic
-            summary: Get extra info about an album (e.g. description notes)
+            summary: >-
+                Get extra info about an album (e.g. description notes), by
+                the ID3 tag based album id
             operationId: getAlbumInfo2
             parameters:
                 - name: id

@@ -10,6 +10,7 @@ import {
 import { FC } from "react";
 import { useGetAlbumInfoQuery } from "../../../Services/jukeboxApi";
 import { formatPlaybackTime } from "../MusicBar/useJukeboxPlaybackTime";
+import { sanitizeAlbumDescription } from "./sanitizeAlbumDescription";
 
 const COVER_SIZE = 200;
 
@@ -35,10 +36,11 @@ const JukeboxAlbumDetail: FC<JukeboxAlbumDetailProps> = ({
     const artist = songs.find((song) => song.artist)?.artist;
     const description =
         albumInfo?.status === "received" ? albumInfo.description : "";
+    const parsedDescription = sanitizeAlbumDescription(description);
 
     return (
         <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-            <Box sx={{ width: COVER_SIZE, flexShrink: 0 }}>
+            <Box sx={{ width: 400, flexShrink: 0 }}>
                 <CardMedia
                     component="img"
                     height={COVER_SIZE}
@@ -58,13 +60,13 @@ const JukeboxAlbumDetail: FC<JukeboxAlbumDetailProps> = ({
                         {artist}
                     </Typography>
                 )}
-                {description && (
+                {parsedDescription && (
                     <Typography
                         variant="body2"
                         color="text.secondary"
-                        sx={{ mt: 1 }}
+                        sx={{ mt: 4 }}
                     >
-                        {description}
+                        {parsedDescription}
                     </Typography>
                 )}
             </Box>

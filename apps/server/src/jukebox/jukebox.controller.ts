@@ -343,7 +343,7 @@ export class JukeboxController {
         this.logger.verbose(`GET to /api/jukebox/albuminfo/:id ${id}`);
 
         try {
-            const url = this.getAPI("getAlbumInfo2", `&id=${id}`);
+            const url = this.getAPI("getAlbumInfo", `&id=${id}`);
             const response: SubsonicApiGetAlbumInfo2Response =
                 await got(url).json();
 
