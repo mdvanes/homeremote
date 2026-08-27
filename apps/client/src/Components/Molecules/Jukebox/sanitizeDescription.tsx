@@ -4,12 +4,12 @@ import parse, { DOMNode, domToReact, Element } from "html-react-parser";
 import { ReactNode } from "react";
 
 /**
- * Subsonic album descriptions may contain simple markup (e.g. links to
- * artist/album pages). Only allow <a href> and strip everything else to
+ * Subsonic album/artist descriptions may contain simple markup (e.g. links
+ * to artist/album pages). Only allow <a href> and strip everything else to
  * avoid rendering unsafe HTML, then parse the sanitized string into real
  * React elements so <a> can be rendered as MUI's Link.
  */
-export const sanitizeAlbumDescription = (description: string): ReactNode => {
+export const sanitizeDescription = (description: string): ReactNode => {
     const sanitizedDescription = description
         ? DOMPurify.sanitize(description, {
               ALLOWED_TAGS: ["a"],

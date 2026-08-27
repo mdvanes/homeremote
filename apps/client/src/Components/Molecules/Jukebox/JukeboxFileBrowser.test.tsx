@@ -1,4 +1,8 @@
-import { AlbumInfoResponse, BrowseResponse } from "@homeremote/types";
+import {
+    AlbumInfoResponse,
+    ArtistInfoResponse,
+    BrowseResponse,
+} from "@homeremote/types";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { FC, ReactNode, useState } from "react";
 import { emptyApi } from "../../../Services/emptyApi";
@@ -87,6 +91,14 @@ describe("JukeboxFileBrowser", () => {
                     } as AlbumInfoResponse)
                 );
             }
+            if (req.url.includes("/artistinfo/artist1")) {
+                return Promise.resolve(
+                    JSON.stringify({
+                        status: "received",
+                        description: "Some artist biography",
+                    } as ArtistInfoResponse)
+                );
+            }
             return Promise.resolve(JSON.stringify({ status: "error" }));
         });
     });
@@ -98,6 +110,7 @@ describe("JukeboxFileBrowser", () => {
         fireEvent.click(artistLink);
 
         const albumCard = await screen.findByText("SomeAlbum");
+        await screen.findByText("Some artist biography");
         fireEvent.click(albumCard);
 
         await screen.findByText("SomeAlbum", { selector: "h6" });

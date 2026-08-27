@@ -29,8 +29,9 @@ interface JukeboxFileBrowserProps {
  *
  * At each level below the artist, the fetched directory's children are
  * either all sub-directories (further albums, or e.g. multi-disc folders)
- * or all songs: dirs render as a horizontal, wrapping card grid; songs
- * render as a list next to the album's cover art/description sidebar.
+ * or all songs: dirs render as a horizontal, wrapping card grid (with an
+ * artist biography below it at the top level, i.e. an artist's albums);
+ * songs render as a list next to the album's cover art/description sidebar.
  */
 const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
     const { setCurrentPlaylist, setCurrentSong } = useJukeboxPlaybackContext();
@@ -124,6 +125,7 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
                 <JukeboxDirCardList
                     items={data.items}
                     onSelect={handleOpenDir}
+                    artistId={path.length === 1 ? currentDir.id : undefined}
                 />
             )}
 

@@ -10,7 +10,7 @@ import {
 import { FC } from "react";
 import { useGetAlbumInfoQuery } from "../../../Services/jukeboxApi";
 import { formatPlaybackTime } from "../MusicBar/useJukeboxPlaybackTime";
-import { sanitizeAlbumDescription } from "./sanitizeAlbumDescription";
+import { sanitizeDescription } from "./sanitizeDescription";
 
 const COVER_SIZE = 200;
 
@@ -36,7 +36,7 @@ const JukeboxAlbumDetail: FC<JukeboxAlbumDetailProps> = ({
     const artist = songs.find((song) => song.artist)?.artist;
     const description =
         albumInfo?.status === "received" ? albumInfo.description : "";
-    const parsedDescription = sanitizeAlbumDescription(description);
+    const parsedDescription = sanitizeDescription(description);
 
     return (
         <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
