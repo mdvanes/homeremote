@@ -28,8 +28,23 @@ const JukeboxDirCardList: FC<JukeboxDirCardListProps> = ({
     return (
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             {items.map((item) => (
-                <Card key={item.id} sx={{ width: CARD_WIDTH }}>
-                    <CardActionArea onClick={() => onSelect(item)}>
+                <Card
+                    key={item.id}
+                    sx={{
+                        width: CARD_WIDTH,
+                        display: "flex",
+                        flexDirection: "column",
+                    }}
+                >
+                    <CardActionArea
+                        onClick={() => onSelect(item)}
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "stretch",
+                            height: "100%",
+                        }}
+                    >
                         <CardMedia
                             component="img"
                             height={CARD_WIDTH}
@@ -42,11 +57,17 @@ const JukeboxDirCardList: FC<JukeboxDirCardListProps> = ({
                             )}`}
                             alt={item.title}
                         />
-                        <Box sx={{ p: 1 }}>
+                        <Box sx={{ p: 1, flex: 1 }}>
                             <Typography
                                 variant="body2"
-                                noWrap
                                 title={item.title}
+                                sx={{
+                                    display: "-webkit-box",
+                                    WebkitBoxOrient: "vertical",
+                                    WebkitLineClamp: 2,
+                                    overflow: "hidden",
+                                    wordBreak: "break-word",
+                                }}
                             >
                                 {item.title}
                             </Typography>

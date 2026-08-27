@@ -50,14 +50,22 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
         if (!currentDir) {
             return;
         }
+        // A song's own `artist` field isn't always populated by Subsonic;
+        // fall back to any sibling song in the same album that has one.
+        const albumArtist =
+            item.artist ||
+            (data?.status === "received"
+                ? data.items.find((sibling) => sibling.artist)?.artist
+                : undefined);
         const playlist: IPlaylist = {
             id: currentDir.id,
             name: currentDir.title,
             type: "album",
+            artist: albumArtist || undefined,
         };
         const song: ISong = {
             id: item.id,
-            artist: item.artist || "",
+            artist: albumArtist || "",
             title: item.title,
             duration: item.duration || 0,
             album: item.album,
