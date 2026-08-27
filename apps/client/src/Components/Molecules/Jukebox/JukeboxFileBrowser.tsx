@@ -4,11 +4,19 @@ import {
     MusicNote as MusicNoteIcon,
 } from "@mui/icons-material";
 import {
+    Avatar,
     Box,
     Breadcrumbs,
+    Button,
+    Card,
+    CardActionArea,
+    CardActions,
+    CardContent,
+    CardMedia,
     Link,
     List,
     ListItem,
+    ListItemAvatar,
     ListItemButton,
     ListItemIcon,
     ListItemText,
@@ -116,6 +124,47 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
                 />
             )}
 
+            {data?.status === "received" &&
+                path.length > 0 &&
+                data.items.map((item) => (
+                    <Card sx={{ maxWidth: 345 }}>
+                        <CardActionArea>
+                            <CardMedia
+                                component="img"
+                                // height="140"
+                                image={`${
+                                    process.env.NX_PUBLIC_BASE_URL
+                                }/api/jukebox/coverart/${item.id}?type=album&hash=${encodeURIComponent(
+                                    item.title ?? ""
+                                )}`}
+                                alt="green iguana"
+                            />
+                            <CardContent>
+                                <Typography
+                                    gutterBottom
+                                    variant="h5"
+                                    component="div"
+                                >
+                                    Lizard
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    sx={{ color: "text.secondary" }}
+                                >
+                                    Lizards are a widespread group of squamate
+                                    reptiles, with over 6,000 species, ranging
+                                    across all continents except Antarctica
+                                </Typography>
+                            </CardContent>
+                        </CardActionArea>
+                        <CardActions>
+                            <Button size="small" color="primary">
+                                Share
+                            </Button>
+                        </CardActions>
+                    </Card>
+                ))}
+
             {data?.status === "received" && path.length > 0 && (
                 <List>
                     {data.items.map((item) => (
@@ -127,6 +176,18 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
                                         : handlePlaySong(item)
                                 }
                             >
+                                {item.isDir && (
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            src={`${
+                                                process.env.NX_PUBLIC_BASE_URL
+                                            }/api/jukebox/coverart/${item.id}?type=album&hash=${encodeURIComponent(
+                                                item.title ?? ""
+                                            )}`}
+                                            // src="https://via.placeholder.com/40"
+                                        />
+                                    </ListItemAvatar>
+                                )}
                                 <ListItemIcon>
                                     {item.isDir ? (
                                         <FolderIcon />

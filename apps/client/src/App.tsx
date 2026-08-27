@@ -104,7 +104,7 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                         />
                                         <Route
                                             path="/music"
-                                            element={<UrlToMusic />}
+                                            element={<JukeboxPage />}
                                         />
                                         <Route
                                             path="/gears"
@@ -141,10 +141,6 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                         <Route
                                             path="/energy"
                                             element={<Energy />}
-                                        />
-                                        <Route
-                                            path="/jukebox"
-                                            element={<JukeboxPage />}
                                         />
                                         <Route
                                             path="/about"
