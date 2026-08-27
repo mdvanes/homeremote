@@ -174,6 +174,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/rest/getArtistInfo2": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get extra info about an artist (e.g. biography), by the ID3 tag based artist id */
+        get: operations["getArtistInfo2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/rest/updatePlaylist": {
         parameters: {
             query?: never;
@@ -302,6 +319,15 @@ export interface components {
         GetAlbumInfo2Response: components["schemas"]["SubsonicResponseEnvelope"] & {
             "subsonic-response"?: {
                 albumInfo?: components["schemas"]["AlbumInfo"];
+            };
+        };
+        /** @description Extra info about an artist, e.g. biography */
+        ArtistInfo: {
+            biography?: string;
+        };
+        GetArtistInfo2Response: components["schemas"]["SubsonicResponseEnvelope"] & {
+            "subsonic-response"?: {
+                artistInfo2?: components["schemas"]["ArtistInfo"];
             };
         };
         GetStarredResponse: components["schemas"]["SubsonicResponseEnvelope"] & {
@@ -541,6 +567,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetAlbumInfo2Response"];
+                };
+            };
+        };
+    };
+    getArtistInfo2: {
+        parameters: {
+            query: {
+                /** @description Artist identifier */
+                id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetArtistInfo2Response"];
                 };
             };
         };

@@ -181,3 +181,12 @@ export type AlbumInfoResponse =
     | {
           status: "error";
       };
+
+export type ArtistInfoResponse =
+    | {
+          status: "received";
+          description: string;
+      }
+    | {
+          status: "error";
+      };
