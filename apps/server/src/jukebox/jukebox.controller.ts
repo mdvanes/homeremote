@@ -1,6 +1,7 @@
 import {
     type AddSongArg,
     AddSongResponse,
+    AlbumInfoResponse,
     BrowseItem,
     BrowseResponse,
     IPlaylist,
@@ -11,6 +12,7 @@ import {
     SongDirItem,
     SongDirResponse,
     SubsonicAlbum,
+    SubsonicApiGetAlbumInfo2Response,
     SubsonicApiGetAlbumListResponse,
     SubsonicApiGetIndexesResponse,
     SubsonicGetMusicDirectoryResponse,
@@ -332,6 +334,29 @@ export class JukeboxController {
                 "failed to receive downstream data",
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("albuminfo/:id")
+    async getAlbumInfo(@Param("id") id: string): Promise<AlbumInfoResponse> {
+        this.logger.verbose(`GET to /api/jukebox/albuminfo/:id ${id}`);
+
+        try {
+            const url = this.getAPI("getAlbumInfo2", `&id=${id}`);
+            const response: SubsonicApiGetAlbumInfo2Response =
+                await got(url).json();
+
+            const description =
+                response["subsonic-response"]?.albumInfo?.notes || "";
+
+            return { status: "received", description };
+        } catch (err) {
+            // Not every album has info in Subsonic (e.g. self-hosted
+            // libraries without internet/LastFM lookups); degrade to an
+            // empty description instead of failing the whole page.
+            this.logger.warn(`failed to receive album info for ${id}: ${err}`);
+            return { status: "received", description: "" };
         }
     }
 

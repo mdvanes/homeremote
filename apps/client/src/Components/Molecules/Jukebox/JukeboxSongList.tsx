@@ -1,27 +1,19 @@
 import { IPlaylist, ISong, PlaylistArgs } from "@homeremote/types";
-import { ArrowBack as ArrowBackIcon } from "@mui/icons-material";
-import {
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-} from "@mui/material";
+import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { FC, RefObject } from "react";
 import { useGetPlaylistQuery } from "../../../Services/jukeboxApi";
+import { formatPlaybackTime } from "../MusicBar/useJukeboxPlaybackTime";
 import { LAST_SONG } from "./JukeboxPlayer";
 
 interface IJukeboxSongListProps {
     currentPlaylist: IPlaylist | undefined;
-    setCurrentPlaylist: (playlist: IPlaylist | undefined) => void;
     setCurrentSong: (song: ISong) => void;
     audioElemRef: RefObject<HTMLAudioElement | null>;
 }
 
 const JukeboxSongList: FC<IJukeboxSongListProps> = ({
     currentPlaylist,
-    setCurrentPlaylist,
     setCurrentSong,
     audioElemRef,
 }) => {
@@ -34,19 +26,6 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
         isFetching,
     } = useGetPlaylistQuery(playlistArgs);
 
-    const backButton = (
-        <ListItemButton
-            onClick={() => {
-                setCurrentPlaylist(undefined);
-            }}
-        >
-            <ListItemIcon>
-                <ArrowBackIcon />
-            </ListItemIcon>
-            <ListItemText>back</ListItemText>
-        </ListItemButton>
-    );
-
     if (!currentPlaylist?.id) {
         return null;
     }
@@ -54,7 +33,6 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
     if (playlist?.status !== "received") {
         return (
             <List>
-                {backButton}
                 <ListItem>empty</ListItem>
             </List>
         );
@@ -66,16 +44,6 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
 
     return (
         <List>
-            <ListItemButton
-                onClick={() => {
-                    setCurrentPlaylist(undefined);
-                }}
-            >
-                <ListItemIcon>
-                    <ArrowBackIcon />
-                </ListItemIcon>
-                <ListItemText>back</ListItemText>
-            </ListItemButton>
             {playlist?.songs.map((song) => (
                 <ListItemButton
                     key={song.id}
@@ -97,9 +65,11 @@ const JukeboxSongList: FC<IJukeboxSongListProps> = ({
                                   `${song.track}. ${song.title}`
                                 : `${song.artist} - ${song.title}`
                         }
-                    >
-                        {song.artist} - {song.title}
-                    </ListItemText>
+                    />
+                    <ListItemText
+                        sx={{ flex: "0 0 auto", textAlign: "right", pl: 1 }}
+                        primary={formatPlaybackTime(song.duration)}
+                    />
                 </ListItemButton>
             ))}
         </List>

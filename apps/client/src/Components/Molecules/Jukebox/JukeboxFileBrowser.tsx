@@ -1,32 +1,12 @@
 import { BrowseItem, IPlaylist, ISong } from "@homeremote/types";
-import {
-    Folder as FolderIcon,
-    MusicNote as MusicNoteIcon,
-} from "@mui/icons-material";
-import {
-    Avatar,
-    Box,
-    Breadcrumbs,
-    Button,
-    Card,
-    CardActionArea,
-    CardActions,
-    CardContent,
-    CardMedia,
-    Link,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Typography,
-} from "@mui/material";
+import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 import { useGetBrowseQuery } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
+import JukeboxAlbumDetail from "./JukeboxAlbumDetail";
 import JukeboxArtistList from "./JukeboxArtistList";
+import JukeboxDirCardList from "./JukeboxDirCardList";
 import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
 
 export interface PathEntry {
@@ -46,6 +26,11 @@ interface JukeboxFileBrowserProps {
  * MusicBar reads from, so it keeps playing across navigation. The current
  * path is controlled by JukeboxPage so the Recently added/Favorites tabs can
  * also navigate here (open an album's songs).
+ *
+ * At each level below the artist, the fetched directory's children are
+ * either all sub-directories (further albums, or e.g. multi-disc folders)
+ * or all songs: dirs render as a horizontal, wrapping card grid; songs
+ * render as a list next to the album's cover art/description sidebar.
  */
 const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
     const { setCurrentPlaylist, setCurrentSong } = useJukeboxPlaybackContext();
@@ -89,6 +74,9 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
         }, 100);
     };
 
+    const isSongLevel =
+        data?.status === "received" && data.items.some((item) => !item.isDir);
+
     return (
         <Box>
             <Breadcrumbs sx={{ mb: 1 }}>
@@ -124,91 +112,20 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
                 />
             )}
 
-            {data?.status === "received" &&
-                path.length > 0 &&
-                data.items.map((item) => (
-                    <Card sx={{ maxWidth: 345 }}>
-                        <CardActionArea>
-                            <CardMedia
-                                component="img"
-                                // height="140"
-                                image={`${
-                                    process.env.NX_PUBLIC_BASE_URL
-                                }/api/jukebox/coverart/${item.id}?type=album&hash=${encodeURIComponent(
-                                    item.title ?? ""
-                                )}`}
-                                alt="green iguana"
-                            />
-                            <CardContent>
-                                <Typography
-                                    gutterBottom
-                                    variant="h5"
-                                    component="div"
-                                >
-                                    Lizard
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    sx={{ color: "text.secondary" }}
-                                >
-                                    Lizards are a widespread group of squamate
-                                    reptiles, with over 6,000 species, ranging
-                                    across all continents except Antarctica
-                                </Typography>
-                            </CardContent>
-                        </CardActionArea>
-                        <CardActions>
-                            <Button size="small" color="primary">
-                                Share
-                            </Button>
-                        </CardActions>
-                    </Card>
-                ))}
+            {data?.status === "received" && path.length > 0 && !isSongLevel && (
+                <JukeboxDirCardList
+                    items={data.items}
+                    onSelect={handleOpenDir}
+                />
+            )}
 
-            {data?.status === "received" && path.length > 0 && (
-                <List>
-                    {data.items.map((item) => (
-                        <ListItem key={item.id} disableGutters disablePadding>
-                            <ListItemButton
-                                onClick={() =>
-                                    item.isDir
-                                        ? handleOpenDir(item)
-                                        : handlePlaySong(item)
-                                }
-                            >
-                                {item.isDir && (
-                                    <ListItemAvatar>
-                                        <Avatar
-                                            src={`${
-                                                process.env.NX_PUBLIC_BASE_URL
-                                            }/api/jukebox/coverart/${item.id}?type=album&hash=${encodeURIComponent(
-                                                item.title ?? ""
-                                            )}`}
-                                            // src="https://via.placeholder.com/40"
-                                        />
-                                    </ListItemAvatar>
-                                )}
-                                <ListItemIcon>
-                                    {item.isDir ? (
-                                        <FolderIcon />
-                                    ) : (
-                                        <MusicNoteIcon />
-                                    )}
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={
-                                        !item.isDir && item.track
-                                            ? `${item.track}. ${item.title}`
-                                            : item.title
-                                    }
-                                    secondary={
-                                        item.isDir ? undefined : item.artist
-                                    }
-                                />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
+            {data?.status === "received" && path.length > 0 && isSongLevel && (
+                <JukeboxAlbumDetail
+                    albumId={currentDir.id}
+                    albumName={currentDir.title}
+                    songs={data.items}
+                    onPlaySong={handlePlaySong}
+                />
             )}
 
             {data?.status === "error" && (

@@ -1,6 +1,7 @@
 import {
     AddSongArg,
     AddSongResponse,
+    AlbumInfoResponse,
     BrowseResponse,
     PlaylistArgs,
     PlaylistResponse,
@@ -18,7 +19,15 @@ export const jukeboxApi = createApi({
         baseUrl: `${process.env.NX_PUBLIC_BASE_URL}/api/jukebox`,
         credentials: willAddCredentials(),
     }),
-    tagTypes: ["Playlists", "Songs", "Songdir", "Starred", "Browse", "Recent"],
+    tagTypes: [
+        "Playlists",
+        "Songs",
+        "Songdir",
+        "Starred",
+        "Browse",
+        "Recent",
+        "AlbumInfo",
+    ],
     endpoints: (builder) => ({
         getPlaylists: builder.query<PlaylistsResponse, undefined>({
             query: () => "/playlists",
@@ -76,6 +85,10 @@ export const jukeboxApi = createApi({
             },
             providesTags: ["Starred"],
         }),
+        getAlbumInfo: builder.query<AlbumInfoResponse, string>({
+            query: (id) => `/albuminfo/${id}`,
+            providesTags: ["AlbumInfo"],
+        }),
     }),
 });
 
@@ -87,4 +100,5 @@ export const {
     useGetBrowseQuery,
     useGetRecentAlbumsQuery,
     useGetFavoritesQuery,
+    useGetAlbumInfoQuery,
 } = jukeboxApi;

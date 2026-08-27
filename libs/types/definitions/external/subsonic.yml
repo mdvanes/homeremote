@@ -159,6 +159,26 @@ paths:
                             schema:
                                 type: string
                                 format: binary
+    /rest/getAlbumInfo2:
+        get:
+            tags:
+                - subsonic
+            summary: Get extra info about an album (e.g. description notes)
+            operationId: getAlbumInfo2
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Album identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetAlbumInfo2Response"
     /rest/updatePlaylist:
         get:
             tags:
@@ -382,6 +402,32 @@ components:
                           properties:
                               playlist:
                                   $ref: "#/components/schemas/Playlist"
+        AlbumInfo:
+            type: object
+            description: Extra info about an album, e.g. notes/description
+            properties:
+                notes:
+                    type: string
+                musicBrainzId:
+                    type: string
+                lastFmUrl:
+                    type: string
+                smallImageUrl:
+                    type: string
+                mediumImageUrl:
+                    type: string
+                largeImageUrl:
+                    type: string
+        GetAlbumInfo2Response:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              albumInfo:
+                                  $ref: "#/components/schemas/AlbumInfo"
         GetStarredResponse:
             allOf:
                 - $ref: "#/components/schemas/SubsonicResponseEnvelope"

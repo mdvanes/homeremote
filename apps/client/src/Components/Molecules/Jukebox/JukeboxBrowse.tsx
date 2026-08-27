@@ -4,20 +4,12 @@ import {
     Avatar,
     Box,
     IconButton,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemButton,
-    ListItemText,
     Popover,
     Tooltip,
     Typography,
 } from "@mui/material";
 import { FC, RefObject, useState } from "react";
-import { useGetPlaylistsQuery } from "../../../Services/jukeboxApi";
 import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
-import { AddSongToPlaylistButton } from "./AddSongToPlaylistButton";
-import { LAST_PLAYLIST } from "./JukeboxPlayer";
 import JukeboxSongList from "./JukeboxSongList";
 
 interface JukeboxBrowseProps {
@@ -25,17 +17,17 @@ interface JukeboxBrowseProps {
 }
 
 /**
- * Compact "browse" entry point for the jukebox: a single icon button that opens
- * a popover with the playlist browser and song list, so it no longer occupies
- * space in the bottom bar. Favorite/starred albums are not shown here anymore
- * (they moved to the /jukebox page's Favorites tab) - only real playlists.
+ * Compact "current playlist" entry point for the MusicBar: a single icon
+ * button that opens a popover showing the songs of the currently playing
+ * playlist/album (with its avatar, name and artist), so it no longer
+ * occupies space in the bottom bar. Selecting a different playlist/album
+ * happens on the /jukebox page; this popover is read-only over whatever is
+ * already playing.
  */
 const JukeboxBrowse: FC<JukeboxBrowseProps> = ({ audioElemRef }) => {
-    const { currentPlaylist, setCurrentPlaylist, setCurrentSong } =
-        useJukeboxPlaybackContext();
+    const { currentPlaylist, setCurrentSong } = useJukeboxPlaybackContext();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const { data } = useGetPlaylistsQuery(undefined);
 
     const handleSelectSong = (song: ISong) => {
         setCurrentSong(song);
@@ -44,9 +36,9 @@ const JukeboxBrowse: FC<JukeboxBrowseProps> = ({ audioElemRef }) => {
 
     return (
         <>
-            <Tooltip title="Browse playlists">
+            <Tooltip title="Current playlist songs">
                 <IconButton
-                    aria-label="Browse playlists"
+                    aria-label="Current playlist songs"
                     onClick={(e) => setAnchorEl(e.currentTarget)}
                 >
                     <QueueMusicIcon />
@@ -61,87 +53,57 @@ const JukeboxBrowse: FC<JukeboxBrowseProps> = ({ audioElemRef }) => {
                 disableScrollLock
             >
                 <Box sx={{ width: 360, maxHeight: 440, overflowY: "auto" }}>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            px: 1,
-                            pt: 1,
-                        }}
-                    >
-                        <Typography variant="subtitle2">Browse</Typography>
-                        <Tooltip title="Add current song to a playlist">
-                            <span>
-                                <AddSongToPlaylistButton />
-                            </span>
-                        </Tooltip>
-                    </Box>
-
-                    {data?.status !== "received" ? (
-                        <Box sx={{ p: 2 }}>
-                            <Typography variant="body2" color="text.secondary">
-                                Loading…
-                            </Typography>
+                    {currentPlaylist ? (
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1.5,
+                                px: 1.5,
+                                pt: 1.5,
+                                pb: 1,
+                            }}
+                        >
+                            <Avatar
+                                variant="rounded"
+                                src={`${
+                                    process.env.NX_PUBLIC_BASE_URL
+                                }/api/jukebox/coverart/${
+                                    currentPlaylist.id
+                                }?type=${
+                                    currentPlaylist.type
+                                }&hash=${encodeURIComponent(
+                                    currentPlaylist.name
+                                )}`}
+                            />
+                            <Box sx={{ minWidth: 0 }}>
+                                <Typography variant="subtitle2" noWrap>
+                                    {currentPlaylist.name}
+                                </Typography>
+                                {currentPlaylist.artist && (
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        noWrap
+                                    >
+                                        {currentPlaylist.artist}
+                                    </Typography>
+                                )}
+                            </Box>
                         </Box>
                     ) : (
-                        <>
-                            {!currentPlaylist && (
-                                <List>
-                                    {data.playlists
-                                        .filter(
-                                            (playlist) =>
-                                                playlist.type !== "album"
-                                        )
-                                        .map((playlist) => {
-                                            const { id, name, type } = playlist;
-                                            return (
-                                                <ListItem
-                                                    key={id}
-                                                    disableGutters
-                                                    disablePadding
-                                                >
-                                                    <ListItemButton
-                                                        onClick={() => {
-                                                            setCurrentPlaylist(
-                                                                playlist
-                                                            );
-                                                            localStorage.setItem(
-                                                                LAST_PLAYLIST,
-                                                                JSON.stringify(
-                                                                    playlist
-                                                                )
-                                                            );
-                                                        }}
-                                                    >
-                                                        <ListItemAvatar>
-                                                            <Avatar
-                                                                src={`${
-                                                                    process.env
-                                                                        .NX_PUBLIC_BASE_URL
-                                                                }/api/jukebox/coverart/${id}?type=${type}&hash=${encodeURIComponent(
-                                                                    name
-                                                                )}`}
-                                                            />
-                                                        </ListItemAvatar>
-                                                        <ListItemText
-                                                            primary={name}
-                                                        />
-                                                    </ListItemButton>
-                                                </ListItem>
-                                            );
-                                        })}
-                                </List>
-                            )}
-
-                            <JukeboxSongList
-                                audioElemRef={audioElemRef}
-                                currentPlaylist={currentPlaylist}
-                                setCurrentPlaylist={setCurrentPlaylist}
-                                setCurrentSong={handleSelectSong}
-                            />
-                        </>
+                        <Box sx={{ p: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
+                                Nothing playing yet
+                            </Typography>
+                        </Box>
                     )}
+
+                    <JukeboxSongList
+                        audioElemRef={audioElemRef}
+                        currentPlaylist={currentPlaylist}
+                        setCurrentSong={handleSelectSong}
+                    />
                 </Box>
             </Popover>
         </>

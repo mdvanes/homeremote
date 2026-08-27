@@ -10,3 +10,6 @@ export type SubsonicApiGetMusicDirectoryResponse =
     components["schemas"]["GetMusicDirectoryResponse"];
 export type SubsonicApiGetAlbumListResponse =
     components["schemas"]["GetAlbumListResponse"];
+export type SubsonicApiAlbumInfo = components["schemas"]["AlbumInfo"];
+export type SubsonicApiGetAlbumInfo2Response =
+    components["schemas"]["GetAlbumInfo2Response"];
