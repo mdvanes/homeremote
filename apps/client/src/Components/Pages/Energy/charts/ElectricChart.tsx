@@ -1,5 +1,6 @@
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { Button, Chip, IconButton, Stack } from "@mui/material";
+import { lighten } from "@mui/material/styles";
 import { FC, useState } from "react";
 import { useGetElectricQuery } from "../../../../Services/generated/energyUsageApiWithRetry";
 import EnergyChart, {
@@ -16,6 +17,17 @@ const COLORS = [
     "#ff0021",
     "#00ffa5",
 ];
+
+// The electricity meter device was replaced once, so sensors are configured
+// in old/new pairs per tariff group (old,new,old,new,...). The old device's
+// series is rendered in a lightened shade of its tariff group color, the new
+// (current) device keeps the full color.
+const colorForSensorIndex = (i: number) => {
+    const groupIndex = Math.floor(i / 2);
+    const isOldGeneration = i % 2 === 0;
+    const baseColor = COLORS[groupIndex] ?? COLORS[COLORS.length - 1];
+    return isOldGeneration ? lighten(baseColor, 0.5) : baseColor;
+};
 
 export const ElectricChart: FC = () => {
     const [mode, setMode] = useState<"day" | "month">("day");
@@ -50,9 +62,9 @@ export const ElectricChart: FC = () => {
     }, {});
     const entries = Object.values(entriesByTimestamp);
 
-    const lines = sensors.slice(0, 4).map((sensor, i) => ({
+    const lines = sensors.slice(0, 8).map((sensor, i) => ({
         dataKey: sensor.attributes?.friendly_name ?? sensor?.entity_id,
-        stroke: COLORS[i],
+        stroke: colorForSensorIndex(i),
         unit: "kWh",
     }));
 
@@ -61,8 +73,10 @@ export const ElectricChart: FC = () => {
             <Stack
                 direction="row"
                 spacing={1}
+                useFlexGap
                 sx={{
                     marginBottom: 1,
+                    flexWrap: "wrap",
                 }}
             >
                 <Button
@@ -94,7 +108,7 @@ export const ElectricChart: FC = () => {
                         key={sensor.entity_id}
                         label={sensor.attributes?.friendly_name}
                         style={{
-                            color: COLORS[i],
+                            color: colorForSensorIndex(i),
                         }}
                     />
                 ))}

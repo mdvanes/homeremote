@@ -1,3 +1,4 @@
+import { lighten } from "@mui/material/styles";
 import { FC, useState } from "react";
 import { BarProps } from "recharts";
 import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApiWithRetry";
@@ -9,7 +10,18 @@ import EnergyChart, {
 } from "../EnergyChart/EnergyChart";
 import { RangeButtons } from "./RangeButtons";
 
-const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
+const temperatureLineColors = ["#66bb6a", "#ff9100"];
+
+// The gas meter device was replaced twice, so up to 3 sensors (oldest to
+// newest) are aggregated into one continuous bar (shared stackId below).
+// Each generation gets its own shade of the current gas bar color, oldest
+// being lightest.
+const gasBarBaseColor = "#2d6196";
+const gasBarColors = [
+    lighten(gasBarBaseColor, 0.6),
+    lighten(gasBarBaseColor, 0.3),
+    gasBarBaseColor,
+];
 
 const UPDATE_INTERVAL_MS = 60 * 60 * 1000; // 1 x per hour
 
@@ -69,7 +81,8 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         .map((sensor, i) => ({
             dataKey:
                 sensor.attributes?.friendly_name ?? sensor.entity_id ?? "gas",
-            fill: temperatureLineColors[i + lines.length],
+            fill: gasBarColors[i] ?? gasBarColors[gasBarColors.length - 1],
+            stackId: "gas",
             unit: "m³",
         }));
 
