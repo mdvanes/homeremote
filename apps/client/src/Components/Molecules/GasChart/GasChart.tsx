@@ -1,9 +1,8 @@
-import { Box } from "@mui/material";
 import { FC, useState } from "react";
 import { BarProps } from "recharts";
 import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApiWithRetry";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import EnergyChart, {
     SensorItem,
     axisDateTimeFormatDay,
@@ -34,17 +33,6 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
             pollingInterval: UPDATE_INTERVAL_MS,
         }
     );
-
-    if (!gasTemperatureResponse) {
-        return (
-            <CardStatus
-                name="Gas & temperatures"
-                isError={isError}
-                isStale={false}
-                retry={retry}
-            />
-        );
-    }
 
     const sensors =
         gasTemperatureResponse?.flatMap((sensor) => sensor[0]) ?? [];
@@ -89,41 +77,42 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         <>
             {isBig && <RangeButtons range={range} setRange={setRange} />}
 
-            <CardStatus
-                name="Gas & temperatures"
-                isError={isError}
+            <EnergyChart
+                data={entries}
+                config={{
+                    lines,
+                    bars,
+                    leftYAxis: {
+                        // unit: "m3",
+                        domain: [0, "auto"],
+                    },
+                    rightYAxis: {
+                        unit: "°",
+                        domain: [0, "auto"],
+                    },
+                    xAxis: {
+                        type: "category",
+                    },
+                    axisDateTimeFormat:
+                        range === "day" ? undefined : axisDateTimeFormatDay,
+                    hideBrush: !isBig,
+                    hideToggleDots: !isBig,
+                    aspect: isBig ? undefined : 2,
+                    moreLink: isBig ? undefined : "/energy?tab=2",
+                }}
+                isLoading={isLoading || isFetching}
                 isStale={isStale}
-                retry={retry}
-                lastUpdated={lastUpdated}
+                statusBar={
+                    <CardStatusBar
+                        isLoading={(isLoading || isFetching) && !isError}
+                        name="Gas & temperatures"
+                        isError={isError}
+                        isStale={isStale}
+                        retry={retry}
+                        lastUpdated={lastUpdated}
+                    />
+                }
             />
-
-            <Box sx={{ ...staleContentSx(isStale), marginBottom: 2 }}>
-                <EnergyChart
-                    data={entries}
-                    config={{
-                        lines,
-                        bars,
-                        leftYAxis: {
-                            // unit: "m3",
-                            domain: [0, "auto"],
-                        },
-                        rightYAxis: {
-                            unit: "°",
-                            domain: [0, "auto"],
-                        },
-                        xAxis: {
-                            type: "category",
-                        },
-                        axisDateTimeFormat:
-                            range === "day" ? undefined : axisDateTimeFormatDay,
-                        hideBrush: !isBig,
-                        hideToggleDots: !isBig,
-                        aspect: isBig ? undefined : 2,
-                        moreLink: isBig ? undefined : "/energy?tab=2",
-                    }}
-                    isLoading={isLoading || isFetching}
-                />
-            </Box>
         </>
     );
 };
