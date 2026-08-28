@@ -74,7 +74,7 @@ const JukeboxAlbumList: FC<JukeboxAlbumListProps> = ({
                                 )}`}
                             />
                         </ListItemAvatar>
-                        <ListItemText primary={name} />
+                        <ListItemText primary={name} secondary={artist} />
                     </ListItemButton>
                 </ListItem>
             ))}

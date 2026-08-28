@@ -159,6 +159,71 @@ paths:
                             schema:
                                 type: string
                                 format: binary
+    /rest/getAlbumInfo:
+        get:
+            tags:
+                - subsonic
+            summary: >-
+                Get extra info about an album (e.g. description notes), by
+                the id-based (music directory/folder) id used when browsing
+                the file system rather than the ID3 tag based id
+            operationId: getAlbumInfo
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Album (directory) identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetAlbumInfo2Response"
+    /rest/getAlbumInfo2:
+        get:
+            tags:
+                - subsonic
+            summary: >-
+                Get extra info about an album (e.g. description notes), by
+                the ID3 tag based album id
+            operationId: getAlbumInfo2
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Album identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetAlbumInfo2Response"
+    /rest/getArtistInfo2:
+        get:
+            tags:
+                - subsonic
+            summary: Get extra info about an artist (e.g. biography), by the ID3 tag based artist id
+            operationId: getArtistInfo2
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Artist identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetArtistInfo2Response"
     /rest/updatePlaylist:
         get:
             tags:
@@ -382,6 +447,48 @@ components:
                           properties:
                               playlist:
                                   $ref: "#/components/schemas/Playlist"
+        AlbumInfo:
+            type: object
+            description: Extra info about an album, e.g. notes/description
+            properties:
+                notes:
+                    type: string
+                musicBrainzId:
+                    type: string
+                lastFmUrl:
+                    type: string
+                smallImageUrl:
+                    type: string
+                mediumImageUrl:
+                    type: string
+                largeImageUrl:
+                    type: string
+        GetAlbumInfo2Response:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              albumInfo:
+                                  $ref: "#/components/schemas/AlbumInfo"
+        ArtistInfo:
+            type: object
+            description: Extra info about an artist, e.g. biography
+            properties:
+                biography:
+                    type: string
+        GetArtistInfo2Response:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              artistInfo2:
+                                  $ref: "#/components/schemas/ArtistInfo"
         GetStarredResponse:
             allOf:
                 - $ref: "#/components/schemas/SubsonicResponseEnvelope"

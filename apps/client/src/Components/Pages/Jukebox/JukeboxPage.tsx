@@ -1,6 +1,7 @@
-import { Card, CardContent, Tab, Tabs } from "@mui/material";
+import { Box, Card, Tab, Tabs, Tooltip } from "@mui/material";
 import { Dispatch, FC, SetStateAction, SyntheticEvent } from "react";
 import { useSearchParams } from "react-router";
+import { AddSongToPlaylistButton } from "../../Molecules/Jukebox/AddSongToPlaylistButton";
 import JukeboxFavorites from "../../Molecules/Jukebox/JukeboxFavorites";
 import JukeboxFileBrowser, {
     PathEntry,
@@ -8,6 +9,11 @@ import JukeboxFileBrowser, {
 import JukeboxRecent from "../../Molecules/Jukebox/JukeboxRecent";
 
 const TAB_COUNT = 3;
+
+// Approximate space taken up by the AppBar, page margins and the fixed
+// bottom MusicBar, so the page itself never needs to scroll - only the tab
+// content below the (always visible) Tabs row does.
+const JUKEBOX_PAGE_HEIGHT = "calc(100vh - 210px)";
 
 const parsePath = (raw: string | null): PathEntry[] => {
     if (!raw) {
@@ -89,13 +95,40 @@ const JukeboxPage: FC = () => {
     };
 
     return (
-        <Card>
-            <Tabs value={tab} onChange={handleChange}>
-                <Tab label="Browse" />
-                <Tab label="Recently added" />
-                <Tab label="Favorites" />
-            </Tabs>
-            <CardContent>
+        <Card
+            sx={{
+                height: JUKEBOX_PAGE_HEIGHT,
+                display: "flex",
+                flexDirection: "column",
+            }}
+        >
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flexShrink: 0,
+                }}
+            >
+                <Tabs value={tab} onChange={handleChange}>
+                    <Tab label="Browse" />
+                    <Tab label="Recently added" />
+                    <Tab label="Favorites" />
+                </Tabs>
+                <Tooltip title="Add current song to a playlist">
+                    <span>
+                        <AddSongToPlaylistButton />
+                    </span>
+                </Tooltip>
+            </Box>
+            <Box
+                sx={{
+                    flex: 1,
+                    minHeight: 0,
+                    overflowY: "auto",
+                    p: 2,
+                }}
+            >
                 {tab === 0 && (
                     <JukeboxFileBrowser path={path} setPath={setPath} />
                 )}
@@ -103,7 +136,7 @@ const JukeboxPage: FC = () => {
                 {tab === 2 && (
                     <JukeboxFavorites onSelectAlbum={navigateToAlbum} />
                 )}
-            </CardContent>
+            </Box>
         </Card>
     );
 };

@@ -72,7 +72,9 @@ describe("MusicBar", () => {
         expect(
             screen.getByLabelText("Choose radio station")
         ).toBeInTheDocument();
-        expect(screen.getByLabelText("Browse playlists")).toBeInTheDocument();
+        expect(
+            screen.getByLabelText("Current playlist songs")
+        ).toBeInTheDocument();
         expect(
             screen.getByLabelText("Previously played on radio")
         ).toBeInTheDocument();

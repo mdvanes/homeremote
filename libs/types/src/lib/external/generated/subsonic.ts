@@ -140,6 +140,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/rest/getAlbumInfo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get extra info about an album (e.g. description notes), by the id-based (music directory/folder) id used when browsing the file system rather than the ID3 tag based id */
+        get: operations["getAlbumInfo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rest/getAlbumInfo2": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get extra info about an album (e.g. description notes), by the ID3 tag based album id */
+        get: operations["getAlbumInfo2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rest/getArtistInfo2": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get extra info about an artist (e.g. biography), by the ID3 tag based artist id */
+        get: operations["getArtistInfo2"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/rest/updatePlaylist": {
         parameters: {
             query?: never;
@@ -254,6 +305,29 @@ export interface components {
         GetPlaylistResponse: components["schemas"]["SubsonicResponseEnvelope"] & {
             "subsonic-response"?: {
                 playlist?: components["schemas"]["Playlist"];
+            };
+        };
+        /** @description Extra info about an album, e.g. notes/description */
+        AlbumInfo: {
+            notes?: string;
+            musicBrainzId?: string;
+            lastFmUrl?: string;
+            smallImageUrl?: string;
+            mediumImageUrl?: string;
+            largeImageUrl?: string;
+        };
+        GetAlbumInfo2Response: components["schemas"]["SubsonicResponseEnvelope"] & {
+            "subsonic-response"?: {
+                albumInfo?: components["schemas"]["AlbumInfo"];
+            };
+        };
+        /** @description Extra info about an artist, e.g. biography */
+        ArtistInfo: {
+            biography?: string;
+        };
+        GetArtistInfo2Response: components["schemas"]["SubsonicResponseEnvelope"] & {
+            "subsonic-response"?: {
+                artistInfo2?: components["schemas"]["ArtistInfo"];
             };
         };
         GetStarredResponse: components["schemas"]["SubsonicResponseEnvelope"] & {
@@ -447,6 +521,75 @@ export interface operations {
                 };
                 content: {
                     "audio/*": string;
+                };
+            };
+        };
+    };
+    getAlbumInfo: {
+        parameters: {
+            query: {
+                /** @description Album (directory) identifier */
+                id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetAlbumInfo2Response"];
+                };
+            };
+        };
+    };
+    getAlbumInfo2: {
+        parameters: {
+            query: {
+                /** @description Album identifier */
+                id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetAlbumInfo2Response"];
+                };
+            };
+        };
+    };
+    getArtistInfo2: {
+        parameters: {
+            query: {
+                /** @description Artist identifier */
+                id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetArtistInfo2Response"];
                 };
             };
         };

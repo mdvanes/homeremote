@@ -1,24 +1,12 @@
 import { BrowseItem, IPlaylist, ISong } from "@homeremote/types";
-import {
-    Folder as FolderIcon,
-    MusicNote as MusicNoteIcon,
-} from "@mui/icons-material";
-import {
-    Box,
-    Breadcrumbs,
-    Link,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Typography,
-} from "@mui/material";
+import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
 import { Dispatch, FC, SetStateAction } from "react";
 import { useGetBrowseQuery } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
+import JukeboxAlbumDetail from "./JukeboxAlbumDetail";
 import JukeboxArtistList from "./JukeboxArtistList";
+import JukeboxDirCardList from "./JukeboxDirCardList";
 import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
 
 export interface PathEntry {
@@ -38,6 +26,12 @@ interface JukeboxFileBrowserProps {
  * MusicBar reads from, so it keeps playing across navigation. The current
  * path is controlled by JukeboxPage so the Recently added/Favorites tabs can
  * also navigate here (open an album's songs).
+ *
+ * At each level below the artist, the fetched directory's children are
+ * either all sub-directories (further albums, or e.g. multi-disc folders)
+ * or all songs: dirs render as a horizontal, wrapping card grid (with an
+ * artist biography below it at the top level, i.e. an artist's albums);
+ * songs render as a list next to the album's cover art/description sidebar.
  */
 const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
     const { setCurrentPlaylist, setCurrentSong } = useJukeboxPlaybackContext();
@@ -57,14 +51,22 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
         if (!currentDir) {
             return;
         }
+        // A song's own `artist` field isn't always populated by Subsonic;
+        // fall back to any sibling song in the same album that has one.
+        const albumArtist =
+            item.artist ||
+            (data?.status === "received"
+                ? data.items.find((sibling) => sibling.artist)?.artist
+                : undefined);
         const playlist: IPlaylist = {
             id: currentDir.id,
             name: currentDir.title,
             type: "album",
+            artist: albumArtist || undefined,
         };
         const song: ISong = {
             id: item.id,
-            artist: item.artist || "",
+            artist: albumArtist || "",
             title: item.title,
             duration: item.duration || 0,
             album: item.album,
@@ -80,6 +82,9 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
             playJukebox();
         }, 100);
     };
+
+    const isSongLevel =
+        data?.status === "received" && data.items.some((item) => !item.isDir);
 
     return (
         <Box>
@@ -116,38 +121,21 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
                 />
             )}
 
-            {data?.status === "received" && path.length > 0 && (
-                <List>
-                    {data.items.map((item) => (
-                        <ListItem key={item.id} disableGutters disablePadding>
-                            <ListItemButton
-                                onClick={() =>
-                                    item.isDir
-                                        ? handleOpenDir(item)
-                                        : handlePlaySong(item)
-                                }
-                            >
-                                <ListItemIcon>
-                                    {item.isDir ? (
-                                        <FolderIcon />
-                                    ) : (
-                                        <MusicNoteIcon />
-                                    )}
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={
-                                        !item.isDir && item.track
-                                            ? `${item.track}. ${item.title}`
-                                            : item.title
-                                    }
-                                    secondary={
-                                        item.isDir ? undefined : item.artist
-                                    }
-                                />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
+            {data?.status === "received" && path.length > 0 && !isSongLevel && (
+                <JukeboxDirCardList
+                    items={data.items}
+                    onSelect={handleOpenDir}
+                    artistId={path.length === 1 ? currentDir.id : undefined}
+                />
+            )}
+
+            {data?.status === "received" && path.length > 0 && isSongLevel && (
+                <JukeboxAlbumDetail
+                    albumId={currentDir.id}
+                    albumName={currentDir.title}
+                    songs={data.items}
+                    onPlaySong={handlePlaySong}
+                />
             )}
 
             {data?.status === "error" && (

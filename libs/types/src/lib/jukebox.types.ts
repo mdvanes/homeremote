@@ -172,3 +172,21 @@ export type RecentAlbumsResponse =
     | {
           status: "error";
       };
+
+export type AlbumInfoResponse =
+    | {
+          status: "received";
+          description: string;
+      }
+    | {
+          status: "error";
+      };
+
+export type ArtistInfoResponse =
+    | {
+          status: "received";
+          description: string;
+      }
+    | {
+          status: "error";
+      };
