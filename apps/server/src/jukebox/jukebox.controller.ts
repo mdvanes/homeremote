@@ -15,7 +15,7 @@ import {
     SubsonicAlbum,
     SubsonicApiGetAlbumInfo2Response,
     SubsonicApiGetAlbumListResponse,
-    SubsonicApiGetArtistInfo2Response,
+    SubsonicApiGetArtistInfoResponse,
     SubsonicApiGetIndexesResponse,
     SubsonicGetMusicDirectoryResponse,
     SubsonicGetStarredResponse,
@@ -368,12 +368,17 @@ export class JukeboxController {
         this.logger.verbose(`GET to /api/jukebox/artistinfo/:id ${id}`);
 
         try {
-            const url = this.getAPI("getArtistInfo2", `&id=${id}`);
-            const response: SubsonicApiGetArtistInfo2Response =
+            // Use the non-ID3 getArtistInfo (not getArtistInfo2): the Browse
+            // tab navigates via getIndexes/getMusicDirectory, which use
+            // file/folder based ids, not the ID3-tag artist ids that
+            // getArtistInfo2 expects. Passing a folder id to getArtistInfo2
+            // can resolve to an unrelated artist's biography.
+            const url = this.getAPI("getArtistInfo", `&id=${id}`);
+            const response: SubsonicApiGetArtistInfoResponse =
                 await got(url).json();
 
             const description =
-                response["subsonic-response"]?.artistInfo2?.biography || "";
+                response["subsonic-response"]?.artistInfo?.biography || "";
 
             return { status: "received", description };
         } catch (err) {

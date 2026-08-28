@@ -174,6 +174,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/rest/getArtistInfo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get extra info about an artist (e.g. biography), by the file/folder based artist id (matches getIndexes/ getMusicDirectory browsing) */
+        get: operations["getArtistInfo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/rest/getArtistInfo2": {
         parameters: {
             query?: never;
@@ -324,6 +341,11 @@ export interface components {
         /** @description Extra info about an artist, e.g. biography */
         ArtistInfo: {
             biography?: string;
+        };
+        GetArtistInfoResponse: components["schemas"]["SubsonicResponseEnvelope"] & {
+            "subsonic-response"?: {
+                artistInfo?: components["schemas"]["ArtistInfo"];
+            };
         };
         GetArtistInfo2Response: components["schemas"]["SubsonicResponseEnvelope"] & {
             "subsonic-response"?: {
@@ -567,6 +589,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetAlbumInfo2Response"];
+                };
+            };
+        };
+    };
+    getArtistInfo: {
+        parameters: {
+            query: {
+                /** @description Artist identifier */
+                id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetArtistInfoResponse"];
                 };
             };
         };

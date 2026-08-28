@@ -204,6 +204,29 @@ paths:
                         application/json:
                             schema:
                                 $ref: "#/components/schemas/GetAlbumInfo2Response"
+    /rest/getArtistInfo:
+        get:
+            tags:
+                - subsonic
+            summary: >-
+                Get extra info about an artist (e.g. biography), by the
+                file/folder based artist id (matches getIndexes/
+                getMusicDirectory browsing)
+            operationId: getArtistInfo
+            parameters:
+                - name: id
+                  in: query
+                  required: true
+                  description: Artist identifier
+                  schema:
+                      type: string
+            responses:
+                "200":
+                    description: Success
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GetArtistInfoResponse"
     /rest/getArtistInfo2:
         get:
             tags:
@@ -479,6 +502,16 @@ components:
             properties:
                 biography:
                     type: string
+        GetArtistInfoResponse:
+            allOf:
+                - $ref: "#/components/schemas/SubsonicResponseEnvelope"
+                - type: object
+                  properties:
+                      subsonic-response:
+                          type: object
+                          properties:
+                              artistInfo:
+                                  $ref: "#/components/schemas/ArtistInfo"
         GetArtistInfo2Response:
             allOf:
                 - $ref: "#/components/schemas/SubsonicResponseEnvelope"
