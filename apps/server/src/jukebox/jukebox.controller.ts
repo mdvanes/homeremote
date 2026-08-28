@@ -15,7 +15,7 @@ import {
     SubsonicAlbum,
     SubsonicApiGetAlbumInfo2Response,
     SubsonicApiGetAlbumListResponse,
-    SubsonicApiGetArtistInfo2Response,
+    SubsonicApiGetArtistInfoResponse,
     SubsonicApiGetIndexesResponse,
     SubsonicGetMusicDirectoryResponse,
     SubsonicGetStarredResponse,
@@ -368,12 +368,17 @@ export class JukeboxController {
         this.logger.verbose(`GET to /api/jukebox/artistinfo/:id ${id}`);
 
         try {
-            const url = this.getAPI("getArtistInfo2", `&id=${id}`);
-            const response: SubsonicApiGetArtistInfo2Response =
+            // Use the non-ID3 getArtistInfo (not getArtistInfo2): the Browse
+            // tab navigates via getIndexes/getMusicDirectory, which use
+            // file/folder based ids, not the ID3-tag artist ids that
+            // getArtistInfo2 expects. Passing a folder id to getArtistInfo2
+            // can resolve to an unrelated artist's biography.
+            const url = this.getAPI("getArtistInfo", `&id=${id}`);
+            const response: SubsonicApiGetArtistInfoResponse =
                 await got(url).json();
 
             const description =
-                response["subsonic-response"]?.artistInfo2?.biography || "";
+                response["subsonic-response"]?.artistInfo?.biography || "";
 
             return { status: "received", description };
         } catch (err) {
@@ -457,10 +462,20 @@ export class JukeboxController {
                 throw new NotFoundException(HttpStatus.NOT_FOUND);
             }
 
+            // No cover art available for this item (e.g. a disc/folder
+            // without its own artwork). The client renders a placeholder
+            // icon when this request 404s.
+            if (!coverArtId) {
+                throw new NotFoundException(HttpStatus.NOT_FOUND);
+            }
+
             const streamUrl = this.getAPI("getCoverArt", `&id=${coverArtId}`);
             const str = got.stream(streamUrl);
             return new StreamableFile(str);
         } catch (err) {
+            if (err instanceof HttpException) {
+                throw err;
+            }
             this.logger.error(err);
             throw new HttpException(
                 "failed to receive downstream data",

@@ -7,6 +7,7 @@ import UrlToMusic from "../UrlToMusic/UrlToMusic";
 import JukeboxProgressBar from "./JukeboxProgressBar";
 import PlayerControls from "./PlayerControls";
 import RadioHistoryButton from "./RadioHistoryButton";
+import SongChangeNotifier from "./SongChangeNotifier";
 import SourceArt from "./SourceArt";
 import TrackInfo from "./TrackInfo";
 
@@ -59,6 +60,8 @@ const MusicBar: FC = () => {
 
             {/* Headless audio engine for the radio source. */}
             <RadioEngine />
+            {/* Headless: fires a browser Notification on song change. */}
+            <SongChangeNotifier />
         </Paper>
     );
 };

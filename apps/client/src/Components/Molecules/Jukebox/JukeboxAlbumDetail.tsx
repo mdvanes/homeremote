@@ -1,7 +1,6 @@
 import { BrowseItem } from "@homeremote/types";
 import {
     Box,
-    CardMedia,
     List,
     ListItemButton,
     ListItemText,
@@ -10,6 +9,7 @@ import {
 import { FC } from "react";
 import { useGetAlbumInfoQuery } from "../../../Services/jukeboxApi";
 import { formatPlaybackTime } from "../MusicBar/useJukeboxPlaybackTime";
+import CoverArtImage from "./CoverArtImage";
 import { sanitizeDescription } from "./sanitizeDescription";
 
 const COVER_SIZE = 200;
@@ -41,11 +41,11 @@ const JukeboxAlbumDetail: FC<JukeboxAlbumDetailProps> = ({
     return (
         <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
             <Box sx={{ width: 400, flexShrink: 0 }}>
-                <CardMedia
-                    component="img"
+                <CoverArtImage
+                    width={COVER_SIZE}
                     height={COVER_SIZE}
-                    sx={{ width: COVER_SIZE, borderRadius: 1 }}
-                    image={`${
+                    sx={{ borderRadius: 1 }}
+                    src={`${
                         process.env.NX_PUBLIC_BASE_URL
                     }/api/jukebox/coverart/${albumId}?type=album&hash=${encodeURIComponent(
                         albumName

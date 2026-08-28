@@ -14,5 +14,7 @@ export type SubsonicApiAlbumInfo = components["schemas"]["AlbumInfo"];
 export type SubsonicApiGetAlbumInfo2Response =
     components["schemas"]["GetAlbumInfo2Response"];
 export type SubsonicApiArtistInfo = components["schemas"]["ArtistInfo"];
+export type SubsonicApiGetArtistInfoResponse =
+    components["schemas"]["GetArtistInfoResponse"];
 export type SubsonicApiGetArtistInfo2Response =
     components["schemas"]["GetArtistInfo2Response"];

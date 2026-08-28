@@ -1,5 +1,5 @@
 import { Button, Card, CardContent, Grid, Link } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 import { Link as RouterLink } from "react-router";
 import {
     Bar,
@@ -15,6 +15,7 @@ import {
     type BarProps,
     type LineProps,
 } from "recharts";
+import { staleContentSx } from "../CardStatus/CardStatus";
 import LoadingDot from "../LoadingDot/LoadingDot";
 
 export interface SensorItem {
@@ -86,7 +87,16 @@ export const EnergyChart: FC<{
     isLoading: boolean;
     data: SensorItem[] | undefined;
     config: SensorConfig;
-}> = ({ isLoading, data, config }) => {
+    /**
+     * Optional status bar element (typically `CardStatusBar`) rendered as the
+     * first child of the outer `Card`, overlaying its top edge. When omitted,
+     * the chart falls back to the plain internal `LoadingDot`, unchanged for
+     * consumers that don't have polling/error/stale handling.
+     */
+    statusBar?: ReactNode;
+    /** True when previously loaded data is shown but the latest poll failed. */
+    isStale?: boolean;
+}> = ({ isLoading, data, config, statusBar, isStale = false }) => {
     const [showDot, setShowDot] = useState(false);
 
     const chartLines = config.lines?.map((config, i) => (
@@ -105,9 +115,10 @@ export const EnergyChart: FC<{
     const isMobile = window.innerWidth < 600;
 
     return (
-        <Card>
-            <CardContent>
-                <LoadingDot isLoading={isLoading} noMargin />
+        <Card sx={{ position: "relative" }}>
+            {statusBar}
+            <CardContent sx={staleContentSx(isStale)}>
+                {!statusBar && <LoadingDot isLoading={isLoading} noMargin />}
 
                 {data && (
                     <div

@@ -1,13 +1,8 @@
 import { BrowseItem } from "@homeremote/types";
-import {
-    Box,
-    Card,
-    CardActionArea,
-    CardMedia,
-    Typography,
-} from "@mui/material";
+import { Box, Card, CardActionArea, Typography } from "@mui/material";
 import { FC } from "react";
 import { useGetArtistInfoQuery } from "../../../Services/jukeboxApi";
+import CoverArtImage from "./CoverArtImage";
 import { sanitizeDescription } from "./sanitizeDescription";
 
 interface JukeboxDirCardListProps {
@@ -60,10 +55,10 @@ const JukeboxDirCardList: FC<JukeboxDirCardListProps> = ({
                                 height: "100%",
                             }}
                         >
-                            <CardMedia
-                                component="img"
+                            <CoverArtImage
+                                width="100%"
                                 height={CARD_WIDTH}
-                                image={`${
+                                src={`${
                                     process.env.NX_PUBLIC_BASE_URL
                                 }/api/jukebox/coverart/${
                                     item.id
@@ -90,16 +85,16 @@ const JukeboxDirCardList: FC<JukeboxDirCardListProps> = ({
                         </CardActionArea>
                     </Card>
                 ))}
+                {parsedDescription && (
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ p: 4, maxWidth: "50%" }}
+                    >
+                        {parsedDescription}
+                    </Typography>
+                )}
             </Box>
-            {parsedDescription && (
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mt: 2 }}
-                >
-                    {parsedDescription}
-                </Typography>
-            )}
         </Box>
     );
 };

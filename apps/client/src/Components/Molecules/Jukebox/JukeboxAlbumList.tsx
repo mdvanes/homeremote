@@ -1,4 +1,5 @@
 import { IPlaylist } from "@homeremote/types";
+import { MusicNote as MusicNoteIcon } from "@mui/icons-material";
 import {
     Avatar,
     List,
@@ -67,12 +68,18 @@ const JukeboxAlbumList: FC<JukeboxAlbumListProps> = ({
                     >
                         <ListItemAvatar>
                             <Avatar
+                                sx={{
+                                    bgcolor: "grey.800",
+                                    color: "grey.100",
+                                }}
                                 src={`${
                                     process.env.NX_PUBLIC_BASE_URL
                                 }/api/jukebox/coverart/${id}?type=${type}&hash=${encodeURIComponent(
                                     name
                                 )}`}
-                            />
+                            >
+                                <MusicNoteIcon />
+                            </Avatar>
                         </ListItemAvatar>
                         <ListItemText primary={name} secondary={artist} />
                     </ListItemButton>

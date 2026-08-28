@@ -1,5 +1,6 @@
 import SpeedIcon from "@mui/icons-material/Speed";
 import {
+    Box,
     Card,
     CardContent,
     Fab,
@@ -9,13 +10,11 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { useGetSpeedtestQuery } from "../../../Services/generated/speedTestApiWithRetry";
-import { getErrorMessage } from "../../../Utils/getErrorMessage";
-import { useAppDispatch } from "../../../store";
-import ErrorRetry from "../ErrorRetry/ErrorRetry";
-import LoadingDot from "../LoadingDot/LoadingDot";
-import { logError } from "../LogCard/logSlice";
+import { usePolledQuery } from "../../../Utils/usePolledQuery";
+import { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 
 const FORMAT_DEFAULT_LOCALE = "nl-NL";
 
@@ -29,38 +28,37 @@ const FORMAT_DATE = new Intl.DateTimeFormat(FORMAT_DEFAULT_LOCALE, {
 
 const BASE_URL = "http://192.168.0.8:8089";
 
+const UPDATE_INTERVAL_MS = 1_000 * 60 * 5; // 1x per 5 minutes
+
 export const SpeedTestCard: FC = () => {
-    const dispatch = useAppDispatch();
     const {
         data: speedTestResult,
-        refetch,
         isLoading,
         isFetching,
         isError,
-        error,
-    } = useGetSpeedtestQuery();
+        isStale,
+        lastUpdated,
+        retry,
+    } = usePolledQuery(useGetSpeedtestQuery, undefined, {
+        name: "SpeedTest",
+        pollingInterval: UPDATE_INTERVAL_MS,
+    });
 
-    useEffect(() => {
-        if (isError && error) {
-            dispatch(
-                logError(`SpeedTestCard failed: ${getErrorMessage(error)}`)
-            );
-        }
-    }, [dispatch, error, isError]);
-
-    const isErrorOrEmpty = isError || !speedTestResult || !speedTestResult.data;
+    const hasData = Boolean(speedTestResult && speedTestResult.data);
 
     return (
         <Card>
             <CardContent sx={{ position: "relative" }}>
-                <LoadingDot isLoading={isLoading || isFetching} />
-                {isErrorOrEmpty && (
-                    <ErrorRetry retry={() => refetch()}>
-                        SwitchesCard could not load
-                    </ErrorRetry>
-                )}
-                {!isErrorOrEmpty && speedTestResult.data && (
-                    <>
+                <CardStatusBar
+                    isLoading={(isLoading || isFetching) && !isError}
+                    name="SpeedTest"
+                    isError={isError}
+                    isStale={isStale}
+                    retry={retry}
+                    lastUpdated={lastUpdated}
+                />
+                {hasData && speedTestResult?.data && (
+                    <Box sx={staleContentSx(isStale)}>
                         <Table sx={{ marginBottom: 3 }}>
                             <TableHead>
                                 <TableRow>
@@ -110,7 +108,7 @@ export const SpeedTestCard: FC = () => {
                             color="primary"
                             aria-label="speed"
                             size="small"
-                            onClick={() => refetch()}
+                            onClick={() => retry()}
                             title="Get latest speedtest result"
                             sx={{
                                 position: "absolute",
@@ -120,7 +118,7 @@ export const SpeedTestCard: FC = () => {
                         >
                             <SpeedIcon />
                         </Fab>
-                    </>
+                    </Box>
                 )}
             </CardContent>
         </Card>

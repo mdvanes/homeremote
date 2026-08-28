@@ -1,16 +1,27 @@
-import { Box } from "@mui/material";
+import { lighten } from "@mui/material/styles";
 import { FC, useState } from "react";
 import { BarProps } from "recharts";
 import { useGetGasTemperaturesQuery } from "../../../Services/generated/energyUsageApiWithRetry";
 import { usePolledQuery } from "../../../Utils/usePolledQuery";
-import CardStatus, { staleContentSx } from "../CardStatus/CardStatus";
+import CardStatusBar from "../CardStatusBar/CardStatusBar";
 import EnergyChart, {
     SensorItem,
     axisDateTimeFormatDay,
 } from "../EnergyChart/EnergyChart";
 import { RangeButtons } from "./RangeButtons";
 
-const temperatureLineColors = ["#66bb6a", "#ff9100", "#2d6196"];
+const temperatureLineColors = ["#66bb6a", "#ff9100"];
+
+// The gas meter device was replaced twice, so up to 3 sensors (oldest to
+// newest) are aggregated into one continuous bar (shared stackId below).
+// Each generation gets its own shade of the current gas bar color, oldest
+// being lightest.
+const gasBarBaseColor = "#2d6196";
+const gasBarColors = [
+    lighten(gasBarBaseColor, 0.6),
+    lighten(gasBarBaseColor, 0.3),
+    gasBarBaseColor,
+];
 
 const UPDATE_INTERVAL_MS = 60 * 60 * 1000; // 1 x per hour
 
@@ -34,17 +45,6 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
             pollingInterval: UPDATE_INTERVAL_MS,
         }
     );
-
-    if (!gasTemperatureResponse) {
-        return (
-            <CardStatus
-                name="Gas & temperatures"
-                isError={isError}
-                isStale={false}
-                retry={retry}
-            />
-        );
-    }
 
     const sensors =
         gasTemperatureResponse?.flatMap((sensor) => sensor[0]) ?? [];
@@ -81,7 +81,8 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         .map((sensor, i) => ({
             dataKey:
                 sensor.attributes?.friendly_name ?? sensor.entity_id ?? "gas",
-            fill: temperatureLineColors[i + lines.length],
+            fill: gasBarColors[i] ?? gasBarColors[gasBarColors.length - 1],
+            stackId: "gas",
             unit: "m³",
         }));
 
@@ -89,41 +90,42 @@ const GasTemperaturesChart: FC<{ isBig?: boolean }> = ({ isBig = false }) => {
         <>
             {isBig && <RangeButtons range={range} setRange={setRange} />}
 
-            <CardStatus
-                name="Gas & temperatures"
-                isError={isError}
+            <EnergyChart
+                data={entries}
+                config={{
+                    lines,
+                    bars,
+                    leftYAxis: {
+                        // unit: "m3",
+                        domain: [0, "auto"],
+                    },
+                    rightYAxis: {
+                        unit: "°",
+                        domain: [0, "auto"],
+                    },
+                    xAxis: {
+                        type: "category",
+                    },
+                    axisDateTimeFormat:
+                        range === "day" ? undefined : axisDateTimeFormatDay,
+                    hideBrush: !isBig,
+                    hideToggleDots: !isBig,
+                    aspect: isBig ? undefined : 2,
+                    moreLink: isBig ? undefined : "/energy?tab=2",
+                }}
+                isLoading={isLoading || isFetching}
                 isStale={isStale}
-                retry={retry}
-                lastUpdated={lastUpdated}
+                statusBar={
+                    <CardStatusBar
+                        isLoading={(isLoading || isFetching) && !isError}
+                        name="Gas & temperatures"
+                        isError={isError}
+                        isStale={isStale}
+                        retry={retry}
+                        lastUpdated={lastUpdated}
+                    />
+                }
             />
-
-            <Box sx={{ ...staleContentSx(isStale), marginBottom: 2 }}>
-                <EnergyChart
-                    data={entries}
-                    config={{
-                        lines,
-                        bars,
-                        leftYAxis: {
-                            // unit: "m3",
-                            domain: [0, "auto"],
-                        },
-                        rightYAxis: {
-                            unit: "°",
-                            domain: [0, "auto"],
-                        },
-                        xAxis: {
-                            type: "category",
-                        },
-                        axisDateTimeFormat:
-                            range === "day" ? undefined : axisDateTimeFormatDay,
-                        hideBrush: !isBig,
-                        hideToggleDots: !isBig,
-                        aspect: isBig ? undefined : 2,
-                        moreLink: isBig ? undefined : "/energy?tab=2",
-                    }}
-                    isLoading={isLoading || isFetching}
-                />
-            </Box>
         </>
     );
 };
