@@ -462,10 +462,20 @@ export class JukeboxController {
                 throw new NotFoundException(HttpStatus.NOT_FOUND);
             }
 
+            // No cover art available for this item (e.g. a disc/folder
+            // without its own artwork). The client renders a placeholder
+            // icon when this request 404s.
+            if (!coverArtId) {
+                throw new NotFoundException(HttpStatus.NOT_FOUND);
+            }
+
             const streamUrl = this.getAPI("getCoverArt", `&id=${coverArtId}`);
             const str = got.stream(streamUrl);
             return new StreamableFile(str);
         } catch (err) {
+            if (err instanceof HttpException) {
+                throw err;
+            }
             this.logger.error(err);
             throw new HttpException(
                 "failed to receive downstream data",

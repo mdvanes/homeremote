@@ -1,5 +1,8 @@
 import { ISong } from "@homeremote/types";
-import { QueueMusic as QueueMusicIcon } from "@mui/icons-material";
+import {
+    MusicNote as MusicNoteIcon,
+    QueueMusic as QueueMusicIcon,
+} from "@mui/icons-material";
 import {
     Avatar,
     Box,
@@ -66,6 +69,10 @@ const JukeboxBrowse: FC<JukeboxBrowseProps> = ({ audioElemRef }) => {
                         >
                             <Avatar
                                 variant="rounded"
+                                sx={{
+                                    bgcolor: "grey.800",
+                                    color: "grey.100",
+                                }}
                                 src={`${
                                     process.env.NX_PUBLIC_BASE_URL
                                 }/api/jukebox/coverart/${
@@ -75,7 +82,9 @@ const JukeboxBrowse: FC<JukeboxBrowseProps> = ({ audioElemRef }) => {
                                 }&hash=${encodeURIComponent(
                                     currentPlaylist.name
                                 )}`}
-                            />
+                            >
+                                <MusicNoteIcon />
+                            </Avatar>
                             <Box sx={{ minWidth: 0 }}>
                                 <Typography variant="subtitle2" noWrap>
                                     {currentPlaylist.name}
