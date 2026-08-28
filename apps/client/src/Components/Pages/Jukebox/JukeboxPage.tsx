@@ -7,6 +7,7 @@ import JukeboxFileBrowser, {
     PathEntry,
 } from "../../Molecules/Jukebox/JukeboxFileBrowser";
 import JukeboxRecent from "../../Molecules/Jukebox/JukeboxRecent";
+import { SongNotificationToggle } from "../../Molecules/MusicBar/SongNotificationToggle";
 
 const TAB_COUNT = 3;
 
@@ -115,11 +116,14 @@ const JukeboxPage: FC = () => {
                     <Tab label="Recently added" />
                     <Tab label="Favorites" />
                 </Tabs>
-                <Tooltip title="Add current song to a playlist">
-                    <span>
-                        <AddSongToPlaylistButton />
-                    </span>
-                </Tooltip>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Tooltip title="Add current song to a playlist">
+                        <span>
+                            <AddSongToPlaylistButton />
+                        </span>
+                    </Tooltip>
+                    <SongNotificationToggle />
+                </Box>
             </Box>
             <Box
                 sx={{

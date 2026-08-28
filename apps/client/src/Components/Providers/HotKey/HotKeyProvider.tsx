@@ -14,6 +14,10 @@ import { useDispatch } from "react-redux";
 import { useGetRadio2PreviouslyQuery } from "../../../Services/generated/nowplayingApi";
 import { logUrgentInfo } from "../../Molecules/LogCard/logSlice";
 import {
+    getSongNotificationsEnabled,
+    setSongNotificationsEnabled as persistSongNotificationsEnabled,
+} from "../../Molecules/MusicBar/songNotificationStorage";
+import {
     getInitialChannelId,
     LAST_RADIO_CHANNEL,
     RadioChannelId,
@@ -102,6 +106,10 @@ export interface HotKeyState {
 
     // The source whose info should be shown as "now playing"
     currentSource: MusicSource;
+
+    // Song-change browser notifications (opt-out, persisted to localStorage)
+    songNotificationsEnabled: boolean;
+    setSongNotificationsEnabled: (_: boolean) => void;
 }
 
 const noop = () => {
@@ -137,6 +145,8 @@ const initialState: HotKeyState = {
     handleSkipRadio: noop,
     isSkipRadioActive: false,
     currentSource: "radio",
+    songNotificationsEnabled: true,
+    setSongNotificationsEnabled: noop,
 };
 
 export const HotKeyContext = React.createContext(initialState);
@@ -165,7 +175,14 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [radioChannelId, setRadioChannelIdState] =
         useState<RadioChannelId>(getInitialChannelId);
     const [currentSource, setCurrentSource] = useState<MusicSource>("radio");
+    const [songNotificationsEnabled, setSongNotificationsEnabledState] =
+        useState<boolean>(getSongNotificationsEnabled);
     const dispatch = useDispatch();
+
+    const setSongNotificationsEnabled = useCallback((enabled: boolean) => {
+        persistSongNotificationsEnabled(enabled);
+        setSongNotificationsEnabledState(enabled);
+    }, []);
 
     const setRadioChannelId = useCallback((id: RadioChannelId) => {
         localStorage.setItem(LAST_RADIO_CHANNEL, id);
@@ -385,6 +402,8 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         handleSkipRadio,
         isSkipRadioActive,
         currentSource,
+        songNotificationsEnabled,
+        setSongNotificationsEnabled,
     };
 
     // handle what happens on key press
