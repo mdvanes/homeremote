@@ -70,8 +70,20 @@ export const ServicesPanel: FC = () => {
 
     const received = data?.status === "received" ? data : undefined;
     const stacks: ServiceStack[] = received?.stacks ?? [];
-    const problems = stacks.filter((stack) => stack.health !== "running");
-    const healthy = stacks.filter((stack) => stack.health === "running");
+    const byName = (a: ServiceStack, b: ServiceStack): number =>
+        a.Name.localeCompare(b.Name);
+    // Problems: stopped stacks first, then degraded, alphabetical within each.
+    const problemOrder: Record<string, number> = { stopped: 0, degraded: 1 };
+    const problems = stacks
+        .filter((stack) => stack.health !== "running")
+        .sort(
+            (a, b) =>
+                problemOrder[a.health] - problemOrder[b.health] ||
+                byName(a, b)
+        );
+    const healthy = stacks
+        .filter((stack) => stack.health === "running")
+        .sort(byName);
 
     return (
         <>
