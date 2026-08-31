@@ -34,7 +34,7 @@ const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
 
 const StatefulFileBrowser: FC = () => {
     const [path, setPath] = useState<PathEntry[]>([]);
-    return <JukeboxFileBrowser path={path} setPath={setPath} />;
+    return <JukeboxFileBrowser path={path} onNavigate={setPath} />;
 };
 
 describe("JukeboxFileBrowser", () => {

@@ -104,6 +104,23 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                         />
                                         <Route
                                             path={ROUTES.music}
+                                            element={
+                                                <Navigate
+                                                    to={ROUTES.musicBrowse}
+                                                    replace
+                                                />
+                                            }
+                                        />
+                                        <Route
+                                            path={ROUTES.musicBrowsePath}
+                                            element={<JukeboxPage />}
+                                        />
+                                        <Route
+                                            path={ROUTES.musicRecent}
+                                            element={<JukeboxPage />}
+                                        />
+                                        <Route
+                                            path={ROUTES.musicFavorites}
                                             element={<JukeboxPage />}
                                         />
                                         <Route

@@ -48,10 +48,7 @@ const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
                 <MockStoreProvider apis={[servicesApi, caddyInfoApiWithRetry]}>
                     <Routes>
                         <Route path={ROUTES.services} element={children} />
-                        <Route
-                            path={ROUTES.serviceStack}
-                            element={children}
-                        />
+                        <Route path={ROUTES.serviceStack} element={children} />
                     </Routes>
                 </MockStoreProvider>
             </MemoryRouter>
