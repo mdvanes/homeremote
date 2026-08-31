@@ -12,6 +12,8 @@ Home automation dashboard
 - [Introduction](#introduction)
 - [Requirements](#requirements)
 - [Installation](#installation)
+    - [Service links](#service-links)
+        - [Mapping in Docker Compose](#mapping-in-docker-compose)
     - [Updating](#updating)
 - [User Management](#user-management)
     - [Adding a user](#adding-a-user)
@@ -63,8 +65,9 @@ Optional systems that can be connected (configured in `apps/server/.env`):
 1. create a config dir: `mkdir -p ~/homeremote/settings`
 2. set up environment variables: `cp apps/server/.env.example ~/homeremote/settings/.env` and update with your values
 3. set up auth file: `cp apps/server/auth.json.example ~/homeremote/settings/auth.json` and add at least one user (see [User Management](#user-management))
-4. copy `docker-compose.yml` to `~/homeremote/` and update the `volumes` "auth" and "songsfrom" paths
-5. start with `docker compose up -d`
+4. set up service links file: `cp apps/server/services-links.yaml.example ~/homeremote/settings/services-links.yaml` and update with your services (see [Service links](#service-links))
+5. copy `docker-compose.yml` to `~/homeremote/` and update the `volumes` "auth", "services-links" and "songsfrom" paths
+6. start with `docker compose up -d`
 
 The app will be available at the host configured in your Caddy reverse proxy.
 To follow the logs: `docker compose logs --follow`
@@ -78,6 +81,10 @@ writable YAML file at `SERVICES_CONFIG_PATH=/config/services-links.yaml` (set in
 container restarts. Mount that path as a bind mount or Docker config. Leave
 `SERVICES_CONFIG_PATH` empty to disable persistence — stacks then only get an
 auto-discovered link from their first published port.
+
+An example file is available at `apps/server/services-links.yaml.example`,
+next to `apps/server/auth.json.example`. Copy it to the path referenced by
+`SERVICES_CONFIG_PATH` (e.g. `cp apps/server/services-links.yaml.example ~/homeremote/settings/services-links.yaml`).
 
 The file is a map keyed by lowercase stack name:
 
@@ -98,6 +105,21 @@ monitoring:
 - `icon`: optional — a [Material UI Icons](https://mui.com/material-ui/material-icons/)
   ligature name (e.g. `insights`), or a custom icon key from
   `apps/client/src/Components/Molecules/ServiceLinksBar/customIcons.tsx`
+
+### Mapping in Docker Compose
+
+Bind-mount the file at the container path configured by `SERVICES_CONFIG_PATH`
+(default `/config/services-links.yaml`):
+
+```yaml
+services:
+  homeremote:
+    volumes:
+      - ./settings/services-links.yaml:/config/services-links.yaml
+```
+
+The file must already exist on the host before starting the container,
+otherwise Docker will create it as an empty directory.
 
 ## Updating
 

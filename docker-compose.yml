@@ -12,6 +12,7 @@ services:
     container_name: homeremote-stack
     volumes:
       - ./settings/auth.json:/app/dist/auth.json
+      - ./settings/services-links.yaml:/config/services-links.yaml
       - /var/run/docker.sock:/var/run/docker.sock
       - /foo:/songsfrom/:/songsfrom
     restart: unless-stopped

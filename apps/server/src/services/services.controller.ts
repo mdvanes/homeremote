@@ -379,11 +379,14 @@ export class ServicesController {
         const byName = (a: ServiceStack, b: ServiceStack): number =>
             a.Name.localeCompare(b.Name);
 
+        // Merge all stacks (Portainer-managed, compose-only and standalone
+        // containers) before sorting so the final list is fully alphabetical
+        // rather than grouped by source.
         const orderedStacks = [
-            ...portainerStacks.sort(byName),
-            ...composeStacks.sort(byName),
-            ...singleStacks.sort(byName),
-        ];
+            ...portainerStacks,
+            ...composeStacks,
+            ...singleStacks,
+        ].sort(byName);
 
         const seenLinks = new Set<string>();
         const serviceLinks: ServiceLink[] = [];

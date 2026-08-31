@@ -1,11 +1,25 @@
 import { ServiceStack } from "@homeremote/types";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { Box, Card, CardContent, IconButton, Tab, Tabs } from "@mui/material";
-import { FC, useState } from "react";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    IconButton,
+    Tab,
+    Tabs,
+} from "@mui/material";
+import { FC, useRef, useState } from "react";
 import { Link as RouterLink, useSearchParams } from "react-router";
 import { useGetServicesQuery } from "../../../Services/servicesApi";
 import { healthColor } from "../../Molecules/ServicesPanel/HealthDot";
+import { LinkConfigSectionHandle } from "./LinkConfigSection";
 import { StackDetail } from "./StackDetail";
 
 const UPDATE_INTERVAL_MS = 30000;
@@ -30,6 +44,9 @@ export const Services: FC = () => {
             : stacks[0]?.Id;
     const active = stacks.find((stack) => stack.Id === activeId);
 
+    const linkConfigRef = useRef<LinkConfigSectionHandle>(null);
+    const [pendingStackId, setPendingStackId] = useState<string | null>(null);
+
     const selectStack = (id: string) => {
         setSelected(id);
         setSearchParams(
@@ -40,6 +57,24 @@ export const Services: FC = () => {
             },
             { replace: true }
         );
+    };
+
+    const requestSelectStack = (id: string) => {
+        if (id === activeId) {
+            return;
+        }
+        if (linkConfigRef.current?.hasUnsavedChanges()) {
+            setPendingStackId(id);
+            return;
+        }
+        selectStack(id);
+    };
+
+    const confirmDiscardChanges = () => {
+        if (pendingStackId) {
+            selectStack(pendingStackId);
+        }
+        setPendingStackId(null);
     };
 
     return (
@@ -77,7 +112,9 @@ export const Services: FC = () => {
                     <>
                         <Tabs
                             value={activeId ?? false}
-                            onChange={(_event, value) => selectStack(value)}
+                            onChange={(_event, value) =>
+                                requestSelectStack(value)
+                            }
                             variant="scrollable"
                             scrollButtons="auto"
                             sx={{
@@ -103,10 +140,35 @@ export const Services: FC = () => {
                                 />
                             ))}
                         </Tabs>
-                        {active && <StackDetail stack={active} />}
+                        {active && (
+                            <StackDetail
+                                stack={active}
+                                linkConfigRef={linkConfigRef}
+                            />
+                        )}
                     </>
                 )}
             </CardContent>
+            <Dialog
+                open={pendingStackId !== null}
+                onClose={() => setPendingStackId(null)}
+            >
+                <DialogTitle>Discard unsaved changes?</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        The service link configuration has unsaved changes.
+                        Switching services will discard them.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setPendingStackId(null)}>
+                        Cancel
+                    </Button>
+                    <Button color="error" onClick={confirmDiscardChanges}>
+                        Discard changes
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Card>
     );
 };

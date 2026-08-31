@@ -1,16 +1,20 @@
 import { ServiceStack } from "@homeremote/types";
 import { Box, Chip } from "@mui/material";
-import { FC } from "react";
+import { FC, RefObject } from "react";
 import { HealthDot } from "../../Molecules/ServicesPanel/HealthDot";
 import { ServiceStackActions } from "../../Molecules/ServicesPanel/ServiceStackActions";
 import { ContainerRow } from "./ContainerRow";
-import { LinkConfigSection } from "./LinkConfigSection";
+import {
+    LinkConfigSection,
+    LinkConfigSectionHandle,
+} from "./LinkConfigSection";
 
 interface StackDetailProps {
     stack: ServiceStack;
+    linkConfigRef?: RefObject<LinkConfigSectionHandle | null>;
 }
 
-export const StackDetail: FC<StackDetailProps> = ({ stack }) => {
+export const StackDetail: FC<StackDetailProps> = ({ stack, linkConfigRef }) => {
     const running = stack.containers.filter(
         (container) => container.health === "running"
     ).length;
@@ -46,7 +50,7 @@ export const StackDetail: FC<StackDetailProps> = ({ stack }) => {
                 </Box>
             </Box>
 
-            <LinkConfigSection stack={stack} />
+            <LinkConfigSection stack={stack} ref={linkConfigRef} />
 
             <Box>
                 {stack.containers.map((container) => (
