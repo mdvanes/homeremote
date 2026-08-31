@@ -16,3 +16,4 @@ services:
       - "3333:3333"
     volumes:
       - ./apps/server/auth.json:/app/dist/auth.json
+      - ./apps/server/services-links.yaml:/config/services-links.yaml

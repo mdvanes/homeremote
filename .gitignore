@@ -64,4 +64,4 @@ NOTES.md
 .nx/polygraph
 .nx/self-healing
 
-services-links.yaml
+apps/server/services-links.yaml

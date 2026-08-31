@@ -1,0 +1,8 @@
+pi-hole:
+  type: fqdn
+  fqdn: pihole.home.arpa
+  icon: pihole
+monitoring:
+  type: port
+  port: 3000
+  icon: insights
