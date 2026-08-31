@@ -157,4 +157,92 @@ describe("Services page", () => {
             expect(index).toBeGreaterThanOrEqual(0);
         });
     });
+
+    it("keeps the Save button disabled until the form is edited", async () => {
+        render(<Services />, { wrapper: Wrapper });
+        await screen.findByText("grafana");
+
+        await userEvent.click(screen.getByText("Service link"));
+        expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+
+        await userEvent.click(
+            screen.getByRole("radio", { name: "FQDN (Caddy)" })
+        );
+        expect(screen.getByRole("button", { name: "Save" })).toBeEnabled();
+    });
+
+    it("only shows one preview when nothing is saved yet", async () => {
+        render(<Services />, { wrapper: Wrapper });
+        await screen.findByText("grafana");
+
+        await userEvent.click(screen.getByRole("tab", { name: "media" }));
+        await screen.findByText("jellyfin");
+
+        await userEvent.click(screen.getByText("Service link"));
+        await userEvent.click(
+            screen.getByRole("radio", { name: "FQDN (Caddy)" })
+        );
+
+        expect(screen.getAllByText("→ https://hostname")).toHaveLength(1);
+    });
+
+    it("shows both previews without doubling the protocol when they differ", async () => {
+        render(<Services />, { wrapper: Wrapper });
+        await screen.findByText("grafana");
+
+        await userEvent.click(screen.getByText("Service link"));
+        await userEvent.click(
+            screen.getByRole("radio", { name: "FQDN (Caddy)" })
+        );
+        await userEvent.type(
+            screen.getByLabelText("FQDN"),
+            "http://foo.example/bla"
+        );
+
+        expect(screen.getByText("http://homeserver:3000")).toBeInTheDocument();
+        expect(
+            screen.getByText("→ http://foo.example/bla")
+        ).toBeInTheDocument();
+    });
+
+    it("asks for confirmation before switching tabs with unsaved changes, and keeps edits on cancel", async () => {
+        render(<Services />, { wrapper: Wrapper });
+        await screen.findByText("grafana");
+
+        await userEvent.click(screen.getByText("Service link"));
+        await userEvent.click(
+            screen.getByRole("radio", { name: "FQDN (Caddy)" })
+        );
+        await userEvent.type(screen.getByLabelText("FQDN"), "test");
+
+        await userEvent.click(screen.getByRole("tab", { name: "media" }));
+
+        expect(
+            await screen.findByText("Discard unsaved changes?")
+        ).toBeVisible();
+        await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+        expect(screen.getByText("grafana")).toBeVisible();
+        expect(screen.getByLabelText("FQDN")).toHaveValue("test");
+    });
+
+    it("discards unsaved changes and switches tabs when confirmed", async () => {
+        render(<Services />, { wrapper: Wrapper });
+        await screen.findByText("grafana");
+
+        await userEvent.click(screen.getByText("Service link"));
+        await userEvent.click(
+            screen.getByRole("radio", { name: "FQDN (Caddy)" })
+        );
+        await userEvent.type(screen.getByLabelText("FQDN"), "test");
+
+        await userEvent.click(screen.getByRole("tab", { name: "media" }));
+        await screen.findByText("Discard unsaved changes?");
+        await userEvent.click(
+            screen.getByRole("button", { name: "Discard changes" })
+        );
+
+        expect(await screen.findByText("jellyfin")).toBeVisible();
+        expect(screen.queryByText("grafana")).not.toBeInTheDocument();
+    });
 });

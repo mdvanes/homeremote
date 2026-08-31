@@ -14,7 +14,13 @@ import {
     Select,
     TextField,
 } from "@mui/material";
-import { FC, useMemo, useState } from "react";
+import {
+    forwardRef,
+    useEffect,
+    useImperativeHandle,
+    useMemo,
+    useState,
+} from "react";
 import {
     GetCaddyInfoApiResponse,
     useGetCaddyInfoQuery,
@@ -25,6 +31,16 @@ import { customIconMap } from "../../Molecules/ServiceLinksBar/customIcons";
 interface LinkConfigSectionProps {
     stack: ServiceStack;
 }
+
+export interface LinkConfigSectionHandle {
+    /** Returns true when the form has edits that have not been saved yet. */
+    hasUnsavedChanges: () => boolean;
+}
+
+// Mirrors the server-side URL building in services.controller.ts: keep an
+// explicit protocol if the user provided one, otherwise default to https.
+const buildFqdnUrl = (fqdn: string): string =>
+    /^https?:\/\//.test(fqdn) ? fqdn : `https://${fqdn}`;
 
 const publishedPorts = (stack: ServiceStack): number[] => {
     const ports = new Set<number>();
@@ -60,7 +76,10 @@ const findCaddyDomains = (
     return [...domains].sort();
 };
 
-export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
+export const LinkConfigSection = forwardRef<
+    LinkConfigSectionHandle,
+    LinkConfigSectionProps
+>(({ stack }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [setLinkConfig, { isLoading }] = useSetLinkConfigMutation();
 
@@ -70,6 +89,32 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
     const [port, setPort] = useState<number>(link?.port ?? ports[0] ?? 0);
     const [fqdn, setFqdn] = useState<string>(link?.fqdn ?? "");
     const [icon, setIcon] = useState<string>(link?.icon ?? "");
+
+    // Reset the form whenever the selected stack changes (e.g. switching
+    // tabs). This intentionally discards any unsaved edits for the
+    // previously selected stack; callers should confirm with the user
+    // beforehand via hasUnsavedChanges().
+    useEffect(() => {
+        setType(link?.type ?? "none");
+        setPort(link?.port ?? ports[0] ?? 0);
+        setFqdn(link?.fqdn ?? "");
+        setIcon(link?.icon ?? "");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [stack.Id]);
+
+    const isDirty =
+        type !== (link?.type ?? "none") ||
+        (type === "port" && port !== (link?.port ?? ports[0] ?? 0)) ||
+        (type === "fqdn" && fqdn !== (link?.fqdn ?? "")) ||
+        icon !== (link?.icon ?? "");
+
+    useImperativeHandle(
+        ref,
+        () => ({
+            hasUnsavedChanges: () => isDirty,
+        }),
+        [isDirty]
+    );
 
     const { data: caddyInfo } = useGetCaddyInfoQuery();
     const caddyDomains = useMemo(
@@ -82,7 +127,11 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
             ? "no link"
             : type === "port"
               ? `→ port ${port}`
-              : `→ https://${fqdn || "hostname"}`;
+              : `→ ${fqdn ? buildFqdnUrl(fqdn) : "https://hostname"}`;
+    const headerPreview = link?.url ?? preview;
+    // Avoid showing the exact same preview text twice (top badge + bottom
+    // of the form) when there's nothing saved yet or nothing has changed.
+    const showBottomPreview = headerPreview !== preview;
 
     const save = async () => {
         await setLinkConfig({
@@ -129,7 +178,7 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
                         marginLeft: 0.5,
                     }}
                 >
-                    {link?.url ?? preview}
+                    {headerPreview}
                 </Box>
                 <ExpandMoreIcon
                     sx={{
@@ -269,21 +318,23 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
                             </Box>
                         )}
                     </Box>
-                    <Box
-                        sx={{
-                            fontSize: 11,
-                            color: "text.secondary",
-                            fontFamily: "monospace",
-                            marginTop: 0.5,
-                        }}
-                    >
-                        {preview}
-                    </Box>
+                    {showBottomPreview && (
+                        <Box
+                            sx={{
+                                fontSize: 11,
+                                color: "text.secondary",
+                                fontFamily: "monospace",
+                                marginTop: 0.5,
+                            }}
+                        >
+                            {preview}
+                        </Box>
+                    )}
                     <Box sx={{ marginTop: 1.5 }}>
                         <Button
                             size="small"
                             variant="outlined"
-                            disabled={isLoading}
+                            disabled={isLoading || !isDirty}
                             onClick={save}
                         >
                             Save
@@ -293,6 +344,8 @@ export const LinkConfigSection: FC<LinkConfigSectionProps> = ({ stack }) => {
             </Collapse>
         </Box>
     );
-};
+});
+
+LinkConfigSection.displayName = "LinkConfigSection";
 
 export default LinkConfigSection;

@@ -78,8 +78,7 @@ export const ServicesPanel: FC = () => {
         .filter((stack) => stack.health !== "running")
         .sort(
             (a, b) =>
-                problemOrder[a.health] - problemOrder[b.health] ||
-                byName(a, b)
+                problemOrder[a.health] - problemOrder[b.health] || byName(a, b)
         );
     const healthy = stacks
         .filter((stack) => stack.health === "running")
