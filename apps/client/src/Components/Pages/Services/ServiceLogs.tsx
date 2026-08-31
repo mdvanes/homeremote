@@ -9,16 +9,25 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 import { Link as RouterLink, useParams } from "react-router";
-import { ROUTES } from "../../../routes";
+import { buildServicesStackPath, ROUTES } from "../../../routes";
 import { useGetContainerLogsQuery } from "../../../Services/servicesApi";
 
 export const ServiceLogs: FC = () => {
-    const { id = "" } = useParams<{ id: string }>();
-    const { data, isFetching, refetch } = useGetContainerLogsQuery(id, {
-        skip: !id,
-    });
+    const { stackName = "", containerId = "" } = useParams<{
+        stackName: string;
+        containerId: string;
+    }>();
+    const { data, isFetching, refetch } = useGetContainerLogsQuery(
+        containerId,
+        {
+            skip: !containerId,
+        }
+    );
 
     const logs = data?.status === "received" ? data.logs : "No logs available.";
+    const backToStackPath = stackName
+        ? buildServicesStackPath(decodeURIComponent(stackName))
+        : ROUTES.services;
 
     return (
         <Card sx={{ position: "relative" }}>
@@ -33,14 +42,14 @@ export const ServiceLogs: FC = () => {
                 >
                     <IconButton
                         component={RouterLink}
-                        to={ROUTES.services}
+                        to={backToStackPath}
                         size="small"
                         aria-label="Back to services"
                     >
                         <ArrowBackIcon fontSize="small" />
                     </IconButton>
                     <Box sx={{ fontSize: 14, fontWeight: 500 }}>
-                        Logs · {id}
+                        Logs · {containerId}
                     </Box>
                     <IconButton
                         size="small"

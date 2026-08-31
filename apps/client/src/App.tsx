@@ -127,7 +127,11 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                             element={<Services />}
                                         />
                                         <Route
-                                            path={ROUTES.serviceLogs}
+                                            path={ROUTES.serviceStack}
+                                            element={<Services />}
+                                        />
+                                        <Route
+                                            path={ROUTES.serviceStackLogs}
                                             element={<ServiceLogs />}
                                         />
                                         <Route

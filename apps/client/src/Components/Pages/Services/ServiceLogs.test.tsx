@@ -2,6 +2,7 @@ import { StyledEngineProvider, ThemeProvider } from "@mui/material";
 import { render, screen } from "@testing-library/react";
 import { FC, ReactNode } from "react";
 import { MemoryRouter, Route, Routes } from "react-router";
+import { ROUTES } from "../../../routes";
 import { servicesApi } from "../../../Services/servicesApi";
 import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
 import { MockStoreProvider } from "../../../testHelpers";
@@ -13,10 +14,13 @@ enableFetchMocks();
 const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
     <StyledEngineProvider injectFirst>
         <ThemeProvider theme={createThemeWithMode("dark")}>
-            <MemoryRouter initialEntries={["/services/logs/c1"]}>
+            <MemoryRouter initialEntries={["/services/monitoring/logs/c1"]}>
                 <MockStoreProvider apis={[servicesApi]}>
                     <Routes>
-                        <Route path="/services/logs/:id" element={children} />
+                        <Route
+                            path={ROUTES.serviceStackLogs}
+                            element={children}
+                        />
                     </Routes>
                 </MockStoreProvider>
             </MemoryRouter>
@@ -40,5 +44,14 @@ describe("ServiceLogs page", () => {
 
         expect(await screen.findByText(/line one/)).toBeVisible();
         expect(screen.getByText(/Logs · c1/)).toBeVisible();
+    });
+
+    it("links back to the stack the logs belong to", async () => {
+        render(<ServiceLogs />, { wrapper: Wrapper });
+
+        await screen.findByText(/line one/);
+        expect(
+            screen.getByRole("link", { name: "Back to services" })
+        ).toHaveAttribute("href", "/services/monitoring");
     });
 });

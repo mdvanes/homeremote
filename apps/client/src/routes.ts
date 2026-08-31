@@ -13,12 +13,26 @@ export const ROUTES = {
     docker: "/docker",
     caddy: "/caddy",
     services: "/services",
-    serviceLogs: "/services/logs/:id",
+    serviceStack: "/services/:stackName",
+    serviceStackLogs: "/services/:stackName/logs/:containerId",
     datalora: "/datalora",
     cartwin: "/cartwin",
     energy: "/energy",
     about: "/about",
 } as const;
 
-export const buildServiceLogsPath = (containerId: string): string =>
-    `${ROUTES.services}/logs/${encodeURIComponent(containerId)}`;
+/**
+ * A stack "name segment" is just the stack's Name, URL-encoded. Encoded as a
+ * single path segment (not with `encodeURIComponent`'s stricter escaping) so
+ * common punctuation in Portainer stack names round-trips predictably.
+ */
+export const buildServicesStackPath = (stackName: string): string =>
+    `${ROUTES.services}/${encodeURIComponent(stackName)}`;
+
+export const buildServicesStackLogsPath = (
+    stackName: string,
+    containerId: string
+): string =>
+    `${buildServicesStackPath(stackName)}/logs/${encodeURIComponent(
+        containerId
+    )}`;

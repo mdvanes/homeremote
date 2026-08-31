@@ -3,7 +3,8 @@ import { StyledEngineProvider, ThemeProvider } from "@mui/material";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FC, ReactNode } from "react";
-import { MemoryRouter } from "react-router";
+import { MemoryRouter, Route, Routes } from "react-router";
+import { ROUTES } from "../../../routes";
 import { caddyInfoApiWithRetry } from "../../../Services/generated/caddyInfoApiWithRetry";
 import { servicesApi } from "../../../Services/servicesApi";
 import fetchMock, { enableFetchMocks } from "../../../test/mswFetchMock";
@@ -17,12 +18,41 @@ import Services from "./Services";
 
 enableFetchMocks();
 
+const renderAtPath = (initialPath: string) => {
+    const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={createThemeWithMode("dark")}>
+                <MemoryRouter initialEntries={[initialPath]}>
+                    <MockStoreProvider
+                        apis={[servicesApi, caddyInfoApiWithRetry]}
+                    >
+                        <Routes>
+                            <Route path={ROUTES.services} element={children} />
+                            <Route
+                                path={ROUTES.serviceStack}
+                                element={children}
+                            />
+                        </Routes>
+                    </MockStoreProvider>
+                </MemoryRouter>
+            </ThemeProvider>
+        </StyledEngineProvider>
+    );
+    return render(<Services />, { wrapper: Wrapper });
+};
+
 const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
     <StyledEngineProvider injectFirst>
         <ThemeProvider theme={createThemeWithMode("dark")}>
             <MemoryRouter initialEntries={["/services"]}>
                 <MockStoreProvider apis={[servicesApi, caddyInfoApiWithRetry]}>
-                    {children}
+                    <Routes>
+                        <Route path={ROUTES.services} element={children} />
+                        <Route
+                            path={ROUTES.serviceStack}
+                            element={children}
+                        />
+                    </Routes>
                 </MockStoreProvider>
             </MemoryRouter>
         </ThemeProvider>
@@ -99,7 +129,7 @@ describe("Services page", () => {
         expect(screen.getByText(":3000→3000")).toBeVisible();
         expect(
             screen.getByRole("link", { name: "Logs for grafana" })
-        ).toHaveAttribute("href", "/services/logs/c1");
+        ).toHaveAttribute("href", "/services/monitoring/logs/c1");
     });
 
     it("switches to another stack when its tab is selected", async () => {
@@ -111,22 +141,15 @@ describe("Services page", () => {
         expect(await screen.findByText("jellyfin")).toBeVisible();
     });
 
-    it("opens directly on the stack given in the ?stack= query param", async () => {
-        const DeepLinkWrapper: FC<{ children: ReactNode }> = ({ children }) => (
-            <StyledEngineProvider injectFirst>
-                <ThemeProvider theme={createThemeWithMode("dark")}>
-                    <MemoryRouter initialEntries={["/services?stack=3"]}>
-                        <MockStoreProvider
-                            apis={[servicesApi, caddyInfoApiWithRetry]}
-                        >
-                            {children}
-                        </MockStoreProvider>
-                    </MemoryRouter>
-                </ThemeProvider>
-            </StyledEngineProvider>
-        );
+    it("opens directly on the stack given by a path segment", async () => {
+        renderAtPath("/services/media");
 
-        render(<Services />, { wrapper: DeepLinkWrapper });
+        expect(await screen.findByText("jellyfin")).toBeVisible();
+        expect(screen.queryByText("grafana")).not.toBeInTheDocument();
+    });
+
+    it("opens directly on the stack given in the legacy ?stack= query param", async () => {
+        renderAtPath("/services?stack=3");
 
         expect(await screen.findByText("jellyfin")).toBeVisible();
         expect(screen.queryByText("grafana")).not.toBeInTheDocument();
