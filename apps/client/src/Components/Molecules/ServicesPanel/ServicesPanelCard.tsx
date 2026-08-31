@@ -2,13 +2,14 @@ import OpenInFullIcon from "@mui/icons-material/OpenInFull";
 import { Card, CardContent, IconButton } from "@mui/material";
 import { FC } from "react";
 import { Link as RouterLink } from "react-router";
+import { ROUTES } from "../../../routes";
 import ServicesPanel from "./ServicesPanel";
 
 export const ServicesPanelCard: FC = () => (
     <Card sx={{ position: "relative" }}>
         <IconButton
             component={RouterLink}
-            to="/services"
+            to={ROUTES.services}
             size="small"
             aria-label="All details"
             title="All details"

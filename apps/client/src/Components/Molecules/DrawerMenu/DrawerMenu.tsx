@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 import { Link as RouterLink } from "react-router";
+import { ROUTES } from "../../../routes";
 import { useAppDispatch } from "../../../store";
 import {
     FetchAuthType,
@@ -29,34 +30,34 @@ const DrawerMenu: FC<Props> = ({ closeDrawer, colorMode, toggleColorMode }) => {
     return (
         <div role="presentation" onClick={closeDrawer}>
             <List>
-                <ListItemButton component={RouterLink} to="/">
+                <ListItemButton component={RouterLink} to={ROUTES.home}>
                     <ListItemText primary="Home Automation" />
                 </ListItemButton>
-                <ListItemButton component={RouterLink} to="/dashboard">
+                <ListItemButton component={RouterLink} to={ROUTES.dashboard}>
                     <ListItemText primary="Dashboard" />
                 </ListItemButton>
-                <ListItemButton component={RouterLink} to="/music">
+                <ListItemButton component={RouterLink} to={ROUTES.music}>
                     <ListItemText primary="Music" />
                 </ListItemButton>
-                <ListItemButton component={RouterLink} to="/gears">
+                <ListItemButton component={RouterLink} to={ROUTES.gears}>
                     <ListItemText primary="Gears" />
                 </ListItemButton>
-                <ListItemButton component={RouterLink} to="/docker">
+                <ListItemButton component={RouterLink} to={ROUTES.docker}>
                     <ListItemText primary="Docker" />
                 </ListItemButton>
-                <ListItemButton component={RouterLink} to="/caddy">
+                <ListItemButton component={RouterLink} to={ROUTES.caddy}>
                     <ListItemText primary="Caddy" />
                 </ListItemButton>
-                <ListItemButton component={RouterLink} to="/datalora">
+                <ListItemButton component={RouterLink} to={ROUTES.datalora}>
                     <ListItemText primary="Tracker" />
                 </ListItemButton>
-                <ListItemButton component={RouterLink} to="/cartwin">
+                <ListItemButton component={RouterLink} to={ROUTES.cartwin}>
                     <ListItemText primary="CarTwin" />
                 </ListItemButton>
-                <ListItemButton component={RouterLink} to="/energy">
+                <ListItemButton component={RouterLink} to={ROUTES.energy}>
                     <ListItemText primary="Energy" />
                 </ListItemButton>
-                <ListItemButton component={RouterLink} to="/about">
+                <ListItemButton component={RouterLink} to={ROUTES.about}>
                     <ListItemText primary="About" />
                 </ListItemButton>
                 <ListItemButton

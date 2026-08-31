@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { FC, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import AppBar from "./Components/Molecules/AppBar/AppBar";
 import DownloadList from "./Components/Molecules/DownloadList/DownloadList";
 import DrawerMenu from "./Components/Molecules/DrawerMenu/DrawerMenu";
@@ -32,6 +32,7 @@ import Services from "./Components/Pages/Services/Services";
 import AuthenticationProvider from "./Components/Providers/Authentication/AuthenticationProvider";
 import HotKeyProvider from "./Components/Providers/HotKey/HotKeyProvider";
 import JukeboxPlaybackProvider from "./Components/Providers/Jukebox/JukeboxPlaybackProvider";
+import { ROUTES } from "./routes";
 import createThemeWithMode from "./theme";
 
 export interface AppProps {
@@ -61,14 +62,14 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
     const theme = useMemo(() => createThemeWithMode(colorMode), [colorMode]);
 
     return (
-        <AuthenticationProvider>
-            <HotKeyProvider>
-                <JukeboxPlaybackProvider>
-                    <StyledEngineProvider injectFirst>
-                        <ThemeProvider theme={theme}>
-                            <CssBaseline />
-                            <AppBar toggleDrawer={toggleDrawer} />
-                            <BrowserRouter>
+        <BrowserRouter>
+            <AuthenticationProvider>
+                <HotKeyProvider>
+                    <JukeboxPlaybackProvider>
+                        <StyledEngineProvider injectFirst>
+                            <ThemeProvider theme={theme}>
+                                <CssBaseline />
+                                <AppBar toggleDrawer={toggleDrawer} />
                                 <Drawer
                                     open={isDrawerOpen}
                                     onClose={closeDrawer}
@@ -98,63 +99,72 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                 >
                                     <Routes>
                                         <Route
-                                            path="/"
+                                            path={ROUTES.home}
                                             element={<HomeAutomation />}
                                         />
                                         <Route
-                                            path="/music"
+                                            path={ROUTES.music}
                                             element={<JukeboxPage />}
                                         />
                                         <Route
-                                            path="/gears"
+                                            path={ROUTES.gears}
                                             element={<DownloadList />}
                                         />
                                         <Route
-                                            path="/dashboard"
+                                            path={ROUTES.dashboard}
                                             element={<Dashboard />}
                                         />
                                         <Route
-                                            path="/docker"
+                                            path={ROUTES.docker}
                                             element={<Docker />}
                                         />
                                         <Route
-                                            path="/caddy"
+                                            path={ROUTES.caddy}
                                             element={<Caddy />}
                                         />
                                         <Route
-                                            path="/services"
+                                            path={ROUTES.services}
                                             element={<Services />}
                                         />
                                         <Route
-                                            path="/services/logs/:id"
+                                            path={ROUTES.serviceLogs}
                                             element={<ServiceLogs />}
                                         />
                                         <Route
-                                            path="/datalora"
+                                            path={ROUTES.datalora}
                                             element={<DataLora />}
                                         />
                                         <Route
-                                            path="/cartwin"
+                                            path={ROUTES.cartwin}
                                             element={<CarTwinPage />}
                                         />
                                         <Route
-                                            path="/energy"
+                                            path={ROUTES.energy}
                                             element={<Energy />}
                                         />
                                         <Route
-                                            path="/about"
+                                            path={ROUTES.about}
                                             element={<Log />}
+                                        />
+                                        <Route
+                                            path="*"
+                                            element={
+                                                <Navigate
+                                                    to={ROUTES.home}
+                                                    replace
+                                                />
+                                            }
                                         />
                                     </Routes>
                                 </Box>
-                            </BrowserRouter>
-                            <MusicBar />
-                            <GlobalSnackbar />
-                        </ThemeProvider>
-                    </StyledEngineProvider>
-                </JukeboxPlaybackProvider>
-            </HotKeyProvider>
-        </AuthenticationProvider>
+                                <MusicBar />
+                                <GlobalSnackbar />
+                            </ThemeProvider>
+                        </StyledEngineProvider>
+                    </JukeboxPlaybackProvider>
+                </HotKeyProvider>
+            </AuthenticationProvider>
+        </BrowserRouter>
     );
 };
 

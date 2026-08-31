@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import { FC } from "react";
 import { Link as RouterLink, useParams } from "react-router";
+import { ROUTES } from "../../../routes";
 import { useGetContainerLogsQuery } from "../../../Services/servicesApi";
 
 export const ServiceLogs: FC = () => {
@@ -32,7 +33,7 @@ export const ServiceLogs: FC = () => {
                 >
                     <IconButton
                         component={RouterLink}
-                        to="/services"
+                        to={ROUTES.services}
                         size="small"
                         aria-label="Back to services"
                     >
