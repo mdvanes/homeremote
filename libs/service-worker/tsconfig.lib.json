@@ -1,14 +1,15 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "target": "es2022",
         "outDir": "../../dist/out-tsc",
-        "declaration": true,
-        "types": [
-            "node",
-            "@nx/react/typings/cssmodule.d.ts",
-            "@nx/react/typings/image.d.ts"
-        ]
+        // The service worker runs in a ServiceWorkerGlobalScope, not a window.
+        // Pulling in the "dom" lib from tsconfig.base.json conflicts with the
+        // webworker globals, so it is deliberately left out here.
+        "lib": ["esnext", "webworker"],
+        "types": []
     },
     "exclude": ["**/*.spec.ts", "**/*.test.ts", "vite.config.ts"],
     "include": ["**/*.ts"]

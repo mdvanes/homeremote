@@ -11,6 +11,7 @@ import {
 import {
     Controller,
     Get,
+    Header,
     HttpException,
     HttpStatus,
     Logger,
@@ -23,6 +24,7 @@ import { ConfigService } from "@nestjs/config";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import type { AuthenticatedRequest } from "../login/LoginRequest.types";
+import { toProxiedFile } from "../util/toProxiedFile";
 
 const DAYS_BEFORE = 3;
 const DAYS_AFTER = 7;
@@ -149,6 +151,7 @@ export class ScheduleController {
 
     @UseGuards(JwtAuthGuard)
     @Get("thumbnail/:kind/:id")
+    @Header("Cache-Control", "private, max-age=86400")
     async getThumbnail(
         @Param("kind") kind: "tvshow" | "movie",
         @Param("id") id: string,
@@ -168,7 +171,7 @@ export class ScheduleController {
             const str = got.stream(streamUrl, {
                 headers: { "X-Api-Key": apiKey },
             });
-            return new StreamableFile(str);
+            return await toProxiedFile(str);
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

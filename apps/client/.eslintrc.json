@@ -1,6 +1,6 @@
 {
     "extends": ["plugin:@nx/react", "../../.eslintrc.json"],
-    "ignorePatterns": ["!**/*", "assets/service-worker.js"],
+    "ignorePatterns": ["!**/*"],
     "overrides": [
         {
             "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],

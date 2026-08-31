@@ -5,37 +5,6 @@
     "projectType": "library",
     "tags": [],
     "targets": {
-        "build": {
-            "executor": "@nx/webpack:webpack",
-            "outputs": ["{options.outputPath}"],
-            "options": {
-                "compiler": "babel",
-                "outputPath": "dist/libs/service-worker",
-                "index": "apps/client/src/index.html",
-                "tsConfig": "libs/service-worker/tsconfig.lib.json",
-                "packageJson": "libs/service-worker/package.json",
-                "main": "libs/service-worker/src/service-worker.ts",
-                "generateIndexHtml": false,
-                "webpackConfig": "libs/service-worker/webpack.config.cjs"
-            },
-            "configurations": {
-                "production": {
-                    "optimization": true,
-                    "outputHashing": "none",
-                    "sourceMap": false,
-                    "namedChunks": false,
-                    "extractLicenses": false,
-                    "vendorChunk": false
-                },
-                "development": {
-                    "extractLicenses": false,
-                    "optimization": false,
-                    "sourceMap": true,
-                    "vendorChunk": true
-                }
-            },
-            "defaultConfiguration": "production"
-        },
         "lint": {
             "executor": "@nx/eslint:lint",
             "outputs": ["{options.outputFile}"]

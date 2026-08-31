@@ -18,6 +18,7 @@ import { logUrgentInfo } from "./Components/Molecules/LogCard/logSlice";
 import MusicBar, {
     MUSIC_BAR_HEIGHT,
 } from "./Components/Molecules/MusicBar/MusicBar";
+import OfflineBanner from "./Components/Molecules/OfflineBanner/OfflineBanner";
 import Caddy from "./Components/Pages/Caddy/Caddy";
 import { CarTwinPage } from "./Components/Pages/CarTwin/CarTwinPage";
 import Dashboard from "./Components/Pages/Dashboard/Dashboard";
@@ -80,7 +81,7 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                         toggleColorMode={toggleColorMode}
                                     />
                                 </Drawer>
-                                {/* TODO this was for checking online/offline status for AppCache <StatusBar/>*/}
+                                <OfflineBanner />
                                 <Box
                                     sx={
                                         isFullHd

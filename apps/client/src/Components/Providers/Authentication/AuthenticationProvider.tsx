@@ -1,17 +1,9 @@
-import {
-    Alert,
-    AlertTitle,
-    Container,
-    CssBaseline,
-    ThemeProvider as MuiThemeProvider,
-    StyledEngineProvider,
-    useMediaQuery,
-} from "@mui/material";
+import { Alert } from "@mui/material";
 import { FC, ReactNode, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Reducers";
+import { requestPersistentStorage } from "../../../Utils/requestPersistentStorage";
 import { useAppDispatch } from "../../../store";
-import createThemeWithMode from "../../../theme";
 import AppSkeleton from "../../Molecules/AppSkeleton/AppSkeleton";
 import LoginPage from "./LoginPage";
 import {
@@ -26,14 +18,9 @@ const UNAUTHORIZED_MESSAGE = `${LOGIN_ENDPOINT} Unauthorized`;
 const AuthenticationProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const dispatch = useAppDispatch();
 
-    // Pre-login screens can't use the dashboard's dark/light setting, so they
-    // follow the browser preference instead.
-    const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-
     const {
         error: authenticationError,
         isLoading,
-        isOffline,
         isSignedIn,
     } = useSelector<RootState, AuthenticationState>(
         (state: RootState) => state.authentication
@@ -42,6 +29,24 @@ const AuthenticationProvider: FC<{ children: ReactNode }> = ({ children }) => {
     useEffect(() => {
         dispatch(fetchAuth({ type: FetchAuthType.Current }));
     }, [dispatch]);
+
+    // While offline the profile request is answered by the service worker's
+    // OFFLINE fallback. Re-ask the moment the network is back so the banner
+    // clears without needing a reload.
+    useEffect(() => {
+        const onOnline = (): void => {
+            dispatch(fetchAuth({ type: FetchAuthType.Current }));
+        };
+
+        window.addEventListener("online", onOnline);
+        return () => window.removeEventListener("online", onOnline);
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (isSignedIn) {
+            requestPersistentStorage();
+        }
+    }, [isSignedIn]);
 
     const errorMessageAlert = authenticationError &&
         authenticationError.indexOf(LOGIN_ENDPOINT) > -1 && (
@@ -56,27 +61,12 @@ const AuthenticationProvider: FC<{ children: ReactNode }> = ({ children }) => {
         return <AppSkeleton />;
     } else if (!isSignedIn) {
         return <LoginPage errorMessage={errorMessageAlert} />;
-    } else if (isOffline) {
-        return (
-            <StyledEngineProvider injectFirst>
-                <MuiThemeProvider
-                    theme={createThemeWithMode(
-                        prefersDarkMode ? "dark" : "light"
-                    )}
-                >
-                    <CssBaseline />
-                    <Container style={{ marginTop: 8 }}>
-                        <Alert severity="warning">
-                            <AlertTitle>You are offline.</AlertTitle>
-                            The application can't continue until you are online.
-                        </Alert>
-                    </Container>
-                </MuiThemeProvider>
-            </StyledEngineProvider>
-        );
-    } else {
-        return <>{children}</>;
     }
+
+    // Being offline is no longer a blocker: the service worker serves the app
+    // shell and previously cached artwork, and OfflineBanner explains the
+    // state. See useIsOffline.
+    return <>{children}</>;
 };
 
 export default AuthenticationProvider;

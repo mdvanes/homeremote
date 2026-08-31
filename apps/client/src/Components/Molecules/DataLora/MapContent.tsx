@@ -16,6 +16,7 @@ const DEFAULT_BOUNDS = polygon([
 // Source: https://leaflet-extras.github.io/leaflet-providers/preview/
 const TILES_LAYER_DARK =
     "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png";
+// alternative: https://api.maptiler.com/maps/streets-v4-dark/style.json?key=INSERT_YOUR_OWN_API_KEY
 
 interface Props {
     coords: TrackerItem[][];

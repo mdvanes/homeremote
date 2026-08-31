@@ -6,6 +6,7 @@ import {
 import {
     Controller,
     Get,
+    Header,
     HttpException,
     HttpStatus,
     Logger,
@@ -20,6 +21,7 @@ import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import type { AuthenticatedRequest } from "../login/LoginRequest.types";
 import { isDefined } from "../util/isDefined";
+import { toProxiedFile } from "../util/toProxiedFile";
 
 @Controller("api/nextup")
 export class NextupController {
@@ -96,6 +98,7 @@ export class NextupController {
 
     @UseGuards(JwtAuthGuard)
     @Get("thumbnail/:id")
+    @Header("Cache-Control", "private, max-age=86400")
     async getThumbnail(
         @Param("id") id: string,
         @Query("imageTagsPrimary") imageTagsPrimary: string,
@@ -121,7 +124,7 @@ export class NextupController {
             }
 
             const str = got.stream(streamUrl);
-            return new StreamableFile(str);
+            return await toProxiedFile(str);
         } catch (err) {
             this.logger.error(`[${req.user.name}] ${err}`);
             throw new HttpException(

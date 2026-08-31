@@ -25,12 +25,12 @@ is wrapped by `StreamContainer` + `StyledStreamPlayer` and rendered together wit
 A `<select>` switches between four hard-coded channels. Each channel has a `streamUrl` and a
 `nowPlayingUrl`:
 
-| Channel       | Stream URL                                            | Now-playing endpoint        |
-| ------------- | ----------------------------------------------------- | --------------------------- |
-| NPO Radio 2   | `https://icecast.omroep.nl/radio2-bb-mp3`             | `/api/nowplaying/radio2`    |
-| 3FM           | `https://icecast.omroep.nl/3fm-bb-mp3`                | `/api/nowplaying/radio3`    |
-| Sky Radio     | `https://19993.live.streamtheworld.com/SKYRADIO.mp3`  | `/api/nowplaying/sky`       |
-| Pinguin Radio | `http://streams.pinguinradio.com/PinguinRadio320.mp3` | `/api/nowplaying/pinguin`   |
+| Channel       | Stream URL                                            | Now-playing endpoint      |
+| ------------- | ----------------------------------------------------- | ------------------------- |
+| NPO Radio 2   | `https://icecast.omroep.nl/radio2-bb-mp3`             | `/api/nowplaying/radio2`  |
+| 3FM           | `https://icecast.omroep.nl/3fm-bb-mp3`                | `/api/nowplaying/radio3`  |
+| Sky Radio     | `https://19993.live.streamtheworld.com/SKYRADIO.mp3`  | `/api/nowplaying/sky`     |
+| Pinguin Radio | `http://streams.pinguinradio.com/PinguinRadio320.mp3` | `/api/nowplaying/pinguin` |
 
 NPO Radio 2 is the default channel.
 
@@ -82,9 +82,9 @@ Component: `PreviouslyPlayedCard`. Shows the tracks recently played on the radio
 - Expanded state: a `Paper` `List` (max height 400px, scrollable) with an up-arrow to collapse and a
   `LoadingDot` reflecting `isLoading || isFetching`.
 - Each track row (`PreviouslyResponse`) shows:
-  - **Primary**: `artist - title`. If the track has a `listenUrl`, the primary text is a link.
-  - **Secondary**: `time.start` formatted as `HH:MM`, followed by `broadcast.title / broadcast.presenters`.
-  - **Background image**: `songImageUrl ?? broadcast.imageUrl`, shown right-aligned, contained, no-repeat.
+    - **Primary**: `artist - title`. If the track has a `listenUrl`, the primary text is a link.
+    - **Secondary**: `time.start` formatted as `HH:MM`, followed by `broadcast.title / broadcast.presenters`.
+    - **Background image**: `songImageUrl ?? broadcast.imageUrl`, shown right-aligned, contained, no-repeat.
 - Rows are keyed by `time.start`.
 
 ### Server data source
@@ -108,26 +108,28 @@ Components: `Jukebox`, `JukeboxPlayer`, `JukeboxSongList`, plus `AddSongToPlayli
   `received`.
 - `CardExpandBar` ("browse") toggles the browse panel open/closed.
 - When no playlist is selected, a `List` of playlists is shown. Each item has:
-  - an `Avatar` cover-art image from `/api/jukebox/coverart/:id?type=<type>&hash=<name>`,
-  - the playlist `name`,
-  - a star icon when `type === "album"`.
-  - Selecting a playlist stores it in `localStorage` under `LAST_PLAYLIST`.
+    - an `Avatar` cover-art image from `/api/jukebox/coverart/:id?type=<type>&hash=<name>`. In
+      production the service worker caches these cache-first, so covers you have already seen keep
+      rendering offline (see "Offline mode (PWA)" in the root README),
+    - the playlist `name`,
+    - a star icon when `type === "album"`.
+    - Selecting a playlist stores it in `localStorage` under `LAST_PLAYLIST`.
 - `JukeboxSongList` shows the selected playlist's songs with a "back" button (clears the selection).
-  - Album tracks show `track. title`; other songs show `artist - title`.
-  - Selecting a song sets it as current, stores it under `LAST_SONG`, and starts playback after a short
-    delay (waiting for the `<audio>` to load the new `src`).
+    - Album tracks show `track. title`; other songs show `artist - title`.
+    - Selecting a song sets it as current, stores it under `LAST_SONG`, and starts playback after a short
+      delay (waiting for the `<audio>` to load the new `src`).
 
 ### Player (`JukeboxPlayer`)
 
 - Plays `<audio controls src="/api/jukebox/song/:id?hash=<artist - title>">`.
 - Shows `artist - title` and the playlist name.
 - Controls:
-  - **Previous** (`getPrevSong`) — title "Previous track (a)".
-  - **Next** (`getNextSong`) — title "Next track (d)"; also fired on the audio `ended` event (auto-advance).
-  - **Skip radio** (`Forward10Icon`) — calls `handleSkipRadio`; while a skip is active the button is
-    disabled-looking and titled "Skip radio in progress!".
-  - **HotKeyCoach** — help popper listing the keyboard shortcuts.
-  - **AddSongToPlaylistButton** — adds the current song to a playlist.
+    - **Previous** (`getPrevSong`) — title "Previous track (a)".
+    - **Next** (`getNextSong`) — title "Next track (d)"; also fired on the audio `ended` event (auto-advance).
+    - **Skip radio** (`Forward10Icon`) — calls `handleSkipRadio`; while a skip is active the button is
+      disabled-looking and titled "Skip radio in progress!".
+    - **HotKeyCoach** — help popper listing the keyboard shortcuts.
+    - **AddSongToPlaylistButton** — adds the current song to a playlist.
 - Prev/next handlers are published to `HotKeyProvider` (`setHandlePlayPrev` / `setHandlePlayNext`) so the
   keyboard shortcuts can drive them.
 
@@ -156,14 +158,14 @@ global hotkeys and the "skip radio" logic can play/pause the jukebox.
 
 Key presses are ignored while typing in an `INPUT` element. The map:
 
-| Key | Action                                |
-| --- | ------------------------------------- |
-| `q` | play/pause radio                      |
-| `w` | toggle between radio and jukebox      |
-| `a` | play previous on jukebox              |
-| `s` | play/pause jukebox                    |
-| `d` | play next on jukebox                  |
-| `f` | skip radio (N minutes — see below)    |
+| Key | Action                             |
+| --- | ---------------------------------- |
+| `q` | play/pause radio                   |
+| `w` | toggle between radio and jukebox   |
+| `a` | play previous on jukebox           |
+| `s` | play/pause jukebox                 |
+| `d` | play next on jukebox               |
+| `f` | skip radio (N minutes — see below) |
 
 - **toggleRadio** — sends `Play`/`Pause` to the radio port (and clears any active skip).
 - **toggleJukebox** — plays/pauses the jukebox `<audio>` (and clears any active skip).
