@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import ApiBaseState from "../../../Reducers/state.types";
 import fetchToJson from "../../../fetchToJson";
+import { clearMediaArtCache } from "../../../serviceWorkerCache";
 
 export interface AuthenticationState extends ApiBaseState {
     id: number;
@@ -47,8 +48,18 @@ interface FetchAuthArgs {
 
 export const fetchAuth = createAsyncThunk<FetchAuthReturned, FetchAuthArgs>(
     `authentication/fetchAuth`,
-    async ({ type, init }) =>
-        fetchToJson<FetchAuthReturned>(authEndpoint[type], init)
+    async ({ type, init }) => {
+        const result = await fetchToJson<FetchAuthReturned>(
+            authEndpoint[type],
+            init
+        );
+
+        if (type === FetchAuthType.Logout) {
+            clearMediaArtCache();
+        }
+
+        return result;
+    }
 );
 
 interface AuthConfigResponse {

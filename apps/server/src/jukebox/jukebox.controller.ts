@@ -25,6 +25,7 @@ import {
     Body,
     Controller,
     Get,
+    Header,
     HttpException,
     HttpStatus,
     Logger,
@@ -39,6 +40,7 @@ import { ConfigService } from "@nestjs/config";
 import { createHash, randomBytes } from "crypto";
 import got from "got";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { toProxiedFile } from "../util/toProxiedFile";
 
 const PLAYER_NAME = "HomeRemoteJukebox";
 
@@ -424,6 +426,7 @@ export class JukeboxController {
     }
 
     @Get("coverart/:id")
+    @Header("Cache-Control", "private, max-age=86400")
     async getCoverArt(
         @Param("id") id: string,
         @Query("type") type: "song" | "album" | "playlist",
@@ -471,7 +474,7 @@ export class JukeboxController {
 
             const streamUrl = this.getAPI("getCoverArt", `&id=${coverArtId}`);
             const str = got.stream(streamUrl);
-            return new StreamableFile(str);
+            return await toProxiedFile(str);
         } catch (err) {
             if (err instanceof HttpException) {
                 throw err;

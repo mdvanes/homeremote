@@ -8,6 +8,7 @@
 // You can also remove this file if you'd prefer not to use a
 // service worker, and the Workbox build step will be skipped.
 
+import { CacheableResponsePlugin } from "workbox-cacheable-response";
 import { clientsClaim, RouteHandlerCallbackOptions } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
 import {
@@ -16,7 +17,11 @@ import {
     type PrecacheEntry,
 } from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
-import { NetworkOnly, StaleWhileRevalidate } from "workbox-strategies";
+import {
+    CacheFirst,
+    NetworkOnly,
+    StaleWhileRevalidate,
+} from "workbox-strategies";
 
 // InjectManifest replaces self.__WB_MANIFEST at build time with the list of
 // precached assets. Declaring it here keeps the reference typed; without the
@@ -28,6 +33,8 @@ declare global {
 }
 
 declare const self: ServiceWorkerGlobalScope;
+
+const MEDIA_ART_CACHE = "media-art-v1";
 
 clientsClaim();
 
@@ -89,9 +96,67 @@ self.addEventListener("message", (event) => {
     if (event.data && event.data.type === "SKIP_WAITING") {
         self.skipWaiting();
     }
+
+    // The nextup and schedule images sit behind an auth guard, so cached copies
+    // must not outlive the session on a shared device. The client posts this on
+    // logout.
+    if (event.data && event.data.type === "CLEAR_MEDIA_ART_CACHE") {
+        event.waitUntil(caches.delete(MEDIA_ART_CACHE));
+    }
 });
 
 // Any other custom service worker logic can go here.
+
+// Media artwork proxied by our own server. Caching it means covers and posters
+// that have already been seen keep rendering while offline, and repeat visits
+// don't re-download them.
+//
+// These two are content addressed: the jukebox passes the album name as `hash`
+// and Jellyfin passes an image tag as `imageTagsPrimary`, so the URL changes
+// whenever the artwork changes. Workbox includes the query string in the cache
+// key by default, which makes a stale entry impossible here - hence CacheFirst.
+const CONTENT_ADDRESSED_ART_PATHS = [
+    "/api/jukebox/coverart/",
+    "/api/nextup/thumbnail/",
+];
+
+const artPlugins = () => [
+    // Only cache successes. A 404 (no artwork for this album) or a 401
+    // (expired session) must not be stored, so the client keeps falling back
+    // to its placeholder and retries once it is signed in again.
+    new CacheableResponsePlugin({ statuses: [200] }),
+    new ExpirationPlugin({
+        maxEntries: 500,
+        maxAgeSeconds: 30 * 24 * 60 * 60,
+        purgeOnQuotaError: true,
+    }),
+];
+
+registerRoute(
+    ({ url, sameOrigin }) =>
+        sameOrigin &&
+        CONTENT_ADDRESSED_ART_PATHS.some((path) =>
+            url.pathname.startsWith(path)
+        ),
+    new CacheFirst({
+        cacheName: MEDIA_ART_CACHE,
+        plugins: artPlugins(),
+    }),
+    "GET"
+);
+
+// Sonarr/Radarr posters are served from a stable URL with no cache buster, so
+// they can change upstream without the URL changing. Revalidate in the
+// background instead of pinning the first response forever.
+registerRoute(
+    ({ url, sameOrigin }) =>
+        sameOrigin && url.pathname.startsWith("/api/schedule/thumbnail/"),
+    new StaleWhileRevalidate({
+        cacheName: MEDIA_ART_CACHE,
+        plugins: artPlugins(),
+    }),
+    "GET"
+);
 
 // Return a fixed response when for "get current profile" when offline
 const networkOnly = new NetworkOnly();
