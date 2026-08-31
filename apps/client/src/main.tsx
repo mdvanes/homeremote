@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import App, { AppProps } from "./App";
 import { isDemoMode, startDemo } from "./demo";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import { register, unregister } from "./serviceWorkerRegistration";
 // import reportWebVitals from './reportWebVitals';
 import { store } from "./store";
 
@@ -16,10 +16,7 @@ const root = ReactDOM.createRoot(
 );
 
 const registerServiceWorker = (): void => {
-    // If you want your app to work offline and load faster, you can change
-    // unregister() to register() below. Note this comes with some pitfalls.
-    // Learn more about service workers: https://cra.link/PWA
-    serviceWorkerRegistration.register({
+    register({
         onSuccess: (message) => {
             const { logSuccess } = swCallbacks;
             if (logSuccess) {
@@ -39,9 +36,16 @@ const bootstrap = async (): Promise<void> => {
     const demo = isDemoMode();
 
     // In demo mode the Mock Service Worker must be running before the app makes
-    // any request. Skip the PWA service worker so it doesn't clash with the
-    // demo worker over the same "/" scope.
+    // any request, and it needs the same "/" scope as the PWA service worker.
+    // Only one worker can control a page, so the PWA one has to go first. That
+    // includes the case where demo mode is switched on at runtime with ?demo on
+    // a production build that is already being controlled - hence the reload.
     if (demo) {
+        const wasControlling = await unregister();
+        if (wasControlling) {
+            window.location.reload();
+            return;
+        }
         await startDemo();
     }
 
