@@ -15,7 +15,7 @@ const DEFAULT_BOUNDS = polygon([
 // const TILES_LAYER_BW = "https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png";
 // Source: https://leaflet-extras.github.io/leaflet-providers/preview/
 const TILES_LAYER_DARK =
-    "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+    "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png";
 
 interface Props {
     coords: TrackerItem[][];
