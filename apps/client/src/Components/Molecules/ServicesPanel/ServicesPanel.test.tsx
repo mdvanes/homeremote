@@ -154,7 +154,7 @@ describe("ServicesPanel", () => {
         await userEvent.click(screen.getByText("media"));
 
         expect(await screen.findByTestId("location")).toHaveTextContent(
-            "/services?stack=3"
+            "/services/media"
         );
     });
 

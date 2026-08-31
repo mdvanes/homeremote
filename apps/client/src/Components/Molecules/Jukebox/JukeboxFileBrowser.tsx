@@ -1,6 +1,6 @@
 import { BrowseItem, IPlaylist, ISong } from "@homeremote/types";
 import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
-import { Dispatch, FC, SetStateAction } from "react";
+import { FC } from "react";
 import { useGetBrowseQuery } from "../../../Services/jukeboxApi";
 import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
 import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
@@ -16,7 +16,7 @@ export interface PathEntry {
 
 interface JukeboxFileBrowserProps {
     path: PathEntry[];
-    setPath: Dispatch<SetStateAction<PathEntry[]>>;
+    onNavigate: (path: PathEntry[]) => void;
 }
 
 /**
@@ -24,8 +24,10 @@ interface JukeboxFileBrowserProps {
  * (artists -> albums -> songs, arbitrary depth). Clicking a song starts
  * playback via the shared JukeboxPlaybackProvider, which the persistent
  * MusicBar reads from, so it keeps playing across navigation. The current
- * path is controlled by JukeboxPage so the Recently added/Favorites tabs can
- * also navigate here (open an album's songs).
+ * path is owned by the URL (`/music/browse/<title>/...`); JukeboxPage
+ * resolves it to ids and passes the result down here, and `onNavigate`
+ * pushes a new URL for the Recently added/Favorites tabs' "open this album"
+ * action too.
  *
  * At each level below the artist, the fetched directory's children are
  * either all sub-directories (further albums, or e.g. multi-disc folders)
@@ -33,18 +35,21 @@ interface JukeboxFileBrowserProps {
  * artist biography below it at the top level, i.e. an artist's albums);
  * songs render as a list next to the album's cover art/description sidebar.
  */
-const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
+const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({
+    path,
+    onNavigate,
+}) => {
     const { setCurrentPlaylist, setCurrentSong } = useJukeboxPlaybackContext();
     const { pauseRadio, playJukebox } = useHotKeyContext();
     const currentDir = path[path.length - 1];
     const { data, isLoading } = useGetBrowseQuery(currentDir?.id);
 
     const handleOpenDir = (item: BrowseItem) => {
-        setPath((prev) => [...prev, { id: item.id, title: item.title }]);
+        onNavigate([...path, { id: item.id, title: item.title }]);
     };
 
     const handleBreadcrumbClick = (index: number) => {
-        setPath((prev) => prev.slice(0, index + 1));
+        onNavigate(path.slice(0, index + 1));
     };
 
     const handlePlaySong = (item: BrowseItem) => {
@@ -92,7 +97,7 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({ path, setPath }) => {
                 <Link
                     component="button"
                     underline={path.length === 0 ? "none" : "hover"}
-                    onClick={() => setPath([])}
+                    onClick={() => onNavigate([])}
                 >
                     Artists
                 </Link>

@@ -15,8 +15,14 @@ import {
     Tab,
     Tabs,
 } from "@mui/material";
-import { FC, useRef, useState } from "react";
-import { Link as RouterLink, useSearchParams } from "react-router";
+import { FC, useEffect, useRef, useState } from "react";
+import {
+    Link as RouterLink,
+    useNavigate,
+    useParams,
+    useSearchParams,
+} from "react-router";
+import { buildServicesStackPath, ROUTES } from "../../../routes";
 import { useGetServicesQuery } from "../../../Services/servicesApi";
 import { healthColor } from "../../Molecules/ServicesPanel/HealthDot";
 import { LinkConfigSectionHandle } from "./LinkConfigSection";
@@ -24,57 +30,83 @@ import { StackDetail } from "./StackDetail";
 
 const UPDATE_INTERVAL_MS = 30000;
 
+// A stack can be looked up either by its (readable, URL-friendly) Name - the
+// canonical form for new links - or by its Id, kept as a fallback so old
+// `?stack=<Id>` bookmarks/links still resolve to the right stack.
+const findStack = (
+    stacks: ServiceStack[],
+    identifier: string | undefined
+): ServiceStack | undefined =>
+    identifier === undefined
+        ? undefined
+        : (stacks.find((stack) => stack.Name === identifier) ??
+          stacks.find((stack) => stack.Id === identifier));
+
 export const Services: FC = () => {
     const { data, isFetching, refetch } = useGetServicesQuery(undefined, {
         pollingInterval: UPDATE_INTERVAL_MS,
     });
-    const [searchParams, setSearchParams] = useSearchParams();
-    // Deep-link support: /services?stack=<id> opens directly on that stack
-    // (e.g. clicked from a dashboard row). Falls back to the first stack.
-    const [selected, setSelected] = useState<string | false>(
-        searchParams.get("stack") ?? false
-    );
+    const navigate = useNavigate();
+    const { stackName } = useParams<{ stackName: string }>();
+    const [searchParams] = useSearchParams();
+    const decodedStackName = stackName
+        ? decodeURIComponent(stackName)
+        : undefined;
+    // Legacy deep-link support: /services?stack=<Id> (e.g. an old bookmark, or
+    // a link clicked from a dashboard row before the URL scheme changed).
+    const legacyStackId = searchParams.get("stack") ?? undefined;
 
     const received = data?.status === "received" ? data : undefined;
     const stacks: ServiceStack[] = received?.stacks ?? [];
 
-    const activeId =
-        selected !== false && stacks.some((stack) => stack.Id === selected)
-            ? selected
-            : stacks[0]?.Id;
-    const active = stacks.find((stack) => stack.Id === activeId);
+    const active =
+        findStack(stacks, decodedStackName) ??
+        findStack(stacks, legacyStackId) ??
+        stacks[0];
+
+    // Normalise the URL once the stacks are known: redirect a bare /services,
+    // a legacy ?stack=<Id> link, or an unknown stack name onto the canonical
+    // /services/<Name> path for the resolved active stack. Uses `replace` so
+    // this normalisation never creates an extra history entry.
+    useEffect(() => {
+        if (stacks.length === 0 || !active) {
+            return;
+        }
+        const canonicalName = active.Name;
+        if (decodedStackName !== canonicalName) {
+            navigate(buildServicesStackPath(canonicalName), {
+                replace: true,
+            });
+        }
+    }, [stacks.length, active, decodedStackName, navigate]);
 
     const linkConfigRef = useRef<LinkConfigSectionHandle>(null);
-    const [pendingStackId, setPendingStackId] = useState<string | null>(null);
+    const [pendingStackName, setPendingStackName] = useState<string | null>(
+        null
+    );
 
-    const selectStack = (id: string) => {
-        setSelected(id);
-        setSearchParams(
-            (prev) => {
-                const next = new URLSearchParams(prev);
-                next.set("stack", id);
-                return next;
-            },
-            { replace: true }
-        );
+    // Pushed (not replaced) so the browser back/forward buttons step through
+    // previously viewed stacks.
+    const selectStack = (name: string) => {
+        navigate(buildServicesStackPath(name));
     };
 
-    const requestSelectStack = (id: string) => {
-        if (id === activeId) {
+    const requestSelectStack = (name: string) => {
+        if (name === active?.Name) {
             return;
         }
         if (linkConfigRef.current?.hasUnsavedChanges()) {
-            setPendingStackId(id);
+            setPendingStackName(name);
             return;
         }
-        selectStack(id);
+        selectStack(name);
     };
 
     const confirmDiscardChanges = () => {
-        if (pendingStackId) {
-            selectStack(pendingStackId);
+        if (pendingStackName) {
+            selectStack(pendingStackName);
         }
-        setPendingStackId(null);
+        setPendingStackName(null);
     };
 
     return (
@@ -90,7 +122,7 @@ export const Services: FC = () => {
                 >
                     <IconButton
                         component={RouterLink}
-                        to="/dashboard"
+                        to={ROUTES.dashboard}
                         size="small"
                         aria-label="Back to dashboard"
                     >
@@ -111,7 +143,7 @@ export const Services: FC = () => {
                 {stacks.length > 0 && (
                     <>
                         <Tabs
-                            value={activeId ?? false}
+                            value={active?.Name ?? false}
                             onChange={(_event, value) =>
                                 requestSelectStack(value)
                             }
@@ -126,7 +158,7 @@ export const Services: FC = () => {
                             {stacks.map((stack) => (
                                 <Tab
                                     key={stack.Id}
-                                    value={stack.Id}
+                                    value={stack.Name}
                                     label={stack.Name}
                                     sx={{
                                         minHeight: 36,
@@ -150,8 +182,8 @@ export const Services: FC = () => {
                 )}
             </CardContent>
             <Dialog
-                open={pendingStackId !== null}
-                onClose={() => setPendingStackId(null)}
+                open={pendingStackName !== null}
+                onClose={() => setPendingStackName(null)}
             >
                 <DialogTitle>Discard unsaved changes?</DialogTitle>
                 <DialogContent>
@@ -161,7 +193,7 @@ export const Services: FC = () => {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setPendingStackId(null)}>
+                    <Button onClick={() => setPendingStackName(null)}>
                         Cancel
                     </Button>
                     <Button color="error" onClick={confirmDiscardChanges}>

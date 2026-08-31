@@ -54,7 +54,11 @@ export const StackDetail: FC<StackDetailProps> = ({ stack, linkConfigRef }) => {
 
             <Box>
                 {stack.containers.map((container) => (
-                    <ContainerRow key={container.Id} container={container} />
+                    <ContainerRow
+                        key={container.Id}
+                        container={container}
+                        stackName={stack.Name}
+                    />
                 ))}
                 {stack.containers.length === 0 && (
                     <Box

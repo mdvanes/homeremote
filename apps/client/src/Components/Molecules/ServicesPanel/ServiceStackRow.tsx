@@ -3,6 +3,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { Box, IconButton } from "@mui/material";
 import { FC, KeyboardEventHandler } from "react";
 import { useNavigate } from "react-router";
+import { buildServicesStackPath } from "../../../routes";
 import { ContainerDots } from "./ContainerDots";
 import { HealthDot } from "./HealthDot";
 import { ServiceStackActions } from "./ServiceStackActions";
@@ -17,7 +18,7 @@ export const ServiceStackRow: FC<ServiceStackRowProps> = ({ stack }) => {
     const isHealthy = stack.health === "running";
 
     const openDetail = () => {
-        navigate(`/services?stack=${encodeURIComponent(stack.Id)}`);
+        navigate(buildServicesStackPath(stack.Name));
     };
 
     const openDetailOnKeyDown: KeyboardEventHandler = (event) => {

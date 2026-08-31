@@ -5,15 +5,20 @@ import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { Box, Chip, CircularProgress, IconButton } from "@mui/material";
 import { FC } from "react";
 import { Link as RouterLink } from "react-router";
+import { buildServicesStackLogsPath } from "../../../routes";
 import { useControlContainerMutation } from "../../../Services/servicesApi";
 import { HealthDot } from "../../Molecules/ServicesPanel/HealthDot";
 import { formatUptime } from "./uptime";
 
 interface ContainerRowProps {
     container: ServiceContainer;
+    stackName: string;
 }
 
-export const ContainerRow: FC<ContainerRowProps> = ({ container }) => {
+export const ContainerRow: FC<ContainerRowProps> = ({
+    container,
+    stackName,
+}) => {
     const [controlContainer, { isLoading }] = useControlContainerMutation();
     const uptime = formatUptime(container.createdAt);
 
@@ -100,7 +105,7 @@ export const ContainerRow: FC<ContainerRowProps> = ({ container }) => {
                 {isLoading && <CircularProgress size={14} />}
                 <IconButton
                     component={RouterLink}
-                    to={`/services/logs/${container.Id}`}
+                    to={buildServicesStackLogsPath(stackName, container.Id)}
                     size="small"
                     title="Logs"
                     aria-label={`Logs for ${container.Name}`}

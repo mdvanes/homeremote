@@ -1,78 +1,72 @@
-import { Box, Card, Tab, Tabs, Tooltip } from "@mui/material";
-import { Dispatch, FC, SetStateAction, SyntheticEvent } from "react";
-import { useSearchParams } from "react-router";
+import {
+    Box,
+    Card,
+    CircularProgress,
+    Tab,
+    Tabs,
+    Tooltip,
+    Typography,
+} from "@mui/material";
+import { FC, SyntheticEvent, useMemo } from "react";
+import { useLocation, useNavigate, useParams } from "react-router";
+import {
+    buildMusicBrowsePath,
+    decodeMusicSegment,
+    ROUTES,
+} from "../../../routes";
 import { AddSongToPlaylistButton } from "../../Molecules/Jukebox/AddSongToPlaylistButton";
 import JukeboxFavorites from "../../Molecules/Jukebox/JukeboxFavorites";
 import JukeboxFileBrowser, {
     PathEntry,
 } from "../../Molecules/Jukebox/JukeboxFileBrowser";
 import JukeboxRecent from "../../Molecules/Jukebox/JukeboxRecent";
+import { useBrowsePathResolver } from "../../Molecules/Jukebox/useBrowsePathResolver";
 import { SongNotificationToggle } from "../../Molecules/MusicBar/SongNotificationToggle";
-
-const TAB_COUNT = 3;
 
 // Approximate space taken up by the AppBar, page margins and the fixed
 // bottom MusicBar, so the page itself never needs to scroll - only the tab
 // content below the (always visible) Tabs row does.
 const JUKEBOX_PAGE_HEIGHT = "calc(100vh - 210px)";
 
-const parsePath = (raw: string | null): PathEntry[] => {
-    if (!raw) {
-        return [];
+const TAB_PATHS = [
+    ROUTES.musicBrowse,
+    ROUTES.musicRecent,
+    ROUTES.musicFavorites,
+];
+
+const tabForPathname = (pathname: string): number => {
+    if (pathname.startsWith(ROUTES.musicRecent)) {
+        return 1;
     }
-    try {
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) {
-            return [];
-        }
-        return parsed.filter(
-            (entry): entry is PathEntry =>
-                typeof entry?.id === "string" &&
-                typeof entry?.title === "string"
-        );
-    } catch {
-        return [];
+    if (pathname.startsWith(ROUTES.musicFavorites)) {
+        return 2;
     }
+    return 0;
 };
 
 /**
- * Tab and Browse-tab path are kept in the URL (query params `tab`/`path`) so
- * a browser refresh (or the back/forward buttons) returns to the same view.
+ * Tab and Browse-tab path both live in the URL (`/music/browse/<title>/...`,
+ * `/music/recent`, `/music/favorites`) so a browser refresh, a pasted link,
+ * or the back/forward buttons all return to the exact same view.
  */
 const JukeboxPage: FC = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const location = useLocation();
+    const navigate = useNavigate();
+    // Only populated when this instance is rendered by the `musicBrowsePath`
+    // ("/music/browse/*") route; undefined for the recent/favorites routes.
+    const params = useParams<{ "*": string }>();
 
-    const tabParam = parseInt(searchParams.get("tab") || "0", 10);
-    const tab = tabParam >= 0 && tabParam < TAB_COUNT ? tabParam : 0;
-    const path = parsePath(searchParams.get("path"));
+    const tab = tabForPathname(location.pathname);
 
-    const setPath: Dispatch<SetStateAction<PathEntry[]>> = (update) => {
-        setSearchParams(
-            (prev) => {
-                const currentPath = parsePath(prev.get("path"));
-                const nextPath =
-                    typeof update === "function" ? update(currentPath) : update;
-                const next = new URLSearchParams(prev);
-                if (nextPath.length > 0) {
-                    next.set("path", JSON.stringify(nextPath));
-                } else {
-                    next.delete("path");
-                }
-                return next;
-            },
-            { replace: true }
-        );
-    };
+    const segments = useMemo(() => {
+        const splat = params["*"] ?? "";
+        return splat.split("/").filter(Boolean).map(decodeMusicSegment);
+    }, [params]);
+
+    const resolution = useBrowsePathResolver(segments);
 
     const handleChange = (_: SyntheticEvent, value: number) => {
-        setSearchParams(
-            (prev) => {
-                const next = new URLSearchParams(prev);
-                next.set("tab", String(value));
-                return next;
-            },
-            { replace: true }
-        );
+        navigate(TAB_PATHS[value]);
     };
 
     const navigateToAlbum = (
@@ -81,18 +75,14 @@ const JukeboxPage: FC = () => {
         artist?: string,
         artistId?: string
     ) => {
-        const newPath: PathEntry[] =
+        const entries: PathEntry[] =
             artist && artistId ? [{ id: artistId, title: artist }] : [];
-        newPath.push({ id, title: name });
-        setSearchParams(
-            (prev) => {
-                const next = new URLSearchParams(prev);
-                next.set("tab", "0");
-                next.set("path", JSON.stringify(newPath));
-                return next;
-            },
-            { replace: true }
-        );
+        entries.push({ id, title: name });
+        navigate(buildMusicBrowsePath(entries), { state: entries });
+    };
+
+    const handleBrowseNavigate = (path: PathEntry[]) => {
+        navigate(buildMusicBrowsePath(path), { state: path });
     };
 
     return (
@@ -133,8 +123,27 @@ const JukeboxPage: FC = () => {
                     p: 2,
                 }}
             >
-                {tab === 0 && (
-                    <JukeboxFileBrowser path={path} setPath={setPath} />
+                {tab === 0 && resolution.status === "resolving" && (
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            mt: 4,
+                        }}
+                    >
+                        <CircularProgress size={24} />
+                    </Box>
+                )}
+                {tab === 0 && resolution.status === "notFound" && (
+                    <Typography variant="body2" color="error">
+                        That path could not be found.
+                    </Typography>
+                )}
+                {tab === 0 && resolution.status === "resolved" && (
+                    <JukeboxFileBrowser
+                        path={resolution.entries}
+                        onNavigate={handleBrowseNavigate}
+                    />
                 )}
                 {tab === 1 && <JukeboxRecent onSelectAlbum={navigateToAlbum} />}
                 {tab === 2 && (
