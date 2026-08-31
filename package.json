@@ -1,6 +1,6 @@
 {
     "name": "homeremote",
-    "version": "3.23.1",
+    "version": "3.23.2",
     "license": "MIT",
     "type": "module",
     "scripts": {
