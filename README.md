@@ -35,7 +35,7 @@ Home automation dashboard
 
 # Introduction
 
-React/NestJS Home automation dashboard. 
+React/NestJS Home automation dashboard.
 
 The NestJS backend aggregates data from various home-automation services and exposes a unified REST API.
 
@@ -90,13 +90,13 @@ The file is a map keyed by lowercase stack name:
 
 ```yaml
 pi-hole:
-  type: fqdn
-  fqdn: pihole.home.arpa
-  icon: pihole
+    type: fqdn
+    fqdn: pihole.home.arpa
+    icon: pihole
 monitoring:
-  type: port
-  port: 3000
-  icon: insights
+    type: port
+    port: 3000
+    icon: insights
 ```
 
 - `type`: `none`, `port`, or `fqdn`
@@ -113,9 +113,9 @@ Bind-mount the file at the container path configured by `SERVICES_CONFIG_PATH`
 
 ```yaml
 services:
-  homeremote:
-    volumes:
-      - ./settings/services-links.yaml:/config/services-links.yaml
+    homeremote:
+        volumes:
+            - ./settings/services-links.yaml:/config/services-links.yaml
 ```
 
 The file must already exist on the host before starting the container,
@@ -208,6 +208,47 @@ matching entry in the `users` array of `auth.json`.
 
 - **Deny access:** omit a user from `auth.json` (or remove their entry) to deny
   them access, even if Authentik successfully authenticates them.
+
+# Offline mode (PWA)
+
+HomeRemote installs a service worker in production builds, so it keeps working — in a limited
+way — when the network or the server is unreachable.
+
+**What is cached**
+
+| What                                                                                    | Strategy               | Lifetime                 |
+| --------------------------------------------------------------------------------------- | ---------------------- | ------------------------ |
+| App shell (`index.html`, JS/CSS bundles, icons, `manifest.json`)                        | precache               | replaced on every deploy |
+| Album art (`/api/jukebox/coverart/`) and Jellyfin thumbnails (`/api/nextup/thumbnail/`) | cache-first            | 500 entries / 30 days    |
+| Sonarr/Radarr posters (`/api/schedule/thumbnail/`)                                      | stale-while-revalidate | 500 entries / 30 days    |
+
+The first two carry a cache buster in the URL (the album name as `hash`, the Jellyfin image tag as
+`imageTagsPrimary`), so the URL changes whenever the artwork does and a stale image is impossible.
+Schedule posters have no such parameter, so they are revalidated in the background instead.
+
+Only successful (`200`) responses are cached, so a missing cover (`404`) or an expired session
+(`401`) is not stored and the UI keeps showing its placeholder.
+
+**What is _not_ cached:** every other API response. Offline you get the app shell, previously seen
+artwork and a persistent banner explaining that live data and controls are unavailable. The banner
+is raised by either `navigator.onLine` flipping or the service worker answering
+`/api/profile/current` with its `OFFLINE` fallback, and clears as soon as the connection returns.
+
+**Privacy:** the nextup and schedule images sit behind the login, so the cache is dropped on logout.
+
+**Notes**
+
+- The service worker is a build artifact (`dist/apps/client/service-worker.js`), generated from
+  `libs/service-worker/src/service-worker.ts` by `workbox-webpack-plugin`'s `InjectManifest` during
+  a production client build. It is not committed, and it is not registered by `npm start`.
+- Updates apply automatically: a new version prompts the current page to hand over and reload.
+  To force it, use DevTools → Application → Service Workers → _Update_/_Unregister_.
+- To clear the cached artwork by hand: DevTools → Application → Cache Storage → delete
+  `media-art-v1`.
+- Caching only works when the client and the API share an origin. `NX_PUBLIC_BASE_URL` is empty by
+  default, which is exactly that; pointing it at another origin silently disables the image caching.
+- The service worker is skipped in demo mode, because the Mock Service Worker needs the same `/`
+  scope and only one worker can control a page.
 
 # Demo mode
 
