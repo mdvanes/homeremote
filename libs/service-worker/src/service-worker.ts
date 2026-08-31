@@ -10,9 +10,22 @@
 
 import { clientsClaim, RouteHandlerCallbackOptions } from "workbox-core";
 import { ExpirationPlugin } from "workbox-expiration";
-import { createHandlerBoundToURL, precacheAndRoute } from "workbox-precaching";
+import {
+    createHandlerBoundToURL,
+    precacheAndRoute,
+    type PrecacheEntry,
+} from "workbox-precaching";
 import { registerRoute } from "workbox-routing";
 import { NetworkOnly, StaleWhileRevalidate } from "workbox-strategies";
+
+// InjectManifest replaces self.__WB_MANIFEST at build time with the list of
+// precached assets. Declaring it here keeps the reference typed; without the
+// build-time replacement it is undefined and precacheAndRoute throws.
+declare global {
+    interface ServiceWorkerGlobalScope {
+        __WB_MANIFEST: Array<PrecacheEntry | string>;
+    }
+}
 
 declare const self: ServiceWorkerGlobalScope;
 
