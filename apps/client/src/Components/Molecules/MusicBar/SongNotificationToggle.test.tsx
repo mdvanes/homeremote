@@ -50,6 +50,8 @@ const baseState: HotKeyState = {
     currentSource: "radio",
     songNotificationsEnabled: true,
     setSongNotificationsEnabled: vi.fn(),
+    songNotificationsWhenStoppedEnabled: false,
+    setSongNotificationsWhenStoppedEnabled: vi.fn(),
 };
 
 const Wrapper = (state: Partial<HotKeyState>): FC<{ children: ReactNode }> =>
@@ -124,5 +126,29 @@ describe("SongNotificationToggle", () => {
         expect(
             screen.getByLabelText("Toggle song change notifications")
         ).toBeDisabled();
+    });
+
+    it("enables notifications for metadata changes while music is stopped", async () => {
+        vi.stubGlobal("Notification", {
+            permission: "granted",
+            requestPermission: vi.fn(),
+        });
+        const setSongNotificationsWhenStoppedEnabled = vi.fn();
+        render(<SongNotificationToggle />, {
+            wrapper: Wrapper({
+                setSongNotificationsWhenStoppedEnabled,
+            }),
+        });
+
+        await userEvent.click(
+            screen.getByLabelText("Song notification options")
+        );
+        await userEvent.click(
+            screen.getByLabelText("Also notify while music is stopped")
+        );
+
+        expect(setSongNotificationsWhenStoppedEnabled).toHaveBeenCalledWith(
+            true
+        );
     });
 });

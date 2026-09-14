@@ -39,7 +39,7 @@ const baseState: HotKeyState = {
     setHandlePlayPrev: noop,
     handlePlayNext: noop,
     setHandlePlayNext: noop,
-    isPlaying: false,
+    isPlaying: true,
     togglePlayPause: noop,
     pauseRadio: noop,
     playJukebox: noop,
@@ -48,6 +48,8 @@ const baseState: HotKeyState = {
     currentSource: "radio",
     songNotificationsEnabled: true,
     setSongNotificationsEnabled: noop,
+    songNotificationsWhenStoppedEnabled: false,
+    setSongNotificationsWhenStoppedEnabled: noop,
 };
 
 const renderWithState = (state: Partial<HotKeyState>) =>
@@ -200,6 +202,69 @@ describe("SongChangeNotifier", () => {
         );
 
         expect(notificationSpy).not.toHaveBeenCalled();
+    });
+
+    it("does not notify while playback is stopped by default", () => {
+        const { rerender } = renderWithState({
+            isPlaying: false,
+            radioInfo: {
+                ...emptyNowPlayingInfo,
+                title: "Song A",
+                artist: "Artist A",
+            },
+        });
+
+        rerender(
+            <HotKeyContext.Provider
+                value={{
+                    ...baseState,
+                    isPlaying: false,
+                    radioInfo: {
+                        ...emptyNowPlayingInfo,
+                        title: "Song B",
+                        artist: "Artist B",
+                    },
+                }}
+            >
+                <SongChangeNotifier />
+            </HotKeyContext.Provider>
+        );
+
+        expect(notificationSpy).not.toHaveBeenCalled();
+    });
+
+    it("can notify on metadata changes while playback is stopped", () => {
+        const { rerender } = renderWithState({
+            isPlaying: false,
+            songNotificationsWhenStoppedEnabled: true,
+            radioInfo: {
+                ...emptyNowPlayingInfo,
+                title: "Song A",
+                artist: "Artist A",
+            },
+        });
+
+        rerender(
+            <HotKeyContext.Provider
+                value={{
+                    ...baseState,
+                    isPlaying: false,
+                    songNotificationsWhenStoppedEnabled: true,
+                    radioInfo: {
+                        ...emptyNowPlayingInfo,
+                        title: "Song B",
+                        artist: "Artist B",
+                    },
+                }}
+            >
+                <SongChangeNotifier />
+            </HotKeyContext.Provider>
+        );
+
+        expect(notificationSpy).toHaveBeenCalledWith("Song B", {
+            body: "Artist B",
+            icon: undefined,
+        });
     });
 
     it("does not notify when permission is not granted", () => {

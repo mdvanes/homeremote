@@ -15,7 +15,9 @@ import { useGetRadio2PreviouslyQuery } from "../../../Services/generated/nowplay
 import { logUrgentInfo } from "../../Molecules/LogCard/logSlice";
 import {
     getSongNotificationsEnabled,
+    getSongNotificationsWhenStoppedEnabled,
     setSongNotificationsEnabled as persistSongNotificationsEnabled,
+    setSongNotificationsWhenStoppedEnabled as persistSongNotificationsWhenStoppedEnabled,
 } from "../../Molecules/MusicBar/songNotificationStorage";
 import {
     getInitialChannelId,
@@ -107,9 +109,11 @@ export interface HotKeyState {
     // The source whose info should be shown as "now playing"
     currentSource: MusicSource;
 
-    // Song-change browser notifications (opt-out, persisted to localStorage)
+    // Song-change browser notifications (persisted to localStorage)
     songNotificationsEnabled: boolean;
     setSongNotificationsEnabled: (_: boolean) => void;
+    songNotificationsWhenStoppedEnabled: boolean;
+    setSongNotificationsWhenStoppedEnabled: (_: boolean) => void;
 }
 
 const noop = () => {
@@ -147,6 +151,8 @@ const initialState: HotKeyState = {
     currentSource: "radio",
     songNotificationsEnabled: true,
     setSongNotificationsEnabled: noop,
+    songNotificationsWhenStoppedEnabled: false,
+    setSongNotificationsWhenStoppedEnabled: noop,
 };
 
 export const HotKeyContext = React.createContext(initialState);
@@ -177,12 +183,34 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [currentSource, setCurrentSource] = useState<MusicSource>("radio");
     const [songNotificationsEnabled, setSongNotificationsEnabledState] =
         useState<boolean>(getSongNotificationsEnabled);
+    const [
+        songNotificationsWhenStoppedEnabled,
+        setSongNotificationsWhenStoppedEnabledState,
+    ] = useState<boolean>(getSongNotificationsWhenStoppedEnabled);
     const dispatch = useDispatch();
 
     const setSongNotificationsEnabled = useCallback((enabled: boolean) => {
         persistSongNotificationsEnabled(enabled);
         setSongNotificationsEnabledState(enabled);
     }, []);
+
+    const setSongNotificationsWhenStoppedEnabled = useCallback(
+        (enabled: boolean) => {
+            persistSongNotificationsWhenStoppedEnabled(enabled);
+            setSongNotificationsWhenStoppedEnabledState(enabled);
+        },
+        []
+    );
+
+    const toggleSongNotifications = useCallback(() => {
+        const enabled = !songNotificationsEnabled;
+        setSongNotificationsEnabled(enabled);
+        dispatch(
+            logUrgentInfo(
+                `Song change notifications ${enabled ? "enabled" : "disabled"}`
+            )
+        );
+    }, [dispatch, setSongNotificationsEnabled, songNotificationsEnabled]);
 
     const setRadioChannelId = useCallback((id: RadioChannelId) => {
         localStorage.setItem(LAST_RADIO_CHANNEL, id);
@@ -363,6 +391,11 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
                 description: `skip radio until the next song (max ${SKIP_FALLBACK_MINUTES} min)`,
                 fn: handleSkipRadio,
             },
+            n: {
+                description:
+                    "toggle song change notifications while music is playing",
+                fn: toggleSongNotifications,
+            },
         }),
         [
             handlePlayNext,
@@ -370,6 +403,7 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
             toggleBetween,
             togglePlayPause,
             handleSkipRadio,
+            toggleSongNotifications,
         ]
     );
 
@@ -404,6 +438,8 @@ export const HotKeyProvider: FC<{ children: ReactNode }> = ({ children }) => {
         currentSource,
         songNotificationsEnabled,
         setSongNotificationsEnabled,
+        songNotificationsWhenStoppedEnabled,
+        setSongNotificationsWhenStoppedEnabled,
     };
 
     // handle what happens on key press
