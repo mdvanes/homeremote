@@ -23,7 +23,7 @@ const Map: FC<Props> = ({ showChart = false }) => {
 
     return (
         <div className={classes.map}>
-            <MapContainer zoom={20}>
+            <MapContainer zoom={20} zoomControl={false}>
                 <MapContent
                     coords={coords}
                     activeMarkerTimestamp={activeMarkerTimestamp}
