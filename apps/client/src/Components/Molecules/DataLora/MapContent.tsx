@@ -1,9 +1,8 @@
 import { TrackerItem } from "@homeremote/types";
-import { Icon, IconOptions, polygon } from "leaflet";
-import { FC, useCallback, useEffect, useState } from "react";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import { DomEvent, Icon, IconOptions, polygon } from "leaflet";
+import { FC, useCallback, useEffect, useMemo, useRef } from "react";
 import { Marker, Polyline, Popup, TileLayer, useMap } from "react-leaflet";
-
-const DEFAULT_CENTER: [number, number] = [52, 5.1];
 
 const DEFAULT_BOUNDS = polygon([
     [52, 4],
@@ -51,52 +50,118 @@ const hasValidCoords = (item: TrackerItem): item is TrackerItem =>
     typeof item.loc[0] === "number" &&
     typeof item.loc[1] === "number";
 
-const MapContent: FC<Props> = ({ coords, activeMarkerTimestamp }) => {
-    const [markers, setMarkers] = useState<TrackerItem[] | null>(null);
-    const map = useMap();
+const getBounds = (coords: TrackerItem[][]) => {
+    const locations = coords.flatMap((deviceCoords) =>
+        deviceCoords.filter(hasValidCoords).map(({ loc }) => loc)
+    );
 
-    const updateBoundsAndMarker = useCallback(() => {
-        const firstDeviceCoords = coords?.[0] ?? [];
-        if (
-            firstDeviceCoords.length > 0 &&
-            hasValidCoords(firstDeviceCoords[0])
-        ) {
-            const newPoly = polygon(firstDeviceCoords.map(({ loc }) => loc));
-            map.fitBounds(newPoly.getBounds());
-            const last: TrackerItem[] = coords
-                .map((deviceCoords) => deviceCoords.at(-1))
-                .filter((item) => item !== undefined) as TrackerItem[];
-            setMarkers(last);
-        } else {
-            map.fitBounds(DEFAULT_BOUNDS);
+    return locations.length > 0
+        ? polygon(locations).getBounds()
+        : DEFAULT_BOUNDS;
+};
+
+interface MapControlsProps {
+    onReset: () => void;
+}
+
+const MapControls: FC<MapControlsProps> = ({ onReset }) => {
+    const map = useMap();
+    const controlRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (controlRef.current) {
+            DomEvent.disableClickPropagation(controlRef.current);
+            DomEvent.disableScrollPropagation(controlRef.current);
         }
+    }, []);
+
+    return (
+        <div className="leaflet-top leaflet-left">
+            <div
+                ref={controlRef}
+                className="leaflet-control leaflet-bar map-controls"
+            >
+                <button
+                    type="button"
+                    aria-label="Zoom in"
+                    title="Zoom in"
+                    onClick={() => map.zoomIn()}
+                >
+                    +
+                </button>
+                <button
+                    type="button"
+                    aria-label="Zoom out"
+                    title="Zoom out"
+                    onClick={() => map.zoomOut()}
+                >
+                    -
+                </button>
+                <button
+                    type="button"
+                    aria-label="Reset map view"
+                    title="Reset map view"
+                    onClick={onReset}
+                >
+                    <RestartAltIcon fontSize="small" />
+                </button>
+            </div>
+        </div>
+    );
+};
+
+const MapContent: FC<Props> = ({ coords, activeMarkerTimestamp }) => {
+    const map = useMap();
+    const hasFitInitialData = useRef(false);
+    const hasSetDefaultView = useRef(false);
+
+    const resetMapView = useCallback(() => {
+        map.fitBounds(getBounds(coords));
     }, [coords, map]);
 
     useEffect(() => {
-        updateBoundsAndMarker();
-    }, [coords, updateBoundsAndMarker]);
+        const hasData = coords.some((deviceCoords) =>
+            deviceCoords.some(hasValidCoords)
+        );
 
-    useEffect(() => {
-        setMarkers((prevMarkers) => {
-            if (prevMarkers) {
-                const activeCoord = coords[0].find(
-                    (item) => item.time === activeMarkerTimestamp
-                );
-                const [firstMarker, ...otherMarkers] = prevMarkers;
-                return [
-                    {
-                        ...firstMarker,
-                        loc: activeCoord?.loc ?? firstMarker.loc,
-                    },
-                    ...otherMarkers,
-                ];
-            }
-            return prevMarkers;
-        });
+        if (hasData && !hasFitInitialData.current) {
+            resetMapView();
+            hasFitInitialData.current = true;
+        } else if (
+            !hasData &&
+            !hasSetDefaultView.current &&
+            !hasFitInitialData.current
+        ) {
+            map.fitBounds(DEFAULT_BOUNDS);
+            hasSetDefaultView.current = true;
+        }
+    }, [coords, map, resetMapView]);
+
+    const markers = useMemo(() => {
+        const latestMarkers = coords
+            .map((deviceCoords) => deviceCoords.at(-1))
+            .filter((item) => item !== undefined) as TrackerItem[];
+        const firstMarker = latestMarkers[0];
+        const activeCoord = coords[0]?.find(
+            (item) => item.time === activeMarkerTimestamp
+        );
+
+        if (!firstMarker || !activeCoord) {
+            return latestMarkers;
+        }
+
+        return [
+            {
+                ...firstMarker,
+                loc: activeCoord.loc,
+            },
+            ...latestMarkers.slice(1),
+        ];
     }, [activeMarkerTimestamp, coords]);
 
     return (
         <>
+            <MapControls onReset={resetMapView} />
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url={TILES_LAYER_DARK}
@@ -112,13 +177,26 @@ const MapContent: FC<Props> = ({ coords, activeMarkerTimestamp }) => {
                     />
                 );
             })}
-            {markers?.filter(hasValidCoords).map((marker, i) => (
+            {markers.filter(hasValidCoords).map((marker, i) => (
                 <Marker key={i} position={marker.loc} icon={MARKER_ICONS[i]}>
                     <Popup>
                         <div>{marker.name}</div>
                         <div>
                             {new Date(marker.time).toLocaleString("nl-nl")}
                         </div>
+                        <button
+                            type="button"
+                            className="marker-zoom-button"
+                            aria-label={`Zoom in on ${marker.name}`}
+                            onClick={() => {
+                                map.setView(marker.loc, map.getMaxZoom(), {
+                                    animate: true,
+                                });
+                                map.closePopup();
+                            }}
+                        >
+                            Zoom in
+                        </button>
                     </Popup>
                 </Marker>
             ))}

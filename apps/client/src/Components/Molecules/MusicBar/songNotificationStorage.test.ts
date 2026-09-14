@@ -1,6 +1,8 @@
 import {
     getSongNotificationsEnabled,
+    getSongNotificationsWhenStoppedEnabled,
     setSongNotificationsEnabled,
+    setSongNotificationsWhenStoppedEnabled,
 } from "./songNotificationStorage";
 
 describe("songNotificationStorage", () => {
@@ -21,5 +23,14 @@ describe("songNotificationStorage", () => {
         setSongNotificationsEnabled(false);
         setSongNotificationsEnabled(true);
         expect(getSongNotificationsEnabled()).toBe(true);
+    });
+
+    it("defaults stopped-playback notifications to disabled", () => {
+        expect(getSongNotificationsWhenStoppedEnabled()).toBe(false);
+    });
+
+    it("persists stopped-playback notifications", () => {
+        setSongNotificationsWhenStoppedEnabled(true);
+        expect(getSongNotificationsWhenStoppedEnabled()).toBe(true);
     });
 });

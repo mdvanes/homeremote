@@ -28,14 +28,20 @@ const toAbsoluteUrl = (url: string): string | undefined => {
 /**
  * Headless component, mounted once in MusicBar, that shows a browser
  * Notification whenever the song for the currently active source (radio or
- * jukebox) changes. The very first song observed for a source is treated as
- * a baseline (no notification) rather than a "change", so simply loading the
- * page (or switching sources) doesn't immediately fire a notification for
- * whatever was already playing.
+ * jukebox) changes while music is playing, with an opt-in for notifications
+ * while stopped. The very first song observed for a source is treated as a
+ * baseline (no notification) rather than a "change", so simply loading the
+ * page (or switching sources) doesn't immediately fire a notification.
  */
 const SongChangeNotifier: FC = () => {
-    const { currentSource, radioInfo, jukeboxInfo, songNotificationsEnabled } =
-        useHotKeyContext();
+    const {
+        currentSource,
+        radioInfo,
+        jukeboxInfo,
+        isPlaying,
+        songNotificationsEnabled,
+        songNotificationsWhenStoppedEnabled,
+    } = useHotKeyContext();
     const lastSeenRef = useRef<Record<MusicSource, string | null>>({
         radio: null,
         jukebox: null,
@@ -60,6 +66,7 @@ const SongChangeNotifier: FC = () => {
 
         if (
             !songNotificationsEnabled ||
+            (!isPlaying && !songNotificationsWhenStoppedEnabled) ||
             !isNotificationSupported() ||
             Notification.permission !== "granted"
         ) {
@@ -70,7 +77,15 @@ const SongChangeNotifier: FC = () => {
             body: artist,
             icon: toAbsoluteUrl(imageUrl),
         });
-    }, [currentSource, title, artist, imageUrl, songNotificationsEnabled]);
+    }, [
+        currentSource,
+        title,
+        artist,
+        imageUrl,
+        isPlaying,
+        songNotificationsEnabled,
+        songNotificationsWhenStoppedEnabled,
+    ]);
 
     return null;
 };
