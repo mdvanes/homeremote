@@ -75,9 +75,9 @@ describe("isAllowedUpstreamHost", () => {
     });
 
     it("allows an https URL on the npox.nl CDN suffix", () => {
-        expect(
-            isAllowedUpstreamHost("https://tv.ak.md.npox.nl/x.m3u8")
-        ).toBe(true);
+        expect(isAllowedUpstreamHost("https://tv.ak.md.npox.nl/x.m3u8")).toBe(
+            true
+        );
     });
 
     it("rejects a different host", () => {

@@ -1,4 +1,5 @@
 {
+  // auth.json is JSONC: comments (like this one) and trailing commas are allowed.
   "secret": "my_jwt_secret",
   "users": [{
     "id": 1,
