@@ -107,7 +107,7 @@ export const rewriteManifest = (
         .join("\n");
 };
 
-const ALLOWED_UPSTREAM_HOST_SUFFIXES = [".cdn.streamgate.nl"];
+const ALLOWED_UPSTREAM_HOST_SUFFIXES = [".cdn.streamgate.nl", ".npox.nl"];
 
 export const isAllowedUpstreamHost = (rawUrl: string): boolean => {
     try {
