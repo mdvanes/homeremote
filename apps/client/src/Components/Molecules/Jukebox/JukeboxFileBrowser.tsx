@@ -2,12 +2,10 @@ import { BrowseItem, IPlaylist, ISong } from "@homeremote/types";
 import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
 import { FC } from "react";
 import { useGetBrowseQuery } from "../../../Services/jukeboxApi";
-import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
-import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
 import JukeboxAlbumDetail from "./JukeboxAlbumDetail";
 import JukeboxArtistList from "./JukeboxArtistList";
 import JukeboxDirCardList from "./JukeboxDirCardList";
-import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
+import { useStartJukeboxPlayback } from "./useStartJukeboxPlayback";
 
 export interface PathEntry {
     id: string;
@@ -40,8 +38,7 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({
     path,
     onNavigate,
 }) => {
-    const { setCurrentPlaylist, setCurrentSong } = useJukeboxPlaybackContext();
-    const { pauseRadio, playJukebox } = useHotKeyContext();
+    const startPlayback = useStartJukeboxPlayback();
     const currentDir = path[path.length - 1];
     const { data, isLoading } = useGetBrowseQuery(currentDir?.id);
     const items = data?.status === "received" ? data.items : [];
@@ -78,15 +75,7 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({
             album: item.album,
             track: item.track,
         };
-        setCurrentPlaylist(playlist);
-        setCurrentSong(song);
-        localStorage.setItem(LAST_PLAYLIST, JSON.stringify(playlist));
-        localStorage.setItem(LAST_SONG, JSON.stringify(song));
-        pauseRadio();
-        // Wait for the jukebox audio elem to (re)mount/load
-        setTimeout(() => {
-            playJukebox();
-        }, 100);
+        startPlayback(playlist, song);
     };
 
     return (
