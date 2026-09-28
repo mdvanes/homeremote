@@ -13,6 +13,8 @@ export const ROUTES = {
     musicBrowsePath: "/music/browse/*",
     musicRecent: "/music/recent",
     musicFavorites: "/music/favorites",
+    musicPlaylists: "/music/playlists",
+    musicPlaylist: "/music/playlists/:playlistName",
     gears: "/gears",
     docker: "/docker",
     caddy: "/caddy",
@@ -66,3 +68,11 @@ export const buildMusicBrowsePath = (entries: { title: string }[]): string =>
         : `${ROUTES.musicBrowse}/${entries
               .map((entry) => encodeMusicSegment(entry.title))
               .join("/")}`;
+
+/**
+ * Builds `/music/playlists/<name>`. Encoded like a browse segment, so names
+ * containing a `/` still form a single path segment; react-router's
+ * `useParams` hands the `:playlistName` param back fully decoded.
+ */
+export const buildMusicPlaylistPath = (name: string): string =>
+    `${ROUTES.musicPlaylists}/${encodeMusicSegment(name)}`;

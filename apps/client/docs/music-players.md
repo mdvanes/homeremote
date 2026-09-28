@@ -143,6 +143,23 @@ so the jukebox reopens on the previously selected song.
 `Jukebox` creates the `<audio>` ref and publishes it to `HotKeyProvider` via `setJukeboxElem`, so the
 global hotkeys and the "skip radio" logic can play/pause the jukebox.
 
+### /music page (`JukeboxPage`)
+
+Tabs, each backed by its own URL so refresh/back/forward restore the view:
+
+- **Browse** (`/music/browse/<title>/...`, `JukeboxFileBrowser`) — artists → albums → songs. A
+  directory may contain sub-directories, songs, or both (e.g. `Various`): sub-directories render as
+  navigable cards above the song list.
+- **Recently added** (`/music/recent`) and **Favorites** (`/music/favorites`) — album lists that open
+  the album in Browse.
+- **Playlists** (`/music/playlists`, `JukeboxPlaylists`) — Subsonic playlists (starred albums from
+  `/api/jukebox/playlists` are filtered out). Opening one goes to `/music/playlists/<name>`
+  (`JukeboxPlaylistDetail`); the name is resolved to an id via the playlists list (first match wins).
+  Clicking a song plays the playlist from that song.
+
+Starting playback from any tab goes through `useStartJukeboxPlayback` (sets the playback context,
+`LAST_PLAYLIST`/`LAST_SONG`, pauses the radio and plays the jukebox).
+
 ---
 
 ## 4. HotKeyProvider (global glue)

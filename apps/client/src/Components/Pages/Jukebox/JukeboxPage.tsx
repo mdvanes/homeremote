@@ -11,6 +11,7 @@ import { FC, SyntheticEvent, useMemo } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import {
     buildMusicBrowsePath,
+    buildMusicPlaylistPath,
     decodeMusicSegment,
     ROUTES,
 } from "../../../routes";
@@ -19,6 +20,8 @@ import JukeboxFavorites from "../../Molecules/Jukebox/JukeboxFavorites";
 import JukeboxFileBrowser, {
     PathEntry,
 } from "../../Molecules/Jukebox/JukeboxFileBrowser";
+import JukeboxPlaylistDetail from "../../Molecules/Jukebox/JukeboxPlaylistDetail";
+import JukeboxPlaylists from "../../Molecules/Jukebox/JukeboxPlaylists";
 import JukeboxRecent from "../../Molecules/Jukebox/JukeboxRecent";
 import { useBrowsePathResolver } from "../../Molecules/Jukebox/useBrowsePathResolver";
 import { SongNotificationToggle } from "../../Molecules/MusicBar/SongNotificationToggle";
@@ -32,6 +35,7 @@ const TAB_PATHS = [
     ROUTES.musicBrowse,
     ROUTES.musicRecent,
     ROUTES.musicFavorites,
+    ROUTES.musicPlaylists,
 ];
 
 const tabForPathname = (pathname: string): number => {
@@ -41,20 +45,26 @@ const tabForPathname = (pathname: string): number => {
     if (pathname.startsWith(ROUTES.musicFavorites)) {
         return 2;
     }
+    if (pathname.startsWith(ROUTES.musicPlaylists)) {
+        return 3;
+    }
     return 0;
 };
 
 /**
  * Tab and Browse-tab path both live in the URL (`/music/browse/<title>/...`,
- * `/music/recent`, `/music/favorites`) so a browser refresh, a pasted link,
- * or the back/forward buttons all return to the exact same view.
+ * `/music/recent`, `/music/favorites`, `/music/playlists/<name>`) so a
+ * browser refresh, a pasted link, or the back/forward buttons all return to
+ * the exact same view.
  */
 const JukeboxPage: FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    // Only populated when this instance is rendered by the `musicBrowsePath`
-    // ("/music/browse/*") route; undefined for the recent/favorites routes.
-    const params = useParams<{ "*": string }>();
+    // "*" is only populated when this instance is rendered by the
+    // `musicBrowsePath` ("/music/browse/*") route, `playlistName` only by the
+    // `musicPlaylist` ("/music/playlists/:playlistName") route (already
+    // decoded by react-router).
+    const params = useParams<{ "*": string; playlistName: string }>();
 
     const tab = tabForPathname(location.pathname);
 
@@ -105,6 +115,7 @@ const JukeboxPage: FC = () => {
                     <Tab label="Browse" />
                     <Tab label="Recently added" />
                     <Tab label="Favorites" />
+                    <Tab label="Playlists" />
                 </Tabs>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                     <Tooltip title="Add current song to a playlist">
@@ -148,6 +159,19 @@ const JukeboxPage: FC = () => {
                 {tab === 1 && <JukeboxRecent onSelectAlbum={navigateToAlbum} />}
                 {tab === 2 && (
                     <JukeboxFavorites onSelectAlbum={navigateToAlbum} />
+                )}
+                {tab === 3 && !params.playlistName && (
+                    <JukeboxPlaylists
+                        onSelectPlaylist={(name) =>
+                            navigate(buildMusicPlaylistPath(name))
+                        }
+                    />
+                )}
+                {tab === 3 && params.playlistName && (
+                    <JukeboxPlaylistDetail
+                        playlistName={params.playlistName}
+                        onBack={() => navigate(ROUTES.musicPlaylists)}
+                    />
                 )}
             </Box>
         </Card>

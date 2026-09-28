@@ -125,6 +125,14 @@ const App: FC<AppProps> = ({ swCallbacks }) => {
                                             element={<JukeboxPage />}
                                         />
                                         <Route
+                                            path={ROUTES.musicPlaylists}
+                                            element={<JukeboxPage />}
+                                        />
+                                        <Route
+                                            path={ROUTES.musicPlaylist}
+                                            element={<JukeboxPage />}
+                                        />
+                                        <Route
                                             path={ROUTES.gears}
                                             element={<DownloadList />}
                                         />

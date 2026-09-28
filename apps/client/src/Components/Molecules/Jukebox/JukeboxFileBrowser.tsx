@@ -2,12 +2,10 @@ import { BrowseItem, IPlaylist, ISong } from "@homeremote/types";
 import { Box, Breadcrumbs, Link, Typography } from "@mui/material";
 import { FC } from "react";
 import { useGetBrowseQuery } from "../../../Services/jukeboxApi";
-import { useHotKeyContext } from "../../Providers/HotKey/HotKeyProvider";
-import { useJukeboxPlaybackContext } from "../../Providers/Jukebox/JukeboxPlaybackProvider";
 import JukeboxAlbumDetail from "./JukeboxAlbumDetail";
 import JukeboxArtistList from "./JukeboxArtistList";
 import JukeboxDirCardList from "./JukeboxDirCardList";
-import { LAST_PLAYLIST, LAST_SONG } from "./JukeboxPlayer";
+import { useStartJukeboxPlayback } from "./useStartJukeboxPlayback";
 
 export interface PathEntry {
     id: string;
@@ -29,20 +27,23 @@ interface JukeboxFileBrowserProps {
  * pushes a new URL for the Recently added/Favorites tabs' "open this album"
  * action too.
  *
- * At each level below the artist, the fetched directory's children are
- * either all sub-directories (further albums, or e.g. multi-disc folders)
- * or all songs: dirs render as a horizontal, wrapping card grid (with an
- * artist biography below it at the top level, i.e. an artist's albums);
- * songs render as a list next to the album's cover art/description sidebar.
+ * At each level below the artist, the fetched directory's children may be
+ * sub-directories (further albums, or e.g. multi-disc folders), songs, or a
+ * mix of both (e.g. a "Various" folder): dirs render as a horizontal,
+ * wrapping card grid (with an artist biography below it at the top level,
+ * i.e. an artist's albums); songs render below that as a list next to the
+ * album's cover art/description sidebar.
  */
 const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({
     path,
     onNavigate,
 }) => {
-    const { setCurrentPlaylist, setCurrentSong } = useJukeboxPlaybackContext();
-    const { pauseRadio, playJukebox } = useHotKeyContext();
+    const startPlayback = useStartJukeboxPlayback();
     const currentDir = path[path.length - 1];
     const { data, isLoading } = useGetBrowseQuery(currentDir?.id);
+    const items = data?.status === "received" ? data.items : [];
+    const dirs = items.filter((item) => item.isDir);
+    const songs = items.filter((item) => !item.isDir);
 
     const handleOpenDir = (item: BrowseItem) => {
         onNavigate([...path, { id: item.id, title: item.title }]);
@@ -59,10 +60,7 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({
         // A song's own `artist` field isn't always populated by Subsonic;
         // fall back to any sibling song in the same album that has one.
         const albumArtist =
-            item.artist ||
-            (data?.status === "received"
-                ? data.items.find((sibling) => sibling.artist)?.artist
-                : undefined);
+            item.artist || songs.find((sibling) => sibling.artist)?.artist;
         const playlist: IPlaylist = {
             id: currentDir.id,
             name: currentDir.title,
@@ -77,19 +75,8 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({
             album: item.album,
             track: item.track,
         };
-        setCurrentPlaylist(playlist);
-        setCurrentSong(song);
-        localStorage.setItem(LAST_PLAYLIST, JSON.stringify(playlist));
-        localStorage.setItem(LAST_SONG, JSON.stringify(song));
-        pauseRadio();
-        // Wait for the jukebox audio elem to (re)mount/load
-        setTimeout(() => {
-            playJukebox();
-        }, 100);
+        startPlayback(playlist, song);
     };
-
-    const isSongLevel =
-        data?.status === "received" && data.items.some((item) => !item.isDir);
 
     return (
         <Box>
@@ -126,22 +113,28 @@ const JukeboxFileBrowser: FC<JukeboxFileBrowserProps> = ({
                 />
             )}
 
-            {data?.status === "received" && path.length > 0 && !isSongLevel && (
-                <JukeboxDirCardList
-                    items={data.items}
-                    onSelect={handleOpenDir}
-                    artistId={path.length === 1 ? currentDir.id : undefined}
-                />
-            )}
+            {data?.status === "received" &&
+                path.length > 0 &&
+                dirs.length > 0 && (
+                    <JukeboxDirCardList
+                        items={dirs}
+                        onSelect={handleOpenDir}
+                        artistId={path.length === 1 ? currentDir.id : undefined}
+                    />
+                )}
 
-            {data?.status === "received" && path.length > 0 && isSongLevel && (
-                <JukeboxAlbumDetail
-                    albumId={currentDir.id}
-                    albumName={currentDir.title}
-                    songs={data.items}
-                    onPlaySong={handlePlaySong}
-                />
-            )}
+            {data?.status === "received" &&
+                path.length > 0 &&
+                songs.length > 0 && (
+                    <Box sx={{ mt: dirs.length > 0 ? 3 : 0 }}>
+                        <JukeboxAlbumDetail
+                            albumId={currentDir.id}
+                            albumName={currentDir.title}
+                            songs={songs}
+                            onPlaySong={handlePlaySong}
+                        />
+                    </Box>
+                )}
 
             {data?.status === "error" && (
                 <Typography variant="body2" color="error">
