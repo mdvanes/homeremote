@@ -118,4 +118,70 @@ describe("JukeboxFileBrowser", () => {
         await screen.findByText("1. SomeSong");
         await screen.findByText("2:05");
     });
+
+    it("shows sub-dirs as navigable cards above songs in a mixed dir", async () => {
+        fetchMock.mockResponse((req) => {
+            if (req.url.includes("/browse/various")) {
+                return Promise.resolve(
+                    JSON.stringify({
+                        status: "received",
+                        parentId: "various",
+                        items: [
+                            { id: "subdir1", title: "SubDir", isDir: true },
+                            {
+                                id: "song2",
+                                title: "LooseSong",
+                                isDir: false,
+                                artist: "VA",
+                                track: 3,
+                                duration: 61,
+                            },
+                        ],
+                    } as BrowseResponse)
+                );
+            }
+            if (req.url.includes("/browse/subdir1")) {
+                return Promise.resolve(
+                    JSON.stringify({
+                        status: "received",
+                        parentId: "subdir1",
+                        items: [
+                            {
+                                id: "song3",
+                                title: "NestedSong",
+                                isDir: false,
+                                duration: 30,
+                            },
+                        ],
+                    } as BrowseResponse)
+                );
+            }
+            return Promise.resolve(JSON.stringify({ status: "error" }));
+        });
+
+        const MixedFileBrowser: FC = () => {
+            const [path, setPath] = useState<PathEntry[]>([
+                { id: "various", title: "Various" },
+            ]);
+            return <JukeboxFileBrowser path={path} onNavigate={setPath} />;
+        };
+        render(<MixedFileBrowser />, { wrapper: Wrapper });
+
+        await screen.findByText("3. LooseSong");
+        await screen.findByText("1:01");
+        const subDirCard = screen.getByText("SubDir");
+        expect(subDirCard.closest("button")).toHaveClass(
+            "MuiCardActionArea-root"
+        );
+        expect(screen.queryByText("0:00")).not.toBeInTheDocument();
+        expect(
+            subDirCard.compareDocumentPosition(
+                screen.getByText("3. LooseSong")
+            ) & Node.DOCUMENT_POSITION_FOLLOWING
+        ).toBeTruthy();
+
+        fireEvent.click(subDirCard);
+        await screen.findByText("NestedSong");
+        expect(screen.queryByText("LooseSong")).not.toBeInTheDocument();
+    });
 });
